@@ -56,7 +56,7 @@ tNum = tLen*10**4
 # For P = 0.2, xLen = 2**7*() and xNum = 2**10
 # For P = 0.3, xLen = 2**8*() and xNum = 2**9
 
-## Recommended code parameters: FD solver, tLen=20, tNum=10**5
+## Recommended code parameters: AB solver, tLen=20, tNum=10**5
 # For P = 0.02, xLen = 20 and xNum = 200, H=0.0001
 # For P = 0.2, xLen = 20 and xNum = 200, H=0.01
 
@@ -553,11 +553,11 @@ class kdvSystem():
         self.sol = sol['y']
 
 
-    def solve_system_fd(self):
-        """Use finite difference method to solve the differential
-        equation on a periodic domain. If self.diffeq == 'KdVB', solve
-        the KdV-Burgers equation; if self.diffeq == 'KdVNL', solve the
-        nonlocal KdV equation."""
+    def solve_system_ab2(self):
+        """Use 2nd-order Adams-Bashforth method to solve the
+        differential equation on a periodic domain. If self.diffeq ==
+        'KdVB', solve the KdV-Burgers equation; if self.diffeq ==
+        'KdVNL', solve the nonlocal KdV equation."""
 
         dx = self.dx
         dt = self.dt
@@ -600,7 +600,7 @@ class kdvSystem():
 
         RHS1 = RHS0
 
-        # Second step is a 2nd order Adams Bashforth step
+        # Second step is a 2nd order Adams-Bashforth step
         y0 = y[i,:]
         y2 = np.concatenate(([y0[-1]], y0, [y0[0]]))
         y4 = np.concatenate((y0[-2:], y0, y0[0:2]))
@@ -805,7 +805,7 @@ if(plot_trig_funcs):
     FDSolver.set_snapshot_ts([0,1/3,2/3,1])
     # Solve KdV-Burgers system
     builtinSolver.solve_system_builtin(periodic_deriv=True)
-    FDSolver.solve_system_fd()
+    FDSolver.solve_system_ab2()
 
 #    # Boost to co-moving frame (moving with velocity -1/6)
 #    builtinSolver.boost_to_lab_frame(velocity=1/6)
@@ -863,7 +863,7 @@ if(plot_snapshots):
     # Set initial conditions
     snapshotSystem.set_initial_conditions(y0='solitary')
     # Solve KdV-Burgers system
-    snapshotSystem.solve_system_fd()
+    snapshotSystem.solve_system_ab2()
 
     # Boost to co-moving frame
     snapshotSystem.boost_to_lab_frame(velocity='solitary')
@@ -935,7 +935,7 @@ if(plot_negative_snapshots):
     # Set initial conditions
     snapshotSystem.set_initial_conditions(y0='solitary')
     # Solve KdV-Burgers system
-    snapshotSystem.solve_system_fd()
+    snapshotSystem.solve_system_ab2()
 
     # Boost to co-moving frame
     snapshotSystem.boost_to_lab_frame(velocity='solitary')
@@ -1011,8 +1011,8 @@ if(plot_pos_neg_snapshots):
     posSystem.set_initial_conditions(y0='solitary')
     negSystem.set_initial_conditions(y0='solitary')
     # Solve KdV-Burgers system
-    posSystem.solve_system_fd()
-    negSystem.solve_system_fd()
+    posSystem.solve_system_ab2()
+    negSystem.solve_system_ab2()
 
     # Boost to co-moving frame
     posSystem.boost_to_lab_frame(velocity='solitary')
@@ -1120,7 +1120,7 @@ if(plot_skew_asymm):
         # Set initial conditions
         skewAsymSystem.set_initial_conditions(y0='solitary')
         # Solve KdV-Burgers system
-        skewAsymSystem.solve_system_fd()
+        skewAsymSystem.solve_system_ab2()
 
         # Boost to co-moving frame
         skewAsymSystem.boost_to_lab_frame(velocity='solitary')
@@ -1210,7 +1210,7 @@ if(plot_snapshots_cnoidal):
     # Set initial conditions
     snapshotSystem.set_initial_conditions(y0='cnoidal')
     # Solve KdV-Burgers system
-    snapshotSystem.solve_system_fd()
+    snapshotSystem.solve_system_ab2()
 
     # Boost to co-moving frame
     snapshotSystem.boost_to_lab_frame(velocity='cnoidal')
@@ -1282,7 +1282,7 @@ if(plot_negative_snapshots_cnoidal):
     # Set initial conditions
     snapshotSystem.set_initial_conditions(y0='cnoidal')
     # Solve KdV-Burgers system
-    snapshotSystem.solve_system_fd()
+    snapshotSystem.solve_system_ab2()
 
     # Boost to co-moving frame
     snapshotSystem.boost_to_lab_frame(velocity='cnoidal')
@@ -1358,8 +1358,8 @@ if(plot_pos_neg_snapshots_cnoidal):
     posSystem.set_initial_conditions(y0='cnoidal')
     negSystem.set_initial_conditions(y0='cnoidal')
     # Solve KdV-Burgers system
-    posSystem.solve_system_fd()
-    negSystem.solve_system_fd()
+    posSystem.solve_system_ab2()
+    negSystem.solve_system_ab2()
 
     # Boost to co-moving frame
     posSystem.boost_to_lab_frame(velocity='cnoidal')
@@ -1467,7 +1467,7 @@ if(plot_skew_asymm_cnoidal):
         # Set initial conditions
         skewAsymSystem.set_initial_conditions(y0='cnoidal')
         # Solve KdV-Burgers system
-        skewAsymSystem.solve_system_fd()
+        skewAsymSystem.solve_system_ab2()
 
         # Boost to co-moving frame
         skewAsymSystem.boost_to_lab_frame(velocity='cnoidal')
