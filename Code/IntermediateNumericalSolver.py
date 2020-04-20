@@ -35,7 +35,7 @@ eps = 0.1
 
 ## Equation type: can be either 'KdVB' for KdV-Burgers (Jeffreys-type
 ## forcing) or 'KdVNL' for nonlocal KdV (Generalized Miles-type forcing)
-diffeq = 'KdVB'
+diffeq = 'KdVNL'
 
 ## Wind Phase; used for the (Generalized Miles-type) nonlocal
 ## KdV equation
