@@ -589,7 +589,7 @@ class kdvSystem():
                     self.G*dy2dx2 + self.H*dy4dx4)
         elif self.diffeq == 'KdVNL':
             dydxnl = np.roll(dydx,
-                    shift=int(round(self.psiP*self.WaveLength/(2*np.pi)/self.dx)),
+                    shift=int(round(self.psiP*self.WaveLength/(2*np.pi)/dx)),
                     axis=0)
             RHS0 = -(self.F*dydx + self.B*y0*dydx + self.C*dy3dx3 -
                     self.G*dydxnl + self.H*dy4dx4)
@@ -617,7 +617,7 @@ class kdvSystem():
                     self.G*dy2dx2 + self.H*dy4dx4)
         elif self.diffeq == 'KdVNL':
             dydxnl = np.roll(dydx,
-                    shift=int(round(self.psiP*self.WaveLength/(2*np.pi)/self.dx)),
+                    shift=int(round(self.psiP*self.WaveLength/(2*np.pi)/dx)),
                     axis=0)
             RHS0 = -(self.F*dydx + self.B*y0*dydx + self.C*dy3dx3 -
                     self.G*dydxnl + self.H*dy4dx4)
@@ -646,7 +646,7 @@ class kdvSystem():
                         self.G*dy2dx2 + self.H*dy4dx4)
             elif self.diffeq == 'KdVNL':
                 dydxnl = np.roll(dydx,
-                        shift=int(round(self.psiP*self.WaveLength/(2*np.pi)/self.dx)),
+                        shift=int(round(self.psiP*self.WaveLength/(2*np.pi)/dx)),
                         axis=0)
                 RHS0 = -(self.F*dydx + self.B*y0*dydx + self.C*dy3dx3 -
                         self.G*dydxnl + self.H*dy4dx4)
