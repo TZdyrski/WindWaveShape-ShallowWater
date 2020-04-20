@@ -124,17 +124,16 @@ pgf_with_latex = {                      # Setup matplotlib to use latex
 # Or 2) adjust subplot layout
 #    "figure.subplot.left": 0.1,        # Make left and right margins
 #    "figure.subplot.right": 0.9,       #   symmetric
-    "text.latex.preamble": [
+    "text.latex.preamble":
 #        r"\usepackage[utf8x]{inputenc}", # Use utf8 fonts
-        r"\usepackage[T1]{fontenc}",     # Plots will be generated using
+        r"\usepackage[T1]{fontenc}"      # Plots will be generated using
                                          #   this preamble
-        r"\usepackage{siunitx}",         # Typsetting units
-        r'\sisetup{detect-all}',         # Force siunitx to actually use
+        +r"\usepackage{siunitx}"         # Typsetting units
+        +r'\sisetup{detect-all}'         # Force siunitx to actually use
                                          #   your fonts
-        r"\usepackage{physics}",         # Use physics package for symbols
-        r'\usepackage{amsmath}',         # Use amsmath to declare new math symbols
-        ]
-
+        +r"\usepackage{physics}"         # Use physics package for symbols
+        +r'\usepackage{amsmath}'         # Use amsmath to declare new math symbols
+    ,
     }
 
 if useBackend == 'pgf':
@@ -146,15 +145,15 @@ if useBackend == 'pgf':
         "font.serif": [],                    # Blank entries should cause
         "font.sans-serif": [],               #   plots to inherit fonts from
         "font.monospace": [],                #   the document
-        "pgf.preamble": [
-            r"\usepackage[utf8x]{inputenc}", # Use utf8 input encoding
-            r"\usepackage[T1]{fontenc}",     # Use Type1 fonts
-            r"\usepackage{siunitx}",         # Typsetting units
-            r'\sisetup{detect-all}',         # Force siunitx to actually use
+        "pgf.preamble":
+            r"\usepackage[utf8x]{inputenc}" # Use utf8 input encoding
+            +r"\usepackage[T1]{fontenc}"     # Use Type1 fonts
+            +r"\usepackage{siunitx}"         # Typsetting units
+            +r'\sisetup{detect-all}'         # Force siunitx to actually use
                                              #  your fonts
-            r'\usepackage{physics}',         # Use physics package for symbols
-            r'\usepackage{amsmath}',         # Use amsmath to declare new math symbols
-            ]
+            +r'\usepackage{physics}'         # Use physics package for symbols
+            +r'\usepackage{amsmath}'         # Use amsmath to declare new math symbols
+        ,
     })
 elif useBackend == 'mplcairoEps':
     pgf_with_latex.update({
