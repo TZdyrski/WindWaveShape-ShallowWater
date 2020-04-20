@@ -658,6 +658,77 @@ class kdvSystem():
 
         self.sol = y.transpose()
 
+    def solve_system_rk3(self):
+        """Use 3rd-order Runge-Kutta method to solve the
+        differential equation on a periodic domain. If self.diffeq ==
+        'KdVB', solve the KdV-Burgers equation; if self.diffeq ==
+        'KdVNL', solve the nonlocal KdV equation."""
+
+        # RHS function
+        # y'(t,x) = f(t,y(t,x))
+        def f(t,y0,dx):
+            y2 = np.concatenate(([y0[-1]], y0, [y0[0]]))
+            y4 = np.concatenate((y0[-2:], y0, y0[0:2]))
+
+            # Center difference with periodic boundary conditions
+            dydx = (y2[2:] - y2[0:-2])/(2*dx)
+            dy3dx3 = (y4[4:] - 2*y4[3:-1] + 2*y4[1:-3] - y4[0:-4])/(2*dx**3)
+            dy4dx4 = (y4[4:] - 4*y4[3:-1] + 6*y4[2:-2] - 4*y4[1:-3] +
+                    y4[0:-4])/(dx**4)
+
+            if self.diffeq == 'KdVB':
+                dy2dx2 = (y2[2:] - 2*y2[1:-1] + y2[0:-2])/(dx**2)
+                RHS = -(self.F*dydx + self.B*y0*dydx + self.C*dy3dx3 -
+                        self.G*dy2dx2 + self.H*dy4dx4)
+            elif self.diffeq == 'KdVNL':
+                dydxnl = np.roll(dydx,
+                        shift=int(round(self.psiP*self.WaveLength/(2*np.pi)/dx)),
+                        axis=0)
+                RHS = -(self.F*dydx + self.B*y0*dydx + self.C*dy3dx3 -
+                        self.G*dydxnl + self.H*dy4dx4)
+            return RHS
+
+        # Number of stages
+        s = 3
+
+        # Butcher table weights
+        b = np.empty(s)
+        b[0]=1/6
+        b[1]=1/6
+        b[2]=2/3
+
+        # Butcher table nodes
+        c = np.empty(s)
+        c[0]=0
+        c[1]=1
+        c[2]=1/2
+
+        # RK matrix
+        a = np.array([[0,0,0],[1,0,0],[1/4,1/4,0]])
+
+        dx = self.dx
+        dt = self.dt
+
+        nx = self.x.size
+        nt = self.t.size
+
+        y = np.empty((nt,nx),dtype=np.float128)
+        y[0,:] = self.y0
+
+        n = 0
+        for n in range(0,nt-1):
+            yn = y[n,:]
+
+            # RK Stages
+            k = np.zeros((yn.size,s))
+            tn = n*dt
+            for j in range(0,s):
+              k[:,j] = f(tn+c[j]*dt,yn+dt*np.dot(k,a[j,:]),dx)
+
+            y[n+1,:] = y[n,:] + dt*np.dot(k,b)
+
+        self.sol = y.transpose()
+
     def get_snapshots(self):
         """Get the snapshots at times set by set_snapshot_ts.
 
@@ -805,7 +876,7 @@ if(plot_trig_funcs):
     FDSolver.set_snapshot_ts([0,1/3,2/3,1])
     # Solve KdV-Burgers system
     builtinSolver.solve_system_builtin(periodic_deriv=True)
-    FDSolver.solve_system_ab2()
+    FDSolver.solve_system_rk3()
 
 #    # Boost to co-moving frame (moving with velocity -1/6)
 #    builtinSolver.boost_to_lab_frame(velocity=1/6)
@@ -863,7 +934,7 @@ if(plot_snapshots):
     # Set initial conditions
     snapshotSystem.set_initial_conditions(y0='solitary')
     # Solve KdV-Burgers system
-    snapshotSystem.solve_system_ab2()
+    snapshotSystem.solve_system_rk3()
 
     # Boost to co-moving frame
     snapshotSystem.boost_to_lab_frame(velocity='solitary')
@@ -935,7 +1006,7 @@ if(plot_negative_snapshots):
     # Set initial conditions
     snapshotSystem.set_initial_conditions(y0='solitary')
     # Solve KdV-Burgers system
-    snapshotSystem.solve_system_ab2()
+    snapshotSystem.solve_system_rk3()
 
     # Boost to co-moving frame
     snapshotSystem.boost_to_lab_frame(velocity='solitary')
@@ -1011,8 +1082,8 @@ if(plot_pos_neg_snapshots):
     posSystem.set_initial_conditions(y0='solitary')
     negSystem.set_initial_conditions(y0='solitary')
     # Solve KdV-Burgers system
-    posSystem.solve_system_ab2()
-    negSystem.solve_system_ab2()
+    posSystem.solve_system_rk3()
+    negSystem.solve_system_rk3()
 
     # Boost to co-moving frame
     posSystem.boost_to_lab_frame(velocity='solitary')
@@ -1120,7 +1191,7 @@ if(plot_skew_asymm):
         # Set initial conditions
         skewAsymSystem.set_initial_conditions(y0='solitary')
         # Solve KdV-Burgers system
-        skewAsymSystem.solve_system_ab2()
+        skewAsymSystem.solve_system_rk3()
 
         # Boost to co-moving frame
         skewAsymSystem.boost_to_lab_frame(velocity='solitary')
@@ -1210,7 +1281,7 @@ if(plot_snapshots_cnoidal):
     # Set initial conditions
     snapshotSystem.set_initial_conditions(y0='cnoidal')
     # Solve KdV-Burgers system
-    snapshotSystem.solve_system_ab2()
+    snapshotSystem.solve_system_rk3()
 
     # Boost to co-moving frame
     snapshotSystem.boost_to_lab_frame(velocity='cnoidal')
@@ -1282,7 +1353,7 @@ if(plot_negative_snapshots_cnoidal):
     # Set initial conditions
     snapshotSystem.set_initial_conditions(y0='cnoidal')
     # Solve KdV-Burgers system
-    snapshotSystem.solve_system_ab2()
+    snapshotSystem.solve_system_rk3()
 
     # Boost to co-moving frame
     snapshotSystem.boost_to_lab_frame(velocity='cnoidal')
@@ -1358,8 +1429,8 @@ if(plot_pos_neg_snapshots_cnoidal):
     posSystem.set_initial_conditions(y0='cnoidal')
     negSystem.set_initial_conditions(y0='cnoidal')
     # Solve KdV-Burgers system
-    posSystem.solve_system_ab2()
-    negSystem.solve_system_ab2()
+    posSystem.solve_system_rk3()
+    negSystem.solve_system_rk3()
 
     # Boost to co-moving frame
     posSystem.boost_to_lab_frame(velocity='cnoidal')
@@ -1467,7 +1538,7 @@ if(plot_skew_asymm_cnoidal):
         # Set initial conditions
         skewAsymSystem.set_initial_conditions(y0='cnoidal')
         # Solve KdV-Burgers system
-        skewAsymSystem.solve_system_ab2()
+        skewAsymSystem.solve_system_rk3()
 
         # Boost to co-moving frame
         skewAsymSystem.boost_to_lab_frame(velocity='cnoidal')
