@@ -70,7 +70,7 @@ xLen = 10
 xStep = 0.1
 
 # Biharmonic viscosity; gives numerical stability
-H = 0.01
+H = P*0.05
 
 skew_asymm_tLen = 3
 skew_asymm_tNum = 'density'
