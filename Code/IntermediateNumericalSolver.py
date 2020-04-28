@@ -518,7 +518,7 @@ class kdvSystem():
 
         return jacSparcity
 
-    def solve_system_builtin(self, periodic_deriv=False):
+    def solve_system_builtin(self, periodic_deriv=True):
         """Use builtin methods to solve the differential
         equation on a periodic domain. If self.diffeq == 'KdVB', solve
         the KdV-Burgers equation; if self.diffeq == 'KdVNL', solve the
@@ -878,7 +878,7 @@ if(plot_trig_funcs):
     builtinSolver.set_snapshot_ts([0,1/3,2/3,1])
     FDSolver.set_snapshot_ts([0,1/3,2/3,1])
     # Solve KdV-Burgers system
-    builtinSolver.solve_system_builtin(periodic_deriv=True)
+    builtinSolver.solve_system_builtin()
     FDSolver.solve_system_rk3()
 
 #    # Boost to co-moving frame (moving with velocity -1/6)
