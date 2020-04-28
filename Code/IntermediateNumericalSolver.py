@@ -81,11 +81,6 @@ skew_asymm_xLen_cnoidal = np.repeat('fit',skew_asymm_Ps.size)
 skew_asymm_xStep = skew_asymm_array*0.1
 skew_asymm_Hs = np.absolute(skew_asymm_Ps)*0.05
 
-# We don't need H for stability when solving the KdVNL equation
-if diffeq == 'KdVNL':
-    H = 0
-    skew_asymm_Hs = 0*skew_asymm_Hs
-
 # Trig function plotting parameters`
 trig_mode = 1
 
