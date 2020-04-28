@@ -88,6 +88,11 @@ trig_mode = 1
 FFT_tLen = 9
 FFT_bandwidth = 1e3
 
+# We don't need H for stability when solving the KdVNL equation
+if diffeq == 'KdVNL':
+    H = 0
+    skew_asymm_Hs = 0*skew_asymm_Hs
+
 class kdvSystem():
 
     def __init__(self, A=1, B=3/2, C=1/6, F=None, G=None, P=None, H=0,
