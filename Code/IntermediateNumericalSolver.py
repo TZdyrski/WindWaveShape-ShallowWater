@@ -450,6 +450,7 @@ class kdvSystem():
             ux = np.gradient(u, self.dx, axis=0)
             uxx = np.gradient(ux, self.dx, axis=0)
             uxxx = np.gradient(uxx, self.dx, axis=0)
+            uxxxx = np.gradient(uxxx, self.dx, axis=0)
             uxnl = np.roll(ux,
                     shift=int(round(-self.psiP*self.WaveLength/(2*np.pi)/self.dx)),
                     axis=0)
@@ -457,13 +458,15 @@ class kdvSystem():
             # Compute the x derivatives using the pseudo-spectral method
             ux = psdiff(u, period=self.xLen)
             uxxx = psdiff(u, period=self.xLen, order=3)
+            uxxxx = psdiff(u, period=self.xLen, order=4)
             uxnl = np.roll(ux,
                     shift=int(round(-self.psiP*self.WaveLength/(2*np.pi)/self.dx)),
                     axis=0)
 
         # Compute du/dt
         dudt = -u*ux*self.B/self.A -uxxx*self.C/self.A \
-                -ux*self.F/self.A + uxnl*self.G/self.A
+                -ux*self.F/self.A + uxnl*self.G/self.A \
+                -uxxxx*self.H/self.A
 
         return dudt
 
