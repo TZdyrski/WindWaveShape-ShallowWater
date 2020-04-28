@@ -24,6 +24,7 @@ plot_snapshots_cnoidal = False
 plot_negative_snapshots_cnoidal = False
 plot_pos_neg_snapshots_cnoidal = False
 plot_skew_asymm_cnoidal = False
+plot_pos_neg_snapshots_cnoidal_FFT = False
 
 ### Set global parameters
 ## Conversion factors
@@ -87,6 +88,10 @@ if diffeq == 'KdVNL':
 
 # Trig function plotting parameters`
 trig_mode = 1
+
+# FFT bandwidth
+FFT_tLen = 9
+FFT_bandwidth = 1e3
 
 class kdvSystem():
 
@@ -1616,3 +1621,101 @@ if(plot_skew_asymm_cnoidal):
     fig.patch.set_alpha(0)
 
     texplot.savefig(fig,'../Figures/Skew-Asymm-Cnoidal')
+
+if(plot_pos_neg_snapshots_cnoidal_FFT):
+    print("Computing the solution.")
+
+    # Create KdV-Burgers or nonlocal KdV system
+    posSystem = kdvSystem(P=P,H=H,psiP=psiP,diffeq=diffeq)
+    negSystem = kdvSystem(P=-P,H=H,psiP=psiP,diffeq=diffeq)
+    # Set spatial and temporal grid
+    posSystem.set_spatial_grid(xLen='fit',xStep=xStep)
+    negSystem.set_spatial_grid(xLen='fit',xStep=xStep)
+    posSystem.set_temporal_grid(tLen=FFT_tLen,tNum='density')
+    negSystem.set_temporal_grid(tLen=FFT_tLen,tNum='density')
+    # Set initial conditions
+    posSystem.set_initial_conditions(y0='cnoidal')
+    negSystem.set_initial_conditions(y0='cnoidal')
+    # Solve KdV-Burgers system
+    posSystem.solve_system_rk3()
+    negSystem.solve_system_rk3()
+
+    # Boost to co-moving frame
+    posSystem.boost_to_lab_frame(velocity='cnoidal')
+    negSystem.boost_to_lab_frame(velocity='cnoidal')
+
+    # Convert back to non-normalized variables
+    posSystem.set_snapshot_ts(np.linspace(0,1,num=6))
+    negSystem.set_snapshot_ts(np.linspace(0,1,num=6))
+    posSnapshots = posSystem.get_snapshots()*eps
+    negSnapshots = negSystem.get_snapshots()*eps
+
+    # Take spatial FFT
+    posSnapshotsFFT = np.fft.fft(posSnapshots, axis=0)
+    negSnapshotsFFT = np.fft.fft(negSnapshots, axis=0)
+
+    # Generate spatial FFT conjugate coordinate
+    kappa = np.fft.fftfreq(posSystem.xNum, posSystem.dx)
+
+    # Shift kappa to be zero-centered so that plotting the kappa_max ->
+    # kappa_min transition doesn't give a solid line at FFT=0
+    kappa = np.fft.fftshift(kappa)
+    posSnapshotsFFT = np.fft.fftshift(posSnapshotsFFT, axes=0)
+    negSnapshotsFFT = np.fft.fftshift(negSnapshotsFFT, axes=0)
+
+    # Hide solution outside of window
+    maxFFT = np.amax([posSnapshotsFFT,negSnapshotsFFT])
+    cutoff = maxFFT/FFT_bandwidth
+    lastLargeKappaIndex = np.amin([
+        # Note: we don't need to flip these arrays since they already
+        # start from -kappaLimit, so the first large value will already
+        # be the one furthest from 0 (since its symmetric about zero)
+        np.argmax(posSnapshotsFFT>cutoff,axis=0),
+        np.argmax(negSnapshotsFFT>cutoff,axis=0),
+        ])
+    lastLargeKappa = np.absolute(kappa[lastLargeKappaIndex])
+    maskedKappa = np.ma.masked_outside(kappa,0,lastLargeKappa)
+
+    print("Plotting.")
+    ## Color cycle
+    num_lines = posSnapshots[1,:].size # Number of lines
+    new_colors = [plt.get_cmap('viridis')(1. * (i)/(num_lines)) for i in
+            range(num_lines)]
+    linestyles = [*((0,(3+i,i)) for i in range(num_lines))]
+    plt.rc('axes', prop_cycle=(cycler('color', new_colors) +
+                           cycler('linestyle', linestyles)))
+
+    # Initialize figure
+    fig, ax = texplot.newfig(0.9,nrows=2,sharex=True,sharey=False,golden=True)
+    fig.set_tight_layout(False)
+
+    # Adjust figure height
+    figsize = fig.get_size_inches()
+    fig.set_size_inches([figsize[0],figsize[1]*1.3])
+
+    fig.subplots_adjust(left=0.175,right=0.9,top=0.875,bottom=0.125,hspace=0.3)
+
+    ax[1].set_xlabel(r'Harmonic $\kappa/k$')
+    ax[0].set_ylabel(r'$\abs{\hat{\eta}} k/h$')
+    ax[1].set_ylabel(r'$\abs{\hat{\eta}} k/h$')
+    # Multiply P by eps; the P used in this code is really the
+    # "nondimensionalized" P' = P/eps, so multiply by eps to get back to
+    # P
+    fig.suptitle(r'Magnitude of Surface Height FFT vs Time: $a/h={eps}$, $kh = {kh}$'.format(
+        eps=eps,kh=round(np.sqrt(eps),1)))
+    ax[0].set_title(r'Co-Wind: $P_J k/(\rho_w g) = {P}$'.format(
+        P=round(eps*(P),3)))
+    ax[1].set_title(r'Counter-Wind: $P_J k/(\rho_w g) = {P}$'.format(
+        P=round(eps*(-P),3)))
+
+    ax[0].plot(maskedKappa,np.absolute(posSnapshotsFFT))
+    ax[1].plot(maskedKappa,np.absolute(negSnapshotsFFT))
+
+    # Note: divide by epsilon to convert from t_1 to the full time t
+    fig.legend(np.around(posSystem.snapshot_ts/eps,1),
+            title=r'Time'+'\n'+r'$t \sqrt{g/h}$',loc='right')
+
+    # Make background transparent
+    fig.patch.set_alpha(0)
+
+    texplot.savefig(fig,'../Figures/Snapshots-Positive-Negative-Cnoidal-FFT')
