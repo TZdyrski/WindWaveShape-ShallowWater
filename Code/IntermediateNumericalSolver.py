@@ -937,7 +937,7 @@ if(plot_snapshots):
     # Set initial conditions
     snapshotSystem.set_initial_conditions(y0='solitary')
     # Solve KdV-Burgers system
-    snapshotSystem.solve_system_rk3()
+    snapshotSystem.solve_system_builtin(periodic_deriv=False)
 
     # Boost to co-moving frame
     snapshotSystem.boost_to_lab_frame(velocity='solitary')
@@ -1009,7 +1009,7 @@ if(plot_negative_snapshots):
     # Set initial conditions
     snapshotSystem.set_initial_conditions(y0='solitary')
     # Solve KdV-Burgers system
-    snapshotSystem.solve_system_rk3()
+    snapshotSystem.solve_system_builtin(periodic_deriv=False)
 
     # Boost to co-moving frame
     snapshotSystem.boost_to_lab_frame(velocity='solitary')
@@ -1085,8 +1085,8 @@ if(plot_pos_neg_snapshots):
     posSystem.set_initial_conditions(y0='solitary')
     negSystem.set_initial_conditions(y0='solitary')
     # Solve KdV-Burgers system
-    posSystem.solve_system_rk3()
-    negSystem.solve_system_rk3()
+    posSystem.solve_system_builtin(periodic_deriv=False)
+    negSystem.solve_system_builtin(periodic_deriv=False)
 
     # Boost to co-moving frame
     posSystem.boost_to_lab_frame(velocity='solitary')
@@ -1194,7 +1194,7 @@ if(plot_skew_asymm):
         # Set initial conditions
         skewAsymSystem.set_initial_conditions(y0='solitary')
         # Solve KdV-Burgers system
-        skewAsymSystem.solve_system_rk3()
+        skewAsymSystem.solve_system_builtin(periodic_deriv=False)
 
         # Boost to co-moving frame
         skewAsymSystem.boost_to_lab_frame(velocity='solitary')
@@ -1284,7 +1284,7 @@ if(plot_snapshots_cnoidal):
     # Set initial conditions
     snapshotSystem.set_initial_conditions(y0='cnoidal')
     # Solve KdV-Burgers system
-    snapshotSystem.solve_system_rk3()
+    snapshotSystem.solve_system_builtin()
 
     # Boost to co-moving frame
     snapshotSystem.boost_to_lab_frame(velocity='cnoidal')
@@ -1356,7 +1356,7 @@ if(plot_negative_snapshots_cnoidal):
     # Set initial conditions
     snapshotSystem.set_initial_conditions(y0='cnoidal')
     # Solve KdV-Burgers system
-    snapshotSystem.solve_system_rk3()
+    snapshotSystem.solve_system_builtin()
 
     # Boost to co-moving frame
     snapshotSystem.boost_to_lab_frame(velocity='cnoidal')
@@ -1432,8 +1432,8 @@ if(plot_pos_neg_snapshots_cnoidal):
     posSystem.set_initial_conditions(y0='cnoidal')
     negSystem.set_initial_conditions(y0='cnoidal')
     # Solve KdV-Burgers system
-    posSystem.solve_system_rk3()
-    negSystem.solve_system_rk3()
+    posSystem.solve_system_builtin()
+    negSystem.solve_system_builtin()
 
     # Boost to co-moving frame
     posSystem.boost_to_lab_frame(velocity='cnoidal')
@@ -1541,7 +1541,7 @@ if(plot_skew_asymm_cnoidal):
         # Set initial conditions
         skewAsymSystem.set_initial_conditions(y0='cnoidal')
         # Solve KdV-Burgers system
-        skewAsymSystem.solve_system_rk3()
+        skewAsymSystem.solve_system_builtin()
 
         # Boost to co-moving frame
         skewAsymSystem.boost_to_lab_frame(velocity='cnoidal')
@@ -1635,8 +1635,8 @@ if(plot_pos_neg_snapshots_cnoidal_FFT):
     posSystem.set_initial_conditions(y0='cnoidal')
     negSystem.set_initial_conditions(y0='cnoidal')
     # Solve KdV-Burgers system
-    posSystem.solve_system_rk3()
-    negSystem.solve_system_rk3()
+    posSystem.solve_system_builtin()
+    negSystem.solve_system_builtin()
 
     # Boost to co-moving frame
     posSystem.boost_to_lab_frame(velocity='cnoidal')
