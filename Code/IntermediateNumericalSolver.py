@@ -547,7 +547,7 @@ class kdvSystem():
                     (0,self.tLen),
                     self.y0,
                     t_eval=self.t,
-                    method='LSODA',
+                    method='RK23',
                     )
 
         if sol['status'] != 0:
