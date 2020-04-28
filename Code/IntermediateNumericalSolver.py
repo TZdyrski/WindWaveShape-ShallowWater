@@ -39,7 +39,7 @@ diffeq = 'KdVNL'
 
 ## Wind Phase; used for the (Generalized Miles-type) nonlocal
 ## KdV equation
-psiP = -3/4*np.pi
+psiP = 3/4*np.pi
 
 ## How long to run the code for
 tLen = 3
@@ -451,14 +451,14 @@ class kdvSystem():
             uxx = np.gradient(ux, self.dx, axis=0)
             uxxx = np.gradient(uxx, self.dx, axis=0)
             uxnl = np.roll(ux,
-                    shift=int(round(self.psiP*self.WaveLength/(2*np.pi)/self.dx)),
+                    shift=int(round(-self.psiP*self.WaveLength/(2*np.pi)/self.dx)),
                     axis=0)
         else:
             # Compute the x derivatives using the pseudo-spectral method
             ux = psdiff(u, period=self.xLen)
             uxxx = psdiff(u, period=self.xLen, order=3)
             uxnl = np.roll(ux,
-                    shift=int(round(self.psiP*self.WaveLength/(2*np.pi)/self.dx)),
+                    shift=int(round(-self.psiP*self.WaveLength/(2*np.pi)/self.dx)),
                     axis=0)
 
         # Compute du/dt
@@ -510,7 +510,7 @@ class kdvSystem():
         jacSparcity = _fill_banded(zeroArray,1,4)
         if self.diffeq == 'KdVNL':
             shift = np.roll(np.identity(self.x.size),
-                    shift=int(round(self.psiP*self.WaveLength/(2*np.pi)/self.dx)), axis=0)
+                    shift=int(round(-self.psiP*self.WaveLength/(2*np.pi)/self.dx)), axis=0)
             jacSparcity = np.logical_or(jacSparcity,shift)
 
         return jacSparcity
@@ -589,7 +589,7 @@ class kdvSystem():
                     self.G*dy2dx2 + self.H*dy4dx4)
         elif self.diffeq == 'KdVNL':
             dydxnl = np.roll(dydx,
-                    shift=int(round(self.psiP*self.WaveLength/(2*np.pi)/dx)),
+                    shift=int(round(-self.psiP*self.WaveLength/(2*np.pi)/dx)),
                     axis=0)
             RHS0 = -(self.F*dydx + self.B*y0*dydx + self.C*dy3dx3 -
                     self.G*dydxnl + self.H*dy4dx4)
@@ -617,7 +617,7 @@ class kdvSystem():
                     self.G*dy2dx2 + self.H*dy4dx4)
         elif self.diffeq == 'KdVNL':
             dydxnl = np.roll(dydx,
-                    shift=int(round(self.psiP*self.WaveLength/(2*np.pi)/dx)),
+                    shift=int(round(-self.psiP*self.WaveLength/(2*np.pi)/dx)),
                     axis=0)
             RHS0 = -(self.F*dydx + self.B*y0*dydx + self.C*dy3dx3 -
                     self.G*dydxnl + self.H*dy4dx4)
@@ -646,7 +646,7 @@ class kdvSystem():
                         self.G*dy2dx2 + self.H*dy4dx4)
             elif self.diffeq == 'KdVNL':
                 dydxnl = np.roll(dydx,
-                        shift=int(round(self.psiP*self.WaveLength/(2*np.pi)/dx)),
+                        shift=int(round(-self.psiP*self.WaveLength/(2*np.pi)/dx)),
                         axis=0)
                 RHS0 = -(self.F*dydx + self.B*y0*dydx + self.C*dy3dx3 -
                         self.G*dydxnl + self.H*dy4dx4)
@@ -682,7 +682,7 @@ class kdvSystem():
                         self.G*dy2dx2 + self.H*dy4dx4)
             elif self.diffeq == 'KdVNL':
                 dydxnl = np.roll(dydx,
-                        shift=int(round(self.psiP*self.WaveLength/(2*np.pi)/dx)),
+                        shift=int(round(-self.psiP*self.WaveLength/(2*np.pi)/dx)),
                         axis=0)
                 RHS = -(self.F*dydx + self.B*y0*dydx + self.C*dy3dx3 -
                         self.G*dydxnl + self.H*dy4dx4)
