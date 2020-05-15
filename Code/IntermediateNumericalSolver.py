@@ -1694,20 +1694,20 @@ if(plot_pos_neg_snapshots_cnoidal_FFT):
     fig.subplots_adjust(left=0.175,right=0.9,top=0.875,bottom=0.125,hspace=0.3)
 
     ax[1].set_xlabel(r'Harmonic $\kappa/k$')
-    ax[0].set_ylabel(r'$\abs{\hat{\eta}} k/h$')
-    ax[1].set_ylabel(r'$\abs{\hat{\eta}} k/h$')
+    ax[0].set_ylabel(r'$\abs{\hat{\eta}}^2 k^2/h^2$')
+    ax[1].set_ylabel(r'$\abs{\hat{\eta}}^2 k^2/h^2$')
     # Multiply P by eps; the P used in this code is really the
     # "nondimensionalized" P' = P/eps, so multiply by eps to get back to
     # P
-    fig.suptitle(r'Magnitude of Surface Height FFT vs Time: $a/h={eps}$, $kh = {kh}$'.format(
+    fig.suptitle(r'Power Spectrum vs Time: $a/h={eps}$, $kh = {kh}$'.format(
         eps=eps,kh=round(np.sqrt(eps),1)))
     ax[0].set_title(r'Co-Wind: $P_J k/(\rho_w g) = {P}$'.format(
         P=round(eps*(P),3)))
     ax[1].set_title(r'Counter-Wind: $P_J k/(\rho_w g) = {P}$'.format(
         P=round(eps*(-P),3)))
 
-    ax[0].plot(maskedKappa,np.absolute(posSnapshotsFFT))
-    ax[1].plot(maskedKappa,np.absolute(negSnapshotsFFT))
+    ax[0].plot(maskedKappa,np.absolute(posSnapshotsFFT)**2)
+    ax[1].plot(maskedKappa,np.absolute(negSnapshotsFFT)**2)
 
     # Note: divide by epsilon to convert from t_1 to the full time t
     fig.legend(np.around(posSystem.snapshot_ts/eps,1),
