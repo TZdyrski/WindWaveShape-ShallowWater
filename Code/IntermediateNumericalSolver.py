@@ -82,6 +82,10 @@ skew_asymm_xLen_cnoidal = np.repeat('fit',skew_asymm_Ps.size)
 skew_asymm_xStep = skew_asymm_array*0.1
 skew_asymm_Hs = np.absolute(skew_asymm_Ps)*0.05
 
+# Values for GM
+P_GM = 0.5
+H_GM = 0
+
 # Trig function plotting parameters`
 trig_mode = 1
 
@@ -1751,8 +1755,8 @@ if(plot_pos_neg_snapshots_cnoidal_GM):
     print("Computing the solution.")
 
     # Create KdV-Burgers or nonlocal KdV system
-    posSystem = kdvSystem(P=P,H=H,psiP=psiP,diffeq='KdVNL')
-    negSystem = kdvSystem(P=-P,H=H,psiP=psiP,diffeq='KdVNL')
+    posSystem = kdvSystem(P=P_GM,H=H_GM,psiP=psiP,diffeq='KdVNL')
+    negSystem = kdvSystem(P=-P_GM,H=H_GM,psiP=psiP,diffeq='KdVNL')
     # Set spatial and temporal grid
     posSystem.set_spatial_grid(xLen='fit',xStep=xStep)
     negSystem.set_spatial_grid(xLen='fit',xStep=xStep)
@@ -1807,9 +1811,9 @@ if(plot_pos_neg_snapshots_cnoidal_GM):
     fig.suptitle(r'Surface Height vs Time: $a/h={eps}$, $kh = {kh}$'.format(
         eps=eps,kh=round(np.sqrt(eps),1)))
     ax[0].set_title(r'$P_G k/(\rho_w g) = {P}$'.format(
-        P=round(eps*(P),3)))
+        P=round(eps*(P_GM),3)))
     ax[1].set_title(r'$P_G k/(\rho_w g) = {P}$'.format(
-        P=round(eps*(-P),3)))
+        P=round(eps*(-P_GM),3)))
 
     ax[0].plot(xMasked,posSnapshots)
     ax[1].plot(xMasked,negSnapshots)
