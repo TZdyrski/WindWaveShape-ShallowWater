@@ -1622,6 +1622,9 @@ if(plot_skew_asymm_cnoidal):
     texplot.savefig(fig,'../Figures/Skew-Asymm-Cnoidal')
 
 if(plot_power_spec_GM):
+    from mpl_toolkits.axes_grid1.inset_locator import zoomed_inset_axes
+    from mpl_toolkits.axes_grid1.inset_locator import mark_inset
+
     print("Computing the solution.")
 
     # Create KdV-Burgers or nonlocal KdV system
@@ -1709,6 +1712,31 @@ if(plot_power_spec_GM):
 
     ax[0].plot(maskedKappa,np.absolute(posSnapshotsFFT)**2)
     ax[1].plot(maskedKappa,np.absolute(negSnapshotsFFT)**2)
+
+    # Put insets to zoom-in around second harmonic
+    axins = [zoomed_inset_axes(ax[0], zoom=4, loc=1),
+             zoomed_inset_axes(ax[1], zoom=4, loc=1)]
+
+    axins[0].plot(maskedKappa,np.absolute(posSnapshotsFFT)**2)
+    axins[1].plot(maskedKappa,np.absolute(negSnapshotsFFT)**2)
+
+    xMin = 0.275
+    xMax = 0.375
+    yMin = 0
+
+    axins[0].set_xlim(xMin,xMax)
+    axins[1].set_xlim(xMin,xMax)
+    axins[0].set_ylim(yMin,0.5)
+    axins[1].set_ylim(yMin,0.25)
+
+    mark_inset(ax[0], axins[0], loc1=4, loc2=2, fc="none", ec="0.5")
+    mark_inset(ax[1], axins[1], loc1=4, loc2=2, fc="none", ec="0.5")
+
+    # Turn off tick labels
+    axins[0].set_yticklabels([])
+    axins[0].set_xticklabels([])
+    axins[1].set_yticklabels([])
+    axins[1].set_xticklabels([])
 
     # Note: divide by epsilon to convert from t_1 to the full time t
     fig.legend(np.around(posSystem.snapshot_ts/eps,1),
