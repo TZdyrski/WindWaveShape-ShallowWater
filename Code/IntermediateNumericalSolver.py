@@ -1624,8 +1624,8 @@ if(plot_pos_neg_snapshots_cnoidal_FFT):
     print("Computing the solution.")
 
     # Create KdV-Burgers or nonlocal KdV system
-    posSystem = kdvSystem(P=P,H=H,psiP=psiP,diffeq=diffeq)
-    negSystem = kdvSystem(P=-P,H=H,psiP=psiP,diffeq=diffeq)
+    posSystem = kdvSystem(P=P,H=H,psiP=psiP,diffeq='KdVNL')
+    negSystem = kdvSystem(P=-P,H=H,psiP=psiP,diffeq='KdVNL')
     # Set spatial and temporal grid
     posSystem.set_spatial_grid(xLen='fit',xStep=xStep)
     negSystem.set_spatial_grid(xLen='fit',xStep=xStep)
@@ -1701,9 +1701,9 @@ if(plot_pos_neg_snapshots_cnoidal_FFT):
     # P
     fig.suptitle(r'Power Spectrum vs Time: $a/h={eps}$, $kh = {kh}$'.format(
         eps=eps,kh=round(np.sqrt(eps),1)))
-    ax[0].set_title(r'Co-Wind: $P_J k/(\rho_w g) = {P}$'.format(
+    ax[0].set_title(r'Co-Wind: $P_G k/(\rho_w g) = {P}$'.format(
         P=round(eps*(P),3)))
-    ax[1].set_title(r'Counter-Wind: $P_J k/(\rho_w g) = {P}$'.format(
+    ax[1].set_title(r'Counter-Wind: $P_G k/(\rho_w g) = {P}$'.format(
         P=round(eps*(-P),3)))
 
     ax[0].plot(maskedKappa,np.absolute(posSnapshotsFFT)**2)
