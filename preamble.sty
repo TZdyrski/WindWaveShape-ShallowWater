@@ -1,0 +1,164 @@
+\ProvidesPackage{preamble}
+
+%% Preamble
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+% Macros
+%\usepackage{ifdraft} % allow checking if in draft mode
+%\usepackage{xparse} % allow parsing of complex macros
+
+%% Page Dimensions
+\usepackage{geometry} % change page dimensions
+\geometry{letterpaper}
+\geometry{margin=1in} % set margins
+
+%% Tables
+%\usepackage{booktabs} % improve table quality
+%\usepackage{tabularx} % allow for dynamic table sizing
+
+%% Lists
+%\usepackage[inline,shortlabels]{enumitem} % improve handling of item lists
+
+%% Columns
+%\usepackage{multicol} % allow multiple columns of text
+
+%% Math
+\usepackage{amsmath} % improve math output
+\usepackage{amssymb} % additional math symbols
+\usepackage{mathtools} % add additional math symbols
+\usepackage{siunitx} % improve typesetting of SI units
+%\usepackage{bm} % improve bold rendering of math symbols
+%\usepackage{tensor} % improve handling of tensor indices
+
+%% Figures
+\usepackage{graphicx} % improve graphics inclusion
+%\usepackage{float} % allow for floating graphics
+%\usepackage{caption} % add figure captions
+%\usepackage{subcaption} % allow inclusion of subfigures
+%\usepackage{svg} % allow for inclusion of svg vector images
+%\usepackage{tikz} % allow programatically-created graphics
+%\usetikzlibrary{positioning} % add positioning commands to tikz
+%\usetikzlibrary{calc} % add complex coordinate calculations to tikz
+%\usetikzlibrary{patterns} % allow patterns/shading in tikz
+%\usepackage{pgfplots} % improve Tikz plot handling
+%\pgfplotsset{compat=1.15} % use newer features
+%\usepackage{xifthen} % improve Tikz conditional logic
+%\usepackage{media9} % allow for inclusion of movies
+
+%% Source Code
+%\usepackage{listings} % add display of source code
+
+%% Lorem Ipsum
+%\usepackage[latin, english]{babel} % add latin for lorem ipsum
+%\usepackage{blindtext} % add lorem ipsum
+
+%% Languanges
+%\usepackage{CJKutf8} % add support for chinese, japanese, and japanese %characters
+
+%% Special Symbols
+\usepackage{physics} % common symbols used in physics
+%\usepackage{ar} % add the aspect ratio symbol
+%\usepackage{chemformula} % allow typesetting of chemical formulas
+
+%% Formatting
+%\usepackage[onehalfspacing]{setspace} % change line spacing
+%\usepackage{nth} % allow typesetting of ordinals
+\usepackage{microtype} % improved kerning and formatting
+%\usepackage{epigraph} % allow typesetting of epigraphs
+
+%% Comments
+%\usepackage{verbatim} % add block comments
+
+%% Emphasis
+%\usepackage{color} % add colored text
+\usepackage[abbreviations, xlatin]{foreign} % define commands \ie \eg and more
+%\defasforeign[vs]{vs.} % Define abbreviation of versus
+%\usepackage[makeroom]{cancel} % add strikethrough to cancel equations
+
+%% Citations and References
+%\usepackage{authblk} % allow author/affiliation-style in author block
+%\usepackage{csquotes} % smart quotes, recommended for use with biblatex
+\usepackage[backend=biber,
+%% PHYS
+%            style=phys,
+%            articletitle=false,
+%            biblabel=brackets,
+%            chaptertitle=false,
+%            pageranges=false,
+%            sorting=none,
+% SIO
+            style=authoryear-comp,
+            sortcites,
+            sorting=none,
+            url=false,
+            bibencoding=utf8]{biblatex} % improved bibliography
+\usepackage{hyperref} % hyperlink references. Make sure to load last
+%\hypersetup{colorlinks, % remove borders, but color links
+%            linkcolor=red,
+%            citecolor=red, % PHYS
+%            citecolor=black, % SIO
+%            urlcolor=blue,
+%            pdfencoding=auto, %enable unicode characters in bookmarks
+%            }
+\usepackage{cleveref} % improve references (load laster than hyperref)
+%\crefname{subsubsection}{subsection}{subsections} % redefine subsubsection to print as just subsection, which is less ugly
+%\Crefname{subsubsection}{Subsection}{Subsections}
+%
+%\crefname{equation}{Eq.}{Eqs.} % redefine equation to always be capitalized
+%\Crefname{equation}{Equation}{Equations}
+%
+%\crefname{equations}{Eqs.}{Eqs.} % define plural equations
+%\Crefname{equations}{Equations}{Equations}
+
+%% Glossaries
+%\usepackage[acronym, xindy, nonumberlist, nopostdot, nomain]{glossaries} % add glossaries and nomenclature lists (load laster than hyperref)
+%\newglossary[slg]{symbols}{symb}{sbl}{List of Symbols} % define new glossary for symbols
+%\makeglossaries % generate glossaries
+
+%% Set miscellaneous parameters
+%\setcounter{tocdepth}{3} % increase TOC depth to include subsubsections
+%\setlength{\columnseprule}{0.4pt} % set thickness of rule separating columns
+%\delimitershortfall=-2pt % cause nested parentheses to be smaller
+%\renewcommand{\CancelColor}{\color{red}} % change color of arrow in package cancel
+
+%% Redefine commands
+%\renewcommand*{\vec}[1]{\mathbf{\bm{#1}}}
+%\renewcommand*{\vu}[1]{\mathbf{\bm{\hat{#1}}}}
+
+%% New commands
+%% Force bibliography title to take up full page even though citations
+%% are in two columns
+%\newcommand\twocolprintbibliography[2][0pt]{%
+%  \begingroup\setlength{\multicolsep}{#1}%
+%  \begin{multicols}{2}[{\printbibheading[title={#2}]}]
+%  \printbibliography[heading=none]
+%  \end{multicols}\endgroup}
+
+
+%% Remove trailing period if newcommand followed by sentence period
+%\catcode`@=11
+%\def\checkperiod{\futurelet\next\check@period}
+%\def\check@period{%
+%  \if\noexpand\next.%
+%    \text{\spacefactor\sfcode`.}
+%    \expandafter\@gobble
+%  \fi}
+%\long\def\@gobble#1{}
+%\def\@{\spacefactor\@m}
+%\catcode`@=12
+%
+%\newcommand{\cc}{\text{c.c.}\checkperiod} % complex conjugate abbreviation
+
+% Define ddbar as a differential with a slash (like hbar)
+%\newcommand\ddbar[2][]{{\def\diffd{\mathchar'26\mkern-12mu\text{d}}\dd[#1]{#2}}}
+
+% Allow SIrange or numrange to be used in math mode
+%\sisetup{mode=text,range-phrase = {\text{~to~}}}
+
+% Define command to import pgf figure from subdirectory
+%\newcommand\inputpgf[2]{{
+%\let\pgfimageWithoutPath\pgfimage
+%\renewcommand{\pgfimage}[2][]{\pgfimageWithoutPath[##1]{#1/##2}}
+%\input{#1/#2}
+%}}
