@@ -25,6 +25,7 @@ plot_negative_snapshots_cnoidal = False
 plot_pos_neg_snapshots_cnoidal = False
 plot_skew_asymm_cnoidal = False
 plot_power_spec_GM = False
+plot_pos_neg_snapshots_cnoidal_GM = False
 
 ### Set global parameters
 ## Conversion factors
@@ -1717,3 +1718,107 @@ if(plot_power_spec_GM):
     fig.patch.set_alpha(0)
 
     texplot.savefig(fig,'../Figures/Power-Spectrum-GM')
+
+if(plot_pos_neg_snapshots_cnoidal_GM):
+    print("Computing the solution.")
+
+    # Create KdV-Burgers or nonlocal KdV system
+    posSystem = kdvSystem(P=P,H=H,psiP=psiP,diffeq='KdVNL')
+    negSystem = kdvSystem(P=-P,H=H,psiP=psiP,diffeq='KdVNL')
+    # Set spatial and temporal grid
+    posSystem.set_spatial_grid(xLen='fit',xStep=xStep)
+    negSystem.set_spatial_grid(xLen='fit',xStep=xStep)
+    posSystem.set_temporal_grid(tLen=tLen,tNum='density')
+    negSystem.set_temporal_grid(tLen=tLen,tNum='density')
+    # Set initial conditions
+    posSystem.set_initial_conditions(y0='cnoidal')
+    negSystem.set_initial_conditions(y0='cnoidal')
+    # Solve KdV-Burgers system
+    posSystem.solve_system_rk3()
+    negSystem.solve_system_rk3()
+
+    # Boost to co-moving frame
+    posSystem.boost_to_lab_frame(velocity='cnoidal')
+    negSystem.boost_to_lab_frame(velocity='cnoidal')
+
+    # Convert back to non-normalized variables
+    posSystem.set_snapshot_ts([0,1/3,2/3,1])
+    negSystem.set_snapshot_ts([0,1/3,2/3,1])
+    posSnapshots = posSystem.get_snapshots()*eps
+    negSnapshots = negSystem.get_snapshots()*eps
+
+    # Hide solution outside of window
+    posSystem.set_x_window()
+    xMasked = posSystem.get_masked_x()
+
+    print("Plotting.")
+    ## Color cycle
+    num_lines = posSnapshots[1,:].size # Number of lines
+    new_colors = [plt.get_cmap('viridis')(1. * (i)/(num_lines)) for i in
+            range(num_lines)]
+    linestyles = [*((0,(3+i,i)) for i in range(num_lines))]
+    plt.rc('axes', prop_cycle=(cycler('color', new_colors) +
+                           cycler('linestyle', linestyles)))
+
+    # Initialize figure
+    fig, ax = texplot.newfig(0.9,nrows=2,sharex=True,sharey=True,golden=True)
+    fig.set_tight_layout(False)
+
+    # Adjust figure height
+    figsize = fig.get_size_inches()
+    fig.set_size_inches([figsize[0],figsize[1]*1.3])
+
+    fig.subplots_adjust(left=0.175,right=0.9,top=0.875,bottom=0.125,hspace=0.3)
+
+    ax[1].set_xlabel(r'Distance $k x$')
+    ax[0].set_ylabel(r'$\eta / h$')
+    ax[1].set_ylabel(r'$\eta / h$')
+    # Multiply P by eps; the P used in this code is really the
+    # "nondimensionalized" P' = P/eps, so multiply by eps to get back to
+    # P
+    fig.suptitle(r'Surface Height vs Time: $a/h={eps}$, $kh = {kh}$'.format(
+        eps=eps,kh=round(np.sqrt(eps),1)))
+    ax[0].set_title(r'$P_G k/(\rho_w g) = {P}$'.format(
+        P=round(eps*(P),3)))
+    ax[1].set_title(r'$P_G k/(\rho_w g) = {P}$'.format(
+        P=round(eps*(-P),3)))
+
+    ax[0].plot(xMasked,posSnapshots)
+    ax[1].plot(xMasked,negSnapshots)
+
+    # Add arrow depicting wind direction
+    arrowLeft = np.array([0.175,0.4])
+    arrowRight = np.array([0.375,0.4])
+    textBottom = (arrowLeft+arrowRight)/2 + np.array([0,0.05])
+    spacing = np.array([0.45,0])
+    ax[0].annotate(r'Phase'+'\n'+r'Speed', xy=textBottom, xycoords='axes fraction',
+            ha='center',va='bottom',ma='center')
+    ax[0].annotate('', xy=arrowLeft, xytext=arrowRight,
+            xycoords="axes fraction", arrowprops={'arrowstyle': '<-',
+                'shrinkA':1,'shrinkB':0})
+    ax[0].annotate(r'Wind', xy=textBottom+spacing,
+            xycoords='axes fraction', ha='center',va='bottom',
+            ma='center')
+    ax[0].annotate('', xy=arrowLeft+spacing, xytext=arrowRight+spacing,
+            xycoords="axes fraction", arrowprops={'arrowstyle': '<-',
+                'shrinkA':1,'shrinkB':0})
+    ax[1].annotate(r'Phase'+'\n'+r'Speed', xy=textBottom, xycoords='axes fraction',
+            ha='center',va='bottom',ma='center')
+    ax[1].annotate('', xy=arrowLeft, xytext=arrowRight,
+            xycoords="axes fraction", arrowprops={'arrowstyle': '<-',
+                'shrinkA':1,'shrinkB':0})
+    ax[1].annotate(r'Wind', xy=textBottom+spacing,
+            xycoords='axes fraction', ha='center',va='bottom',
+            ma='center')
+    ax[1].annotate('', xy=arrowLeft+spacing, xytext=arrowRight+spacing,
+            xycoords="axes fraction", arrowprops={'arrowstyle': '->',
+                'shrinkA':1,'shrinkB':0})
+
+    # Note: divide by epsilon to convert from t_1 to the full time t
+    fig.legend(np.around(posSystem.snapshot_ts/eps,1),
+            title=r'Time'+'\n'+r'$t \sqrt{g/h}$',loc='right')
+
+    # Make background transparent
+    fig.patch.set_alpha(0)
+
+    texplot.savefig(fig,'../Figures/Snapshots-Positive-Negative-Cnoidal-GM')
