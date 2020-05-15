@@ -24,7 +24,7 @@ plot_snapshots_cnoidal = False
 plot_negative_snapshots_cnoidal = False
 plot_pos_neg_snapshots_cnoidal = False
 plot_skew_asymm_cnoidal = False
-plot_pos_neg_snapshots_cnoidal_FFT = False
+plot_power_spec_GM = False
 
 ### Set global parameters
 ## Conversion factors
@@ -1620,7 +1620,7 @@ if(plot_skew_asymm_cnoidal):
 
     texplot.savefig(fig,'../Figures/Skew-Asymm-Cnoidal')
 
-if(plot_pos_neg_snapshots_cnoidal_FFT):
+if(plot_power_spec_GM):
     print("Computing the solution.")
 
     # Create KdV-Burgers or nonlocal KdV system
@@ -1716,4 +1716,4 @@ if(plot_pos_neg_snapshots_cnoidal_FFT):
     # Make background transparent
     fig.patch.set_alpha(0)
 
-    texplot.savefig(fig,'../Figures/Snapshots-Positive-Negative-Cnoidal-FFT')
+    texplot.savefig(fig,'../Figures/Power-Spectrum-GM')
