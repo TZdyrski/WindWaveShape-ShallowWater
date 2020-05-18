@@ -767,13 +767,16 @@ class kdvSystem():
         # asymmetry) is unable to hand long double (float128)
         sol = np.array(self.sol, dtype=np.float64)
 
-        skewness = sp.integrate.trapz(
+        averageSolCubed = sp.integrate.trapz(
                 sol**3,
                 dx=self.dx,
-                axis=0) / sp.integrate.trapz(
-                        sol**2,
-                        dx=self.dx,
-                        axis=0)**(3/2)
+                axis=0)/(self.xLen)
+        averageSolSquared = sp.integrate.trapz(
+                sol**2,
+                dx=self.dx,
+                axis=0)/(self.xLen)
+
+        skewness = averageSolCubed/averageSolSquared**(3/2)
 
         return skewness
 
@@ -799,13 +802,16 @@ class kdvSystem():
         # Throw out imaginary part since it should be zero (to within rounding error)
         solHilbert = np.real(solHilbert)
 
-        asymmetry = sp.integrate.trapz(
+        averageHilbertCubed = sp.integrate.trapz(
                 solHilbert**3,
                 dx=self.dx,
-                axis=0) / sp.integrate.trapz(
-                        solHilbert**2,
-                        dx=self.dx,
-                        axis=0)**(3/2)
+                axis=0)/(self.xLen)
+        averageSolSquared = sp.integrate.trapz(
+                sol**2,
+                dx=self.dx,
+                axis=0)/(self.xLen)
+
+        asymmetry = averageHilbertCubed/averageSolSquared**(3/2)
 
         return asymmetry
 
