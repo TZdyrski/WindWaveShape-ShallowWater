@@ -794,7 +794,7 @@ class kdvSystem():
 
         # Calculate the hilbert transform
         # Confusingly, sp.signal.hilbert gives the analytic signal, x <- x + i*H(x)
-        solHilbert = (sp.signal.hilbert(sol,axis=0) - self.sol)/1j
+        solHilbert = (sp.signal.hilbert(sol,axis=0) - sol)/1j
 
         # Throw out imaginary part since it should be zero (to within rounding error)
         solHilbert = np.real(solHilbert)
