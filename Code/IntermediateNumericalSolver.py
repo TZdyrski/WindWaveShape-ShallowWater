@@ -20,10 +20,12 @@ plot_snapshots = False
 plot_negative_snapshots = False
 plot_pos_neg_snapshots = False
 plot_skew_asymm = False
+plot_skew_asymm_kh = False
 plot_snapshots_cnoidal = False
 plot_negative_snapshots_cnoidal = False
 plot_pos_neg_snapshots_cnoidal = False
 plot_skew_asymm_cnoidal = False
+plot_skew_asymm_cnoidal_kh = False
 plot_power_spec_GM = False
 plot_pos_neg_snapshots_cnoidal_GM = False
 
@@ -82,6 +84,9 @@ skew_asymm_xLen = skew_asymm_array*10
 skew_asymm_xLen_cnoidal = np.repeat('fit',skew_asymm_Ps.size)
 skew_asymm_xStep = skew_asymm_array*0.1
 skew_asymm_Hs = np.absolute(skew_asymm_Ps)*0.05
+
+kh_mus = np.linspace(0.1,0.8,8)
+kh_tLen = 1
 
 # Values for GM
 P_GM = 0.5
@@ -1289,6 +1294,108 @@ if(plot_skew_asymm):
 
     texplot.savefig(fig,'../Figures/Skew-Asymm')
 
+if(plot_skew_asymm_kh):
+
+    maximums = [None]*(kh_mus.size)
+    skewnesses = [None]*(kh_mus.size)
+    asymmetries = [None]*(kh_mus.size)
+    t = None
+
+    for idx,mu_val in enumerate(kh_mus):
+        print("Computing the solution.")
+        # Create KdV-Burgers or nonlocal KdV system
+        skewAsymSystem = kdvSystem(P=P, H=H,psiP=psiP,diffeq=diffeq,
+                eps=eps, mu=mu_val)
+        # Set spatial and temporal grid
+        skewAsymSystem.set_spatial_grid(xLen=xLen, xStep=xStep)
+        skewAsymSystem.set_temporal_grid(tLen=skew_asymm_tLen,tNum=skew_asymm_tNum)
+        # Set initial conditions
+        skewAsymSystem.set_initial_conditions(y0='solitary')
+        # Solve KdV-Burgers system
+        skewAsymSystem.solve_system_rk3()
+
+        # Boost to co-moving frame
+        skewAsymSystem.boost_to_lab_frame(velocity='solitary')
+
+        # Save timesteps
+        # Note: divide by epsilon to convert from t_1 to the full time t
+        t = skewAsymSystem.t/eps
+
+        print("Computing the Height.")
+        maximums[idx] = skewAsymSystem.maximum()
+
+        print("Computing the Skewness.")
+        skewnesses[idx] = skewAsymSystem.skewness()
+
+        print("Computing the Asymmetry.")
+        asymmetries[idx] = skewAsymSystem.asymmetry()
+
+    maximums = np.array(maximums).transpose()
+    # Normalize maximums by t=0 maximum
+    maximums = maximums/maximums[0,:]
+    skewnesses = np.array(skewnesses).transpose()
+    asymmetries = np.array(asymmetries).transpose()
+
+    # Only use last (t=1) value
+    maximums = maximums[-1,:]
+    skewnesses = skewnesses[-1,:]
+    asymmetries = asymmetries[-1,:]
+
+    print("Plotting.")
+
+    ## Color cycle
+    num_lines = skew_asymm_Ps.size # Number of lines
+    # Make the colors go from blue to black to red
+    MaxColorAbs = 0.4
+    new_colors = [plt.get_cmap('twilight')((i-num_lines/2+1/2)*2*MaxColorAbs/(num_lines+1)+0.5)
+            for i in range(num_lines)]
+    # Make the first half dotted
+    linestyles = [*((0,(1,1+i)) for i in reversed(range(round((num_lines-1)/2))))]
+    # Make the second half dashed (with the middle one solid)
+    linestyles.extend([*((0,(3+i,i)) for i in range(round((num_lines+1)/2)))])
+    plt.rc('axes', prop_cycle=(cycler('color', new_colors) +
+                               cycler('linestyle', linestyles)))
+
+    # Initialize figure
+    fig, ax = texplot.newfig(0.9,nrows=3,sharex=True,sharey=False,golden=True)
+
+    # Adjust figure height
+    figsize = fig.get_size_inches()
+    fig.set_size_inches([figsize[0],figsize[1]*1.3])
+
+    fig.set_tight_layout(False)
+    fig.subplots_adjust(left=0.175,right=0.8,top=0.875,bottom=0.15)
+
+    ax[-1].set_xlabel(r'Nondimensional Depth $kh$')
+    ax[0].set_ylabel(r'Height')
+    ax[1].set_ylabel(r'Skewness')
+    ax[2].set_ylabel(r'Asymmetry')
+    fig.suptitle(r'\begin{{tabular}}{{c}}Height, Skewness, and Asymmetry: \\ $a/h={eps}$, $kh = {kh}$\end{{tabular}}'.format(
+        eps=eps,kh=round(np.sqrt(mu),1),P=P))
+
+    # Put horizontal line at y=1
+    ax[0].axhline(1, color='0.75')
+
+    # Put horizontal line at A=0
+    ax[2].axhline(0, color='0.75')
+
+    lines = ax[0].plot(np.sqrt(kh_mus),maximums)
+    ax[1].plot(np.sqrt(kh_mus),skewnesses)
+    ax[2].plot(np.sqrt(kh_mus),asymmetries)
+
+    # Multiply Ps by eps; the P used in this code is really the
+    # "nondimensionalized" P' = P/eps, so multiply by eps to get back to
+    # P
+    leg = fig.legend(lines, np.around(skew_asymm_Ps*eps,3),
+            title=r'Pressure'+'\n'+r'Magnitude'+'\n'+r'$P_J k/(\rho_w g)$',
+            loc='right')
+    leg.get_title().set_multialignment('center')
+
+    # Make background transparent
+    fig.patch.set_alpha(0)
+
+    texplot.savefig(fig,'../Figures/Skew-Asymm-kh')
+
 if(plot_snapshots_cnoidal):
     print("Computing the solution.")
 
@@ -1635,6 +1742,109 @@ if(plot_skew_asymm_cnoidal):
     fig.patch.set_alpha(0)
 
     texplot.savefig(fig,'../Figures/Skew-Asymm-Cnoidal')
+
+if(plot_skew_asymm_cnoidal_kh):
+
+    maximums = [None]*(kh_mus.size)
+    skewnesses = [None]*(kh_mus.size)
+    asymmetries = [None]*(kh_mus.size)
+    t = None
+
+    for idx,mu_val in enumerate(kh_mus):
+        print("Computing the solution.")
+        # Create KdV-Burgers or nonlocal KdV system
+        skewAsymSystem = kdvSystem(P=P, H=H,psiP=psiP,diffeq=diffeq,
+                eps=eps, mu=mu_val)
+        # Set spatial and temporal grid
+        skewAsymSystem.set_spatial_grid(xLen=xLen, xStep=xStep)
+        skewAsymSystem.set_temporal_grid(tLen=skew_asymm_tLen,tNum=skew_asymm_tNum)
+        # Set initial conditions
+        skewAsymSystem.set_initial_conditions(y0='cnoidal')
+        # Solve KdV-Burgers system
+        skewAsymSystem.solve_system_rk3()
+
+        # Boost to co-moving frame
+        skewAsymSystem.boost_to_lab_frame(velocity='cnoidal')
+
+        # Save timesteps
+        # Note: divide by epsilon to convert from t_1 to the full time t
+        t = skewAsymSystem.t/eps
+
+        print("Computing the Height.")
+        maximums[idx] = skewAsymSystem.maximum()
+
+        print("Computing the Skewness.")
+        skewnesses[idx] = skewAsymSystem.skewness()
+
+        print("Computing the Asymmetry.")
+        asymmetries[idx] = skewAsymSystem.asymmetry()
+
+    maximums = np.array(maximums).transpose()
+    # Normalize maximums by t=0 maximum
+    maximums = maximums/maximums[0,:]
+    skewnesses = np.array(skewnesses).transpose()
+    asymmetries = np.array(asymmetries).transpose()
+
+    # Only use last (t=1) value
+    maximums = maximums[-1,:]
+    skewnesses = skewnesses[-1,:]
+    asymmetries = asymmetries[-1,:]
+
+    print("Plotting.")
+
+    ## Color cycle
+    num_lines = skew_asymm_Ps.size # Number of lines
+    # Make the colors go from blue to black to red
+    MaxColorAbs = 0.4
+    new_colors = [plt.get_cmap('twilight')((i-num_lines/2+1/2)*2*MaxColorAbs/(num_lines+1)+0.5)
+            for i in range(num_lines)]
+    # Make the first half dotted
+    linestyles = [*((0,(1,1+i)) for i in reversed(range(round((num_lines-1)/2))))]
+    # Make the second half dashed (with the middle one solid)
+    linestyles.extend([*((0,(3+i,i)) for i in range(round((num_lines+1)/2)))])
+    plt.rc('axes', prop_cycle=(cycler('color', new_colors) +
+                               cycler('linestyle', linestyles)))
+
+    # Initialize figure
+    fig, ax = texplot.newfig(0.9,nrows=3,sharex=True,sharey=False,golden=True)
+
+    # Adjust figure height
+    figsize = fig.get_size_inches()
+    fig.set_size_inches([figsize[0],figsize[1]*1.3])
+
+    fig.set_tight_layout(False)
+    fig.subplots_adjust(left=0.175,right=0.8,top=0.875,bottom=0.15)
+
+    ax[-1].set_xlabel(r'Nondimensional Depth $kh$')
+    ax[0].set_ylabel(r'Height')
+    ax[1].set_ylabel(r'Skewness')
+    ax[2].set_ylabel(r'Asymmetry')
+    fig.suptitle(r'\begin{{tabular}}{{c}}Height, Skewness, and Asymmetry: \\ $a/h={eps}$, $kh = {kh}$\end{{tabular}}'.format(
+        eps=eps,kh=round(np.sqrt(mu),1),P=P))
+
+    # Put horizontal line at y=1
+    ax[0].axhline(1, color='0.75')
+
+    # Put horizontal line at A=0
+    ax[2].axhline(0, color='0.75')
+
+    lines = ax[0].plot(np.sqrt(kh_mus),maximums)
+    ax[1].plot(np.sqrt(kh_mus),skewnesses)
+    ax[2].plot(np.sqrt(kh_mus),asymmetries)
+
+    # Multiply Ps by eps; the P used in this code is really the
+    # "nondimensionalized" P' = P/eps, so multiply by eps to get back to
+    # P
+    leg = fig.legend(lines, np.around(skew_asymm_Ps*eps,3),
+            title=r'Pressure'+'\n'+r'Magnitude'+'\n'+r'$P_J k/(\rho_w g)$',
+            loc='right')
+    leg.get_title().set_multialignment('center')
+
+    # Make background transparent
+    fig.patch.set_alpha(0)
+
+    texplot.savefig(fig,'../Figures/Skew-Asymm-Cnoidal-kh')
+
 
 if(plot_power_spec_GM):
     from mpl_toolkits.axes_grid1.inset_locator import zoomed_inset_axes
