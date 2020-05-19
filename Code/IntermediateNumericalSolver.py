@@ -33,7 +33,8 @@ omega_to_T = 1/2/np.pi # conversion from omega to 1/T
 
 ## Physical parameters to convert from normalized, nondimensional
 ## variables to non-normalized, dimensional variables
-eps = 0.1
+eps = 0.1 # a/h
+mu= 0.1 # (kh)**2
 
 ## Equation type: can be either 'KdVB' for KdV-Burgers (Jeffreys-type
 ## forcing) or 'KdVNL' for nonlocal KdV (Generalized Miles-type forcing)
@@ -95,8 +96,8 @@ FFT_bandwidth = 1e3
 
 class kdvSystem():
 
-    def __init__(self, A=1, B=3/2, C=1/6, F=None, G=None, P=None, H=0,
-            psiP=0, diffeq='KdVB'):
+    def __init__(self, A=1, B=3/2, C=None, F=None, G=None, P=None, H=0,
+            psiP=0, diffeq='KdVB', eps=0.1, mu=0.1):
         """Initialize kdvSystem class instance.
 
         Solves a KdV-Burgers equation of the form
@@ -155,16 +156,20 @@ class kdvSystem():
 
         self.A = A
         self.B = B
-        self.C = C
         self.H = H
 
         self.psiP = psiP
         self.diffeq = diffeq
 
+        if C is not None:
+            self.C = C
+        else:
+            self.C = 1/6*mu/eps
+
         if F == 'soliton_frame':
             # Choose value to give default, solitonic solution zero
             # propagation velocity
-            self.F = -abs(B)/3*np.sign(C)
+            self.F = -abs(B)/3*np.sign(self.C)
         elif F is not None:
             self.F = F
         else:
@@ -871,7 +876,7 @@ if(plot_trig_funcs):
     print("Computing the solution.")
 
     # Create KdV-Burgers or nonlocal KdV system
-    builtinSolver = kdvSystem(B=0, F=0, G=0, H=0)
+    builtinSolver = kdvSystem(B=0, F=0, G=0, H=0, C=1/6)
     # Set spatial grid
     builtinSolver.set_spatial_grid(xLen=2*sp.pi,xNum=64)
     # Set initial conditions
@@ -920,9 +925,9 @@ if(plot_trig_funcs):
 
     ax[1].set_xlabel(r'Distance $k x$')
     ax[0].set_title(r'Builtin Solver after exactly 1 Period: $a/h={eps}$, $kh = {kh}$'.format(
-        eps=eps,kh=round(np.sqrt(eps),1)))
+        eps=eps,kh=round(np.sqrt(mu),1)))
     ax[1].set_title(r'FD Solver after exactly 1 Period: $a/h={eps}$, $kh = {kh}$'.format(
-        eps=eps,kh=round(np.sqrt(eps),1)))
+        eps=eps,kh=round(np.sqrt(mu),1)))
 
     ax[0].plot(xMasked,builtinSnapshots)
     ax[1].plot(xMasked,FDSnapshots)
@@ -941,7 +946,7 @@ if(plot_snapshots):
     print("Computing the solution.")
 
     # Create KdV-Burgers or nonlocal KdV system
-    snapshotSystem = kdvSystem(P=P,H=H,psiP=psiP,diffeq=diffeq)
+    snapshotSystem = kdvSystem(P=P,H=H,psiP=psiP,diffeq=diffeq, eps=eps, mu=mu)
     # Set spatial and temporal grid
     snapshotSystem.set_spatial_grid(xLen=xLen,xStep=xStep)
     snapshotSystem.set_temporal_grid(tLen=tLen,tNum='density')
@@ -979,7 +984,7 @@ if(plot_snapshots):
     # "nondimensionalized" P' = P/eps, so multiply by eps to get back to
     # P
     ax.set_title(r'Surface Height vs Time: $a/h={eps}$, $kh = {kh}$, $P_J k/(\rho_w g) = {P}$'.format(
-        eps=eps,kh=round(np.sqrt(eps),1),P=round(eps*P,3)))
+        eps=eps,kh=round(np.sqrt(mu),1),P=round(eps*P,3)))
 
     ax.plot(xMasked,snapshots)
 
@@ -1013,7 +1018,7 @@ if(plot_negative_snapshots):
     print("Computing the solution.")
 
     # Create KdV-Burgers or nonlocal KdV system
-    snapshotSystem = kdvSystem(P=-P,H=H,psiP=psiP,diffeq=diffeq)
+    snapshotSystem = kdvSystem(P=-P,H=H,psiP=psiP,diffeq=diffeq, eps=eps, mu=mu)
     # Set spatial and temporal grid
     snapshotSystem.set_spatial_grid(xLen=xLen,xStep=xStep)
     snapshotSystem.set_temporal_grid(tLen=tLen,tNum='density')
@@ -1051,7 +1056,7 @@ if(plot_negative_snapshots):
     # "nondimensionalized" P' = P/eps, so multiply by eps to get back to
     # P
     ax.set_title(r'Surface Height vs Time: $a/h={eps}$, $kh = {kh}$, $P_J k/(\rho_w g) = {P}$'.format(
-        eps=eps,kh=round(np.sqrt(eps),1),P=round(eps*(-P),3)))
+        eps=eps,kh=round(np.sqrt(mu),1),P=round(eps*(-P),3)))
 
     ax.plot(xMasked,snapshots)
 
@@ -1085,8 +1090,8 @@ if(plot_pos_neg_snapshots):
     print("Computing the solution.")
 
     # Create KdV-Burgers or nonlocal KdV system
-    posSystem = kdvSystem(P=P,H=H,psiP=psiP,diffeq=diffeq)
-    negSystem = kdvSystem(P=-P,H=H,psiP=psiP,diffeq=diffeq)
+    posSystem = kdvSystem(P=P,H=H,psiP=psiP,diffeq=diffeq, eps=eps, mu=mu)
+    negSystem = kdvSystem(P=-P,H=H,psiP=psiP,diffeq=diffeq, eps=eps, mu=mu)
     # Set spatial and temporal grid
     posSystem.set_spatial_grid(xLen=xLen,xStep=xStep)
     negSystem.set_spatial_grid(xLen=xLen,xStep=xStep)
@@ -1139,7 +1144,7 @@ if(plot_pos_neg_snapshots):
     # "nondimensionalized" P' = P/eps, so multiply by eps to get back to
     # P
     fig.suptitle(r'Surface Height vs Time: $a/h={eps}$, $kh = {kh}$'.format(
-        eps=eps,kh=round(np.sqrt(eps),1)))
+        eps=eps,kh=round(np.sqrt(mu),1)))
     ax[0].set_title(r'$P_J k/(\rho_w g) = {P}$'.format(
         P=round(eps*(P),3)))
     ax[1].set_title(r'$P_J k/(\rho_w g) = {P}$'.format(
@@ -1196,7 +1201,7 @@ if(plot_skew_asymm):
         print("Computing the solution.")
         # Create KdV-Burgers or nonlocal KdV system
         skewAsymSystem = kdvSystem(P=Pval,
-                H=skew_asymm_Hs[idx],psiP=psiP,diffeq=diffeq)
+                H=skew_asymm_Hs[idx],psiP=psiP,diffeq=diffeq, eps=eps, mu=mu)
         # Set spatial and temporal grid
         skewAsymSystem.set_spatial_grid(
                 xLen=skew_asymm_xLen[idx],
@@ -1259,7 +1264,7 @@ if(plot_skew_asymm):
     ax[1].set_ylabel(r'Skewness')
     ax[2].set_ylabel(r'Asymmetry')
     fig.suptitle(r'\begin{{tabular}}{{c}}Height, Skewness, and Asymmetry: \\ $a/h={eps}$, $kh = {kh}$\end{{tabular}}'.format(
-        eps=eps,kh=round(np.sqrt(eps),1),P=P))
+        eps=eps,kh=round(np.sqrt(mu),1),P=P))
 
     # Put horizontal line at y=1
     ax[0].axhline(1, color='0.75')
@@ -1288,7 +1293,7 @@ if(plot_snapshots_cnoidal):
     print("Computing the solution.")
 
     # Create KdV-Burgers or nonlocal KdV system
-    snapshotSystem = kdvSystem(P=P,H=H,psiP=psiP,diffeq=diffeq)
+    snapshotSystem = kdvSystem(P=P,H=H,psiP=psiP,diffeq=diffeq, eps=eps, mu=mu)
     # Set spatial and temporal grid
     snapshotSystem.set_spatial_grid(xLen='fit',xStep=xStep)
     snapshotSystem.set_temporal_grid(tLen=tLen,tNum='density')
@@ -1326,7 +1331,7 @@ if(plot_snapshots_cnoidal):
     # "nondimensionalized" P' = P/eps, so multiply by eps to get back to
     # P
     ax.set_title(r'Surface Height vs Time: $a/h={eps}$, $kh = {kh}$, $P_J k/(\rho_w g) = {P}$'.format(
-        eps=eps,kh=round(np.sqrt(eps),1),P=round(eps*P,3)))
+        eps=eps,kh=round(np.sqrt(mu),1),P=round(eps*P,3)))
 
     ax.plot(xMasked,snapshots)
 
@@ -1360,7 +1365,7 @@ if(plot_negative_snapshots_cnoidal):
     print("Computing the solution.")
 
     # Create KdV-Burgers or nonlocal KdV system
-    snapshotSystem = kdvSystem(P=-P,H=H,psiP=psiP,diffeq=diffeq)
+    snapshotSystem = kdvSystem(P=-P,H=H,psiP=psiP,diffeq=diffeq, eps=eps, mu=mu)
     # Set spatial and temporal grid
     snapshotSystem.set_spatial_grid(xLen='fit',xStep=xStep)
     snapshotSystem.set_temporal_grid(tLen=tLen,tNum='density')
@@ -1398,7 +1403,7 @@ if(plot_negative_snapshots_cnoidal):
     # "nondimensionalized" P' = P/eps, so multiply by eps to get back to
     # P
     ax.set_title(r'Surface Height vs Time: $a/h={eps}$, $kh = {kh}$, $P_J k/(\rho_w g) = {P}$'.format(
-        eps=eps,kh=round(np.sqrt(eps),1),P=round(eps*(-P),3)))
+        eps=eps,kh=round(np.sqrt(mu),1),P=round(eps*(-P),3)))
 
     ax.plot(xMasked,snapshots)
 
@@ -1432,8 +1437,8 @@ if(plot_pos_neg_snapshots_cnoidal):
     print("Computing the solution.")
 
     # Create KdV-Burgers or nonlocal KdV system
-    posSystem = kdvSystem(P=P,H=H,psiP=psiP,diffeq=diffeq)
-    negSystem = kdvSystem(P=-P,H=H,psiP=psiP,diffeq=diffeq)
+    posSystem = kdvSystem(P=P,H=H,psiP=psiP,diffeq=diffeq, eps=eps, mu=mu)
+    negSystem = kdvSystem(P=-P,H=H,psiP=psiP,diffeq=diffeq, eps=eps, mu=mu)
     # Set spatial and temporal grid
     posSystem.set_spatial_grid(xLen='fit',xStep=xStep)
     negSystem.set_spatial_grid(xLen='fit',xStep=xStep)
@@ -1486,7 +1491,7 @@ if(plot_pos_neg_snapshots_cnoidal):
     # "nondimensionalized" P' = P/eps, so multiply by eps to get back to
     # P
     fig.suptitle(r'Surface Height vs Time: $a/h={eps}$, $kh = {kh}$'.format(
-        eps=eps,kh=round(np.sqrt(eps),1)))
+        eps=eps,kh=round(np.sqrt(mu),1)))
     ax[0].set_title(r'$P_J k/(\rho_w g) = {P}$'.format(
         P=round(eps*(P),3)))
     ax[1].set_title(r'$P_J k/(\rho_w g) = {P}$'.format(
@@ -1543,7 +1548,7 @@ if(plot_skew_asymm_cnoidal):
         print("Computing the solution.")
         # Create KdV-Burgers or nonlocal KdV system
         skewAsymSystem = kdvSystem(P=Pval,
-                H=skew_asymm_Hs[idx],psiP=psiP,diffeq=diffeq)
+                H=skew_asymm_Hs[idx],psiP=psiP,diffeq=diffeq, eps=eps, mu=mu)
         # Set spatial and temporal grid
         skewAsymSystem.set_spatial_grid(
                 xLen=skew_asymm_xLen_cnoidal[idx],
@@ -1606,7 +1611,7 @@ if(plot_skew_asymm_cnoidal):
     ax[1].set_ylabel(r'Skewness')
     ax[2].set_ylabel(r'Asymmetry')
     fig.suptitle(r'\begin{{tabular}}{{c}}Height, Skewness, and Asymmetry: \\ $a/h={eps}$, $kh = {kh}$\end{{tabular}}'.format(
-        eps=eps,kh=round(np.sqrt(eps),1),P=P))
+        eps=eps,kh=round(np.sqrt(mu),1),P=P))
 
     # Put horizontal line at y=1
     ax[0].axhline(1, color='0.75')
@@ -1638,8 +1643,8 @@ if(plot_power_spec_GM):
     print("Computing the solution.")
 
     # Create KdV-Burgers or nonlocal KdV system
-    posSystem = kdvSystem(P=P,H=H,psiP=psiP,diffeq='KdVNL')
-    negSystem = kdvSystem(P=-P,H=H,psiP=psiP,diffeq='KdVNL')
+    posSystem = kdvSystem(P=P,H=H,psiP=psiP,diffeq='KdVNL', eps=eps, mu=mu)
+    negSystem = kdvSystem(P=-P,H=H,psiP=psiP,diffeq='KdVNL', eps=eps, mu=mu)
     # Set spatial and temporal grid
     posSystem.set_spatial_grid(xLen='fit',xStep=xStep)
     negSystem.set_spatial_grid(xLen='fit',xStep=xStep)
@@ -1714,7 +1719,7 @@ if(plot_power_spec_GM):
     # "nondimensionalized" P' = P/eps, so multiply by eps to get back to
     # P
     fig.suptitle(r'Power Spectrum vs Time: $a/h={eps}$, $kh = {kh}$'.format(
-        eps=eps,kh=round(np.sqrt(eps),1)))
+        eps=eps,kh=round(np.sqrt(mu),1)))
     ax[0].set_title(r'Co-Wind: $P_G k/(\rho_w g) = {P}$'.format(
         P=round(eps*(P),3)))
     ax[1].set_title(r'Counter-Wind: $P_G k/(\rho_w g) = {P}$'.format(
@@ -1761,8 +1766,8 @@ if(plot_pos_neg_snapshots_cnoidal_GM):
     print("Computing the solution.")
 
     # Create KdV-Burgers or nonlocal KdV system
-    posSystem = kdvSystem(P=P_GM,H=H_GM,psiP=psiP,diffeq='KdVNL')
-    negSystem = kdvSystem(P=-P_GM,H=H_GM,psiP=psiP,diffeq='KdVNL')
+    posSystem = kdvSystem(P=P_GM,H=H_GM,psiP=psiP,diffeq='KdVNL', eps=eps, mu=mu)
+    negSystem = kdvSystem(P=-P_GM,H=H_GM,psiP=psiP,diffeq='KdVNL', eps=eps, mu=mu)
     # Set spatial and temporal grid
     posSystem.set_spatial_grid(xLen='fit',xStep=xStep)
     negSystem.set_spatial_grid(xLen='fit',xStep=xStep)
@@ -1815,7 +1820,7 @@ if(plot_pos_neg_snapshots_cnoidal_GM):
     # "nondimensionalized" P' = P/eps, so multiply by eps to get back to
     # P
     fig.suptitle(r'Surface Height vs Time: $a/h={eps}$, $kh = {kh}$'.format(
-        eps=eps,kh=round(np.sqrt(eps),1)))
+        eps=eps,kh=round(np.sqrt(mu),1)))
     ax[0].set_title(r'$P_G k/(\rho_w g) = {P}$'.format(
         P=round(eps*(P_GM),3)))
     ax[1].set_title(r'$P_G k/(\rho_w g) = {P}$'.format(
