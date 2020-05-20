@@ -210,7 +210,8 @@ class kdvSystem():
         Parameters
         ----------
         xLen : float, 'fit', or None
-            Length of x domain. Default is 2*np.pi.
+            Length of x domain. If 'fit', choose xLen to fit NumWave
+            wavelengths of length WaveLegngth. Default is 2*np.pi.
         xNum : float or None
             Number of grid points in x domain. If None, xStep
             must be specified. Default is None.
