@@ -299,7 +299,7 @@ class kdvSystem():
         self.t, self.dt = np.linspace(0, self.tLen, self.tNum, retstep=True)
 
 
-    def set_initial_conditions(self, y0='solitary', m=0.8,
+    def set_initial_conditions(self, y0='solitary', m=0.8, Height=None,
             redo_grids=False):
         """Set the initial conditions.
         Parameters
@@ -313,6 +313,9 @@ class kdvSystem():
         m : float or None
             Jacobi elliptic function parameter; must be float between 0
             and 1, inclusive. Default is 0.5.
+        Height : float or None
+            Height of initial condition. If None, then H is chosen to be
+            sign(self.B*self.C). Default is None.
         redo_grids : boolean
             If True, re-adjust xLen to fit NumWaves, keeping the number
             of spatial points fixed, as well as updating tNum with
@@ -323,6 +326,11 @@ class kdvSystem():
         None
         """
 
+        if Height is not None:
+            self.Height = Height
+        else:
+            self.Height = np.sign(self.B*self.C)
+
         if type(y0) == np.ndarray:
             self.y0 = y0
         elif y0 == 'solitary':
@@ -331,18 +339,15 @@ class kdvSystem():
 
         elif y0 == 'cnoidal':
             self.m = m
+            Height = self.Height
 
             K = spec.ellipk(m)
             E = spec.ellipe(m)
 
-            # Nondimensionalized to require H = 1
-            H = 1
-
-            # Height; H*WaveLength**2 satisfy an exact relationship; since
-            # we already specified the height (according to the
-            # nondimensionalization), we cannot freely choose the
-            # wavelength
-            WaveLength = np.sqrt(48*self.C/self.B*m*K**2/H)
+            # Height; Height*WaveLength**2 satisfy an exact
+            # relationship; since we already specified the height, we
+            # cannot freely choose the wavelength
+            WaveLength = np.sqrt(48*self.C/self.B*m*K**2/Height)
 
             if redo_grids:
                 self.set_spatial_grid(xLen='fit', xNum=self.xNum,
@@ -353,8 +358,8 @@ class kdvSystem():
             self.WaveLength = WaveLength
 
             cn = spec.ellipj(self.x/self.WaveLength*2*K,m)[1]
-            trough = H/m*(1-m-E/K)
-            self.y0 = trough + H*cn**2
+            trough = Height/m*(1-m-E/K)
+            self.y0 = trough + Height*cn**2
 
         else:
             raise(ValueError("y0 must be array_like, 'solitary', or 'cnoidal'"))
@@ -874,13 +879,11 @@ class kdvSystem():
             velocity = -(self.B*np.sign(self.B*self.C)/3+self.F)/self.A
         elif velocity == 'cnoidal':
             m = self.m
+            Height = self.Height
             K = spec.ellipk(m)
             E = spec.ellipe(m)
 
-            WaveLength = self.WaveLength
-            H = 48*self.C/self.B*m*K**2/WaveLength**2
-
-            velocity = -(self.F+2/3*self.B*H/m*(1-1/2*m-3/2*E/K))/self.A
+            velocity = -(self.F+2/3*self.B*Height/m*(1-1/2*m-3/2*E/K))/self.A
 
         # Convert the physical velocity to a coordinate velocity
         coord_vel = velocity/self.dx*self.dt
