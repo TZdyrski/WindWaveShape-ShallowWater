@@ -327,7 +327,6 @@ class kdvSystem():
         elif y0 == 'cnoidal':
             self.m = m
 
-            mP = 1-m
             K = spec.ellipk(m)
             E = spec.ellipe(m)
 
@@ -335,11 +334,11 @@ class kdvSystem():
             # Height; H*WaveLength**2 satisfy an exact relationship; since
             # we already specified the wavelength (to fit within a
             # periodic domain), we cannot freely choose the height
-            H = 16/3*m*K**2/WaveLength**2
+            H = 48*self.C/self.B*m*K**2/WaveLength**2
 
             cn = spec.ellipj(self.x/WaveLength*2*K,m)[1]
-            trough = H*(E/K-mP)/m
-            self.y0 = H*cn**2 - trough
+            trough = H/m*(1-m-E/K)
+            self.y0 = trough + H*cn**2
 
         else:
             raise(ValueError("y0 must be array_like, 'solitary', or 'cnoidal'"))
@@ -863,9 +862,9 @@ class kdvSystem():
             E = spec.ellipe(m)
 
             WaveLength = self.WaveLength
-            H = 16/3*m*K**2/WaveLength**2
+            H = 48*self.C/self.B*m*K**2/WaveLength**2
 
-            velocity = -H/m*(1-1/2*m-3/2*E/K)
+            velocity = -(self.F+2/3*self.B*H/m*(1-1/2*m-3/2*E/K))/self.A
 
         # Convert the physical velocity to a coordinate velocity
         coord_vel = velocity/self.dx*self.dt
