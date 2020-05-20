@@ -299,7 +299,8 @@ class kdvSystem():
         self.t, self.dt = np.linspace(0, self.tLen, self.tNum, retstep=True)
 
 
-    def set_initial_conditions(self, y0='solitary', m=0.8):
+    def set_initial_conditions(self, y0='solitary', m=0.8,
+            redo_grids=False):
         """Set the initial conditions.
         Parameters
         ----------
@@ -312,6 +313,10 @@ class kdvSystem():
         m : float or None
             Jacobi elliptic function parameter; must be float between 0
             and 1, inclusive. Default is 0.5.
+        redo_grids : boolean
+            If True, re-adjust xLen to fit NumWaves, keeping the number
+            of spatial points fixed, as well as updating tNum with
+            'density' parameter
 
         Returns
         -------
@@ -330,13 +335,24 @@ class kdvSystem():
             K = spec.ellipk(m)
             E = spec.ellipe(m)
 
-            WaveLength = self.WaveLength
-            # Height; H*WaveLength**2 satisfy an exact relationship; since
-            # we already specified the wavelength (to fit within a
-            # periodic domain), we cannot freely choose the height
-            H = 48*self.C/self.B*m*K**2/WaveLength**2
+            # Nondimensionalized to require H = 1
+            H = 1
 
-            cn = spec.ellipj(self.x/WaveLength*2*K,m)[1]
+            # Height; H*WaveLength**2 satisfy an exact relationship; since
+            # we already specified the height (according to the
+            # nondimensionalization), we cannot freely choose the
+            # wavelength
+            WaveLength = np.sqrt(48*self.C/self.B*m*K**2/H)
+
+            if redo_grids:
+                self.set_spatial_grid(xLen='fit', xNum=self.xNum,
+                        xOffset=self.xOffset,
+                        WaveLength=WaveLength,
+                        NumWaves=self.NumWaves)
+                self.set_temporal_grid(tNum='density', tLen=self.tLen)
+            self.WaveLength = WaveLength
+
+            cn = spec.ellipj(self.x/self.WaveLength*2*K,m)[1]
             trough = H/m*(1-m-E/K)
             self.y0 = trough + H*cn**2
 
@@ -1310,7 +1326,7 @@ if(plot_skew_asymm_kh):
         skewAsymSystem.set_spatial_grid(xLen=xLen, xStep=xStep)
         skewAsymSystem.set_temporal_grid(tLen=skew_asymm_tLen,tNum=skew_asymm_tNum)
         # Set initial conditions
-        skewAsymSystem.set_initial_conditions(y0='solitary')
+        skewAsymSystem.set_initial_conditions(y0='solitary',redo_grids=True)
         # Solve KdV-Burgers system
         skewAsymSystem.solve_system_rk3()
 
@@ -1397,7 +1413,7 @@ if(plot_snapshots_cnoidal):
     snapshotSystem.set_spatial_grid(xLen='fit',xStep=xStep)
     snapshotSystem.set_temporal_grid(tLen=tLen,tNum='density')
     # Set initial conditions
-    snapshotSystem.set_initial_conditions(y0='cnoidal')
+    snapshotSystem.set_initial_conditions(y0='cnoidal',redo_grids=True)
     # Solve KdV-Burgers system
     snapshotSystem.solve_system_rk3()
 
@@ -1469,7 +1485,7 @@ if(plot_negative_snapshots_cnoidal):
     snapshotSystem.set_spatial_grid(xLen='fit',xStep=xStep)
     snapshotSystem.set_temporal_grid(tLen=tLen,tNum='density')
     # Set initial conditions
-    snapshotSystem.set_initial_conditions(y0='cnoidal')
+    snapshotSystem.set_initial_conditions(y0='cnoidal',redo_grids=True)
     # Solve KdV-Burgers system
     snapshotSystem.solve_system_rk3()
 
@@ -1544,8 +1560,8 @@ if(plot_pos_neg_snapshots_cnoidal):
     posSystem.set_temporal_grid(tLen=tLen,tNum='density')
     negSystem.set_temporal_grid(tLen=tLen,tNum='density')
     # Set initial conditions
-    posSystem.set_initial_conditions(y0='cnoidal')
-    negSystem.set_initial_conditions(y0='cnoidal')
+    posSystem.set_initial_conditions(y0='cnoidal',redo_grids=True)
+    negSystem.set_initial_conditions(y0='cnoidal',redo_grids=True)
     # Solve KdV-Burgers system
     posSystem.solve_system_rk3()
     negSystem.solve_system_rk3()
@@ -1654,7 +1670,7 @@ if(plot_skew_asymm_cnoidal):
                 xStep=skew_asymm_xStep[idx])
         skewAsymSystem.set_temporal_grid(tLen=skew_asymm_tLen,tNum=skew_asymm_tNum)
         # Set initial conditions
-        skewAsymSystem.set_initial_conditions(y0='cnoidal')
+        skewAsymSystem.set_initial_conditions(y0='cnoidal',redo_grids=True)
         # Solve KdV-Burgers system
         skewAsymSystem.solve_system_rk3()
 
@@ -1751,7 +1767,7 @@ if(plot_skew_asymm_cnoidal_kh):
         skewAsymSystem.set_spatial_grid(xLen=xLen, xStep=xStep)
         skewAsymSystem.set_temporal_grid(tLen=skew_asymm_tLen,tNum=skew_asymm_tNum)
         # Set initial conditions
-        skewAsymSystem.set_initial_conditions(y0='cnoidal')
+        skewAsymSystem.set_initial_conditions(y0='cnoidal',redo_grids=True)
         # Solve KdV-Burgers system
         skewAsymSystem.solve_system_rk3()
 
@@ -1762,14 +1778,20 @@ if(plot_skew_asymm_cnoidal_kh):
         # Note: divide by epsilon to convert from t_1 to the full time t
         t = skewAsymSystem.t/eps
 
+        # Since we re-scaled the x-grid and t-grid, each value of mu_val
+        # gives a different tNum and hence a different array size for
+        # maximum/skewness/asymmetry
+        #
+        # Since we only use the first and last element, just save those
+        # so all outputs are the same size
         print("Computing the Height.")
-        maximums[idx] = skewAsymSystem.maximum()
+        maximums[idx] = skewAsymSystem.maximum()[[0,-1]]
 
         print("Computing the Skewness.")
-        skewnesses[idx] = skewAsymSystem.skewness()
+        skewnesses[idx] = skewAsymSystem.skewness()[[0,-1]]
 
         print("Computing the Asymmetry.")
-        asymmetries[idx] = skewAsymSystem.asymmetry()
+        asymmetries[idx] = skewAsymSystem.asymmetry()[[0,-1]]
 
     maximums = np.array(maximums).transpose()
     # Normalize maximums by t=0 maximum
@@ -1845,8 +1867,8 @@ if(plot_power_spec_GM):
     posSystem.set_temporal_grid(tLen=FFT_tLen,tNum='density')
     negSystem.set_temporal_grid(tLen=FFT_tLen,tNum='density')
     # Set initial conditions
-    posSystem.set_initial_conditions(y0='cnoidal')
-    negSystem.set_initial_conditions(y0='cnoidal')
+    posSystem.set_initial_conditions(y0='cnoidal',redo_grids=True)
+    negSystem.set_initial_conditions(y0='cnoidal',redo_grids=True)
     # Solve KdV-Burgers system
     posSystem.solve_system_rk3()
     negSystem.solve_system_rk3()
@@ -2026,8 +2048,8 @@ if(plot_pos_neg_snapshots_cnoidal_GM):
     posSystem.set_temporal_grid(tLen=tLen,tNum='density')
     negSystem.set_temporal_grid(tLen=tLen,tNum='density')
     # Set initial conditions
-    posSystem.set_initial_conditions(y0='cnoidal')
-    negSystem.set_initial_conditions(y0='cnoidal')
+    posSystem.set_initial_conditions(y0='cnoidal',redo_grids=True)
+    negSystem.set_initial_conditions(y0='cnoidal',redo_grids=True)
     # Solve KdV-Burgers system
     posSystem.solve_system_rk3()
     negSystem.solve_system_rk3()
