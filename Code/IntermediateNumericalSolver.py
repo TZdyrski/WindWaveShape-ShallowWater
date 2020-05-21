@@ -315,7 +315,7 @@ class kdvSystem():
             and 1, inclusive. Default is 0.5.
         Height : float or None
             Height of initial condition. If None, then H is chosen to be
-            sign(self.B*self.C). Default is None.
+            1/2*sign(self.B*self.C). Default is None.
         redo_grids : boolean
             If True, re-adjust xLen to fit NumWaves, keeping the number
             of spatial points fixed, as well as updating tNum with
@@ -329,7 +329,7 @@ class kdvSystem():
         if Height is not None:
             self.Height = Height
         else:
-            self.Height = np.sign(self.B*self.C)
+            self.Height = 1/2*np.sign(self.B*self.C)
 
         if type(y0) == np.ndarray:
             self.y0 = y0
