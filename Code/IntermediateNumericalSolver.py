@@ -1364,7 +1364,7 @@ if(plot_skew_asymm_kh):
     fig.set_size_inches([figsize[0],figsize[1]*1.3])
 
     fig.set_tight_layout(False)
-    fig.subplots_adjust(left=0.175,right=0.8,top=0.875,bottom=0.15)
+    fig.subplots_adjust(left=0.175,right=0.9,top=0.875,bottom=0.15)
 
     ax[-1].set_xlabel(r'Nondimensional Depth $kh$')
     ax[0].set_ylabel(r'Height')
@@ -1379,17 +1379,9 @@ if(plot_skew_asymm_kh):
     # Put horizontal line at A=0
     ax[2].axhline(0, color='0.75')
 
-    lines = ax[0].plot(np.sqrt(kh_mus),maximums)
+    ax[0].plot(np.sqrt(kh_mus),maximums)
     ax[1].plot(np.sqrt(kh_mus),skewnesses)
     ax[2].plot(np.sqrt(kh_mus),asymmetries)
-
-    # Multiply Ps by eps; the P used in this code is really the
-    # "nondimensionalized" P' = P/eps, so multiply by eps to get back to
-    # P
-    leg = fig.legend(lines, np.around(skew_asymm_Ps*eps,3),
-            title=r'Pressure'+'\n'+r'Magnitude'+'\n'+r'$P_J k/(\rho_w g)$',
-            loc='right')
-    leg.get_title().set_multialignment('center')
 
     # Make background transparent
     fig.patch.set_alpha(0)
@@ -1813,7 +1805,7 @@ if(plot_skew_asymm_cnoidal_kh):
     fig.set_size_inches([figsize[0],figsize[1]*1.3])
 
     fig.set_tight_layout(False)
-    fig.subplots_adjust(left=0.175,right=0.8,top=0.875,bottom=0.15)
+    fig.subplots_adjust(left=0.175,right=0.9,top=0.875,bottom=0.15)
 
     ax[-1].set_xlabel(r'Nondimensional Depth $kh$')
     ax[0].set_ylabel(r'Height')
@@ -1828,17 +1820,9 @@ if(plot_skew_asymm_cnoidal_kh):
     # Put horizontal line at A=0
     ax[2].axhline(0, color='0.75')
 
-    lines = ax[0].plot(np.sqrt(kh_mus),maximums)
+    ax[0].plot(np.sqrt(kh_mus),maximums)
     ax[1].plot(np.sqrt(kh_mus),skewnesses)
     ax[2].plot(np.sqrt(kh_mus),asymmetries)
-
-    # Multiply Ps by eps; the P used in this code is really the
-    # "nondimensionalized" P' = P/eps, so multiply by eps to get back to
-    # P
-    leg = fig.legend(lines, np.around(skew_asymm_Ps*eps,3),
-            title=r'Pressure'+'\n'+r'Magnitude'+'\n'+r'$P_J k/(\rho_w g)$',
-            loc='right')
-    leg.get_title().set_multialignment('center')
 
     # Make background transparent
     fig.patch.set_alpha(0)
