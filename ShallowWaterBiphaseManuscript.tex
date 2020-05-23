@@ -1,8 +1,16 @@
-\documentclass{article}
+\documentclass{jfm}
+
+% Compilation
+\usepackage{silence} % Silence latex compiler warnings
+\WarningFilter{latex}{Command \@xhline has changed} % Filter out warning
+  % caused by redefinition between jfm.cls class and array (loaded by
+  % siunitx)
+
+% Import custom style file containing common packages and options
+\setlength{\paperheight}{\pdfpageheight} % JFM class removes paperheight definition and hyperref raises a warning
 
 % Import custom style file containing common packages and options
 \usepackage{preamble}
-\addbibresource{./references.bib}
 \graphicspath{{./Figures/}}
 
 % Discrete Fourier Transform
@@ -22,16 +30,16 @@
 \DeclareMathOperator{\Ur}{Ur}
 \DeclareMathOperator{\Sk}{Sk}
 \DeclareMathOperator{\As}{As}
-\DeclareMathOperator{\Bi}{Bi}
+%\DeclareMathOperator{\Bi}{Bi}
 
 % Define \im as Roman i
 \newcommand{\im}{\mathrm{i}}
 % Replace epsilon with varepsilon
 \renewcommand*{\epsilon}{\varepsilon}
 
-% Use \thalf and \squart commands from JFM class
-\newcommand\squart{\ensuremath{{\textstyle\frac{1}{4}}}}
-\newcommand\thalf{\ensuremath{{\textstyle\frac{1}{2}}}}
+%% Use \thalf and \squart commands from JFM class
+%\newcommand\squart{\ensuremath{{\textstyle\frac{1}{4}}}}
+%\newcommand\thalf{\ensuremath{{\textstyle\frac{1}{2}}}}
 
 \linenumbers
 
@@ -62,37 +70,37 @@ numerical simulation results.
 \end{abstract}
 
 \section{Introduction}
-Directly comparing with \textcite{feddersen2005wind} may be challenging
-though; that experiment generated monochromtic, sinusoidal waves that
+Directly comparing with \citet{feddersen2005wind} may be challenging
+though; that experiment generated monochromatic, sinusoidal waves that
 were subsequently forced by the wind.
 However, since sinusoidal waves are not eigenfunctions of the KdV
 equation, they will evolve (namely, energy will be passed to higher
 harmonics even in the absence of wind).
 Indeed, such a phenomena---in the unforced case---was observed over a
-flat bottom by \textcite{elgar1990recurrence,chapalain1992observed},
+flat bottom by \citet{elgar1990recurrence,chapalain1992observed},
 where the primary and first harmonic traded energy back and forth
 periodically.
-This same setup was treated numerically by \textcite{liu2016modeling}
+This same setup was treated numerically by \citet{liu2016modeling}
 who also included the effects of wind.
 The growth/decay of waves by wind was superimposed on this oscillation
 amongst modes.
 
-\Textcite{liu2016modeling} also claim that this harmonic-oscillation
+\Citet{liu2016modeling} also claim that this harmonic-oscillation
 means that some downwind locations will measure virtually no skewness
 or asymmetry, while others will.
 They claim that this explains the observations of
-\textcite{feddersen2005wind}: the flat-bottomed portion of the tank saw
+\citet{feddersen2005wind}: the flat-bottomed portion of the tank saw
 minimal effect of wind speed on skewness/asymmetry since it was located
 at a node of this harmonic oscillation.
 However, a wind-speed dependent change was observed on the sloping beach
 portion since this measurement location was not a node.
-Indeed, \textcite{chapalain1992observed,liu2016modeling} observed these
+Indeed, \citet{chapalain1992observed,liu2016modeling} observed these
 oscillations to occur over \numrange{3}{4} wavelengths, and the
-wave gauges of \textcite{feddersen2005wind} were spaced \numrange{2}{3}
+wave gauges of \citet{feddersen2005wind} were spaced \numrange{2}{3}
 wavelengths apart, so this is consistent with one gauge being at a node
 and the other at an antinode.
 Note that this argument does not apply to the (pseudo-shallow water)
-experiments by \textcite{leykin1995asymmetry}: these waves were not
+experiments by \citet{leykin1995asymmetry}: these waves were not
 mechanically generated, but rather purely wind-generated.
 Therefore, they do not necessarily begin as pure sinusoids and hence do
 not suffer from these harmonic oscillations (likely being closer to
@@ -203,7 +211,7 @@ Here, we encounter an issue: the experimental measurements are taken for
 deep water, and are not necessarily expected to hold for shallow water
 waves.
 
-We will use the \textcite{miles1957generation} theory for $P' \ll 1$ as a model%
+We will use the \citet{miles1957generation} theory for $P' \ll 1$ as a model%
 \footnote{
   Though Miles does specialize to deep-water waves partway through the
   derivation, the equation we utilize is applicable to both shallow and
@@ -250,7 +258,7 @@ Note that this also matches the $P = \order{\epsilon}$ growth rate we
 derive for the Jeffreys case (\ie $\psi_P = \pm \pi/2$) in
 \cref{sec:energy_growth_rate}.
 
-According to \textcite{donelan2006wave}, the wind speed and growth rate
+According to \citet{donelan2006wave}, the wind speed and growth rate
 are related in shallow water by
 \[
   \frac{\gamma}{\omega_0} = \frac{\rho_a}{\rho_w} (ak)
@@ -265,7 +273,7 @@ Finally, in the logarithmic boundary layer, we have
   \frac{U_z}{\ln(z/z_0)} = \text{const}
   \implies U_{z} = U_{\lambda/2} \frac{\ln(z/z_0)}{\ln[\lambda/(2 z_0)]}
 \]
-with \autocite{taylor2001dependence}
+with \citep{taylor2001dependence}
 \[
   \frac{z_0}{H} = 1200 \pqty{\frac{H}{\lambda}}^{4.5}
 \]
@@ -300,7 +308,7 @@ For instance, $U_{10} = \SI{50}{\meter\per\second}$ gives
 $P'_M \alpha = \num{6.5e-3} \approx \epsilon^2$.
 
 If we instead consider laboratory conditions with $h=\SI{0.37}{\meter}$,
-$kh = 1.2$, and $a/h = 0.14$ as in \textcite{feddersen2005wind}, we
+$kh = 1.2$, and $a/h = 0.14$ as in \citet{feddersen2005wind}, we
 instead get
 \[
   y = \num{0.17} \pqty{U_{10} \SI{0.73}{\second\per\meter} - 1}^2
@@ -719,6 +727,8 @@ If, for simplicity, we consider a simple sinusoid $\eta_0 = A \cos(k x -
 \end{equation}
 where we used $\alpha = \epsilon$.
 
-\printbibliography{}
+% Bibliography
+\bibliographystyle{jfm}
+\bibliography{references}
 
 \end{document}
