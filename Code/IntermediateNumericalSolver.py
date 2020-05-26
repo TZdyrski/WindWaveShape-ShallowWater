@@ -1972,8 +1972,8 @@ if(plot_power_spec_GM):
     ax[1].plot(kappa,negSnapshotsPower)
 
     # Put insets to zoom-in around second harmonic
-    axins = [zoomed_inset_axes(ax[0], zoom=4, loc=1),
-             zoomed_inset_axes(ax[1], zoom=4, loc=1)]
+    axins = [zoomed_inset_axes(ax[0], zoom=5, loc=1),
+             zoomed_inset_axes(ax[1], zoom=5, loc=1)]
 
     axins[0].plot(kappa,posSnapshotsPower)
     axins[1].plot(kappa,negSnapshotsPower)
