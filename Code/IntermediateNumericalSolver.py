@@ -1390,7 +1390,7 @@ if(plot_skew_asymm_kh):
     ax[0].set_ylabel(r'Height')
     ax[1].set_ylabel(r'Skewness')
     ax[2].set_ylabel(r'Asymmetry')
-    fig.suptitle(r'\begin{{tabular}}{{c}}Height, Skewness, and Asymmetry: \\ $a/h={eps}$, $kh = {kh}$, $t/\sqrt{{g/h}} = {t}$\end{{tabular}}'.format(
+    fig.suptitle(r'\begin{{tabular}}{{c}}Height, Skewness, and Asymmetry: \\ $a/h={eps}$, $kh = {kh}$, $t \sqrt{{g/h}} = {t}$\end{{tabular}}'.format(
         eps=eps,kh=round(np.sqrt(mu),1),P=P,t=round(t[-1],0)))
 
     # Put horizontal line at y=1
@@ -1837,7 +1837,7 @@ if(plot_skew_asymm_cnoidal_kh):
     ax[0].set_ylabel(r'Height')
     ax[1].set_ylabel(r'Skewness')
     ax[2].set_ylabel(r'Asymmetry')
-    fig.suptitle(r'\begin{{tabular}}{{c}}Height, Skewness, and Asymmetry: \\ $a/h={eps}$, $kh = {kh}$, $t/\sqrt{{g/h}} = {t}$\end{{tabular}}'.format(
+    fig.suptitle(r'\begin{{tabular}}{{c}}Height, Skewness, and Asymmetry: \\ $a/h={eps}$, $kh = {kh}$, $t \sqrt{{g/h}} = {t}$\end{{tabular}}'.format(
         eps=eps,kh=round(np.sqrt(mu),1),P=P,t=round(t[-1],0)))
 
     # Put horizontal line at y=1
