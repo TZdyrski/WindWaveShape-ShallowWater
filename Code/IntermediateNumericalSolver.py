@@ -27,6 +27,7 @@ plot_pos_neg_snapshots_cnoidal = False
 plot_skew_asymm_cnoidal = False
 plot_skew_asymm_cnoidal_kh = False
 plot_power_spec_GM = False
+plot_power_spec_vs_time_GM = False
 plot_pos_neg_snapshots_cnoidal_GM = False
 
 ### Set global parameters
@@ -2038,6 +2039,174 @@ if(plot_power_spec_GM):
     fig.patch.set_alpha(0)
 
     texplot.savefig(fig,'../Figures/Power-Spectrum-GM')
+
+if(plot_power_spec_vs_time_GM):
+    from mpl_toolkits.axes_grid1.inset_locator import zoomed_inset_axes
+    from mpl_toolkits.axes_grid1.inset_locator import mark_inset
+
+    print("Computing the solution.")
+
+    # Create KdV-Burgers or nonlocal KdV system
+    posSystem = kdvSystem(P=P,H=H,psiP=psiP,diffeq='KdVNL', eps=eps, mu=mu)
+    negSystem = kdvSystem(P=-P,H=H,psiP=psiP,diffeq='KdVNL', eps=eps, mu=mu)
+    # Set spatial and temporal grid
+    posSystem.set_spatial_grid(xLen='fit',xStep=xStep)
+    negSystem.set_spatial_grid(xLen='fit',xStep=xStep)
+    posSystem.set_temporal_grid(tLen=FFT_tLen,tNum='density')
+    negSystem.set_temporal_grid(tLen=FFT_tLen,tNum='density')
+    # Set initial conditions
+    posSystem.set_initial_conditions(y0='cnoidal',redo_grids=True)
+    negSystem.set_initial_conditions(y0='cnoidal',redo_grids=True)
+    # Solve KdV-Burgers system
+    posSystem.solve_system_rk3()
+    negSystem.solve_system_rk3()
+
+    # Boost to co-moving frame
+    posSystem.boost_to_lab_frame(velocity='cnoidal')
+    negSystem.boost_to_lab_frame(velocity='cnoidal')
+
+    # Convert back to non-normalized variables
+    posSystem.set_snapshot_ts(np.linspace(0,1,num=posSystem.tNum))
+    negSystem.set_snapshot_ts(np.linspace(0,1,num=posSystem.tNum))
+    posSnapshots = posSystem.get_snapshots()*eps
+    negSnapshots = negSystem.get_snapshots()*eps
+
+    # Save timesteps
+    # Note: divide by epsilon to convert from t_1 to the full time t
+    t = posSystem.t/eps
+
+    # Resample (via interpolation) to get a higher FFT resolution
+    repeat_times = 5
+    posSnapshotsRepeated = np.tile(posSnapshots, (repeat_times,1))
+    negSnapshotsRepeated = np.tile(negSnapshots, (repeat_times,1))
+
+    # Take spatial FFT (scale FFT by 1/N and multiply by 2 since we
+    # ignore the negative frequencies)
+    posSnapshotsFFT = 2*np.fft.fft(posSnapshotsRepeated,
+            axis=0)/posSystem.xNum/repeat_times
+    negSnapshotsFFT = 2*np.fft.fft(negSnapshotsRepeated,
+            axis=0)/negSystem.xNum/repeat_times
+
+    # Convert to power spectrum (ie abs sqaured)
+    posSnapshotsPower = np.absolute(posSnapshotsFFT)**2
+    negSnapshotsPower = np.absolute(negSnapshotsFFT)**2
+
+    # Generate spatial FFT conjugate coordinate
+    kappa = np.fft.fftfreq(posSystem.xNum*repeat_times,
+            posSystem.dx)*2*np.pi
+
+    # Find peaks in initial data (peaks shouldn't move over time either)
+    posSnapshotsPowerPeaks = sp.signal.find_peaks(posSnapshotsPower[:,0])[0]
+    negSnapshotsPowerPeaks = sp.signal.find_peaks(negSnapshotsPower[:,0])[0]
+
+    # Only keep non-negative kappa peaks
+    posSnapshotsPowerPeaks = posSnapshotsPowerPeaks[kappa[posSnapshotsPowerPeaks] >= 0]
+    negSnapshotsPowerPeaks = negSnapshotsPowerPeaks[kappa[negSnapshotsPowerPeaks] >= 0]
+
+    # Sort the peaks
+    posSnapshotsPowerPeaks = posSnapshotsPowerPeaks[np.argsort(
+        posSnapshotsPower[posSnapshotsPowerPeaks,0])[::-1]]
+    negSnapshotsPowerPeaks = negSnapshotsPowerPeaks[np.argsort(
+        negSnapshotsPower[negSnapshotsPowerPeaks,0])[::-1]]
+
+    # Only include first 3 peaks
+    posSnapshotsPowerPeaks = posSnapshotsPowerPeaks[0:3]
+    negSnapshotsPowerPeaks = negSnapshotsPowerPeaks[0:3]
+
+    # Get indices for primary (m=1), first harmonic (m=2), and second
+    # harmonic (m=3)
+    posPrimaryIndex = posSnapshotsPowerPeaks[0]
+    posFirstHarmonicIndex = posSnapshotsPowerPeaks[1]
+    posSecondHarmonicIndex = posSnapshotsPowerPeaks[2]
+    negPrimaryIndex = negSnapshotsPowerPeaks[0]
+    negFirstHarmonicIndex = negSnapshotsPowerPeaks[1]
+    negSecondHarmonicIndex = negSnapshotsPowerPeaks[2]
+
+    print("Plotting.")
+    ## Color cycle
+    num_lines = posSnapshots[1,:].size # Number of lines
+    new_colors = [plt.get_cmap('viridis')(1. * (i)/(num_lines)) for i in
+            range(num_lines)]
+    linestyles = [*((0,(3+i,i)) for i in range(num_lines))]
+    plt.rc('axes', prop_cycle=(cycler('color', new_colors) +
+                           cycler('linestyle', linestyles)))
+
+    # Initialize figure
+    fig, ax = texplot.newfig(0.9,nrows=2,sharex=True,sharey=False,golden=True)
+    fig.set_tight_layout(False)
+
+    # Adjust figure height
+    figsize = fig.get_size_inches()
+    fig.set_size_inches([figsize[0],figsize[1]*1.3])
+
+    fig.subplots_adjust(left=0.125,right=0.775,top=0.875,bottom=0.125,hspace=0.3)
+
+    ax[1].set_xlabel(r'Time $t\sqrt{g/h}$')
+
+    # Multiply P by eps; the P used in this code is really the
+    # "nondimensionalized" P' = P/eps, so multiply by eps to get back to
+    # P
+    fig.suptitle(r'Power Spectrum vs Time: $a/h={eps}$, $kh = {kh}$'.format(
+        eps=eps,kh=round(np.sqrt(mu),1)))
+    ax[0].set_title(r'Co-Wind: $P_G k/(\rho_w g) = {P}$'.format(
+        P=round(eps*(P),3)))
+    ax[1].set_title(r'Counter-Wind: $P_G k/(\rho_w g) = {P}$'.format(
+        P=round(eps*(-P),3)))
+
+    # Source: https://matplotlib.org/3.1.1/gallery/ticks_and_spines/multiple_yaxis_with_spines.html
+    def make_patch_spines_invisible(ax):
+        ax.set_frame_on(True)
+        ax.patch.set_visible(False)
+        for sp in ax.spines.values():
+            sp.set_visible(False)
+
+    firstHarmonicAx = [None,None]
+    secondHarmonicAx = [None,None]
+    for indx in [0,1]:
+        firstHarmonicAx[indx] = ax[indx].twinx()
+        secondHarmonicAx[indx] = ax[indx].twinx()
+
+        # Offset the right spine of secondHarmoincAx.
+        # The ticks and label have already been placed on the right by twinx above.
+        secondHarmonicAx[indx].spines["right"].set_position(("axes", 1.2))
+
+        # Having been created by twinx, secondHarmonicAx has its frame
+        # off, so the line of its detached spine is invisible.
+        # First, activate the frame but make the patch and spines invisible.
+        make_patch_spines_invisible(secondHarmonicAx[indx])
+
+        # Second, show the right spine.
+        secondHarmonicAx[indx].spines["right"].set_visible(True)
+
+    line1 = ax[0].plot(t,posSnapshotsPower[posPrimaryIndex,:],'r')[0]
+    line2 = firstHarmonicAx[0].plot(t,posSnapshotsPower[posFirstHarmonicIndex,:],'g')[0]
+    line3 = secondHarmonicAx[0].plot(t,posSnapshotsPower[posSecondHarmonicIndex,:],'b')[0]
+    ax[1].plot(t,negSnapshotsPower[negPrimaryIndex,:],'r')
+    firstHarmonicAx[1].plot(t,negSnapshotsPower[negFirstHarmonicIndex,:],'g')
+    secondHarmonicAx[1].plot(t,negSnapshotsPower[negSecondHarmonicIndex,:],'b')
+
+    for indx in [0,1]:
+        ax[indx].set_ylabel(r'Primary $\abs{\hat{\eta}}^2 k^2/h^2$')
+        firstHarmonicAx[indx].set_ylabel(r'First Harmonic $\abs{\hat{\eta}}^2 k^2/h^2$')
+        secondHarmonicAx[indx].set_ylabel(r'Second Harmonic $\abs{\hat{\eta}}^2 k^2/h^2$')
+
+        ax[indx].yaxis.label.set_color(line1.get_color())
+        firstHarmonicAx[indx].yaxis.label.set_color(line2.get_color())
+        secondHarmonicAx[indx].yaxis.label.set_color(line3.get_color())
+
+        ax[indx].tick_params(axis='y', colors=line1.get_color())
+        firstHarmonicAx[indx].tick_params(axis='y', colors=line2.get_color())
+        secondHarmonicAx[indx].tick_params(axis='y', colors=line3.get_color())
+        ax[indx].tick_params(axis='x')
+
+        ax[indx].ticklabel_format(style='sci',axis='y',scilimits=(0,0))
+        firstHarmonicAx[indx].ticklabel_format(style='sci',axis='y',scilimits=(0,0))
+        secondHarmonicAx[indx].ticklabel_format(style='sci',axis='y',scilimits=(0,0))
+
+    # Make background transparent
+    fig.patch.set_alpha(0)
+
+    texplot.savefig(fig,'../Figures/Power-Spectrum-vs-Time-GM')
 
 if(plot_pos_neg_snapshots_cnoidal_GM):
     print("Computing the solution.")
