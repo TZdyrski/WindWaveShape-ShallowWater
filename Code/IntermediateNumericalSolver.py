@@ -1871,7 +1871,8 @@ if(plot_power_spec_GM):
     negSnapshotsPower = np.absolute(negSnapshotsFFT)**2
 
     # Generate spatial FFT conjugate coordinate
-    kappa = np.fft.fftfreq(posSystem.xNum, posSystem.dx)
+    kappa = np.fft.fftfreq(posSystem.xNum,
+            posSystem.dx)*2*np.pi
 
     # Find peaks in initial data (peaks shouldn't move over time either)
     posSnapshotsPowerPeaks = sp.signal.find_peaks(posSnapshotsPower[:,0])[0]
