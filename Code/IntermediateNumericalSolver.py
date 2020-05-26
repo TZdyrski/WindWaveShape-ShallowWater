@@ -1861,9 +1861,10 @@ if(plot_power_spec_GM):
     posSnapshots = posSystem.get_snapshots()*eps
     negSnapshots = negSystem.get_snapshots()*eps
 
-    # Take spatial FFT
-    posSnapshotsFFT = np.fft.fft(posSnapshots, axis=0)
-    negSnapshotsFFT = np.fft.fft(negSnapshots, axis=0)
+    # Take spatial FFT (scale FFT by 1/N and multiply by 2 since we
+    # ignore the negative frequencies)
+    posSnapshotsFFT = 2*np.fft.fft(posSnapshots, axis=0)/posSystem.xNum
+    negSnapshotsFFT = 2*np.fft.fft(negSnapshots, axis=0)/negSystem.xNum
 
     # Convert to power spectrum (ie abs sqaured)
     posSnapshotsPower = np.absolute(posSnapshotsFFT)**2
