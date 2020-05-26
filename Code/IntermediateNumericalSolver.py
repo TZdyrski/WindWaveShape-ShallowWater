@@ -1953,7 +1953,7 @@ if(plot_power_spec_GM):
     figsize = fig.get_size_inches()
     fig.set_size_inches([figsize[0],figsize[1]*1.3])
 
-    fig.subplots_adjust(left=0.175,right=0.9,top=0.875,bottom=0.125,hspace=0.3)
+    fig.subplots_adjust(left=0.175,right=0.825,top=0.875,bottom=0.125,hspace=0.3)
 
     ax[1].set_xlabel(r'Harmonic $\kappa/k$')
     ax[0].set_ylabel(r'$\abs{\hat{\eta}}^2 k^2/h^2$')
