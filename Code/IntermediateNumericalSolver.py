@@ -1861,17 +1861,24 @@ if(plot_power_spec_GM):
     posSnapshots = posSystem.get_snapshots()*eps
     negSnapshots = negSystem.get_snapshots()*eps
 
+    # Resample (via interpolation) to get a higher FFT resolution
+    repeat_times = 5
+    posSnapshotsRepeated = np.tile(posSnapshots, (repeat_times,1))
+    negSnapshotsRepeated = np.tile(negSnapshots, (repeat_times,1))
+
     # Take spatial FFT (scale FFT by 1/N and multiply by 2 since we
     # ignore the negative frequencies)
-    posSnapshotsFFT = 2*np.fft.fft(posSnapshots, axis=0)/posSystem.xNum
-    negSnapshotsFFT = 2*np.fft.fft(negSnapshots, axis=0)/negSystem.xNum
+    posSnapshotsFFT = 2*np.fft.fft(posSnapshotsRepeated,
+            axis=0)/posSystem.xNum/repeat_times
+    negSnapshotsFFT = 2*np.fft.fft(negSnapshotsRepeated,
+            axis=0)/negSystem.xNum/repeat_times
 
     # Convert to power spectrum (ie abs sqaured)
     posSnapshotsPower = np.absolute(posSnapshotsFFT)**2
     negSnapshotsPower = np.absolute(negSnapshotsFFT)**2
 
     # Generate spatial FFT conjugate coordinate
-    kappa = np.fft.fftfreq(posSystem.xNum,
+    kappa = np.fft.fftfreq(posSystem.xNum*repeat_times,
             posSystem.dx)*2*np.pi
 
     # Find peaks in initial data (peaks shouldn't move over time either)
