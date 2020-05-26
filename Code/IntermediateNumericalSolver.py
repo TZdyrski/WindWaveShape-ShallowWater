@@ -1876,6 +1876,16 @@ if(plot_power_spec_GM):
     posSnapshotsPowerPeaks = sp.signal.find_peaks(posSnapshotsPower[:,0])[0]
     negSnapshotsPowerPeaks = sp.signal.find_peaks(negSnapshotsPower[:,0])[0]
 
+    # Only keep non-negative kappa peaks
+    posSnapshotsPowerPeaks = posSnapshotsPowerPeaks[kappa[posSnapshotsPowerPeaks] >= 0]
+    negSnapshotsPowerPeaks = negSnapshotsPowerPeaks[kappa[negSnapshotsPowerPeaks] >= 0]
+
+    # Sort the peaks
+    posSnapshotsPowerPeaks = posSnapshotsPowerPeaks[np.argsort(
+        posSnapshotsPower[posSnapshotsPowerPeaks,0])[::-1]]
+    negSnapshotsPowerPeaks = negSnapshotsPowerPeaks[np.argsort(
+        negSnapshotsPower[negSnapshotsPowerPeaks,0])[::-1]]
+
     # Only include first Power_num_peaks+1 (we need one extra since the
     # right-sided base always gives the right window limit, so we'll use
     # the n+1th left base limit to define the nth right base limit)
