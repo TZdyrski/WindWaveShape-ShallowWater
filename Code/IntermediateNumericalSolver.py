@@ -1924,13 +1924,17 @@ if(plot_power_spec_GM):
     negSnapshotsPowerSecondPeakHeight = np.amax(negSnapshotsPower[
             negSnapshotsPowerPeaks[1]])
 
-    # Find 2nd peak half-heights in initial data (peaks shouldn't move over time either)
+    # Find 2nd peak bases in initial data (peaks shouldn't move over time either)
+    # Re-calculate using 0.9999 prominence since we want it cropped
+    # closely to the peak; the above base finding prescription would go
+    # from the left side of peak 2 to the left side of peak 3, including
+    # all the intervening flat space.
     posSnapshotsPowerSecondBaseIndices = sp.signal.peak_widths(
             posSnapshotsPower[:,0], [posSnapshotsPowerPeaks[1]],
-            rel_height=0.5)[2:]
+            rel_height=0.9999)[2:]
     negSnapshotsPowerSecondBaseIndices = sp.signal.peak_widths(
             negSnapshotsPower[:,0], [negSnapshotsPowerPeaks[1]],
-            rel_height=0.5)[2:]
+            rel_height=0.9999)[2:]
 
     # Convert from indices to kappa values by multiplying by the
     # kappa[1] (since all steps are evenly spaced)
