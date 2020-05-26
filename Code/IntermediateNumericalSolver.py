@@ -97,7 +97,7 @@ trig_mode = 1
 
 # FFT bandwidth
 FFT_tLen = 9
-FFT_bandwidth = 1e3
+FFT_num_peaks = 4
 
 class kdvSystem():
 
@@ -1865,27 +1865,66 @@ if(plot_power_spec_GM):
     posSnapshotsFFT = np.fft.fft(posSnapshots, axis=0)
     negSnapshotsFFT = np.fft.fft(negSnapshots, axis=0)
 
+    # Convert to power spectrum (ie abs sqaured)
+    posSnapshotsPower = np.absolute(posSnapshotsFFT)**2
+    negSnapshotsPower = np.absolute(negSnapshotsFFT)**2
+
     # Generate spatial FFT conjugate coordinate
     kappa = np.fft.fftfreq(posSystem.xNum, posSystem.dx)
 
-    # Shift kappa to be zero-centered so that plotting the kappa_max ->
-    # kappa_min transition doesn't give a solid line at FFT=0
-    kappa = np.fft.fftshift(kappa)
-    posSnapshotsFFT = np.fft.fftshift(posSnapshotsFFT, axes=0)
-    negSnapshotsFFT = np.fft.fftshift(negSnapshotsFFT, axes=0)
+    # Find peaks in initial data (peaks shouldn't move over time either)
+    posSnapshotsPowerPeaks = sp.signal.find_peaks(posSnapshotsPower[:,0])[0]
+    negSnapshotsPowerPeaks = sp.signal.find_peaks(negSnapshotsPower[:,0])[0]
 
-    # Hide solution outside of window
-    maxFFT = np.amax([posSnapshotsFFT,negSnapshotsFFT])
-    cutoff = maxFFT/FFT_bandwidth
-    lastLargeKappaIndex = np.amin([
-        # Note: we don't need to flip these arrays since they already
-        # start from -kappaLimit, so the first large value will already
-        # be the one furthest from 0 (since its symmetric about zero)
-        np.argmax(posSnapshotsFFT>cutoff,axis=0),
-        np.argmax(negSnapshotsFFT>cutoff,axis=0),
-        ])
-    lastLargeKappa = np.absolute(kappa[lastLargeKappaIndex])
-    maskedKappa = np.ma.masked_outside(kappa,0,lastLargeKappa)
+    # Only include first Power_num_peaks+1 (we need one extra since the
+    # right-sided base always gives the right window limit, so we'll use
+    # the n+1th left base limit to define the nth right base limit)
+    posSnapshotsPowerPeaks = posSnapshotsPowerPeaks[0:FFT_num_peaks+1]
+    negSnapshotsPowerPeaks = negSnapshotsPowerPeaks[0:FFT_num_peaks+1]
+
+    # Find peak bases in initial data (peaks shouldn't move over time either)
+    posSnapshotsPowerLeftBaseIndices = sp.signal.peak_prominences(
+            posSnapshotsPower[:,0], posSnapshotsPowerPeaks)[1]
+    negSnapshotsPowerLeftBaseIndices = sp.signal.peak_prominences(
+            negSnapshotsPower[:,0], negSnapshotsPowerPeaks)[1]
+
+    # Use the n+1th left base limit to define the nth right base limit
+    posSnapshotsPowerRightBaseIndices = posSnapshotsPowerLeftBaseIndices[1:]
+    posSnapshotsPowerLeftBaseIndices= posSnapshotsPowerLeftBaseIndices[:-1]
+    negSnapshotsPowerRightBaseIndices = negSnapshotsPowerLeftBaseIndices[1:]
+    negSnapshotsPowerLeftBaseIndices= negSnapshotsPowerLeftBaseIndices[:-1]
+
+    # Take the largest of the two last base indices
+    lastBaseIndex = np.amax([posSnapshotsPowerRightBaseIndices[-1],
+        negSnapshotsPowerRightBaseIndices[-1]])
+
+    # Store height (specifically, the largest height as a function of
+    # time) and bases of second peak for inset image
+    posSnapshotsPowerSecondPeakHeight = np.amax(posSnapshotsPower[
+            posSnapshotsPowerPeaks[1]])
+    negSnapshotsPowerSecondPeakHeight = np.amax(negSnapshotsPower[
+            negSnapshotsPowerPeaks[1]])
+
+    # Find 2nd peak half-heights in initial data (peaks shouldn't move over time either)
+    posSnapshotsPowerSecondBaseIndices = sp.signal.peak_widths(
+            posSnapshotsPower[:,0], [posSnapshotsPowerPeaks[1]],
+            rel_height=0.5)[2:]
+    negSnapshotsPowerSecondBaseIndices = sp.signal.peak_widths(
+            negSnapshotsPower[:,0], [negSnapshotsPowerPeaks[1]],
+            rel_height=0.5)[2:]
+
+    # Convert from indices to kappa values by multiplying by the
+    # kappa[1] (since all steps are evenly spaced)
+    posSnapshotsPowerSecondBase = np.array(
+            posSnapshotsPowerSecondBaseIndices)*kappa[1]
+    negSnapshotsPowerSecondBase = np.array(
+            negSnapshotsPowerSecondBaseIndices)*kappa[1]
+
+    # Cut off after the last base (add 1 since we want the last base
+    # *inclusive)
+    kappa = kappa[0:lastBaseIndex+1]
+    posSnapshotsPower = posSnapshotsPower[0:lastBaseIndex+1,:]
+    negSnapshotsPower = negSnapshotsPower[0:lastBaseIndex+1,:]
 
     print("Plotting.")
     ## Color cycle
@@ -1919,24 +1958,20 @@ if(plot_power_spec_GM):
     ax[1].set_title(r'Counter-Wind: $P_G k/(\rho_w g) = {P}$'.format(
         P=round(eps*(-P),3)))
 
-    ax[0].plot(maskedKappa,np.absolute(posSnapshotsFFT)**2)
-    ax[1].plot(maskedKappa,np.absolute(negSnapshotsFFT)**2)
+    ax[0].plot(kappa,posSnapshotsPower)
+    ax[1].plot(kappa,negSnapshotsPower)
 
     # Put insets to zoom-in around second harmonic
     axins = [zoomed_inset_axes(ax[0], zoom=4, loc=1),
              zoomed_inset_axes(ax[1], zoom=4, loc=1)]
 
-    axins[0].plot(maskedKappa,np.absolute(posSnapshotsFFT)**2)
-    axins[1].plot(maskedKappa,np.absolute(negSnapshotsFFT)**2)
+    axins[0].plot(kappa,posSnapshotsPower)
+    axins[1].plot(kappa,negSnapshotsPower)
 
-    xMin = 0.275
-    xMax = 0.375
-    yMin = 0
-
-    axins[0].set_xlim(xMin,xMax)
-    axins[1].set_xlim(xMin,xMax)
-    axins[0].set_ylim(yMin,0.5)
-    axins[1].set_ylim(yMin,0.25)
+    axins[0].set_xlim(*posSnapshotsPowerSecondBase)
+    axins[1].set_xlim(*negSnapshotsPowerSecondBase)
+    axins[0].set_ylim(0,posSnapshotsPowerSecondPeakHeight*1.5)
+    axins[1].set_ylim(0,negSnapshotsPowerSecondPeakHeight*1.5)
 
     mark_inset(ax[0], axins[0], loc1=4, loc2=2, fc="none", ec="0.5")
     mark_inset(ax[1], axins[1], loc1=4, loc2=2, fc="none", ec="0.5")
