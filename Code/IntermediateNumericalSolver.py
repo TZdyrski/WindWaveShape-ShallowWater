@@ -86,7 +86,7 @@ skew_asymm_xLen_cnoidal = np.repeat('fit',skew_asymm_Ps.size)
 skew_asymm_xStep = skew_asymm_array*0.1
 skew_asymm_Hs = np.absolute(skew_asymm_Ps)*0.05
 
-kh_mus = np.linspace(0.1,0.8,8)
+kh_mus = np.linspace(0.05,0.5,8)
 kh_tLen = 1
 
 # Values for GM
