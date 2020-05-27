@@ -41,6 +41,10 @@ omega_to_T = 1/2/np.pi # conversion from omega to 1/T
 eps = 0.1 # a/h
 mu= 0.1 # (kh)**2
 
+# For plots with a pair of epsilon and mu values
+pairedEps = [eps, 2*eps]
+pairedMu = [mu, 2*mu]
+
 ## Equation type: can be either 'KdVB' for KdV-Burgers (Jeffreys-type
 ## forcing) or 'KdVNL' for nonlocal KdV (Generalized Miles-type forcing)
 diffeq = 'KdVB'
@@ -1116,46 +1120,56 @@ if(plot_negative_snapshots):
 if(plot_pos_neg_snapshots):
     print("Computing the solution.")
 
-    # Create KdV-Burgers or nonlocal KdV system
-    posSystem = kdvSystem(P=P,H=H,psiP=psiP,diffeq=diffeq, eps=eps, mu=mu)
-    negSystem = kdvSystem(P=-P,H=H,psiP=psiP,diffeq=diffeq, eps=eps, mu=mu)
-    # Set spatial and temporal grid
-    posSystem.set_spatial_grid(xLen=xLen,xStep=xStep)
-    negSystem.set_spatial_grid(xLen=xLen,xStep=xStep)
-    posSystem.set_temporal_grid(tLen=tLen,tNum='density')
-    negSystem.set_temporal_grid(tLen=tLen,tNum='density')
-    # Set initial conditions
-    posSystem.set_initial_conditions(y0='solitary')
-    negSystem.set_initial_conditions(y0='solitary')
-    # Solve KdV-Burgers system
-    posSystem.solve_system_rk3()
-    negSystem.solve_system_rk3()
+    posSnapshots = [None,None]
+    negSnapshots = [None,None]
+    xMasked = [None,None]
+    for indx, (eps_val,mu_val) in enumerate(zip(pairedEps,pairedMu)):
+        # Create KdV-Burgers or nonlocal KdV system
+        posSystem = kdvSystem(P=P,H=H,psiP=psiP,diffeq=diffeq,
+                eps=eps_val, mu=mu_val)
+        negSystem = kdvSystem(P=-P,H=H,psiP=psiP,diffeq=diffeq,
+                eps=eps_val, mu=mu_val)
+        # Set spatial and temporal grid
+        posSystem.set_spatial_grid(xLen=xLen,xStep=xStep)
+        negSystem.set_spatial_grid(xLen=xLen,xStep=xStep)
+        posSystem.set_temporal_grid(tLen=tLen,tNum='density')
+        negSystem.set_temporal_grid(tLen=tLen,tNum='density')
+        # Set initial conditions
+        posSystem.set_initial_conditions(y0='solitary')
+        negSystem.set_initial_conditions(y0='solitary')
+        # Solve KdV-Burgers system
+        posSystem.solve_system_rk3()
+        negSystem.solve_system_rk3()
 
-    # Boost to co-moving frame
-    posSystem.boost_to_lab_frame(velocity='solitary')
-    negSystem.boost_to_lab_frame(velocity='solitary')
+        # Boost to co-moving frame
+        posSystem.boost_to_lab_frame(velocity='solitary')
+        negSystem.boost_to_lab_frame(velocity='solitary')
 
-    # Convert back to non-normalized variables
-    posSystem.set_snapshot_ts([0,1/3,2/3,1])
-    negSystem.set_snapshot_ts([0,1/3,2/3,1])
-    posSnapshots = posSystem.get_snapshots()*eps
-    negSnapshots = negSystem.get_snapshots()*eps
+        # Convert back to non-normalized variables
+        posSystem.set_snapshot_ts([0,1/3,2/3,1])
+        negSystem.set_snapshot_ts([0,1/3,2/3,1])
+        posSnapshots[indx] = posSystem.get_snapshots()*eps_val
+        negSnapshots[indx] = negSystem.get_snapshots()*eps_val
 
-    # Hide solution outside of window
-    posSystem.set_x_window(xMin=-4,xMax=5)
-    xMasked = posSystem.get_masked_x()
+        # Hide solution outside of window
+        posSystem.set_x_window(xMin=-4,xMax=5)
+        xMasked[indx] = posSystem.get_masked_x()
 
     print("Plotting.")
+
     ## Color cycle
-    num_lines = posSnapshots[1,:].size # Number of lines
-    new_colors = [plt.get_cmap('viridis')(1. * (i)/(num_lines)) for i in
+    # We should have the same number of lines for all eps/mu pairs,
+    # so it doesn't matter which loop we calculate this on
+    num_lines = posSnapshots[0][1,:].size # Number of lines
+    new_colors = [plt.get_cmap('viridis')(1. *
+        (i)/(num_lines)) for i in
             range(num_lines)]
     linestyles = [*((0,(3+i,i)) for i in range(num_lines))]
     plt.rc('axes', prop_cycle=(cycler('color', new_colors) +
                            cycler('linestyle', linestyles)))
 
     # Initialize figure
-    fig, ax = texplot.newfig(0.9,nrows=2,sharex=True,sharey=True,golden=True)
+    fig, ax = texplot.newfig(0.9,nrows=2,ncols=2,sharex=True,sharey=True,golden=True)
     fig.set_tight_layout(False)
 
     # Adjust figure height
@@ -1164,49 +1178,54 @@ if(plot_pos_neg_snapshots):
 
     fig.subplots_adjust(left=0.175,right=0.9,top=0.875,bottom=0.125,hspace=0.3)
 
-    ax[1].set_xlabel(r'Distance $k x$')
-    ax[0].set_ylabel(r'$\eta / h$')
-    ax[1].set_ylabel(r'$\eta / h$')
+    for indx in [0,1]:
+        ax[1,indx].set_xlabel(r'Distance $k x$')
+        ax[indx,0].set_ylabel(r'$\eta / h$')
+
     # Multiply P by eps; the P used in this code is really the
     # "nondimensionalized" P' = P/eps, so multiply by eps to get back to
     # P
     fig.suptitle(r'Surface Height vs Time: $a/h={eps}$, $kh = {kh}$'.format(
         eps=eps,kh=round(np.sqrt(mu),1)))
-    ax[0].set_title(r'$P_J k/(\rho_w g) = {P}$'.format(
-        P=round(eps*(P),3)))
-    ax[1].set_title(r'$P_J k/(\rho_w g) = {P}$'.format(
-        P=round(eps*(-P),3)))
 
-    ax[0].plot(xMasked,posSnapshots)
-    ax[1].plot(xMasked,negSnapshots)
+    for indx in [0,1]:
+        ax[0,indx].set_title(r'\begin{{tabular}}{{c}}$P_J k/(\rho_w g) = {P}$,\\$\epsilon = {eps}$, $\mu = {mu}$\end{{tabular}}'.format(
+            P=round(eps*(P),3),eps=pairedEps[indx],mu=pairedMu[indx]))
+        ax[1,indx].set_title(r'\begin{{tabular}}{{c}}$P_J k/(\rho_w g) = {P}$,\\$\epsilon = {eps}$, $\mu = {mu}$\end{{tabular}}'.format(
+            P=round(eps*(-P),3),eps=pairedEps[indx],mu=pairedMu[indx]))
+
+        ax[0,indx].plot(xMasked[indx],posSnapshots[indx])
+        ax[1,indx].plot(xMasked[indx],negSnapshots[indx])
 
     # Add arrow depicting wind direction
     arrowLeft = np.array([0.05,0.4])
     arrowRight = np.array([0.25,0.4])
     textBottom = (arrowLeft+arrowRight)/2 + np.array([0,0.05])
     spacing = np.array([0.6,0])
-    ax[0].annotate(r'Phase'+'\n'+r'Speed', xy=textBottom, xycoords='axes fraction',
-            ha='center',va='bottom',ma='center')
-    ax[0].annotate('', xy=arrowLeft, xytext=arrowRight,
-            xycoords="axes fraction", arrowprops={'arrowstyle': '<-',
-                'shrinkA':1,'shrinkB':0})
-    ax[0].annotate(r'Wind', xy=textBottom+spacing,
-            xycoords='axes fraction', ha='center',va='bottom',
-            ma='center')
-    ax[0].annotate('', xy=arrowLeft+spacing, xytext=arrowRight+spacing,
-            xycoords="axes fraction", arrowprops={'arrowstyle': '<-',
-                'shrinkA':1,'shrinkB':0})
-    ax[1].annotate(r'Phase'+'\n'+r'Speed', xy=textBottom, xycoords='axes fraction',
-            ha='center',va='bottom',ma='center')
-    ax[1].annotate('', xy=arrowLeft, xytext=arrowRight,
-            xycoords="axes fraction", arrowprops={'arrowstyle': '<-',
-                'shrinkA':1,'shrinkB':0})
-    ax[1].annotate(r'Wind', xy=textBottom+spacing,
-            xycoords='axes fraction', ha='center',va='bottom',
-            ma='center')
-    ax[1].annotate('', xy=arrowLeft+spacing, xytext=arrowRight+spacing,
-            xycoords="axes fraction", arrowprops={'arrowstyle': '->',
-                'shrinkA':1,'shrinkB':0})
+
+    for indx in [0,1]:
+        ax[0,indx].annotate(r'Phase'+'\n'+r'Speed', xy=textBottom, xycoords='axes fraction',
+                ha='center',va='bottom',ma='center')
+        ax[0,indx].annotate('', xy=arrowLeft, xytext=arrowRight,
+                xycoords="axes fraction", arrowprops={'arrowstyle': '<-',
+                    'shrinkA':1,'shrinkB':0})
+        ax[0,indx].annotate(r'Wind', xy=textBottom+spacing,
+                xycoords='axes fraction', ha='center',va='bottom',
+                ma='center')
+        ax[0,indx].annotate('', xy=arrowLeft+spacing, xytext=arrowRight+spacing,
+                xycoords="axes fraction", arrowprops={'arrowstyle': '<-',
+                    'shrinkA':1,'shrinkB':0})
+        ax[1,indx].annotate(r'Phase'+'\n'+r'Speed', xy=textBottom, xycoords='axes fraction',
+                ha='center',va='bottom',ma='center')
+        ax[1,indx].annotate('', xy=arrowLeft, xytext=arrowRight,
+                xycoords="axes fraction", arrowprops={'arrowstyle': '<-',
+                    'shrinkA':1,'shrinkB':0})
+        ax[1,indx].annotate(r'Wind', xy=textBottom+spacing,
+                xycoords='axes fraction', ha='center',va='bottom',
+                ma='center')
+        ax[1,indx].annotate('', xy=arrowLeft+spacing, xytext=arrowRight+spacing,
+                xycoords="axes fraction", arrowprops={'arrowstyle': '->',
+                    'shrinkA':1,'shrinkB':0})
 
     # Note: divide by epsilon to convert from t_1 to the full time t
     fig.legend(np.around(posSystem.snapshot_ts/eps,1),
@@ -1557,38 +1576,47 @@ if(plot_negative_snapshots_cnoidal):
 if(plot_pos_neg_snapshots_cnoidal):
     print("Computing the solution.")
 
-    # Create KdV-Burgers or nonlocal KdV system
-    posSystem = kdvSystem(P=P,H=H,psiP=psiP,diffeq=diffeq, eps=eps, mu=mu)
-    negSystem = kdvSystem(P=-P,H=H,psiP=psiP,diffeq=diffeq, eps=eps, mu=mu)
-    # Set spatial and temporal grid
-    posSystem.set_spatial_grid(xLen='fit',xStep=xStep)
-    negSystem.set_spatial_grid(xLen='fit',xStep=xStep)
-    posSystem.set_temporal_grid(tLen=tLen,tNum='density')
-    negSystem.set_temporal_grid(tLen=tLen,tNum='density')
-    # Set initial conditions
-    posSystem.set_initial_conditions(y0='cnoidal',redo_grids=True)
-    negSystem.set_initial_conditions(y0='cnoidal',redo_grids=True)
-    # Solve KdV-Burgers system
-    posSystem.solve_system_rk3()
-    negSystem.solve_system_rk3()
+    posSnapshots = [None,None]
+    negSnapshots = [None,None]
+    xMasked = [None,None]
+    for indx, (eps_val,mu_val) in enumerate(zip(pairedEps,pairedMu)):
+        # Create KdV-Burgers or nonlocal KdV system
+        posSystem = kdvSystem(P=P,H=H,psiP=psiP,diffeq=diffeq,
+                eps=eps_val, mu=mu_val)
+        negSystem = kdvSystem(P=-P,H=H,psiP=psiP,diffeq=diffeq,
+                eps=eps_val, mu=mu_val)
+        # Set spatial and temporal grid
+        posSystem.set_spatial_grid(xLen='fit',xStep=xStep)
+        negSystem.set_spatial_grid(xLen='fit',xStep=xStep)
+        posSystem.set_temporal_grid(tLen=tLen,tNum='density')
+        negSystem.set_temporal_grid(tLen=tLen,tNum='density')
+        # Set initial conditions
+        posSystem.set_initial_conditions(y0='cnoidal',redo_grids=True)
+        negSystem.set_initial_conditions(y0='cnoidal',redo_grids=True)
+        # Solve KdV-Burgers system
+        posSystem.solve_system_rk3()
+        negSystem.solve_system_rk3()
 
-    # Boost to co-moving frame
-    posSystem.boost_to_lab_frame(velocity='cnoidal')
-    negSystem.boost_to_lab_frame(velocity='cnoidal')
+        # Boost to co-moving frame
+        posSystem.boost_to_lab_frame(velocity='cnoidal')
+        negSystem.boost_to_lab_frame(velocity='cnoidal')
 
-    # Convert back to non-normalized variables
-    posSystem.set_snapshot_ts([0,1/3,2/3,1])
-    negSystem.set_snapshot_ts([0,1/3,2/3,1])
-    posSnapshots = posSystem.get_snapshots()*eps
-    negSnapshots = negSystem.get_snapshots()*eps
+        # Convert back to non-normalized variables
+        posSystem.set_snapshot_ts([0,1/3,2/3,1])
+        negSystem.set_snapshot_ts([0,1/3,2/3,1])
+        posSnapshots[indx] = posSystem.get_snapshots()*eps_val
+        negSnapshots[indx] = negSystem.get_snapshots()*eps_val
 
-    # Hide solution outside of window
-    posSystem.set_x_window()
-    xMasked = posSystem.get_masked_x()
+        # Hide solution outside of window
+        posSystem.set_x_window()
+        xMasked[indx] = posSystem.get_masked_x()
 
     print("Plotting.")
+
     ## Color cycle
-    num_lines = posSnapshots[1,:].size # Number of lines
+    # We should have the same number of lines for all eps/mu pairs,
+    # so it doesn't matter which loop we calculate this on
+    num_lines = posSnapshots[0][1,:].size # Number of lines
     new_colors = [plt.get_cmap('viridis')(1. * (i)/(num_lines)) for i in
             range(num_lines)]
     linestyles = [*((0,(3+i,i)) for i in range(num_lines))]
@@ -1596,7 +1624,7 @@ if(plot_pos_neg_snapshots_cnoidal):
                            cycler('linestyle', linestyles)))
 
     # Initialize figure
-    fig, ax = texplot.newfig(0.9,nrows=2,sharex=True,sharey=True,golden=True)
+    fig, ax = texplot.newfig(0.9,nrows=2,ncols=2,sharex=True,sharey=True,golden=True)
     fig.set_tight_layout(False)
 
     # Adjust figure height
@@ -1605,49 +1633,54 @@ if(plot_pos_neg_snapshots_cnoidal):
 
     fig.subplots_adjust(left=0.175,right=0.9,top=0.875,bottom=0.125,hspace=0.3)
 
-    ax[1].set_xlabel(r'Distance $k x$')
-    ax[0].set_ylabel(r'$\eta / h$')
-    ax[1].set_ylabel(r'$\eta / h$')
+    for indx in [0,1]:
+        ax[1,indx].set_xlabel(r'Distance $k x$')
+        ax[indx,0].set_ylabel(r'$\eta / h$')
+
     # Multiply P by eps; the P used in this code is really the
     # "nondimensionalized" P' = P/eps, so multiply by eps to get back to
     # P
     fig.suptitle(r'Surface Height vs Time: $a/h={eps}$, $kh = {kh}$'.format(
         eps=eps,kh=round(np.sqrt(mu),1)))
-    ax[0].set_title(r'$P_J k/(\rho_w g) = {P}$'.format(
-        P=round(eps*(P),3)))
-    ax[1].set_title(r'$P_J k/(\rho_w g) = {P}$'.format(
-        P=round(eps*(-P),3)))
 
-    ax[0].plot(xMasked,posSnapshots)
-    ax[1].plot(xMasked,negSnapshots)
+    for indx in [0,1]:
+        ax[0,indx].set_title(r'\begin{{tabular}}{{c}}$P_J k/(\rho_w g) = {P}$,\\$\epsilon = {eps}$, $\mu = {mu}$\end{{tabular}}'.format(
+            P=round(eps*(P),3),eps=pairedEps[indx],mu=pairedMu[indx]))
+        ax[1,indx].set_title(r'\begin{{tabular}}{{c}}$P_J k/(\rho_w g) = {P}$,\\$\epsilon = {eps}$, $\mu = {mu}$\end{{tabular}}'.format(
+            P=round(eps*(-P),3),eps=pairedEps[indx],mu=pairedMu[indx]))
+
+        ax[0,indx].plot(xMasked[indx],posSnapshots[indx])
+        ax[1,indx].plot(xMasked[indx],negSnapshots[indx])
 
     # Add arrow depicting wind direction
     arrowLeft = np.array([0.175,0.4])
     arrowRight = np.array([0.375,0.4])
     textBottom = (arrowLeft+arrowRight)/2 + np.array([0,0.05])
     spacing = np.array([0.45,0])
-    ax[0].annotate(r'Phase'+'\n'+r'Speed', xy=textBottom, xycoords='axes fraction',
-            ha='center',va='bottom',ma='center')
-    ax[0].annotate('', xy=arrowLeft, xytext=arrowRight,
-            xycoords="axes fraction", arrowprops={'arrowstyle': '<-',
-                'shrinkA':1,'shrinkB':0})
-    ax[0].annotate(r'Wind', xy=textBottom+spacing,
-            xycoords='axes fraction', ha='center',va='bottom',
-            ma='center')
-    ax[0].annotate('', xy=arrowLeft+spacing, xytext=arrowRight+spacing,
-            xycoords="axes fraction", arrowprops={'arrowstyle': '<-',
-                'shrinkA':1,'shrinkB':0})
-    ax[1].annotate(r'Phase'+'\n'+r'Speed', xy=textBottom, xycoords='axes fraction',
-            ha='center',va='bottom',ma='center')
-    ax[1].annotate('', xy=arrowLeft, xytext=arrowRight,
-            xycoords="axes fraction", arrowprops={'arrowstyle': '<-',
-                'shrinkA':1,'shrinkB':0})
-    ax[1].annotate(r'Wind', xy=textBottom+spacing,
-            xycoords='axes fraction', ha='center',va='bottom',
-            ma='center')
-    ax[1].annotate('', xy=arrowLeft+spacing, xytext=arrowRight+spacing,
-            xycoords="axes fraction", arrowprops={'arrowstyle': '->',
-                'shrinkA':1,'shrinkB':0})
+
+    for indx in [0,1]:
+        ax[0,indx].annotate(r'Phase'+'\n'+r'Speed', xy=textBottom, xycoords='axes fraction',
+                ha='center',va='bottom',ma='center')
+        ax[0,indx].annotate('', xy=arrowLeft, xytext=arrowRight,
+                xycoords="axes fraction", arrowprops={'arrowstyle': '<-',
+                    'shrinkA':1,'shrinkB':0})
+        ax[0,indx].annotate(r'Wind', xy=textBottom+spacing,
+                xycoords='axes fraction', ha='center',va='bottom',
+                ma='center')
+        ax[0,indx].annotate('', xy=arrowLeft+spacing, xytext=arrowRight+spacing,
+                xycoords="axes fraction", arrowprops={'arrowstyle': '<-',
+                    'shrinkA':1,'shrinkB':0})
+        ax[1,indx].annotate(r'Phase'+'\n'+r'Speed', xy=textBottom, xycoords='axes fraction',
+                ha='center',va='bottom',ma='center')
+        ax[1,indx].annotate('', xy=arrowLeft, xytext=arrowRight,
+                xycoords="axes fraction", arrowprops={'arrowstyle': '<-',
+                    'shrinkA':1,'shrinkB':0})
+        ax[1,indx].annotate(r'Wind', xy=textBottom+spacing,
+                xycoords='axes fraction', ha='center',va='bottom',
+                ma='center')
+        ax[1,indx].annotate('', xy=arrowLeft+spacing, xytext=arrowRight+spacing,
+                xycoords="axes fraction", arrowprops={'arrowstyle': '->',
+                    'shrinkA':1,'shrinkB':0})
 
     # Note: divide by epsilon to convert from t_1 to the full time t
     fig.legend(np.around(posSystem.snapshot_ts/eps,1),
@@ -1660,51 +1693,58 @@ if(plot_pos_neg_snapshots_cnoidal):
 
 if(plot_skew_asymm_cnoidal):
 
-    maximums = [None]*(skew_asymm_Ps.size)
-    skewnesses = [None]*(skew_asymm_Ps.size)
-    asymmetries = [None]*(skew_asymm_Ps.size)
-    t = None
+    maximums = [None,None]
+    skewnesses = [None,None]
+    asymmetries = [None,None]
+    t = [None,None]
 
-    for idx,Pval in enumerate(skew_asymm_Ps):
-        print("Computing the solution.")
-        # Create KdV-Burgers or nonlocal KdV system
-        skewAsymSystem = kdvSystem(P=Pval,
-                H=skew_asymm_Hs[idx],psiP=psiP,diffeq=diffeq, eps=eps, mu=mu)
-        # Set spatial and temporal grid
-        skewAsymSystem.set_spatial_grid(
-                xLen=skew_asymm_xLen_cnoidal[idx],
-                xStep=skew_asymm_xStep[idx])
-        skewAsymSystem.set_temporal_grid(tLen=skew_asymm_tLen,tNum=skew_asymm_tNum)
-        # Set initial conditions
-        skewAsymSystem.set_initial_conditions(y0='cnoidal',redo_grids=True)
-        # Solve KdV-Burgers system
-        skewAsymSystem.solve_system_rk3()
+    for indx, (eps_val,mu_val) in enumerate(zip(pairedEps,pairedMu)):
+        tmp_maximums = [None]*(skew_asymm_Ps.size)
+        tmp_skewnesses = [None]*(skew_asymm_Ps.size)
+        tmp_asymmetries = [None]*(skew_asymm_Ps.size)
+        for idx,Pval in enumerate(skew_asymm_Ps):
+            print("Computing the solution.")
+            # Create KdV-Burgers or nonlocal KdV system
+            skewAsymSystem = kdvSystem(P=Pval,
+                    H=skew_asymm_Hs[idx],psiP=psiP,diffeq=diffeq,
+                    eps=eps_val, mu=mu_val)
+            # Set spatial and temporal grid
+            skewAsymSystem.set_spatial_grid(
+                    xLen=skew_asymm_xLen_cnoidal[idx],
+                    xStep=skew_asymm_xStep[idx])
+            skewAsymSystem.set_temporal_grid(tLen=skew_asymm_tLen,tNum=skew_asymm_tNum)
+            # Set initial conditions
+            skewAsymSystem.set_initial_conditions(y0='cnoidal',redo_grids=True)
+            # Solve KdV-Burgers system
+            skewAsymSystem.solve_system_rk3()
 
-        # Boost to co-moving frame
-        skewAsymSystem.boost_to_lab_frame(velocity='cnoidal')
+            # Boost to co-moving frame
+            skewAsymSystem.boost_to_lab_frame(velocity='cnoidal')
 
-        # Save timesteps
-        # Note: divide by epsilon to convert from t_1 to the full time t
-        t = skewAsymSystem.t/eps
+            # Save timesteps
+            # Note: divide by epsilon to convert from t_1 to the full time t
+            t[indx] = skewAsymSystem.t/eps_val
 
-        print("Computing the Height.")
-        maximums[idx] = skewAsymSystem.maximum()
+            print("Computing the Height.")
+            tmp_maximums[idx] = skewAsymSystem.maximum()
 
-        print("Computing the Skewness.")
-        skewnesses[idx] = skewAsymSystem.skewness()
+            print("Computing the Skewness.")
+            tmp_skewnesses[idx] = skewAsymSystem.skewness()
 
-        print("Computing the Asymmetry.")
-        asymmetries[idx] = skewAsymSystem.asymmetry()
+            print("Computing the Asymmetry.")
+            tmp_asymmetries[idx] = skewAsymSystem.asymmetry()
 
-    maximums = np.array(maximums).transpose()
-    # Normalize maximums by t=0 maximum
-    maximums = maximums/maximums[0,:]
-    skewnesses = np.array(skewnesses).transpose()
-    asymmetries = np.array(asymmetries).transpose()
+        tmp_maximums = np.array(tmp_maximums).transpose()
+        # Normalize maximums by t=0 maximum
+        maximums[indx] = tmp_maximums/tmp_maximums[0,:]
+        skewnesses[indx] = np.array(tmp_skewnesses).transpose()
+        asymmetries[indx] = np.array(tmp_asymmetries).transpose()
 
     print("Plotting.")
 
     ## Color cycle
+    # We should have the same number of lines for all eps/mu pairs,
+    # so it doesn't matter which loop we calculate this on
     num_lines = skew_asymm_Ps.size # Number of lines
     # Make the colors go from blue to black to red
     MaxColorAbs = 0.4
@@ -1718,7 +1758,7 @@ if(plot_skew_asymm_cnoidal):
                                cycler('linestyle', linestyles)))
 
     # Initialize figure
-    fig, ax = texplot.newfig(0.9,nrows=3,sharex=True,sharey=False,golden=True)
+    fig, ax = texplot.newfig(0.9,nrows=3,ncols=2,sharex=True,sharey=False,golden=True)
 
     # Adjust figure height
     figsize = fig.get_size_inches()
@@ -1727,22 +1767,24 @@ if(plot_skew_asymm_cnoidal):
     fig.set_tight_layout(False)
     fig.subplots_adjust(left=0.175,right=0.8,top=0.875,bottom=0.15)
 
-    ax[-1].set_xlabel(r'Time $t \sqrt{g/h}$')
-    ax[0].set_ylabel(r'Height')
-    ax[1].set_ylabel(r'Skewness')
-    ax[2].set_ylabel(r'Asymmetry')
+    ax[-1,0].set_xlabel(r'Time $t \sqrt{g/h}$')
+    ax[-1,1].set_xlabel(r'Time $t \sqrt{g/h}$')
+    ax[0,0].set_ylabel(r'Height')
+    ax[1,0].set_ylabel(r'Skewness')
+    ax[2,0].set_ylabel(r'Asymmetry')
     fig.suptitle(r'\begin{{tabular}}{{c}}Height, Skewness, and Asymmetry: \\ $a/h={eps}$, $kh = {kh}$\end{{tabular}}'.format(
         eps=eps,kh=round(np.sqrt(mu),1),P=P))
 
-    # Put horizontal line at y=1
-    ax[0].axhline(1, color='0.75')
+    for indx in [0,1]:
+        # Put horizontal line at y=1
+        ax[0,indx].axhline(1, color='0.75')
 
-    # Put horizontal line at A=0
-    ax[2].axhline(0, color='0.75')
+        # Put horizontal line at A=0
+        ax[2,indx].axhline(0, color='0.75')
 
-    lines = ax[0].plot(t,maximums)
-    ax[1].plot(t,skewnesses)
-    ax[2].plot(t,asymmetries)
+        lines = ax[0,indx].plot(t[indx],maximums[indx])
+        ax[1,indx].plot(t[indx],skewnesses[indx])
+        ax[2,indx].plot(t[indx],asymmetries[indx])
 
     # Multiply Ps by eps; the P used in this code is really the
     # "nondimensionalized" P' = P/eps, so multiply by eps to get back to
