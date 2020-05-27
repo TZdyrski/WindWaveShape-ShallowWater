@@ -2090,8 +2090,8 @@ if(plot_power_spec_vs_time_Jeffreys):
     print("Computing the solution.")
 
     # Create KdV-Burgers or nonlocal KdV system
-    posSystem = kdvSystem(P=P,H=H,psiP=psiP,diffeq='KdVNL', eps=eps, mu=mu)
-    negSystem = kdvSystem(P=-P,H=H,psiP=psiP,diffeq='KdVNL', eps=eps, mu=mu)
+    posSystem = kdvSystem(P=P,H=H,psiP=psiP,diffeq='KdVB', eps=eps, mu=mu)
+    negSystem = kdvSystem(P=-P,H=H,psiP=psiP,diffeq='KdVB', eps=eps, mu=mu)
     # Set spatial and temporal grid
     posSystem.set_spatial_grid(xLen='fit',xStep=xStep)
     negSystem.set_spatial_grid(xLen='fit',xStep=xStep)
