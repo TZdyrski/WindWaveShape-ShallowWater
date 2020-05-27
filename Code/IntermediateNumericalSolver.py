@@ -1346,7 +1346,7 @@ if(plot_skew_asymm_kh):
         print("Computing the solution.")
         # Create KdV-Burgers or nonlocal KdV system
         skewAsymSystem = kdvSystem(P=P, H=H,psiP=psiP,diffeq=diffeq,
-                eps=eps, mu=mu_val)
+                eps=eps/mu*mu_val, mu=mu_val)
         # Set spatial and temporal grid
         skewAsymSystem.set_spatial_grid(xLen=xLen, xStep=xStep)
         skewAsymSystem.set_temporal_grid(tLen=skew_asymm_tLen,tNum=skew_asymm_tNum)
@@ -1358,9 +1358,8 @@ if(plot_skew_asymm_kh):
         # Boost to co-moving frame
         skewAsymSystem.boost_to_lab_frame(velocity='solitary')
 
-        # Save timesteps
-        # Note: divide by epsilon to convert from t_1 to the full time t
-        t = skewAsymSystem.t/eps
+        # Save t_1 (NOT t, since eps differs for different runs) timesteps
+        t = skewAsymSystem.t
 
         print("Computing the Height.")
         maximums[idx] = skewAsymSystem.maximum()
@@ -1411,8 +1410,20 @@ if(plot_skew_asymm_kh):
     ax[0].set_ylabel(r'Height')
     ax[1].set_ylabel(r'Skewness')
     ax[2].set_ylabel(r'Asymmetry')
-    fig.suptitle(r'\begin{{tabular}}{{c}}Height, Skewness, and Asymmetry: \\ $a/h={eps}$, $kh = {kh}$, $t \sqrt{{g/h}} = {t}$\end{{tabular}}'.format(
+    fig.suptitle(r'\begin{{tabular}}{{c}}Height, Skewness, and Asymmetry: \\ $a/h={eps}$, $kh = {kh}$, $t \epsilon \sqrt{{g/h}} = {t}$\end{{tabular}}'.format(
         eps=eps,kh=round(np.sqrt(mu),1),P=P,t=round(t[-1],0)))
+
+    def mu2eps(x):
+        return x/mu*eps
+    def eps2mu(x):
+        return x/eps*mu
+
+    ax[0].secondary_xaxis('top',
+            functions=(mu2eps,eps2mu)).set_xlabel(r'Nondimensional Height $\epsilon$')
+    ax[1].secondary_xaxis('top',
+            functions=(mu2eps,eps2mu)).set_xlabel(r'Nondimensional Height $\epsilon$')
+    ax[2].secondary_xaxis('top',
+            functions=(mu2eps,eps2mu)).set_xlabel(r'Nondimensional Height $\epsilon$')
 
     # Put horizontal line at y=1
     ax[0].axhline(1, color='0.75')
@@ -1810,7 +1821,7 @@ if(plot_skew_asymm_cnoidal_kh):
         print("Computing the solution.")
         # Create KdV-Burgers or nonlocal KdV system
         skewAsymSystem = kdvSystem(P=P, H=H,psiP=psiP,diffeq=diffeq,
-                eps=eps, mu=mu_val)
+                eps=eps/mu*mu_val, mu=mu_val)
         # Set spatial and temporal grid
         skewAsymSystem.set_spatial_grid(xLen=xLen, xStep=xStep)
         skewAsymSystem.set_temporal_grid(tLen=skew_asymm_tLen,tNum=skew_asymm_tNum)
@@ -1822,9 +1833,8 @@ if(plot_skew_asymm_cnoidal_kh):
         # Boost to co-moving frame
         skewAsymSystem.boost_to_lab_frame(velocity='cnoidal')
 
-        # Save timesteps
-        # Note: divide by epsilon to convert from t_1 to the full time t
-        t = skewAsymSystem.t/eps
+        # Save t_1 (NOT t, since eps differs for different runs) timesteps
+        t = skewAsymSystem.t
 
         # Since we re-scaled the x-grid and t-grid, each value of mu_val
         # gives a different tNum and hence a different array size for
@@ -1881,8 +1891,20 @@ if(plot_skew_asymm_cnoidal_kh):
     ax[0].set_ylabel(r'Height')
     ax[1].set_ylabel(r'Skewness')
     ax[2].set_ylabel(r'Asymmetry')
-    fig.suptitle(r'\begin{{tabular}}{{c}}Height, Skewness, and Asymmetry: \\ $a/h={eps}$, $kh = {kh}$, $t \sqrt{{g/h}} = {t}$\end{{tabular}}'.format(
+    fig.suptitle(r'\begin{{tabular}}{{c}}Height, Skewness, and Asymmetry: \\ $a/h={eps}$, $kh = {kh}$, $t \epsilon \sqrt{{g/h}} = {t}$\end{{tabular}}'.format(
         eps=eps,kh=round(np.sqrt(mu),1),P=P,t=round(t[-1],0)))
+
+    def mu2eps(x):
+        return x/mu*eps
+    def eps2mu(x):
+        return x/eps*mu
+
+    ax[0].secondary_xaxis('top',
+            functions=(mu2eps,eps2mu)).set_xlabel(r'Nondimensional Height $\epsilon$')
+    ax[1].secondary_xaxis('top',
+            functions=(mu2eps,eps2mu)).set_xlabel(r'Nondimensional Height $\epsilon$')
+    ax[2].secondary_xaxis('top',
+            functions=(mu2eps,eps2mu)).set_xlabel(r'Nondimensional Height $\epsilon$')
 
     # Put horizontal line at y=1
     ax[0].axhline(1, color='0.75')
