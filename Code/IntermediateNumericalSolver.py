@@ -2067,9 +2067,9 @@ if(plot_power_spec_Jeffreys):
     # P
     fig.suptitle(r'Power Spectrum vs Time: $a/h={eps}$, $kh = {kh}$'.format(
         eps=eps,kh=round(np.sqrt(mu),1)))
-    ax[0].set_title(r'Co-Wind: $P_G k/(\rho_w g) = {P}$'.format(
+    ax[0].set_title(r'Co-Wind: $P_J k/(\rho_w g) = {P}$'.format(
         P=round(eps*(P),3)))
-    ax[1].set_title(r'Counter-Wind: $P_G k/(\rho_w g) = {P}$'.format(
+    ax[1].set_title(r'Counter-Wind: $P_J k/(\rho_w g) = {P}$'.format(
         P=round(eps*(-P),3)))
 
     ax[0].plot(kappa,posSnapshotsPower)
@@ -2213,9 +2213,9 @@ if(plot_power_spec_vs_time_Jeffreys):
     # P
     fig.suptitle(r'Power Spectrum vs Time: $a/h={eps}$, $kh = {kh}$'.format(
         eps=eps,kh=round(np.sqrt(mu),1)))
-    ax[0].set_title(r'Co-Wind: $P_G k/(\rho_w g) = {P}$'.format(
+    ax[0].set_title(r'Co-Wind: $P_J k/(\rho_w g) = {P}$'.format(
         P=round(eps*(P),3)))
-    ax[1].set_title(r'Counter-Wind: $P_G k/(\rho_w g) = {P}$'.format(
+    ax[1].set_title(r'Counter-Wind: $P_J k/(\rho_w g) = {P}$'.format(
         P=round(eps*(-P),3)))
 
     # Source: https://matplotlib.org/3.1.1/gallery/ticks_and_spines/multiple_yaxis_with_spines.html
