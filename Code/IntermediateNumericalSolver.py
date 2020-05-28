@@ -40,7 +40,8 @@ omega_to_T = 1/2/np.pi # conversion from omega to 1/T
 ## Physical parameters to convert from normalized, nondimensional
 ## variables to non-normalized, dimensional variables
 eps = 0.1 # a/h
-mu= 0.1 # (kh)**2
+mu= 0.8 # (kh)**2
+mu_solitary = 6*eps # (kh)**2 fixed for solitary waves
 
 # For plots with a pair of epsilon and mu values
 pairedEps = [eps, 2*eps]
@@ -93,7 +94,7 @@ skew_asymm_xLen_cnoidal = np.repeat('fit',skew_asymm_Ps.size)
 skew_asymm_xStep = skew_asymm_array*0.1
 skew_asymm_Hs = np.absolute(skew_asymm_Ps)*0.05
 
-kh_mus = np.linspace(0.05,0.5,8)
+kh_mus = np.linspace(eps*6,eps*12,8)
 kh_tLen = 1
 
 # Values for GM
@@ -179,6 +180,9 @@ class kdvSystem():
         self.A = A
         self.B = B
         self.H = H
+
+        self.eps = eps
+        self.mu = mu
 
         self.psiP = psiP
         self.diffeq = diffeq
@@ -316,7 +320,7 @@ class kdvSystem():
         self.t, self.dt = np.linspace(0, self.tLen, self.tNum, retstep=True)
 
 
-    def set_initial_conditions(self, y0='solitary', m=0.8, Height=None,
+    def set_initial_conditions(self, y0='solitary', Height=None,
             redo_grids=False):
         """Set the initial conditions.
         Parameters
@@ -327,9 +331,6 @@ class kdvSystem():
             satisfies the unforced KdV equation. 'cnoidal' gives a
             cnoidal wave profile which satisfies the unforced KdV
             equation. Default is a 'solitary'.
-        m : float or None
-            Jacobi elliptic function parameter; must be float between 0
-            and 1, inclusive. Default is 0.5.
         Height : float or None
             Height of initial condition. If None, then H is chosen to be
             2*sign(self.B*self.C). Default is None.
@@ -348,37 +349,60 @@ class kdvSystem():
         else:
             self.Height = 2*np.sign(self.B*self.C)
 
+        if type(y0) != np.ndarray and (y0 == 'solitary' or y0 ==
+                'cnoidal'):
+            # If mu and eps are specified, then m is fixed
+            m = self.Height*self.B/(3*self.C)
+
+            # Round to sigFigs significant figures (to prevent machine
+            # precision causing, eg, m = 1.0000000000000002 to throw and
+            # error)
+            # Source:
+            # https://stackoverflow.com/questions/3410976/how-to-round-a-number-to-significant-figures-in-python
+            sigFigs = 5
+            m = round(m, sigFigs-1-int(np.floor(np.log10(np.absolute(m)))))
+            if m > 1 or m < 0:
+                raise(ValueError("m = 2*B/3/C*eps/mu must be at least 0"+
+                    " and less than 1; m was calculated to be "+
+                    str(m)))
+            self.m = m
+
         if type(y0) == np.ndarray:
             self.y0 = y0
-        elif y0 == 'solitary':
+        elif y0 == 'solitary' or m == 1:
             if np.sign(self.Height) != np.sign(self.B*self.C):
                 raise(ValueError("sgn(H) must equal sgn(B*C)"))
+            # mu and eps must satisfy specific relationship for
+            # solitary waves (corresponding to m=1; see below)
+            if m != 1:
+                raise(ValueError("Must have Height*B/(3*C) = 1 for "+
+                    "solitary waves, but equals "+
+                    str(self.Height*self.B/(3*self.C))))
             self.y0 = self.Height*1/np.cosh(np.sqrt(self.Height*self.B/self.C/12) \
                     *self.x)**2
 
         elif y0 == 'cnoidal':
-            self.m = m
-            Height = self.Height
-
             K = spec.ellipk(m)
             E = spec.ellipe(m)
 
-            # Height; Height*WaveLength**2 satisfy an exact
-            # relationship; since we already specified the height, we
-            # cannot freely choose the wavelength
-            WaveLength = np.sqrt(48*self.C/self.B*m*K**2/Height)
+            # Adjust the length of a wavelength to be 4*K(m) in
+            # nondimensional units, since we want one wavelength to be
+            # k*(x=lambda) = k*lambda = (2/Delta)*lambda = 4*K(m)
+            # Note: we defined k=2/Delta so that it reduces to the usual
+            # definition 2*pi/lambda for m=0
+            self.WaveLength = 4*K
 
+            # Also adjust xLen to fit the new wavelengths
             if redo_grids:
                 self.set_spatial_grid(xLen='fit', xNum=self.xNum,
                         xOffset=self.xOffset,
-                        WaveLength=WaveLength,
+                        WaveLength=self.WaveLength,
                         NumWaves=self.NumWaves)
                 self.set_temporal_grid(tNum='density', tLen=self.tLen)
-            self.WaveLength = WaveLength
 
             cn = spec.ellipj(self.x/self.WaveLength*2*K,m)[1]
-            trough = Height/m*(1-m-E/K)
-            self.y0 = trough + Height*cn**2
+            trough = self.Height/m*(1-m-E/K)
+            self.y0 = trough + self.Height*cn**2
 
         else:
             raise(ValueError("y0 must be array_like, 'solitary', or 'cnoidal'"))
@@ -971,9 +995,9 @@ if(plot_trig_funcs):
 
     ax[1].set_xlabel(r'Distance $x/\lambda$')
     ax[0].set_title(r'Builtin Solver after exactly 1 Period: $a/h={eps}$, $kh = {kh}$'.format(
-        eps=eps,kh=round(np.sqrt(mu),1)))
+        eps=eps,kh=round(np.sqrt(mu_solitary),1)))
     ax[1].set_title(r'FD Solver after exactly 1 Period: $a/h={eps}$, $kh = {kh}$'.format(
-        eps=eps,kh=round(np.sqrt(mu),1)))
+        eps=eps,kh=round(np.sqrt(mu_solitary),1)))
 
     ax[0].plot(xMasked,builtinSnapshots)
     ax[1].plot(xMasked,FDSnapshots)
@@ -992,7 +1016,8 @@ if(plot_snapshots):
     print("Computing the solution.")
 
     # Create KdV-Burgers or nonlocal KdV system
-    snapshotSystem = kdvSystem(P=P,H=H,psiP=psiP,diffeq=diffeq, eps=eps, mu=mu)
+    snapshotSystem = kdvSystem(P=P,H=H,psiP=psiP,diffeq=diffeq, eps=eps,
+            mu=mu_solitary)
     # Set spatial and temporal grid
     snapshotSystem.set_spatial_grid(xLen=xLen,xStep=xStep)
     snapshotSystem.set_temporal_grid(tLen=tLen,tNum='density')
@@ -1033,7 +1058,7 @@ if(plot_snapshots):
     # "nondimensionalized" P' = P/eps, so multiply by eps to get back to
     # P
     ax.set_title(r'Surface Height vs Time: $a/h={eps}$, $kh = {kh}$, $P_J k/(\rho_w g) = {P}$'.format(
-        eps=eps,kh=round(np.sqrt(mu),1),P=round(eps*P,3)))
+        eps=eps,kh=round(np.sqrt(mu_solitary),1),P=round(eps*P,3)))
 
     ax.plot(xMasked,snapshots)
 
@@ -1067,7 +1092,8 @@ if(plot_negative_snapshots):
     print("Computing the solution.")
 
     # Create KdV-Burgers or nonlocal KdV system
-    snapshotSystem = kdvSystem(P=-P,H=H,psiP=psiP,diffeq=diffeq, eps=eps, mu=mu)
+    snapshotSystem = kdvSystem(P=-P,H=H,psiP=psiP,diffeq=diffeq,
+            eps=eps, mu=mu_solitary)
     # Set spatial and temporal grid
     snapshotSystem.set_spatial_grid(xLen=xLen,xStep=xStep)
     snapshotSystem.set_temporal_grid(tLen=tLen,tNum='density')
@@ -1108,7 +1134,7 @@ if(plot_negative_snapshots):
     # "nondimensionalized" P' = P/eps, so multiply by eps to get back to
     # P
     ax.set_title(r'Surface Height vs Time: $a/h={eps}$, $kh = {kh}$, $P_J k/(\rho_w g) = {P}$'.format(
-        eps=eps,kh=round(np.sqrt(mu),1),P=round(eps*(-P),3)))
+        eps=eps,kh=round(np.sqrt(mu_solitary),1),P=round(eps*(-P),3)))
 
     ax.plot(xMasked,snapshots)
 
@@ -1144,12 +1170,12 @@ if(plot_pos_neg_snapshots):
     posSnapshots = [None,None]
     negSnapshots = [None,None]
     xMasked = [None,None]
-    for indx, (eps_val,mu_val) in enumerate(zip(pairedEps,pairedMu)):
+    for indx, eps_val in enumerate(pairedEps):
         # Create KdV-Burgers or nonlocal KdV system
         posSystem = kdvSystem(P=P,H=H,psiP=psiP,diffeq=diffeq,
-                eps=eps_val, mu=mu_val)
+                eps=eps_val, mu=eps_val/eps*mu_solitary)
         negSystem = kdvSystem(P=-P,H=H,psiP=psiP,diffeq=diffeq,
-                eps=eps_val, mu=mu_val)
+                eps=eps_val, mu=eps_val/eps*mu_solitary)
         # Set spatial and temporal grid
         posSystem.set_spatial_grid(xLen=xLen,xStep=xStep)
         negSystem.set_spatial_grid(xLen=xLen,xStep=xStep)
@@ -1214,9 +1240,8 @@ if(plot_pos_neg_snapshots):
         # P
 
         ax[0,indx].set_title(r'\begin{{tabular}}{{c}}$\epsilon = {eps}$, $\mu = {mu}$\\$P_J k/(\rho_w g) = {P}$\end{{tabular}}'.format(
-            P=round(eps*(P),3),eps=pairedEps[indx],mu=pairedMu[indx]))
-        ax[1,indx].set_title(r'$P_J k/(\rho_w g) = {P}$'.format(
-            P=round(eps*(-P),3),eps=pairedEps[indx],mu=pairedMu[indx]))
+            P=round(eps*(P),3),eps=pairedEps[indx],mu=pairedEps[indx]/eps*mu_solitary))
+        ax[1,indx].set_title(r'$P_J k/(\rho_w g) = {P}$'.format(P=round(eps*(-P),3)))
 
         ax[0,indx].plot(xMasked[indx],posSnapshots[indx])
         ax[1,indx].plot(xMasked[indx],negSnapshots[indx])
@@ -1271,7 +1296,8 @@ if(plot_skew_asymm):
         print("Computing the solution.")
         # Create KdV-Burgers or nonlocal KdV system
         skewAsymSystem = kdvSystem(P=Pval,
-                H=skew_asymm_Hs[idx],psiP=psiP,diffeq=diffeq, eps=eps, mu=mu)
+                H=skew_asymm_Hs[idx],psiP=psiP,diffeq=diffeq, eps=eps,
+                mu=mu_solitary)
         # Set spatial and temporal grid
         skewAsymSystem.set_spatial_grid(
                 xLen=skew_asymm_xLen[idx],
@@ -1334,7 +1360,7 @@ if(plot_skew_asymm):
     ax[1].set_ylabel(r'Skewness')
     ax[2].set_ylabel(r'Asymmetry')
     fig.suptitle(r'\begin{{tabular}}{{c}}Height, Skewness, and Asymmetry: \\ $a/h={eps}$, $kh = {kh}$\end{{tabular}}'.format(
-        eps=eps,kh=round(np.sqrt(mu),1),P=P))
+        eps=eps,kh=round(np.sqrt(mu_solitary),1),P=P))
 
     # Put horizontal line at y=1
     ax[0].axhline(1, color='0.75')
@@ -1370,7 +1396,7 @@ if(plot_skew_asymm_kh):
         print("Computing the solution.")
         # Create KdV-Burgers or nonlocal KdV system
         skewAsymSystem = kdvSystem(P=P, H=H,psiP=psiP,diffeq=diffeq,
-                eps=eps/mu*mu_val, mu=mu_val)
+                eps=eps/mu_solitary*mu_val, mu=mu_val)
         # Set spatial and temporal grid
         skewAsymSystem.set_spatial_grid(xLen=xLen, xStep=xStep)
         skewAsymSystem.set_temporal_grid(tLen=skew_asymm_tLen,tNum=skew_asymm_tNum)
@@ -1438,9 +1464,9 @@ if(plot_skew_asymm_kh):
         P=P,t=round(t[-1],0)))
 
     def mu2eps(x):
-        return x/mu*eps
+        return x/mu_solitary*eps
     def eps2mu(x):
-        return x/eps*mu
+        return x/eps*mu_solitary
 
     ax[0].secondary_xaxis('top',
             functions=(mu2eps,eps2mu)).set_xlabel(r'Nondimensional Height $\epsilon$')
