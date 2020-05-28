@@ -31,6 +31,7 @@ plot_power_spec_vs_time_Jeffreys = False
 plot_power_spec_GM = False
 plot_power_spec_vs_time_GM = False
 plot_pos_neg_snapshots_cnoidal_GM = False
+plot_forcing_types = False
 
 ### Set global parameters
 ## Conversion factors
@@ -2760,3 +2761,61 @@ if(plot_pos_neg_snapshots_cnoidal_GM):
     fig.patch.set_alpha(0)
 
     texplot.savefig(fig,'../Figures/Snapshots-Positive-Negative-Cnoidal-GM')
+
+# Plot different forcing types
+if(plot_forcing_types):
+
+    P_forcing = 1
+
+    Height = 1
+
+    WaveLength = 1
+    numWaves = 1
+    xLen_forcing = WaveLength*numWaves
+    dx_forcing = 0.01
+    x = np.arange(0,xLen_forcing,dx_forcing)
+
+    m = 0.9
+
+    K = spec.ellipk(m)
+    E = spec.ellipe(m)
+
+    cn = spec.ellipj(x/WaveLength*2*K,m)[1]
+    trough = Height/m*(1-m-E/K)
+    y0 = trough + Height*cn**2
+
+    eta = y0
+    jeffreys = P_forcing*psdiff(eta, period=xLen_forcing)
+    generalized = P_forcing*np.roll(eta, shift=int(round(-psiP*WaveLength/(2*np.pi)/dx_forcing)),
+                    axis=0)
+
+    # Initialize figure
+    fig, ax = texplot.newfig(0.9,nrows=2,ncols=1,sharex=True,
+            sharey=False)
+    fig.set_tight_layout(False)
+
+    ax[0].set_ylabel(r'Elevation $\eta/H$')
+    ax[1].set_ylabel(r'\begin{tabular}{c}Pressure $p$\end{tabular}')
+
+    ax[1].set_xlabel(r'Distance $x/\lambda$')
+
+    ax[0].annotate('a)', xy=(0.02,0.8), xycoords='axes fraction')
+    ax[1].annotate('b)', xy=(0.02,0.8), xycoords='axes fraction')
+
+    ax[0].plot(x,eta, 'r')
+
+    ln1 = ax[1].plot(x,jeffreys,label=r'Jeffreys $p_J$')
+    ln3 = ax[1].plot(x,generalized,label=r'Generalized $p_G$')
+
+    lns = ln1+ln3
+    lbls = [l.get_label() for l in lns]
+
+    fig.legend(lns, lbls, loc='right', bbox_to_anchor=(1.0,0.5))
+
+    # Add line depicting $\psi_P$
+    ax[1].annotate('', xy=(1, 0), xytext=(1-psiP*WaveLength/(2*np.pi), 0),
+            arrowprops=dict(arrowstyle='|-|, widthA=0.5, widthB=0.5'))
+    ax[1].annotate(r'$\psi_P$', xy=(1-psiP*WaveLength/(2*np.pi)/2., 0), ha='center',
+            va='bottom')
+
+    texplot.savefig(fig,'../Figures/Forcing-Types')
