@@ -2757,13 +2757,13 @@ if(plot_forcing_types):
 
     Height = 1
 
-    WaveLength = 1
+    WaveLength = 2*np.pi
     numWaves = 1
     xLen_forcing = WaveLength*numWaves
     dx_forcing = 0.01
     x = np.arange(0,xLen_forcing,dx_forcing)
 
-    m = 0.9
+    m = 0.1
 
     K = spec.ellipk(m)
     E = spec.ellipe(m)
@@ -2801,9 +2801,9 @@ if(plot_forcing_types):
     fig.legend(lns, lbls, loc='right', bbox_to_anchor=(1.0,0.5))
 
     # Add line depicting $\psi_P$
-    ax[1].annotate('', xy=(1, 0), xytext=(1-psiP*WaveLength/(2*np.pi), 0),
+    ax[1].annotate('', xy=(WaveLength, 0), xytext=(WaveLength*(1-psiP/(2*np.pi)), 0),
             arrowprops=dict(arrowstyle='|-|, widthA=0.5, widthB=0.5'))
-    ax[1].annotate(r'$\psi_P$', xy=(1-psiP*WaveLength/(2*np.pi)/2., 0), ha='center',
+    ax[1].annotate(r'$\psi_P$', xy=(WaveLength*(1-psiP/(2*np.pi)/2.), 0), ha='center',
             va='bottom')
 
     texplot.savefig(fig,'../Figures/Forcing-Types')
