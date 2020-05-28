@@ -351,8 +351,10 @@ class kdvSystem():
         if type(y0) == np.ndarray:
             self.y0 = y0
         elif y0 == 'solitary':
-            self.y0 = 1/np.cosh(np.sqrt(abs(self.B)/abs(self.C)/12) \
-                    *self.x)**2*np.sign(self.B*self.C)
+            if np.sign(self.Height) != np.sign(self.B*self.C):
+                raise(ValueError("sgn(H) must equal sgn(B*C)"))
+            self.y0 = self.Height*1/np.cosh(np.sqrt(self.Height*self.B/self.C/12) \
+                    *self.x)**2
 
         elif y0 == 'cnoidal':
             self.m = m
@@ -893,7 +895,7 @@ class kdvSystem():
         """
 
         if velocity == 'solitary':
-            velocity = -(self.B*np.sign(self.B*self.C)/3+self.F)/self.A
+            velocity = -(self.B*self.Height/3+self.F)/self.A
         elif velocity == 'cnoidal':
             m = self.m
             Height = self.Height
