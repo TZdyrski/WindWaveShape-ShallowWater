@@ -1791,8 +1791,7 @@ if(plot_skew_asymm_cnoidal):
                                cycler('linestyle', linestyles)))
 
     # Initialize figure
-    fig, ax =
-    texplot.newfig(0.9,nrows=3,ncols=2,sharex=True,sharey='row',golden=True)
+    fig, ax = texplot.newfig(0.9,nrows=3,ncols=2,sharex=True,sharey='row',golden=True)
 
     # Adjust figure height
     figsize = fig.get_size_inches()
@@ -1844,7 +1843,7 @@ if(plot_skew_asymm_cnoidal_kh):
         print("Computing the solution.")
         # Create KdV-Burgers or nonlocal KdV system
         skewAsymSystem = kdvSystem(P=P, H=H,psiP=psiP,diffeq=diffeq,
-                eps=eps/mu*mu_val, mu=mu_val)
+                eps=eps, mu=mu_val)
         # Set spatial and temporal grid
         skewAsymSystem.set_spatial_grid(xLen=xLen, xStep=xStep)
         skewAsymSystem.set_temporal_grid(tLen=skew_asymm_tLen,tNum=skew_asymm_tNum)
@@ -1916,18 +1915,6 @@ if(plot_skew_asymm_cnoidal_kh):
     ax[2].set_ylabel(r'Asymmetry')
     fig.suptitle(r'Height, Skewness, and Asymmetry: $t \epsilon \sqrt{{g/h}} = {t}$'.format(
         P=P,t=round(t[-1],0)))
-
-    def mu2eps(x):
-        return x/mu*eps
-    def eps2mu(x):
-        return x/eps*mu
-
-    ax[0].secondary_xaxis('top',
-            functions=(mu2eps,eps2mu)).set_xlabel(r'Nondimensional Height $\epsilon$')
-    ax[1].secondary_xaxis('top',
-            functions=(mu2eps,eps2mu)).set_xlabel(r'Nondimensional Height $\epsilon$')
-    ax[2].secondary_xaxis('top',
-            functions=(mu2eps,eps2mu)).set_xlabel(r'Nondimensional Height $\epsilon$')
 
     # Put horizontal line at y=1
     ax[0].axhline(1, color='0.75')
