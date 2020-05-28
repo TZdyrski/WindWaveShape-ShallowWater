@@ -2797,7 +2797,7 @@ if(plot_forcing_types):
     lns = ln1+ln3
     lbls = [l.get_label() for l in lns]
 
-    fig.legend(lns, lbls, loc='right', bbox_to_anchor=(1.0,0.5))
+    fig.legend(lns, lbls, loc='right', bbox_to_anchor=(0.5,0.5))
 
     # Add line depicting $\psi_P$
     ax[1].annotate('', xy=(WaveLength, 0), xytext=(WaveLength*(1-psiP/(2*np.pi)), 0),
