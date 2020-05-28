@@ -2268,6 +2268,10 @@ if(plot_power_spec_vs_time_Jeffreys):
         firstHarmonicAx[indx].ticklabel_format(style='sci',axis='y',scilimits=(0,0))
         secondHarmonicAx[indx].ticklabel_format(style='sci',axis='y',scilimits=(0,0))
 
+        ax[indx].set_ylim(bottom=0)
+        firstHarmonicAx[indx].set_ylim(bottom=0)
+        secondHarmonicAx[indx].set_ylim(bottom=0)
+
     # Make background transparent
     fig.patch.set_alpha(0)
 
@@ -2619,6 +2623,10 @@ if(plot_power_spec_vs_time_GM):
         ax[indx].ticklabel_format(style='sci',axis='y',scilimits=(0,0))
         firstHarmonicAx[indx].ticklabel_format(style='sci',axis='y',scilimits=(0,0))
         secondHarmonicAx[indx].ticklabel_format(style='sci',axis='y',scilimits=(0,0))
+
+        ax[indx].set_ylim(bottom=0)
+        firstHarmonicAx[indx].set_ylim(bottom=0)
+        secondHarmonicAx[indx].set_ylim(bottom=0)
 
     # Make background transparent
     fig.patch.set_alpha(0)
