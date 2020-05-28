@@ -1189,22 +1189,22 @@ if(plot_pos_neg_snapshots):
     figsize = fig.get_size_inches()
     fig.set_size_inches([figsize[0],figsize[1]*1.3])
 
-    fig.subplots_adjust(left=0.175,right=0.9,top=0.875,bottom=0.125,hspace=0.3)
+    fig.subplots_adjust(left=0.175,right=0.825,top=0.8,bottom=0.125,hspace=0.3)
 
     for indx in [0,1]:
         ax[1,indx].set_xlabel(r'Distance $x/\lambda$')
         ax[indx,0].set_ylabel(r'$\eta / h$')
 
-    # Multiply P by eps; the P used in this code is really the
-    # "nondimensionalized" P' = P/eps, so multiply by eps to get back to
-    # P
-    fig.suptitle(r'Surface Height vs Time: $a/h={eps}$, $kh = {kh}$'.format(
-        eps=eps,kh=round(np.sqrt(mu),1)))
+    fig.suptitle(r'Surface Height vs Time')
 
     for indx in [0,1]:
-        ax[0,indx].set_title(r'\begin{{tabular}}{{c}}$P_J k/(\rho_w g) = {P}$,\\$\epsilon = {eps}$, $\mu = {mu}$\end{{tabular}}'.format(
+        # Multiply P by eps; the P used in this code is really the
+        # "nondimensionalized" P' = P/eps, so multiply by eps to get back to
+        # P
+
+        ax[0,indx].set_title(r'\begin{{tabular}}{{c}}$\epsilon = {eps}$, $\mu = {mu}$\\$P_J k/(\rho_w g) = {P}$\end{{tabular}}'.format(
             P=round(eps*(P),3),eps=pairedEps[indx],mu=pairedMu[indx]))
-        ax[1,indx].set_title(r'\begin{{tabular}}{{c}}$P_J k/(\rho_w g) = {P}$,\\$\epsilon = {eps}$, $\mu = {mu}$\end{{tabular}}'.format(
+        ax[1,indx].set_title(r'$P_J k/(\rho_w g) = {P}$'.format(
             P=round(eps*(-P),3),eps=pairedEps[indx],mu=pairedMu[indx]))
 
         ax[0,indx].plot(xMasked[indx],posSnapshots[indx])
@@ -1664,22 +1664,22 @@ if(plot_pos_neg_snapshots_cnoidal):
     figsize = fig.get_size_inches()
     fig.set_size_inches([figsize[0],figsize[1]*1.3])
 
-    fig.subplots_adjust(left=0.175,right=0.9,top=0.875,bottom=0.125,hspace=0.3)
+    fig.subplots_adjust(left=0.175,right=0.825,top=0.8,bottom=0.125,hspace=0.3)
 
     for indx in [0,1]:
         ax[1,indx].set_xlabel(r'Distance $x/\lambda$')
         ax[indx,0].set_ylabel(r'$\eta / h$')
 
-    # Multiply P by eps; the P used in this code is really the
-    # "nondimensionalized" P' = P/eps, so multiply by eps to get back to
-    # P
-    fig.suptitle(r'Surface Height vs Time: $a/h={eps}$, $kh = {kh}$'.format(
-        eps=eps,kh=round(np.sqrt(mu),1)))
+    fig.suptitle(r'Surface Height vs Time')
 
     for indx in [0,1]:
-        ax[0,indx].set_title(r'\begin{{tabular}}{{c}}$P_J k/(\rho_w g) = {P}$,\\$\epsilon = {eps}$, $\mu = {mu}$\end{{tabular}}'.format(
+        # Multiply P by eps; the P used in this code is really the
+        # "nondimensionalized" P' = P/eps, so multiply by eps to get back to
+        # P
+
+        ax[0,indx].set_title(r'\begin{{tabular}}{{c}}$\epsilon = {eps}$, $\mu = {mu}$\\$P_J k/(\rho_w g) = {P}$\end{{tabular}}'.format(
             P=round(eps*(P),3),eps=pairedEps[indx],mu=pairedMu[indx]))
-        ax[1,indx].set_title(r'\begin{{tabular}}{{c}}$P_J k/(\rho_w g) = {P}$,\\$\epsilon = {eps}$, $\mu = {mu}$\end{{tabular}}'.format(
+        ax[1,indx].set_title(r'$P_J k/(\rho_w g) = {P}$'.format(
             P=round(eps*(-P),3),eps=pairedEps[indx],mu=pairedMu[indx]))
 
         ax[0,indx].plot(xMasked[indx],posSnapshots[indx])
