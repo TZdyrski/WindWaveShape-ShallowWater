@@ -2780,7 +2780,6 @@ if(plot_forcing_types):
     # Initialize figure
     fig, ax = texplot.newfig(0.9,nrows=2,ncols=1,sharex=True,
             sharey=False)
-    fig.set_tight_layout(False)
 
     ax[0].set_ylabel(r'Elevation $\eta/H$')
     ax[1].set_ylabel(r'\begin{tabular}{c}Pressure $p$\end{tabular}')
