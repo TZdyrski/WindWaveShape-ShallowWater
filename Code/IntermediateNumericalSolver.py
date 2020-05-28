@@ -107,6 +107,15 @@ trig_mode = 1
 FFT_tLen = 9
 FFT_num_peaks = 4
 
+## Plotting parameters
+JColor = '#8da0cb' # Jeffreys color (blue)
+MColor = '#66c2a5' # Miles color (green)
+GColor = '#fc8d62' # Generalized color (orange)
+SColor = '#e7298a' # Stokes color (black)
+JStyle = 'dashed' # Jeffreys line style (dashed)
+GStyle = 'solid' # Generalized line style (solid)
+SStyle = 'dotted' # Stokes line style (dotted)
+
 class kdvSystem():
 
     def __init__(self, A=1, B=3/2, C=None, F=None, G=None, P=None, H=0,
@@ -2789,10 +2798,12 @@ if(plot_forcing_types):
     ax[0].annotate('a)', xy=(0.02,0.8), xycoords='axes fraction')
     ax[1].annotate('b)', xy=(0.02,0.8), xycoords='axes fraction')
 
-    ax[0].plot(x,eta, 'r')
+    ax[0].plot(x,eta,color=SColor)
 
-    ln1 = ax[1].plot(x,jeffreys,label=r'Jeffreys $p_J$')
-    ln3 = ax[1].plot(x,generalized,label=r'Generalized $p_G$')
+    ln1 = ax[1].plot(x,jeffreys,label=r'Jeffreys $p_J$',
+            color=JColor,linestyle=JStyle)
+    ln3 = ax[1].plot(x,generalized,label=r'Generalized $p_G$',
+            color=GColor,linestyle=GStyle)
 
     lns = ln1+ln3
     lbls = [l.get_label() for l in lns]
