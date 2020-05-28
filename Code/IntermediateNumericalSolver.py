@@ -1309,7 +1309,7 @@ if(plot_skew_asymm):
                                cycler('linestyle', linestyles)))
 
     # Initialize figure
-    fig, ax = texplot.newfig(0.9,nrows=3,sharex=True,sharey=False,golden=True)
+    fig, ax = texplot.newfig(0.9,nrows=3,sharex=True,sharey='row',golden=True)
 
     # Adjust figure height
     figsize = fig.get_size_inches()
@@ -1791,7 +1791,8 @@ if(plot_skew_asymm_cnoidal):
                                cycler('linestyle', linestyles)))
 
     # Initialize figure
-    fig, ax = texplot.newfig(0.9,nrows=3,ncols=2,sharex=True,sharey=False,golden=True)
+    fig, ax =
+    texplot.newfig(0.9,nrows=3,ncols=2,sharex=True,sharey='row',golden=True)
 
     # Adjust figure height
     figsize = fig.get_size_inches()
