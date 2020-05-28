@@ -940,6 +940,9 @@ if(plot_trig_funcs):
     builtinSolver.set_x_window()
     xMasked = builtinSolver.get_masked_x()
 
+    # Normalize x by wavelength
+    xMasked = xMasked/builtinSolver.WaveLength
+
     print("Plotting.")
     ## Color cycle
     num_lines = builtinSnapshots[1,:].size # Number of lines
@@ -954,7 +957,7 @@ if(plot_trig_funcs):
     # Initialize figure
     fig, ax = texplot.newfig(0.9,nrows=2,sharex=True,sharey=False,golden=True)
 
-    ax[1].set_xlabel(r'Distance $k x$')
+    ax[1].set_xlabel(r'Distance $x/\lambda$')
     ax[0].set_title(r'Builtin Solver after exactly 1 Period: $a/h={eps}$, $kh = {kh}$'.format(
         eps=eps,kh=round(np.sqrt(mu),1)))
     ax[1].set_title(r'FD Solver after exactly 1 Period: $a/h={eps}$, $kh = {kh}$'.format(
@@ -997,6 +1000,9 @@ if(plot_snapshots):
     snapshotSystem.set_x_window(xMin=-4,xMax=5)
     xMasked = snapshotSystem.get_masked_x()
 
+    # Normalize x by wavelength
+    xMasked = xMasked/snapshotSystem.WaveLength
+
     print("Plotting.")
     ## Color cycle
     num_lines = snapshots[1,:].size # Number of lines
@@ -1009,7 +1015,7 @@ if(plot_snapshots):
     # Initialize figure
     fig, ax = texplot.newfig(0.9,golden=True)
 
-    ax.set_xlabel(r'Distance $k x$')
+    ax.set_xlabel(r'Distance $x/\lambda$')
     ax.set_ylabel(r'Surface Height $\eta / h$')
     # Multiply P by eps; the P used in this code is really the
     # "nondimensionalized" P' = P/eps, so multiply by eps to get back to
@@ -1069,6 +1075,9 @@ if(plot_negative_snapshots):
     snapshotSystem.set_x_window(xMin=-4,xMax=5)
     xMasked = snapshotSystem.get_masked_x()
 
+    # Normalize x by wavelength
+    xMasked = xMasked/snapshotSystem.WaveLength
+
     print("Plotting.")
     ## Color cycle
     num_lines = snapshots[1,:].size # Number of lines
@@ -1081,7 +1090,7 @@ if(plot_negative_snapshots):
     # Initialize figure
     fig, ax = texplot.newfig(0.9,golden=True)
 
-    ax.set_xlabel(r'Distance $k x$')
+    ax.set_xlabel(r'Distance $x/\lambda$')
     ax.set_ylabel(r'Surface Height $\eta / h$')
     # Multiply P by eps; the P used in this code is really the
     # "nondimensionalized" P' = P/eps, so multiply by eps to get back to
@@ -1155,6 +1164,9 @@ if(plot_pos_neg_snapshots):
         posSystem.set_x_window(xMin=-4,xMax=5)
         xMasked[indx] = posSystem.get_masked_x()
 
+        # Normalize x by wavelength
+        xMasked[indx] = xMasked[indx]/posSystem.WaveLength
+
     print("Plotting.")
 
     ## Color cycle
@@ -1179,7 +1191,7 @@ if(plot_pos_neg_snapshots):
     fig.subplots_adjust(left=0.175,right=0.9,top=0.875,bottom=0.125,hspace=0.3)
 
     for indx in [0,1]:
-        ax[1,indx].set_xlabel(r'Distance $k x$')
+        ax[1,indx].set_xlabel(r'Distance $x/\lambda$')
         ax[indx,0].set_ylabel(r'$\eta / h$')
 
     # Multiply P by eps; the P used in this code is really the
@@ -1464,6 +1476,9 @@ if(plot_snapshots_cnoidal):
     snapshotSystem.set_x_window()
     xMasked = snapshotSystem.get_masked_x()
 
+    # Normalize x by wavelength
+    xMasked = xMasked/snapshotSystem.WaveLength
+
     print("Plotting.")
     ## Color cycle
     num_lines = snapshots[1,:].size # Number of lines
@@ -1476,7 +1491,7 @@ if(plot_snapshots_cnoidal):
     # Initialize figure
     fig, ax = texplot.newfig(0.9,golden=True)
 
-    ax.set_xlabel(r'Distance $k x$')
+    ax.set_xlabel(r'Distance $x/\lambda$')
     ax.set_ylabel(r'Surface Height $\eta / h$')
     # Multiply P by eps; the P used in this code is really the
     # "nondimensionalized" P' = P/eps, so multiply by eps to get back to
@@ -1536,6 +1551,9 @@ if(plot_negative_snapshots_cnoidal):
     snapshotSystem.set_x_window()
     xMasked = snapshotSystem.get_masked_x()
 
+    # Normalize x by wavelength
+    xMasked = xMasked/snapshotSystem.WaveLength
+
     print("Plotting.")
     ## Color cycle
     num_lines = snapshots[1,:].size # Number of lines
@@ -1548,7 +1566,7 @@ if(plot_negative_snapshots_cnoidal):
     # Initialize figure
     fig, ax = texplot.newfig(0.9,golden=True)
 
-    ax.set_xlabel(r'Distance $k x$')
+    ax.set_xlabel(r'Distance $x/\lambda$')
     ax.set_ylabel(r'Surface Height $\eta / h$')
     # Multiply P by eps; the P used in this code is really the
     # "nondimensionalized" P' = P/eps, so multiply by eps to get back to
@@ -1622,6 +1640,9 @@ if(plot_pos_neg_snapshots_cnoidal):
         posSystem.set_x_window()
         xMasked[indx] = posSystem.get_masked_x()
 
+        # Normalize x by wavelength
+        xMasked[indx] = xMasked[indx]/posSystem.WaveLength
+
     print("Plotting.")
 
     ## Color cycle
@@ -1645,7 +1666,7 @@ if(plot_pos_neg_snapshots_cnoidal):
     fig.subplots_adjust(left=0.175,right=0.9,top=0.875,bottom=0.125,hspace=0.3)
 
     for indx in [0,1]:
-        ax[1,indx].set_xlabel(r'Distance $k x$')
+        ax[1,indx].set_xlabel(r'Distance $x/\lambda$')
         ax[indx,0].set_ylabel(r'$\eta / h$')
 
     # Multiply P by eps; the P used in this code is really the
@@ -2665,6 +2686,9 @@ if(plot_pos_neg_snapshots_cnoidal_GM):
     posSystem.set_x_window()
     xMasked = posSystem.get_masked_x()
 
+    # Normalize x by wavelength
+    xMasked = xMasked/posSystem.WaveLength
+
     print("Plotting.")
     ## Color cycle
     num_lines = posSnapshots[1,:].size # Number of lines
@@ -2684,7 +2708,7 @@ if(plot_pos_neg_snapshots_cnoidal_GM):
 
     fig.subplots_adjust(left=0.175,right=0.9,top=0.875,bottom=0.125,hspace=0.3)
 
-    ax[1].set_xlabel(r'Distance $k x$')
+    ax[1].set_xlabel(r'Distance $x/\lambda$')
     ax[0].set_ylabel(r'$\eta / h$')
     ax[1].set_ylabel(r'$\eta / h$')
     # Multiply P by eps; the P used in this code is really the
