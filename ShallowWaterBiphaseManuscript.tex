@@ -159,34 +159,57 @@ Generalized Miles profiles.
 \section{Normalization}
 We will normalize by identifying characteristic scales.
 The parameters we know \apriori are the wavenumber $k$, the wave
-amplitude $a$ (to be clarified later), the depth $h$, $g$, and the
-wind speed $U$ expressed as a pressure magnitude $P \propto \rho_a U^2$.
+amplitude $a$, the depth $h$, the gravitational acceleration $g$, and
+the wind speed $U$ expressed as a pressure magnitude $P \propto \rho_a
+U^2$.
+However, instead of using the conventional wavenumber $k \coloneqq 2 \pi
+/ \lambda$, we will instead use an effective wavenumber $k_E \coloneqq 2
+\pi/ L$ with $L$ a characteristic length over which $\eta$ changes
+rapidly.
+We want our analysis to apply to both periodic waves (for which
+$\lambda$ is finite) and solitary waves (for which $\lambda$ is
+infinite).
+For reference, we will later find that $L \to \lambda$ for infinitesimal
+waves, but $L$ corresponds to the full width at half maximum times $\pi/2$ for solitary
+waves.
+However, we will not make any such assumptions yet.
+
 Denoting nondimensional variables with an accent, we have
 \begin{equation*}
   \begin{aligned}
-  x &= \frac{x'}{k} \,, \\
-  y &= \frac{y'}{k} \,, \\
+  x &= \frac{x'}{k_E} = h \frac{x'}{\sqrt{\mu}}\,, \\
+  y &= \frac{y'}{k_E} = h \frac{y'}{\sqrt{\mu}}\,, \\
   z &= h z' \,,
   \end{aligned}
   \qquad
   \begin{aligned}
-  t &= \frac{t'}{k\sqrt{g h}} \,, \\
-  \eta &= a \eta' \,, \\
-  \phi &= \phi'\frac{a}{k}\sqrt{\frac{g}{h}} \,,
+  t &= \frac{t'}{k_E\sqrt{g h}}
+    = \frac{t'}{\sqrt{\mu}} \sqrt{\frac{h}{g}} \,, \\
+  \eta &= a \eta' = h \epsilon \eta' \,, \\
+  \phi &= \phi'\frac{a}{k_E}\sqrt{\frac{g}{h}}
+    = \frac{\phi'\epsilon}{\sqrt{\mu}}\sqrt{g h^3} \,,
   \end{aligned}
   \qquad
   \begin{aligned}
-  p &= \alpha p' \rho_w g a \,, \\
-  P &= \alpha P' \frac{\rho_w g}{k} \,.
+  p &= \alpha p' \rho_w g a
+    = \alpha \epsilon p' \rho_w g h \,, \\
+  P &= \alpha P' \frac{\rho_w g}{k_E}
+    = \frac{\alpha}{\sqrt{\mu}} P' \rho_w g h \,.
   \end{aligned}
 \end{equation*}
-Here, we have defined a parameter $\alpha \coloneqq \order{P k/(\rho_w g
+Here, we have defined the parameters $\epsilon \coloneqq a/h$, $\mu
+\coloneqq (kh)^2$, and $\alpha \coloneqq \order{P k_E/(\rho_w g
 )}$.
+Furthermore, we see that $\epsilon/\mu$ is (up to some numerical
+prefactors) the Ursell number, $\Ur = H \lambda^2/d^3$.
+Finally, note that $\order{p/\rho_w g h} = (\epsilon/\sqrt{\mu})
+\order{P/\rho_w g h}$.
+
 Using these definitions, our equations take the form
 \begin{alignat}{2}
   0 &= \mu \pqty{\phi'_{x'x'} + \phi'_{y'y'}} + \phi'_{z'z'} &&\qq{on}
-    -h' < z' < \epsilon \mu \eta' \,, \label{eq:laplace_nondim} \\
-  0 &= \phi'_{z'} &&\qq{on} z'=-h' \,, \label{eq:bottom_bc_nondim} \\
+    -1 < z' < \epsilon \eta' \,, \label{eq:laplace_nondim} \\
+  0 &= \phi'_{z'} &&\qq{on} z'=-1 \,, \label{eq:bottom_bc_nondim} \\
   \phi'_{z'} &= \mu \eta'_{t'} +
     \epsilon \mu \bqty{\phi'_{x'} \eta'_{x'} + \phi'_{y'} \eta'_{y'}}
     &&\qq{on} z' = \epsilon \eta' \,, \label{eq:kinematic_bc_nondim} \\
@@ -195,14 +218,12 @@ Using these definitions, our equations take the form
     2}} +  \frac{\epsilon}{\mu} \phi_{z'}^{\prime \, 2}} &&\qq{on} z'=
     \epsilon \eta' \,.  \label{eq:dynamic_bc_nondim}
 \end{alignat}
+Note that this is equivalent to choosing a set of units wherein $h = g =
+\rho_w = 1$.
 The primes will be dropped henceforth for readability.
-Here, we chose, $\alpha = P k/(\rho_w g)$, $\mu = (k h)^2$ and
-$\epsilon = a / h$.
-Furthermore, we see that $\epsilon/\mu$ is (up to some numerical
-prefactors) the Ursell number, $\Ur = H \lambda^2/d^3$.
 
 Now, we will estimate the wind speeds associated with different pressure
-magnitudes $P$.
+magnitudes $P$ over a simple sinusoidal wave.
 For the deep water case, we related $P$ to the wind-induced energy growth
 rate $\gamma$, which was then be related to the friction velocity $u_*$
 through experimental measurements, which was finally converted to
@@ -700,6 +721,134 @@ shrinks, while $\Im{\PTwo} = P \cos(-3\pi/2) = P$ and the first harmonic
 Thus, within a relatively short time, the first harmonic becomes
 dominant.
 Thus, GM is a poor choice.
+
+In the general KdV case, we have
+\begin{equation}
+  \mathcal{A} \pdv{\eta_0}{t_1} + \mathcal{F} \pdv{\eta_0}{x} + \mathcal{B}
+  \eta_0 \pdv{\eta_0}{x} + \mathcal{C} \pdv[3]{\eta_0}{x} = 0 \,.
+\end{equation}
+Using the solution in from \citet{dingemans1997water} (as quoted in
+\citeauthor{brun2018convective}) and rescaling variables, the cnoidal
+wave solution is
+\begin{equation}
+  \eta_0 = \eta_2 + H \cn^2\pqty{\frac{x-c_1 t}{\Delta} , m} \,,
+\end{equation}
+with
+\begin{equation}
+  \eta_2 = \frac{H}{m} \pqty{1 - m - \frac{E(m)}{K(m)}}
+  \qq{and}
+  \Delta = \sqrt{\frac{12 \mathcal{C}}{\mathcal{B}} \frac{m}{H}}
+  \qq{and}
+  c_1 = \frac{\mathcal{F}}{\mathcal{A}} + \frac{2}{3} \frac{H}{m}
+  \frac{\mathcal{B}}{\mathcal{A}} \pqty{1 - \frac{1}{2} m - \frac{3}{2}
+    \frac{E(m)}{K(m)}} \,.
+  \label{eq:nondim_cnoidal_params}
+\end{equation}
+Note that the (nondimensional) wavelength $\lambda$ is
+\begin{equation}
+  \lambda = 2 K(m) \Delta = K(m) \sqrt{\frac{48
+  \mathcal{C}}{\mathcal{B}} \frac{m}{H}} \,.
+  \label{eq:nondim_lambda}
+\end{equation}
+Here, $\cn$ is one of the Jacobi elliptic functions, and $K(m)$ and
+$E(m)$ are the complete elliptic integrals of the first and second kind,
+respectively, with $m \in [0,1]$ the elliptic parameter.
+
+The solitary wave solution is
+\begin{equation}
+  \eta_0 = H \sech^2\pqty{\frac{x - c_1 t_1}{\Delta}} \,,
+\end{equation}
+with
+\begin{equation}
+  \Delta = \sqrt{\frac{12 \mathcal{C}}{\mathcal{B}} \frac{1}{H}}
+  \qq{and}
+  c_1 = \frac{\mathcal{F}}{\mathcal{A}} + \frac{H \mathcal{B}}{3
+    \mathcal{A}} \,.
+\end{equation}
+Note that the solitary wave is recovered from the cnoidal wave as $m \to
+1$ (note $E(m)/K(m) \to 0$ as $m \to 1$), and the linear wave
+approximation is recovered as $m \to 0$.
+Here, $\abs{H}$ is an order-1 parameter and $\sgn(H) = \sgn(\mathcal{B}
+\mathcal{C})$.
+For our particular system, we have $\mathcal{A} = 1$, $\mathcal{B} =
+3/2$, $\mathcal{C} = \mu/(6\epsilon)$, and $\mathcal{F} = 0$.
+
+If we temporarily revert back to dimensional variables (with primes
+denoting dimensionless), we have
+\begin{equation}
+  \begin{split}
+  \frac{\eta_0}{\epsilon h} &= \eta_2' + H' \cn^2\pqty{\frac{k_E x - k_E
+    \sqrt{gh} c_1' \epsilon t}{\Delta'}, m}
+  \\
+  \implies
+  \eta_0 &= \epsilon h \eta_2' + \epsilon h H'
+  \cn^2\pqty{\frac{k_E}{\Delta'} \bqty{x - \epsilon \sqrt{gh} c_1' t}, m}
+  \\
+  &\coloneqq \eta_2 + H \cn^2\pqty{\frac{x - c_1 t}{\Delta}, m} \,.
+  \end{split}
+\end{equation}
+Here, we have defined the dimensional quantities $H$, $\eta_2$,
+$\Delta$, and $c_1$:
+\begin{gather}
+  H = \epsilon h H'
+  \qq{and}
+  \eta_2 = \epsilon h \eta_2' = \frac{H}{m} \pqty{1 - m - \frac{E(m)}{K(m)}}
+  \qq{and}
+  \Delta = \frac{\Delta'}{k_E}
+  \\
+  \qq{and}
+  c_1 = \epsilon \sqrt{gh} c_1' = \epsilon \sqrt{gh} \pqty{
+    \frac{\mathcal{F}}{\mathcal{A}} + \frac{2}{3} \frac{H}{m}
+    \frac{\mathcal{B}}{\mathcal{A}} \pqty{1 - \frac{1}{2} m - \frac{3}{2}
+    \frac{E(m)}{K(m)}} }
+\end{gather}
+Given the conventional definition that $H = 2 a$, we have
+\begin{equation}
+  2 a = \epsilon h H' = a H' \implies H' = 2 \,.
+\end{equation}
+As $m \to 0$, we have $\cn \to \cos$, $K(m) \to \pi/2$ and $E(m) \to
+\pi/2$, and we keep $H/m$ fixed.
+This gives
+\begin{equation}
+  \eta_0 \to H \cos^2 \pqty{\frac{x-c_1 t}{\Delta}}^2
+  = \frac{H}{2} \cos \pqty{\frac{2}{\Delta} \bqty{x-c_1 t}}
+  \qq{as} m \to 0 \,.
+\end{equation}
+Since we want this to reduce to the usual $(H/2) \cos(k[x-c_1 t])$, we
+define (for all $m$)
+\begin{equation}
+  k_E \coloneqq \frac{2}{\Delta}
+\end{equation}
+Note that \cref{eq:nondim_lambda} also means
+\begin{equation}
+  \lambda' = 2 K(m) \Delta' = 2 K(m) \Delta k_E = 4 K(m) \,.
+\end{equation}
+Finally, we can now fix $m$ as a function of $\mu$ and $\epsilon$:
+\begin{equation}
+  k_E = \frac{2}{\Delta} = \frac{2 k_E}{\Delta'}
+  \implies \Delta' = 2 \,.
+\end{equation}
+However, using \cref{eq:nondim_cnoidal_params}, we have
+\begin{equation}
+  2 = \Delta ' = \sqrt{\frac{12 \mathcal{C}}{\mathcal{B}}
+    \frac{m}{H'}}
+  = \sqrt{\frac{12 \mathcal{C}}{\mathcal{B}} \frac{m}{2}}
+  \implies m = \frac{2 \mathcal{B}}{3 \mathcal{C}} \,.
+\end{equation}
+For our particular values of $\mathcal{B} = 3/2$ and $\mathcal{C} =
+\mu/(6 \epsilon)$, we have
+\begin{equation}
+  m = 6 \frac{\epsilon}{\mu} \,.
+\end{equation}
+Since $m \in [0,1]$, this implies $0 \le \epsilon \le \mu/6$.
+Finally, note that since $m = 1$ gives the solitary wave solution, this
+means that we have the requirement that
+\begin{equation}
+  \mu = 6 \epsilon
+\end{equation}
+for solitary waves; this is simply the well-known fact that the height
+and width of a solitary wave satisfy a fixed relationship.
+
 
 \appendix
 
