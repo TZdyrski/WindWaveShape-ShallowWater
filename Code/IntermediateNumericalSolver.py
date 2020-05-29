@@ -1240,7 +1240,7 @@ if(plot_pos_neg_snapshots):
         # P
 
         ax[0,indx].set_title(r'\begin{{tabular}}{{c}}$\epsilon = {eps}$, $\mu = {mu}$\\$P_J k/(\rho_w g) = {P}$\end{{tabular}}'.format(
-            P=round(eps*(P),3),eps=pairedEps[indx],mu=pairedEps[indx]/eps*mu_solitary))
+            P=round(eps*(P),3),eps=pairedEps[indx],mu=round(pairedEps[indx]/eps*mu_solitary,3)))
         ax[1,indx].set_title(r'$P_J k/(\rho_w g) = {P}$'.format(P=round(eps*(-P),3)))
 
         ax[0,indx].plot(xMasked[indx],posSnapshots[indx])
