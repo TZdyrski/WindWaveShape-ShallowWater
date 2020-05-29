@@ -302,7 +302,10 @@ where $H$ is the wave height.
 Combining this, we find
 \[
   P'_M \alpha = \frac{\rho_a}{\rho_w} \csc(\psi_P)
-  y \Bqty{b-qH[y - 1]} \qq{with}
+  y \Bqty{b-qH[y - 1]}
+\]
+with
+\[
   y \coloneqq
   \epsilon \sqrt{\mu}
   \pqty{\frac{U_{z}}{c_0} \frac{\ln(2400)+5.5\ln(\epsilon \sqrt{\mu}/\pi)}
@@ -740,16 +743,17 @@ wave solution is
   \eta_0 = \eta_2 + H \cn^2\pqty{\frac{x-c_1 t}{\Delta} , m} \,,
 \end{equation}
 with
-\begin{equation}
+\begin{gather}
   \eta_2 = \frac{H}{m} \pqty{1 - m - \frac{E(m)}{K(m)}}
   \qq{and}
   \Delta = \sqrt{\frac{12 \mathcal{C}}{\mathcal{B}} \frac{m}{H}}
+  \label{eq:nondim_cnoidal_params}
+  \\
   \qq{and}
   c_1 = \frac{\mathcal{F}}{\mathcal{A}} + \frac{2}{3} \frac{H}{m}
   \frac{\mathcal{B}}{\mathcal{A}} \pqty{1 - \frac{1}{2} m - \frac{3}{2}
     \frac{E(m)}{K(m)}} \,.
-  \label{eq:nondim_cnoidal_params}
-\end{equation}
+\end{gather}
 Note that the (nondimensional) wavelength $\lambda$ is
 \begin{equation}
   \lambda = 2 K(m) \Delta = K(m) \sqrt{\frac{48
@@ -871,19 +875,19 @@ Multiplying \cref{eq:kdv_burgers} by $\eta_0$, we find
 Then, integrating over a wavelength gives
 \begin{equation}
   \begin{split}
-  \pdv{t_1} \int_{-L/2}^{L/2} \frac{1}{2} \eta_0^2 \dd{x} &=
-  \int_{-L/2}^{L/2} \frac{1}{2} P_J (\eta_0')^2 \dd{x}
+  &\pdv{t_1} \int_{-L/2}^{L/2} \frac{1}{2} \eta_0^2 \dd{x} \\
+  &\qquad= \int_{-L/2}^{L/2} \frac{1}{2} P_J (\eta_0')^2 \dd{x}
   + \int_{-L/2}^{L/2} -P_J \frac{1}{4} (\eta_0^2)''  - \frac{1}{2} (\eta_0^3)' - \frac{1}{12}
   \frac{\mu}{\epsilon} (\eta_0^2)''' + \frac{1}{4} \frac{\mu}{\epsilon}
   \bqty{\pqty{\eta_0'}^2}' \dd{x}
   \\
-  &=
+  &\qquad=
   \int_{-L/2}^{L/2} \frac{1}{2} P_J (\eta_0')^2 \dd{x}
   + \eval{\bqty{-P_J \frac{1}{4} (\eta_0^2)'  - \frac{1}{2} (\eta_0^3) - \frac{1}{12}
   \frac{\mu}{\epsilon} (\eta_0^2)'' + \frac{1}{4} \frac{\mu}{\epsilon}
   \pqty{\eta_0'}^2}}_{-L/2}^{L/2}
   \\
-  &=
+  &\qquad=
   \int_{-L/2}^{L/2} \frac{1}{2} P_J (\eta_0')^2 \dd{x}
    \,.
   \end{split}
