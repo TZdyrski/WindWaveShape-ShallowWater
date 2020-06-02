@@ -2011,7 +2011,7 @@ if(plot_power_spec_Jeffreys):
     negSnapshotsFFT = 2*np.fft.fft(negSnapshotsRepeated,
             axis=0)/negSystem.xNum/repeat_times
 
-    # Convert to power spectrum (ie abs sqaured)
+    # Convert to power spectrum (ie abs squared)
     posSnapshotsPower = np.absolute(posSnapshotsFFT)**2
     negSnapshotsPower = np.absolute(negSnapshotsFFT)**2
 
@@ -2199,7 +2199,7 @@ if(plot_power_spec_vs_time_Jeffreys):
     negSnapshotsFFT = 2*np.fft.fft(negSnapshotsRepeated,
             axis=0)/negSystem.xNum/repeat_times
 
-    # Convert to power spectrum (ie abs sqaured)
+    # Convert to power spectrum (ie abs squared)
     posSnapshotsPower = np.absolute(posSnapshotsFFT)**2
     negSnapshotsPower = np.absolute(negSnapshotsFFT)**2
 
@@ -2367,7 +2367,7 @@ if(plot_power_spec_GM):
     negSnapshotsFFT = 2*np.fft.fft(negSnapshotsRepeated,
             axis=0)/negSystem.xNum/repeat_times
 
-    # Convert to power spectrum (ie abs sqaured)
+    # Convert to power spectrum (ie abs squared)
     posSnapshotsPower = np.absolute(posSnapshotsFFT)**2
     negSnapshotsPower = np.absolute(negSnapshotsFFT)**2
 
@@ -2555,7 +2555,7 @@ if(plot_power_spec_vs_time_GM):
     negSnapshotsFFT = 2*np.fft.fft(negSnapshotsRepeated,
             axis=0)/negSystem.xNum/repeat_times
 
-    # Convert to power spectrum (ie abs sqaured)
+    # Convert to power spectrum (ie abs squared)
     posSnapshotsPower = np.absolute(posSnapshotsFFT)**2
     negSnapshotsPower = np.absolute(negSnapshotsFFT)**2
 
