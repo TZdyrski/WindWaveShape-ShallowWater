@@ -2017,7 +2017,7 @@ if(plot_power_spec_Jeffreys):
 
     # Generate spatial FFT conjugate coordinate
     kappa = np.fft.fftfreq(posSystem.xNum*repeat_times,
-            posSystem.dx)*2*np.pi
+            posSystem.dx)*posSystem.WaveLength
 
     # Find peaks in initial data (peaks shouldn't move over time either)
     posSnapshotsPowerPeaks = sp.signal.find_peaks(posSnapshotsPower[:,0])[0]
@@ -2205,7 +2205,7 @@ if(plot_power_spec_vs_time_Jeffreys):
 
     # Generate spatial FFT conjugate coordinate
     kappa = np.fft.fftfreq(posSystem.xNum*repeat_times,
-            posSystem.dx)*2*np.pi
+            posSystem.dx)*posSystem.WaveLength
 
     # Find peaks in initial data (peaks shouldn't move over time either)
     posSnapshotsPowerPeaks = sp.signal.find_peaks(posSnapshotsPower[:,0])[0]
@@ -2373,7 +2373,7 @@ if(plot_power_spec_GM):
 
     # Generate spatial FFT conjugate coordinate
     kappa = np.fft.fftfreq(posSystem.xNum*repeat_times,
-            posSystem.dx)*2*np.pi
+            posSystem.dx)*posSystem.WaveLength
 
     # Find peaks in initial data (peaks shouldn't move over time either)
     posSnapshotsPowerPeaks = sp.signal.find_peaks(posSnapshotsPower[:,0])[0]
@@ -2561,7 +2561,7 @@ if(plot_power_spec_vs_time_GM):
 
     # Generate spatial FFT conjugate coordinate
     kappa = np.fft.fftfreq(posSystem.xNum*repeat_times,
-            posSystem.dx)*2*np.pi
+            posSystem.dx)*posSystem.WaveLength
 
     # Find peaks in initial data (peaks shouldn't move over time either)
     posSnapshotsPowerPeaks = sp.signal.find_peaks(posSnapshotsPower[:,0])[0]
