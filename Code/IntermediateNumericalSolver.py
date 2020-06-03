@@ -28,6 +28,7 @@ plot_skew_asymm_cnoidal = False
 plot_skew_asymm_cnoidal_kh = False
 plot_power_spec_Jeffreys = False
 plot_power_spec_vs_time_Jeffreys = False
+plot_double_power_spec_Jeffreys = False
 plot_power_spec_GM = False
 plot_power_spec_vs_time_GM = False
 plot_pos_neg_snapshots_cnoidal_GM = False
@@ -2323,6 +2324,166 @@ if(plot_power_spec_vs_time_Jeffreys):
     fig.patch.set_alpha(0)
 
     texplot.savefig(fig,'../Figures/Power-Spectrum-vs-Time-Jeffreys')
+
+if(plot_double_power_spec_Jeffreys):
+    from mpl_toolkits.axes_grid1.inset_locator import zoomed_inset_axes
+    from mpl_toolkits.axes_grid1.inset_locator import mark_inset
+
+    print("Computing the solution.")
+
+    # Create KdV-Burgers or nonlocal KdV system
+    posSystem = kdvSystem(P=P,H=H,diffeq='KdVB', eps=eps, mu=mu)
+    negSystem = kdvSystem(P=-P,H=H,diffeq='KdVB', eps=eps, mu=mu)
+    # Set spatial and temporal grid
+    posSystem.set_spatial_grid(xLen='fit',xStep=xStep)
+    negSystem.set_spatial_grid(xLen='fit',xStep=xStep)
+    posSystem.set_temporal_grid(tLen=FFT_tLen,tNum='density')
+    negSystem.set_temporal_grid(tLen=FFT_tLen,tNum='density')
+    # Set initial conditions
+    posSystem.set_initial_conditions(y0='cnoidal',redo_grids=True)
+    negSystem.set_initial_conditions(y0='cnoidal',redo_grids=True)
+    # Solve KdV-Burgers system
+    posSystem.solve_system_rk3()
+    negSystem.solve_system_rk3()
+
+    # Boost to co-moving frame
+    posSystem.boost_to_lab_frame(velocity='cnoidal')
+    negSystem.boost_to_lab_frame(velocity='cnoidal')
+
+    # Convert back to non-normalized variables
+    posSystem.set_snapshot_ts(np.linspace(0,1,num=posSystem.tNum))
+    negSystem.set_snapshot_ts(np.linspace(0,1,num=posSystem.tNum))
+    posSnapshots = posSystem.get_snapshots()*eps
+    negSnapshots = negSystem.get_snapshots()*eps
+
+    # Resample (via interpolation) to get a higher FFT resolution
+    repeat_times = 20
+    posSnapshotsRepeated = np.tile(posSnapshots, (repeat_times,1))
+    negSnapshotsRepeated = np.tile(negSnapshots, (repeat_times,1))
+
+    # Generate spatial FFT conjugate coordinate
+    kappa = np.fft.fftfreq(posSystem.xNum*repeat_times,
+            posSystem.dx)*posSystem.WaveLength
+    omega = np.fft.fftfreq(posSystem.tNum,
+            posSystem.dt)*posSystem.WaveLength
+
+    # Make a mesh of unshifted frequencies first for multiplying each
+    # mode by exp(sqrt(1+P)*k*t)
+    omega_mesh,kappa_mesh = np.meshgrid(omega,kappa)
+
+    # Take spatial FFT (scale FFT by 1/N and multiply by 2 since we
+    # ignore the negative frequencies)
+    posSnapshotsFFT = 2*np.fft.fft(posSnapshotsRepeated,
+            axis=0)/(posSystem.xNum*repeat_times)
+    negSnapshotsFFT = 2*np.fft.fft(negSnapshotsRepeated,
+            axis=0)/(negSystem.xNum*repeat_times)
+
+    # Set kappa-columns with small values equal to zero so we don't blow them up
+    posTol = np.amax([posSnapshotsFFT.real,posSnapshotsFFT.imag])*1e-3
+    negTol = np.amax([negSnapshotsFFT.real,negSnapshotsFFT.imag])*1e-3
+
+    posLessThanTol = np.logical_and(np.abs(posSnapshotsFFT.real)<posTol,
+            np.abs(posSnapshotsFFT.imag)<posTol)
+    negLessThanTol = np.logical_and(np.abs(negSnapshotsFFT.real)<negTol,
+            np.abs(negSnapshotsFFT.imag)<negTol)
+
+    posColumnWiseTol = np.tile(np.all(posLessThanTol, axis=1),
+            (posSnapshotsFFT.shape[1],1)).transpose()
+    negColumnWiseTol = np.tile(np.all(negLessThanTol, axis=1),
+            (negSnapshotsFFT.shape[1],1)).transpose()
+
+    posSnapshotsFFT[posColumnWiseTol] = 0
+    negSnapshotsFFT[negColumnWiseTol] = 0
+
+    # Multiply each mode by exp(sqrt(1+P)*k*t)
+    posSnapshotsModifiedFFT = np.exp(-np.imag(1/2*eps*1j*P)
+            *2*np.pi/posSystem.WaveLength
+            *np.abs(kappa_mesh)
+            *posSystem.t
+            /4.14027 # fudge factor
+            )*posSnapshotsFFT
+    negSnapshotsModifiedFFT = np.exp(-np.imag(1/2*eps*(-1j*P))
+            *2*np.pi/posSystem.WaveLength
+            *np.abs(kappa_mesh)
+            *negSystem.t
+            /4.14027 # fudge factor
+            )*negSnapshotsFFT
+
+    # Take temporal FFT (scale FFT by 1/N and multiply by 2 since we
+    # ignore the negative frequencies)
+    posSnapshotsDoubleFFT = 2*np.fft.fft(posSnapshotsModifiedFFT,
+            axis=1)/(posSystem.tNum)
+    negSnapshotsDoubleFFT = 2*np.fft.fft(negSnapshotsModifiedFFT,
+            axis=1)/(negSystem.tNum)
+
+    # Convert to power spectrum (ie abs squared)
+    posSnapshotsPower = np.absolute(posSnapshotsDoubleFFT)**2
+    negSnapshotsPower = np.absolute(negSnapshotsDoubleFFT)**2
+
+    # Shift frequencies
+    kappa = np.fft.fftshift(kappa)
+    omega = np.fft.fftshift(omega)
+
+    omega_mesh,kappa_mesh = np.meshgrid(omega,kappa)
+
+    posSnapshotsPower = np.fft.fftshift(posSnapshotsPower)
+    negSnapshotsPower = np.fft.fftshift(negSnapshotsPower)
+
+    print("Plotting.")
+    ## Color cycle
+    num_lines = posSnapshots[1,:].size # Number of lines
+    new_colors = [plt.get_cmap('viridis')(1. * (i)/(num_lines)) for i in
+            range(num_lines)]
+    linestyles = [*((0,(3+i,i)) for i in range(num_lines))]
+    plt.rc('axes', prop_cycle=(cycler('color', new_colors) +
+                           cycler('linestyle', linestyles)))
+
+    # Initialize figure
+    fig, ax = texplot.newfig(0.9,nrows=2,sharex=True,sharey=False,golden=True)
+    fig.set_tight_layout(False)
+
+    # Adjust figure height
+    figsize = fig.get_size_inches()
+    fig.set_size_inches([figsize[0],figsize[1]*1.3])
+
+    fig.subplots_adjust(left=0.175,right=0.825,top=0.875,bottom=0.125,hspace=0.3)
+
+    ax[1].set_xlabel(r'Harmonic $\kappa/k$')
+    ax[0].set_ylabel(r'Frequency $\omega/\sqrt{g/h}$')
+    ax[1].set_ylabel(r'Frequency $\omega/\sqrt{g/h}$')
+    # Multiply P by eps; the P used in this code is really the
+    # "nondimensionalized" P' = P/eps, so multiply by eps to get back to
+    # P
+    fig.suptitle(r'Wavenumber Frequency Plot of $\abs{{\hat{{\eta}}}}^2$: $a/h={eps}$, $kh = {kh}$'.format(
+        eps=eps,kh=round(np.sqrt(mu),1)))
+    ax[0].set_title(r'Co-Wind: $P_J k/(\rho_w g) = {P}$'.format(
+        P=round(eps*(P),3)))
+    ax[1].set_title(r'Counter-Wind: $P_J k/(\rho_w g) = {P}$'.format(
+        P=round(eps*(-P),3)))
+
+    cs = [None,None]
+
+    cs[0] = ax[0].contourf(kappa_mesh,omega_mesh,posSnapshotsPower,
+            locator=mpl.ticker.SymmetricalLogLocator(linthresh=np.amax(posSnapshotsPower)/1e6,base=10),
+            norm=mpl.colors.SymLogNorm(linthresh=np.amax(posSnapshotsPower)/1e6,base=10))
+    cs[1] = ax[1].contourf(kappa_mesh,omega_mesh,negSnapshotsPower,
+            locator=mpl.ticker.SymmetricalLogLocator(linthresh=np.amax(negSnapshotsPower)/1e6,base=10),
+            norm=mpl.colors.SymLogNorm(linthresh=np.amax(negSnapshotsPower)/1e6,base=10))
+
+    # Add colorbars
+    fig.colorbar(cs[0],ax=ax[0],format=mpl.ticker.LogFormatterMathtext())
+    fig.colorbar(cs[1],ax=ax[1],format=mpl.ticker.LogFormatterMathtext())
+
+    # Adjust limits
+    ax[0].set_xlim(-3.5,3.5)
+    ax[0].set_ylim(-100,100)
+    ax[1].set_xlim(-3.5,3.5)
+    ax[1].set_ylim(-100,100)
+
+    # Make background transparent
+    fig.patch.set_alpha(0)
+
+    texplot.savefig(fig,'../Figures/Double-Power-Spectrum-Jeffreys')
 
 if(plot_power_spec_GM):
     from mpl_toolkits.axes_grid1.inset_locator import zoomed_inset_axes
