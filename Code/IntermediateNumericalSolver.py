@@ -3044,7 +3044,7 @@ if(plot_forcing_types):
 
     P_forcing = 1
 
-    Height = 1
+    Height = 2
 
     WaveLength = 2*np.pi
     numWaves = 1
@@ -3061,7 +3061,8 @@ if(plot_forcing_types):
     trough = Height/m*(1-m-E/K)
     y0 = trough + Height*cn**2
 
-    eta = y0
+    # Convert eta' = eta/a = eta/h*eps to eta'/2 = eta/(2*a) = eta/H
+    eta = 1/2*y0
     jeffreys = P_forcing*psdiff(eta, period=xLen_forcing)
     generalized = P_forcing*np.roll(eta, shift=int(round(-psiP*WaveLength/(2*np.pi)/dx_forcing)),
                     axis=0)
@@ -3070,9 +3071,13 @@ if(plot_forcing_types):
     fig, ax = texplot.newfig(0.9,nrows=2,ncols=1,sharex=True,
             sharey=False)
 
+    # Plot eta'/2 = eta/(2*a) = eta/H
+    # (Primes denote the nondim variables used throughout this solver)
     ax[0].set_ylabel(r'Elevation $\eta/H$')
     ax[1].set_ylabel(r'\begin{tabular}{c}Pressure $p$\end{tabular}')
 
+    # Plot x'*lambda' = x*k_E/lambda/k_E = x/lambda
+    # (Primes denote the nondim variables used throughout this solver)
     ax[1].set_xlabel(r'Distance $x/\lambda$')
 
     ax[0].annotate('a)', xy=(0.02,0.8), xycoords='axes fraction')
