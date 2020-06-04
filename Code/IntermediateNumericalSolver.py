@@ -970,6 +970,8 @@ if(plot_trig_funcs):
 #    FDSolver.boost_to_lab_frame(velocity=1/6)
 
     # Convert back to non-normalized variables
+    # Convert from eta' = eta/a = eta/h/eps to eta'*eps = eta/a*eps = eta/h
+    # (Primes denote the nondim variables used throughout this solver)
     builtinSnapshots = builtinSolver.get_snapshots()*eps
     FDSnapshots = FDSolver.get_snapshots()*eps
 
@@ -978,6 +980,8 @@ if(plot_trig_funcs):
     xMasked = builtinSolver.get_masked_x()
 
     # Normalize x by wavelength
+    # Convert from x' = x*k_E to x'/lambda' = x*k_E/lambda/k_E = x/lambda
+    # (Primes denote the nondim variables used throughout this solver)
     xMasked = xMasked/builtinSolver.WaveLength
 
     print("Plotting.")
@@ -994,6 +998,8 @@ if(plot_trig_funcs):
     # Initialize figure
     fig, ax = texplot.newfig(0.9,nrows=2,sharex=True,sharey=False,golden=True)
 
+    # Plot x'*lambda' = x*k_E/lambda/k_E = x/lambda
+    # (Primes denote the nondim variables used throughout this solver)
     ax[1].set_xlabel(r'Distance $x/\lambda$')
     ax[0].set_title(r'Builtin Solver after exactly 1 Period: $a/h={eps}$, $kh = {kh}$'.format(
         eps=eps,kh=round(np.sqrt(mu_solitary),1)))
@@ -1031,6 +1037,8 @@ if(plot_snapshots):
     snapshotSystem.boost_to_lab_frame(velocity='solitary')
 
     # Convert back to non-normalized variables
+    # Convert from eta' = eta/a = eta/h/eps to eta'*eps = eta/a*eps = eta/h
+    # (Primes denote the nondim variables used throughout this solver)
     snapshotSystem.set_snapshot_ts([0,1/3,2/3,1])
     snapshots = snapshotSystem.get_snapshots()*eps
 
@@ -1039,6 +1047,8 @@ if(plot_snapshots):
     xMasked = snapshotSystem.get_masked_x()
 
     # Normalize x by wavelength
+    # Convert from x' = x*k_E to x'/lambda' = x*k_E/lambda/k_E = x/lambda
+    # (Primes denote the nondim variables used throughout this solver)
     xMasked = xMasked/snapshotSystem.WaveLength
 
     print("Plotting.")
@@ -1053,11 +1063,14 @@ if(plot_snapshots):
     # Initialize figure
     fig, ax = texplot.newfig(0.9,golden=True)
 
+    # Plot x'*lambda' = x*k_E/lambda/k_E = x/lambda
+    # (Primes denote the nondim variables used throughout this solver)
     ax.set_xlabel(r'Distance $x/\lambda$')
+    # Plot eta'*eps = eta/a*eps = eta/h
+    # (Primes denote the nondim variables used throughout this solver)
     ax.set_ylabel(r'Surface Height $\eta / h$')
-    # Multiply P by eps; the P used in this code is really the
-    # "nondimensionalized" P' = P/eps, so multiply by eps to get back to
-    # P
+    # Convert P' = P*k/(rho_w*g)/eps to P'*eps = P*k/(rho_w*g)
+    # (Primes denote the nondim variables used throughout this solver)
     ax.set_title(r'Surface Height vs Time: $a/h={eps}$, $kh = {kh}$, $P_J k/(\rho_w g) = {P}$'.format(
         eps=eps,kh=round(np.sqrt(mu_solitary),1),P=round(eps*P,3)))
 
@@ -1107,6 +1120,8 @@ if(plot_negative_snapshots):
     snapshotSystem.boost_to_lab_frame(velocity='solitary')
 
     # Convert back to non-normalized variables
+    # Convert from eta' = eta/a = eta/h/eps to eta'*eps = eta/a*eps = eta/h
+    # (Primes denote the nondim variables used throughout this solver)
     snapshotSystem.set_snapshot_ts([0,1/3,2/3,1])
     snapshots = snapshotSystem.get_snapshots()*eps
 
@@ -1115,6 +1130,8 @@ if(plot_negative_snapshots):
     xMasked = snapshotSystem.get_masked_x()
 
     # Normalize x by wavelength
+    # Convert from x' = x*k_E to x'/lambda' = x*k_E/lambda/k_E = x/lambda
+    # (Primes denote the nondim variables used throughout this solver)
     xMasked = xMasked/snapshotSystem.WaveLength
 
     print("Plotting.")
@@ -1129,11 +1146,14 @@ if(plot_negative_snapshots):
     # Initialize figure
     fig, ax = texplot.newfig(0.9,golden=True)
 
+    # Plot x'*lambda' = x*k_E/lambda/k_E = x/lambda
+    # (Primes denote the nondim variables used throughout this solver)
     ax.set_xlabel(r'Distance $x/\lambda$')
+    # Plot eta'*eps = eta/a*eps = eta/h
+    # (Primes denote the nondim variables used throughout this solver)
     ax.set_ylabel(r'Surface Height $\eta / h$')
-    # Multiply P by eps; the P used in this code is really the
-    # "nondimensionalized" P' = P/eps, so multiply by eps to get back to
-    # P
+    # Convert P' = P*k/(rho_w*g)/eps to P'*eps = P*k/(rho_w*g)
+    # (Primes denote the nondim variables used throughout this solver)
     ax.set_title(r'Surface Height vs Time: $a/h={eps}$, $kh = {kh}$, $P_J k/(\rho_w g) = {P}$'.format(
         eps=eps,kh=round(np.sqrt(mu_solitary),1),P=round(eps*(-P),3)))
 
@@ -1194,6 +1214,8 @@ if(plot_pos_neg_snapshots):
         negSystem.boost_to_lab_frame(velocity='solitary')
 
         # Convert back to non-normalized variables
+        # Convert from eta' = eta/a = eta/h/eps to eta'*eps = eta/a*eps = eta/h
+        # (Primes denote the nondim variables used throughout this solver)
         posSystem.set_snapshot_ts([0,1/3,2/3,1])
         negSystem.set_snapshot_ts([0,1/3,2/3,1])
         posSnapshots[indx] = posSystem.get_snapshots()*eps_val
@@ -1204,6 +1226,8 @@ if(plot_pos_neg_snapshots):
         xMasked[indx] = posSystem.get_masked_x()
 
         # Normalize x by wavelength
+        # Convert from x' = x*k_E to x'/lambda' = x*k_E/lambda/k_E = x/lambda
+        # (Primes denote the nondim variables used throughout this solver)
         xMasked[indx] = xMasked[indx]/posSystem.WaveLength
 
     print("Plotting.")
@@ -1230,15 +1254,18 @@ if(plot_pos_neg_snapshots):
     fig.subplots_adjust(left=0.175,right=0.825,top=0.8,bottom=0.125,hspace=0.3)
 
     for indx in [0,1]:
+        # Plot x'*lambda' = x*k_E/lambda/k_E = x/lambda
+        # (Primes denote the nondim variables used throughout this solver)
         ax[1,indx].set_xlabel(r'Distance $x/\lambda$')
+        # Plot eta'*eps = eta/a*eps = eta/h
+        # (Primes denote the nondim variables used throughout this solver)
         ax[indx,0].set_ylabel(r'$\eta / h$')
 
     fig.suptitle(r'Surface Height vs Time')
 
     for indx in [0,1]:
-        # Multiply P by eps; the P used in this code is really the
-        # "nondimensionalized" P' = P/eps, so multiply by eps to get back to
-        # P
+        # Convert P' = P*k/(rho_w*g)/eps to P'*eps = P*k/(rho_w*g)
+        # (Primes denote the nondim variables used throughout this solver)
 
         ax[0,indx].set_title(r'\begin{{tabular}}{{c}}$\epsilon = {eps}$, $\mu = {mu}$\\$P_J k/(\rho_w g) = {P}$\end{{tabular}}'.format(
             P=round(eps*(P),3),eps=pairedEps[indx],mu=round(pairedEps[indx]/eps*mu_solitary,3)))
@@ -1373,9 +1400,9 @@ if(plot_skew_asymm):
     ax[1].plot(t,skewnesses)
     ax[2].plot(t,asymmetries)
 
-    # Multiply Ps by eps; the P used in this code is really the
-    # "nondimensionalized" P' = P/eps, so multiply by eps to get back to
-    # P
+
+    # Convert P' = P*k/(rho_w*g)/eps to P'*eps = P*k/(rho_w*g)
+    # (Primes denote the nondim variables used throughout this solver)
     leg = fig.legend(lines, np.around(skew_asymm_Ps*eps,3),
             title=r'Pressure'+'\n'+r'Magnitude'+'\n'+r'$P_J k/(\rho_w g)$',
             loc='right')
@@ -1508,6 +1535,8 @@ if(plot_snapshots_cnoidal):
     snapshotSystem.boost_to_lab_frame(velocity='cnoidal')
 
     # Convert back to non-normalized variables
+    # Convert from eta' = eta/a = eta/h/eps to eta'*eps = eta/a*eps = eta/h
+    # (Primes denote the nondim variables used throughout this solver)
     snapshotSystem.set_snapshot_ts([0,1/3,2/3,1])
     snapshots = snapshotSystem.get_snapshots()*eps
 
@@ -1516,6 +1545,8 @@ if(plot_snapshots_cnoidal):
     xMasked = snapshotSystem.get_masked_x()
 
     # Normalize x by wavelength
+    # Convert from x' = x*k_E to x'/lambda' = x*k_E/lambda/k_E = x/lambda
+    # (Primes denote the nondim variables used throughout this solver)
     xMasked = xMasked/snapshotSystem.WaveLength
 
     print("Plotting.")
@@ -1530,11 +1561,14 @@ if(plot_snapshots_cnoidal):
     # Initialize figure
     fig, ax = texplot.newfig(0.9,golden=True)
 
+    # Plot x'*lambda' = x*k_E/lambda/k_E = x/lambda
+    # (Primes denote the nondim variables used throughout this solver)
     ax.set_xlabel(r'Distance $x/\lambda$')
+    # Plot eta'*eps = eta/a*eps = eta/h
+    # (Primes denote the nondim variables used throughout this solver)
     ax.set_ylabel(r'Surface Height $\eta / h$')
-    # Multiply P by eps; the P used in this code is really the
-    # "nondimensionalized" P' = P/eps, so multiply by eps to get back to
-    # P
+    # Convert P' = P*k/(rho_w*g)/eps to P'*eps = P*k/(rho_w*g)
+    # (Primes denote the nondim variables used throughout this solver)
     ax.set_title(r'Surface Height vs Time: $a/h={eps}$, $kh = {kh}$, $P_J k/(\rho_w g) = {P}$'.format(
         eps=eps,kh=round(np.sqrt(mu),1),P=round(eps*P,3)))
 
@@ -1583,6 +1617,8 @@ if(plot_negative_snapshots_cnoidal):
     snapshotSystem.boost_to_lab_frame(velocity='cnoidal')
 
     # Convert back to non-normalized variables
+    # Convert from eta' = eta/a = eta/h/eps to eta'*eps = eta/a*eps = eta/h
+    # (Primes denote the nondim variables used throughout this solver)
     snapshotSystem.set_snapshot_ts([0,1/3,2/3,1])
     snapshots = snapshotSystem.get_snapshots()*eps
 
@@ -1591,6 +1627,8 @@ if(plot_negative_snapshots_cnoidal):
     xMasked = snapshotSystem.get_masked_x()
 
     # Normalize x by wavelength
+    # Convert from x' = x*k_E to x'/lambda' = x*k_E/lambda/k_E = x/lambda
+    # (Primes denote the nondim variables used throughout this solver)
     xMasked = xMasked/snapshotSystem.WaveLength
 
     print("Plotting.")
@@ -1605,11 +1643,14 @@ if(plot_negative_snapshots_cnoidal):
     # Initialize figure
     fig, ax = texplot.newfig(0.9,golden=True)
 
+    # Plot x'*lambda' = x*k_E/lambda/k_E = x/lambda
+    # (Primes denote the nondim variables used throughout this solver)
     ax.set_xlabel(r'Distance $x/\lambda$')
+    # Plot eta'*eps = eta/a*eps = eta/h
+    # (Primes denote the nondim variables used throughout this solver)
     ax.set_ylabel(r'Surface Height $\eta / h$')
-    # Multiply P by eps; the P used in this code is really the
-    # "nondimensionalized" P' = P/eps, so multiply by eps to get back to
-    # P
+    # Convert P' = P*k/(rho_w*g)/eps to P'*eps = P*k/(rho_w*g)
+    # (Primes denote the nondim variables used throughout this solver)
     ax.set_title(r'Surface Height vs Time: $a/h={eps}$, $kh = {kh}$, $P_J k/(\rho_w g) = {P}$'.format(
         eps=eps,kh=round(np.sqrt(mu),1),P=round(eps*(-P),3)))
 
@@ -1670,6 +1711,8 @@ if(plot_pos_neg_snapshots_cnoidal):
         negSystem.boost_to_lab_frame(velocity='cnoidal')
 
         # Convert back to non-normalized variables
+        # Convert from eta' = eta/a = eta/h/eps to eta'*eps = eta/a*eps = eta/h
+        # (Primes denote the nondim variables used throughout this solver)
         posSystem.set_snapshot_ts([0,1/3,2/3,1])
         negSystem.set_snapshot_ts([0,1/3,2/3,1])
         posSnapshots[indx] = posSystem.get_snapshots()*eps_val
@@ -1705,15 +1748,18 @@ if(plot_pos_neg_snapshots_cnoidal):
     fig.subplots_adjust(left=0.175,right=0.825,top=0.8,bottom=0.125,hspace=0.3)
 
     for indx in [0,1]:
+        # Plot x'*lambda' = x*k_E/lambda/k_E = x/lambda
+        # (Primes denote the nondim variables used throughout this solver)
         ax[1,indx].set_xlabel(r'Distance $x/\lambda$')
+        # Plot eta'*eps = eta/a*eps = eta/h
+        # (Primes denote the nondim variables used throughout this solver)
         ax[indx,0].set_ylabel(r'$\eta / h$')
 
     fig.suptitle(r'Surface Height vs Time')
 
     for indx in [0,1]:
-        # Multiply P by eps; the P used in this code is really the
-        # "nondimensionalized" P' = P/eps, so multiply by eps to get back to
-        # P
+        # Convert P' = P*k/(rho_w*g)/eps to P'*eps = P*k/(rho_w*g)
+        # (Primes denote the nondim variables used throughout this solver)
 
         ax[0,indx].set_title(r'\begin{{tabular}}{{c}}$\epsilon = {eps}$, $\mu = {mu}$\\$P_J k/(\rho_w g) = {P}$\end{{tabular}}'.format(
             P=round(eps*(P),3),eps=pairedEps[indx],mu=pairedMu[indx]))
@@ -1857,9 +1903,8 @@ if(plot_skew_asymm_cnoidal):
         ax[1,indx].plot(t[indx],skewnesses[indx])
         ax[2,indx].plot(t[indx],asymmetries[indx])
 
-    # Multiply Ps by eps; the P used in this code is really the
-    # "nondimensionalized" P' = P/eps, so multiply by eps to get back to
-    # P
+    # Convert P' = P*k/(rho_w*g)/eps to P'*eps = P*k/(rho_w*g)
+    # (Primes denote the nondim variables used throughout this solver)
     leg = fig.legend(lines, np.around(skew_asymm_Ps*eps,3),
             title=r'Pressure'+'\n'+r'Magnitude'+'\n'+r'$P_J k/(\rho_w g)$',
             loc='right')
@@ -1995,6 +2040,8 @@ if(plot_power_spec_Jeffreys):
     negSystem.boost_to_lab_frame(velocity='cnoidal')
 
     # Convert back to non-normalized variables
+    # Convert from eta' = eta/a = eta/h/eps to eta'*eps = eta/a*eps = eta/h
+    # (Primes denote the nondim variables used throughout this solver)
     posSystem.set_snapshot_ts(np.linspace(0,1,num=6))
     negSystem.set_snapshot_ts(np.linspace(0,1,num=6))
     posSnapshots = posSystem.get_snapshots()*eps
@@ -2110,9 +2157,8 @@ if(plot_power_spec_Jeffreys):
     ax[1].set_xlabel(r'Harmonic $\kappa/k$')
     ax[0].set_ylabel(r'$\abs{\hat{\eta}}^2 k^2/h^2$')
     ax[1].set_ylabel(r'$\abs{\hat{\eta}}^2 k^2/h^2$')
-    # Multiply P by eps; the P used in this code is really the
-    # "nondimensionalized" P' = P/eps, so multiply by eps to get back to
-    # P
+    # Convert P' = P*k/(rho_w*g)/eps to P'*eps = P*k/(rho_w*g)
+    # (Primes denote the nondim variables used throughout this solver)
     fig.suptitle(r'Power Spectrum vs Time: $a/h={eps}$, $kh = {kh}$'.format(
         eps=eps,kh=round(np.sqrt(mu),1)))
     ax[0].set_title(r'Co-Wind: $P_J k/(\rho_w g) = {P}$'.format(
@@ -2179,6 +2225,8 @@ if(plot_power_spec_vs_time_Jeffreys):
     negSystem.boost_to_lab_frame(velocity='cnoidal')
 
     # Convert back to non-normalized variables
+    # Convert from eta' = eta/a = eta/h/eps to eta'*eps = eta/a*eps = eta/h
+    # (Primes denote the nondim variables used throughout this solver)
     posSystem.set_snapshot_ts(np.linspace(0,1,num=posSystem.tNum))
     negSystem.set_snapshot_ts(np.linspace(0,1,num=posSystem.tNum))
     posSnapshots = posSystem.get_snapshots()*eps
@@ -2256,9 +2304,8 @@ if(plot_power_spec_vs_time_Jeffreys):
 
     ax[1].set_xlabel(r'Time $t\sqrt{g/h}$')
 
-    # Multiply P by eps; the P used in this code is really the
-    # "nondimensionalized" P' = P/eps, so multiply by eps to get back to
-    # P
+    # Convert P' = P*k/(rho_w*g)/eps to P'*eps = P*k/(rho_w*g)
+    # (Primes denote the nondim variables used throughout this solver)
     fig.suptitle(r'Power Spectrum vs Time: $a/h={eps}$, $kh = {kh}$'.format(
         eps=eps,kh=round(np.sqrt(mu),1)))
     ax[0].set_title(r'Co-Wind: $P_J k/(\rho_w g) = {P}$'.format(
@@ -2351,6 +2398,8 @@ if(plot_double_power_spec_Jeffreys):
     negSystem.boost_to_lab_frame(velocity='cnoidal')
 
     # Convert back to non-normalized variables
+    # Convert from eta' = eta/a = eta/h/eps to eta'*eps = eta/a*eps = eta/h
+    # (Primes denote the nondim variables used throughout this solver)
     posSystem.set_snapshot_ts(np.linspace(0,1,num=posSystem.tNum))
     negSystem.set_snapshot_ts(np.linspace(0,1,num=posSystem.tNum))
     posSnapshots = posSystem.get_snapshots()*eps
@@ -2451,9 +2500,8 @@ if(plot_double_power_spec_Jeffreys):
     ax[1].set_xlabel(r'Harmonic $\kappa/k$')
     ax[0].set_ylabel(r'Frequency $\omega/\sqrt{g/h}$')
     ax[1].set_ylabel(r'Frequency $\omega/\sqrt{g/h}$')
-    # Multiply P by eps; the P used in this code is really the
-    # "nondimensionalized" P' = P/eps, so multiply by eps to get back to
-    # P
+    # Convert P' = P*k/(rho_w*g)/eps to P'*eps = P*k/(rho_w*g)
+    # (Primes denote the nondim variables used throughout this solver)
     fig.suptitle(r'Wavenumber Frequency Plot of $\abs{{\hat{{\eta}}}}^2$: $a/h={eps}$, $kh = {kh}$'.format(
         eps=eps,kh=round(np.sqrt(mu),1)))
     ax[0].set_title(r'Co-Wind: $P_J k/(\rho_w g) = {P}$'.format(
@@ -2511,6 +2559,8 @@ if(plot_power_spec_GM):
     negSystem.boost_to_lab_frame(velocity='cnoidal')
 
     # Convert back to non-normalized variables
+    # Convert from eta' = eta/a = eta/h/eps to eta'*eps = eta/a*eps = eta/h
+    # (Primes denote the nondim variables used throughout this solver)
     posSystem.set_snapshot_ts(np.linspace(0,1,num=6))
     negSystem.set_snapshot_ts(np.linspace(0,1,num=6))
     posSnapshots = posSystem.get_snapshots()*eps
@@ -2626,9 +2676,8 @@ if(plot_power_spec_GM):
     ax[1].set_xlabel(r'Harmonic $\kappa/k$')
     ax[0].set_ylabel(r'$\abs{\hat{\eta}}^2 k^2/h^2$')
     ax[1].set_ylabel(r'$\abs{\hat{\eta}}^2 k^2/h^2$')
-    # Multiply P by eps; the P used in this code is really the
-    # "nondimensionalized" P' = P/eps, so multiply by eps to get back to
-    # P
+    # Convert P' = P*k/(rho_w*g)/eps to P'*eps = P*k/(rho_w*g)
+    # (Primes denote the nondim variables used throughout this solver)
     fig.suptitle(r'Power Spectrum vs Time: $a/h={eps}$, $kh = {kh}$'.format(
         eps=eps,kh=round(np.sqrt(mu),1)))
     ax[0].set_title(r'Co-Wind: $P_G k/(\rho_w g) = {P}$'.format(
@@ -2695,6 +2744,8 @@ if(plot_power_spec_vs_time_GM):
     negSystem.boost_to_lab_frame(velocity='cnoidal')
 
     # Convert back to non-normalized variables
+    # Convert from eta' = eta/a = eta/h/eps to eta'*eps = eta/a*eps = eta/h
+    # (Primes denote the nondim variables used throughout this solver)
     posSystem.set_snapshot_ts(np.linspace(0,1,num=posSystem.tNum))
     negSystem.set_snapshot_ts(np.linspace(0,1,num=posSystem.tNum))
     posSnapshots = posSystem.get_snapshots()*eps
@@ -2772,9 +2823,8 @@ if(plot_power_spec_vs_time_GM):
 
     ax[1].set_xlabel(r'Time $t\sqrt{g/h}$')
 
-    # Multiply P by eps; the P used in this code is really the
-    # "nondimensionalized" P' = P/eps, so multiply by eps to get back to
-    # P
+    # Convert P' = P*k/(rho_w*g)/eps to P'*eps = P*k/(rho_w*g)
+    # (Primes denote the nondim variables used throughout this solver)
     fig.suptitle(r'Power Spectrum vs Time: $a/h={eps}$, $kh = {kh}$'.format(
         eps=eps,kh=round(np.sqrt(mu),1)))
     ax[0].set_title(r'Co-Wind: $P_G k/(\rho_w g) = {P}$'.format(
@@ -2864,6 +2914,8 @@ if(plot_pos_neg_snapshots_cnoidal_GM):
     negSystem.boost_to_lab_frame(velocity='cnoidal')
 
     # Convert back to non-normalized variables
+    # Convert from eta' = eta/a = eta/h/eps to eta'*eps = eta/a*eps = eta/h
+    # (Primes denote the nondim variables used throughout this solver)
     posSystem.set_snapshot_ts([0,1/3,2/3,1])
     negSystem.set_snapshot_ts([0,1/3,2/3,1])
     posSnapshots = posSystem.get_snapshots()*eps
@@ -2874,6 +2926,8 @@ if(plot_pos_neg_snapshots_cnoidal_GM):
     xMasked = posSystem.get_masked_x()
 
     # Normalize x by wavelength
+    # Convert from x' = x*k_E to x'/lambda' = x*k_E/lambda/k_E = x/lambda
+    # (Primes denote the nondim variables used throughout this solver)
     xMasked = xMasked/posSystem.WaveLength
 
     print("Plotting.")
@@ -2895,12 +2949,15 @@ if(plot_pos_neg_snapshots_cnoidal_GM):
 
     fig.subplots_adjust(left=0.175,right=0.9,top=0.875,bottom=0.125,hspace=0.3)
 
+    # Plot x'*lambda' = x*k_E/lambda/k_E = x/lambda
+    # (Primes denote the nondim variables used throughout this solver)
     ax[1].set_xlabel(r'Distance $x/\lambda$')
+    # Plot eta'*eps = eta/a*eps = eta/h
+    # (Primes denote the nondim variables used throughout this solver)
     ax[0].set_ylabel(r'$\eta / h$')
     ax[1].set_ylabel(r'$\eta / h$')
-    # Multiply P by eps; the P used in this code is really the
-    # "nondimensionalized" P' = P/eps, so multiply by eps to get back to
-    # P
+    # Convert P' = P*k/(rho_w*g)/eps to P'*eps = P*k/(rho_w*g)
+    # (Primes denote the nondim variables used throughout this solver)
     fig.suptitle(r'Surface Height vs Time: $a/h={eps}$, $kh = {kh}$'.format(
         eps=eps,kh=round(np.sqrt(mu),1)))
     ax[0].set_title(r'$P_G k/(\rho_w g) = {P}$'.format(
