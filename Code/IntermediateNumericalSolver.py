@@ -1009,9 +1009,11 @@ if(plot_trig_funcs):
     ax[0].plot(xMasked,builtinSnapshots)
     ax[1].plot(xMasked,FDSnapshots)
 
-    # Note: divide by epsilon to convert from t_1 to the full time t
+    # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k_E to
+    # t_1'/epsilon = t' = t*sqrt(g*h)*k_E
+    # (Primes denote the nondim variables used throughout this solver)
     fig.legend(np.around(builtinSolver.snapshot_ts/eps,1),
-            title=r'Time $t \sqrt{g/h}$',
+            title=r'Time $t \sqrt{g h} k_E$',
             loc='right')
 
     # Make background transparent
@@ -1093,9 +1095,11 @@ if(plot_snapshots):
             xycoords="axes fraction", arrowprops={'arrowstyle': '<-',
                 'shrinkA':1,'shrinkB':0})
 
-    # Note: divide by epsilon to convert from t_1 to the full time t
+    # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k_E to
+    # t_1'/epsilon = t' = t*sqrt(g*h)*k_E
+    # (Primes denote the nondim variables used throughout this solver)
     fig.legend(np.around(snapshotSystem.snapshot_ts/eps,1),
-            title=r'Time $t \sqrt{g/h}$',loc='right')
+            title=r'Time $t \sqrt{g h} k_E$',loc='right')
 
     # Make background transparent
     fig.patch.set_alpha(0)
@@ -1176,9 +1180,11 @@ if(plot_negative_snapshots):
             xycoords="axes fraction", arrowprops={'arrowstyle': '->',
                 'shrinkA':1,'shrinkB':0})
 
-    # Note: divide by epsilon to convert from t_1 to the full time t
+    # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k_E to
+    # t_1'/epsilon = t' = t*sqrt(g*h)*k_E
+    # (Primes denote the nondim variables used throughout this solver)
     fig.legend(np.around(snapshotSystem.snapshot_ts/eps,1),
-            title=r'Time $t \sqrt{g/h}$',loc='right')
+            title=r'Time $t \sqrt{g h} k_E$',loc='right')
 
     # Make background transparent
     fig.patch.set_alpha(0)
@@ -1304,9 +1310,11 @@ if(plot_pos_neg_snapshots):
                 xycoords="axes fraction", arrowprops={'arrowstyle': '->',
                     'shrinkA':1,'shrinkB':0})
 
-    # Note: divide by epsilon to convert from t_1 to the full time t
+    # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k_E to
+    # t_1'/epsilon = t' = t*sqrt(g*h)*k_E
+    # (Primes denote the nondim variables used throughout this solver)
     fig.legend(np.around(posSystem.snapshot_ts/eps,1),
-            title=r'Time'+'\n'+r'$t \sqrt{g/h}$',loc='right')
+            title=r'Time'+'\n'+r'$t \sqrt{g h} k_E$',loc='right')
 
     # Make background transparent
     fig.patch.set_alpha(0)
@@ -1340,7 +1348,9 @@ if(plot_skew_asymm):
         skewAsymSystem.boost_to_lab_frame(velocity='solitary')
 
         # Save timesteps
-        # Note: divide by epsilon to convert from t_1 to the full time t
+        # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k_E to
+        # t_1'/epsilon = t' = t*sqrt(g*h)*k_E
+        # (Primes denote the nondim variables used throughout this solver)
         t = skewAsymSystem.t/eps
 
         print("Computing the Height.")
@@ -1383,7 +1393,10 @@ if(plot_skew_asymm):
     fig.set_tight_layout(False)
     fig.subplots_adjust(left=0.175,right=0.8,top=0.875,bottom=0.15)
 
-    ax[-1].set_xlabel(r'Time $t \sqrt{g/h}$')
+    # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k_E to
+    # t_1'/epsilon = t' = t*sqrt(g*h)*k_E
+    # (Primes denote the nondim variables used throughout this solver)
+    ax[-1].set_xlabel(r'Time $t \sqrt{g h} k_E$')
     ax[0].set_ylabel(r'Height')
     ax[1].set_ylabel(r'Skewness')
     ax[2].set_ylabel(r'Asymmetry')
@@ -1488,7 +1501,7 @@ if(plot_skew_asymm_kh):
     ax[0].set_ylabel(r'Height')
     ax[1].set_ylabel(r'Skewness')
     ax[2].set_ylabel(r'Asymmetry')
-    fig.suptitle(r'Height, Skewness, and Asymmetry: $t \epsilon \sqrt{{g/h}} = {t}$'.format(
+    fig.suptitle(r'Height, Skewness, and Asymmetry: $t \epsilon \sqrt{{g h}} k_E = {t}$'.format(
         P=P,t=round(t[-1],0)))
 
     def mu2eps(x):
@@ -1591,9 +1604,11 @@ if(plot_snapshots_cnoidal):
             xycoords="axes fraction", arrowprops={'arrowstyle': '<-',
                 'shrinkA':1,'shrinkB':0})
 
-    # Note: divide by epsilon to convert from t_1 to the full time t
+    # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k_E to
+    # t_1'/epsilon = t' = t*sqrt(g*h)*k_E
+    # (Primes denote the nondim variables used throughout this solver)
     fig.legend(np.around(snapshotSystem.snapshot_ts/eps,1),
-            title=r'Time $t \sqrt{g/h}$',loc='right')
+            title=r'Time $t \sqrt{g h} k_E$',loc='right')
 
     # Make background transparent
     fig.patch.set_alpha(0)
@@ -1673,9 +1688,11 @@ if(plot_negative_snapshots_cnoidal):
             xycoords="axes fraction", arrowprops={'arrowstyle': '->',
                 'shrinkA':1,'shrinkB':0})
 
-    # Note: divide by epsilon to convert from t_1 to the full time t
+    # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k_E to
+    # t_1'/epsilon = t' = t*sqrt(g*h)*k_E
+    # (Primes denote the nondim variables used throughout this solver)
     fig.legend(np.around(snapshotSystem.snapshot_ts/eps,1),
-            title=r'Time $t \sqrt{g/h}$',loc='right')
+            title=r'Time $t \sqrt{g h} k_E$',loc='right')
 
     # Make background transparent
     fig.patch.set_alpha(0)
@@ -1799,9 +1816,11 @@ if(plot_pos_neg_snapshots_cnoidal):
                 xycoords="axes fraction", arrowprops={'arrowstyle': '->',
                     'shrinkA':1,'shrinkB':0})
 
-    # Note: divide by epsilon to convert from t_1 to the full time t
+    # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k_E to
+    # t_1'/epsilon = t' = t*sqrt(g*h)*k_E
+    # (Primes denote the nondim variables used throughout this solver)
     fig.legend(np.around(posSystem.snapshot_ts/eps,1),
-            title=r'Time'+'\n'+r'$t \sqrt{g/h}$',loc='right')
+            title=r'Time'+'\n'+r'$t \sqrt{g h} k_E$',loc='right')
 
     # Make background transparent
     fig.patch.set_alpha(0)
@@ -1839,7 +1858,9 @@ if(plot_skew_asymm_cnoidal):
             skewAsymSystem.boost_to_lab_frame(velocity='cnoidal')
 
             # Save timesteps
-            # Note: divide by epsilon to convert from t_1 to the full time t
+            # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k_E to
+            # t_1'/epsilon = t' = t*sqrt(g*h)*k_E
+            # (Primes denote the nondim variables used throughout this solver)
             t[indx] = skewAsymSystem.t/eps_val
 
             print("Computing the Height.")
@@ -1884,8 +1905,11 @@ if(plot_skew_asymm_cnoidal):
     fig.set_tight_layout(False)
     fig.subplots_adjust(left=0.175,right=0.8,top=0.875,bottom=0.15)
 
-    ax[-1,0].set_xlabel(r'Time $t \sqrt{g/h}$')
-    ax[-1,1].set_xlabel(r'Time $t \sqrt{g/h}$')
+    # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k_E to
+    # t_1'/epsilon = t' = t*sqrt(g*h)*k_E
+    # (Primes denote the nondim variables used throughout this solver)
+    ax[-1,0].set_xlabel(r'Time $t \sqrt{g h} k_E$')
+    ax[-1,1].set_xlabel(r'Time $t \sqrt{g h} k_E$')
     ax[0,0].set_ylabel(r'Height')
     ax[1,0].set_ylabel(r'Skewness')
     ax[2,0].set_ylabel(r'Asymmetry')
@@ -1996,7 +2020,7 @@ if(plot_skew_asymm_cnoidal_kh):
     ax[0].set_ylabel(r'Height')
     ax[1].set_ylabel(r'Skewness')
     ax[2].set_ylabel(r'Asymmetry')
-    fig.suptitle(r'Height, Skewness, and Asymmetry: $t \epsilon \sqrt{{g/h}} = {t}$'.format(
+    fig.suptitle(r'Height, Skewness, and Asymmetry: $t \epsilon \sqrt{{g h}} k_E = {t}$'.format(
         P=P,t=round(t[-1],0)))
 
     # Put horizontal line at y=1
@@ -2196,9 +2220,11 @@ if(plot_power_spec_Jeffreys):
     axins[1].set_yticklabels([])
     axins[1].set_xticklabels([])
 
-    # Note: divide by epsilon to convert from t_1 to the full time t
+    # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k_E to
+    # t_1'/epsilon = t' = t*sqrt(g*h)*k_E
+    # (Primes denote the nondim variables used throughout this solver)
     fig.legend(np.around(posSystem.snapshot_ts/eps,1),
-            title=r'Time'+'\n'+r'$t \sqrt{g/h}$',loc='right')
+            title=r'Time'+'\n'+r'$t \sqrt{g h} k_E$',loc='right')
 
     # Make background transparent
     fig.patch.set_alpha(0)
@@ -2239,7 +2265,9 @@ if(plot_power_spec_vs_time_Jeffreys):
     negSnapshots = negSystem.get_snapshots()*eps
 
     # Save timesteps
-    # Note: divide by epsilon to convert from t_1 to the full time t
+    # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k_E to
+    # t_1'/epsilon = t' = t*sqrt(g*h)*k_E
+    # (Primes denote the nondim variables used throughout this solver)
     t = posSystem.t/eps
 
     # Resample (via interpolation) to get a higher FFT resolution
@@ -2313,7 +2341,10 @@ if(plot_power_spec_vs_time_Jeffreys):
 
     fig.subplots_adjust(left=0.125,right=0.775,top=0.875,bottom=0.125,hspace=0.3)
 
-    ax[1].set_xlabel(r'Time $t\sqrt{g/h}$')
+    # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k_E to
+    # t_1'/epsilon = t' = t*sqrt(g*h)*k_E
+    # (Primes denote the nondim variables used throughout this solver)
+    ax[1].set_xlabel(r'Time $t\sqrt{g h} k_E$')
 
     # Convert P' = P*k/(rho_w*g)/eps to P'*eps = P*k/(rho_w*g)
     # (Primes denote the nondim variables used throughout this solver)
@@ -2521,8 +2552,9 @@ if(plot_double_power_spec_Jeffreys):
 
     # Plot kappa'/k' = kappa/k
     ax[1].set_xlabel(r'Harmonic $\kappa/k$')
-    ax[0].set_ylabel(r'Frequency $\omega/\sqrt{g/h}$')
-    ax[1].set_ylabel(r'Frequency $\omega/\sqrt{g/h}$')
+    # Plot omega'/k' = omega/sqrt(g*h)/k
+    ax[0].set_ylabel(r'Frequency $\omega/\sqrt{g h} k_E$')
+    ax[1].set_ylabel(r'Frequency $\omega/\sqrt{g h} k_E$')
     # Convert P' = P*k/(rho_w*g)/eps to P'*eps = P*k/(rho_w*g)
     # (Primes denote the nondim variables used throughout this solver)
     fig.suptitle(r'Wavenumber Frequency Plot of $\abs{{\hat{{\eta}}}}^2$: $a/h={eps}$, $kh = {kh}$'.format(
@@ -2738,9 +2770,11 @@ if(plot_power_spec_GM):
     axins[1].set_yticklabels([])
     axins[1].set_xticklabels([])
 
-    # Note: divide by epsilon to convert from t_1 to the full time t
+    # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k_E to
+    # t_1'/epsilon = t' = t*sqrt(g*h)*k_E
+    # (Primes denote the nondim variables used throughout this solver)
     fig.legend(np.around(posSystem.snapshot_ts/eps,1),
-            title=r'Time'+'\n'+r'$t \sqrt{g/h}$',loc='right')
+            title=r'Time'+'\n'+r'$t \sqrt{g h} k_E$',loc='right')
 
     # Make background transparent
     fig.patch.set_alpha(0)
@@ -2781,7 +2815,9 @@ if(plot_power_spec_vs_time_GM):
     negSnapshots = negSystem.get_snapshots()*eps
 
     # Save timesteps
-    # Note: divide by epsilon to convert from t_1 to the full time t
+    # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k_E to
+    # t_1'/epsilon = t' = t*sqrt(g*h)*k_E
+    # (Primes denote the nondim variables used throughout this solver)
     t = posSystem.t/eps
 
     # Resample (via interpolation) to get a higher FFT resolution
@@ -2855,7 +2891,10 @@ if(plot_power_spec_vs_time_GM):
 
     fig.subplots_adjust(left=0.125,right=0.775,top=0.875,bottom=0.125,hspace=0.3)
 
-    ax[1].set_xlabel(r'Time $t\sqrt{g/h}$')
+    # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k_E to
+    # t_1'/epsilon = t' = t*sqrt(g*h)*k_E
+    # (Primes denote the nondim variables used throughout this solver)
+    ax[1].set_xlabel(r'Time $t\sqrt{g h} k_E$')
 
     # Convert P' = P*k/(rho_w*g)/eps to P'*eps = P*k/(rho_w*g)
     # (Primes denote the nondim variables used throughout this solver)
@@ -3030,9 +3069,11 @@ if(plot_pos_neg_snapshots_cnoidal_GM):
             xycoords="axes fraction", arrowprops={'arrowstyle': '->',
                 'shrinkA':1,'shrinkB':0})
 
-    # Note: divide by epsilon to convert from t_1 to the full time t
+    # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k_E to
+    # t_1'/epsilon = t' = t*sqrt(g*h)*k_E
+    # (Primes denote the nondim variables used throughout this solver)
     fig.legend(np.around(posSystem.snapshot_ts/eps,1),
-            title=r'Time'+'\n'+r'$t \sqrt{g/h}$',loc='right')
+            title=r'Time'+'\n'+r'$t \sqrt{g h} k_E$',loc='right')
 
     # Make background transparent
     fig.patch.set_alpha(0)
