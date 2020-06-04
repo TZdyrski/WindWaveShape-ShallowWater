@@ -2080,11 +2080,10 @@ if(plot_power_spec_Jeffreys):
     # (Primes denote the nondim variables used throughout this solver)
     # (scale FFT by 1/N so the FFT of a sinusoid has unit amplitude;
     # this also gives it the same units as the continuous Fourier
-    # Transform; also multiply by 2 since we ignore the negative
-    # frequencies)
-    posSnapshotsFFT = 2*np.fft.fft(posSnapshotsRepeated,
+    # Transform)
+    posSnapshotsFFT = np.fft.fft(posSnapshotsRepeated,
             axis=0)/posSystem.xNum/repeat_times
-    negSnapshotsFFT = 2*np.fft.fft(negSnapshotsRepeated,
+    negSnapshotsFFT = np.fft.fft(negSnapshotsRepeated,
             axis=0)/negSystem.xNum/repeat_times
 
     # Calculate power spectrum (ie abs squared) \abs{\hat'{eps*eta'}}^2 =
@@ -2287,11 +2286,10 @@ if(plot_power_spec_vs_time_Jeffreys):
     # (Primes denote the nondim variables used throughout this solver)
     # (scale FFT by 1/N so the FFT of a sinusoid has unit amplitude;
     # this also gives it the same units as the continuous Fourier
-    # Transform; also multiply by 2 since we ignore the negative
-    # frequencies)
-    posSnapshotsFFT = 2*np.fft.fft(posSnapshotsRepeated,
+    # Transform)
+    posSnapshotsFFT = np.fft.fft(posSnapshotsRepeated,
             axis=0)/posSystem.xNum/repeat_times
-    negSnapshotsFFT = 2*np.fft.fft(negSnapshotsRepeated,
+    negSnapshotsFFT = np.fft.fft(negSnapshotsRepeated,
             axis=0)/negSystem.xNum/repeat_times
 
     # Calculate power spectrum (ie abs squared) \abs{\hat'{eps*eta'}}^2 =
@@ -2493,11 +2491,10 @@ if(plot_double_power_spec_Jeffreys):
     # (Primes denote the nondim variables used throughout this solver)
     # (scale FFT by 1/N so the FFT of a sinusoid has unit amplitude;
     # this also gives it the same units as the continuous Fourier
-    # Transform; also multiply by 2 since we ignore the negative
-    # frequencies)
-    posSnapshotsFFT = 2*np.fft.fft(posSnapshotsRepeated,
+    # Transform)
+    posSnapshotsFFT = np.fft.fft(posSnapshotsRepeated,
             axis=0)/(posSystem.xNum*repeat_times)
-    negSnapshotsFFT = 2*np.fft.fft(negSnapshotsRepeated,
+    negSnapshotsFFT = np.fft.fft(negSnapshotsRepeated,
             axis=0)/(negSystem.xNum*repeat_times)
 
     # Set kappa-columns with small values equal to zero so we don't blow them up
@@ -2537,11 +2534,10 @@ if(plot_double_power_spec_Jeffreys):
     # (Primes denote the nondim variables used throughout this solver)
     # (scale FFT by 1/N so the FFT of a sinusoid has unit amplitude;
     # this also gives it the same units as the continuous Fourier
-    # Transform; also multiply by 2 since we ignore the negative
-    # frequencies)
-    posSnapshotsDoubleFFT = 2*np.fft.fft(posSnapshotsModifiedFFT,
+    # Transform)
+    posSnapshotsDoubleFFT = np.fft.fft(posSnapshotsModifiedFFT,
             axis=1)/(posSystem.tNum)
-    negSnapshotsDoubleFFT = 2*np.fft.fft(negSnapshotsModifiedFFT,
+    negSnapshotsDoubleFFT = np.fft.fft(negSnapshotsModifiedFFT,
             axis=1)/(negSystem.tNum)
 
     # Calculate power spectrum (ie abs squared)
@@ -2662,11 +2658,10 @@ if(plot_power_spec_GM):
     # (Primes denote the nondim variables used throughout this solver)
     # (scale FFT by 1/N so the FFT of a sinusoid has unit amplitude;
     # this also gives it the same units as the continuous Fourier
-    # Transform; also multiply by 2 since we ignore the negative
-    # frequencies)
-    posSnapshotsFFT = 2*np.fft.fft(posSnapshotsRepeated,
+    # Transform)
+    posSnapshotsFFT = np.fft.fft(posSnapshotsRepeated,
             axis=0)/posSystem.xNum/repeat_times
-    negSnapshotsFFT = 2*np.fft.fft(negSnapshotsRepeated,
+    negSnapshotsFFT = np.fft.fft(negSnapshotsRepeated,
             axis=0)/negSystem.xNum/repeat_times
 
     # Calculate power spectrum (ie abs squared) \abs{\hat'{eps*eta'}}^2 =
@@ -2869,11 +2864,10 @@ if(plot_power_spec_vs_time_GM):
     # (Primes denote the nondim variables used throughout this solver)
     # (scale FFT by 1/N so the FFT of a sinusoid has unit amplitude;
     # this also gives it the same units as the continuous Fourier
-    # Transform; also multiply by 2 since we ignore the negative
-    # frequencies)
-    posSnapshotsFFT = 2*np.fft.fft(posSnapshotsRepeated,
+    # Transform)
+    posSnapshotsFFT = np.fft.fft(posSnapshotsRepeated,
             axis=0)/posSystem.xNum/repeat_times
-    negSnapshotsFFT = 2*np.fft.fft(negSnapshotsRepeated,
+    negSnapshotsFFT = np.fft.fft(negSnapshotsRepeated,
             axis=0)/negSystem.xNum/repeat_times
 
     # Calculate power spectrum (ie abs squared) \abs{\hat'{eps*eta'}}^2 =
