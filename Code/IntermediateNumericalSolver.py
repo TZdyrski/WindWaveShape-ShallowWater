@@ -1310,11 +1310,10 @@ if(plot_pos_neg_snapshots):
                 xycoords="axes fraction", arrowprops={'arrowstyle': '->',
                     'shrinkA':1,'shrinkB':0})
 
-    # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k_E to
-    # t_1'/epsilon = t' = t*sqrt(g*h)*k_E
+    # Plot t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k_E
     # (Primes denote the nondim variables used throughout this solver)
-    fig.legend(np.around(posSystem.snapshot_ts/eps,1),
-            title=r'Time'+'\n'+r'$t \sqrt{g h} k_E$',loc='right')
+    fig.legend(np.around(posSystem.snapshot_ts,1),
+            title=r'Time'+'\n'+r'$t \epsilon \sqrt{g h} k_E$',loc='right')
 
     # Make background transparent
     fig.patch.set_alpha(0)
@@ -1816,11 +1815,10 @@ if(plot_pos_neg_snapshots_cnoidal):
                 xycoords="axes fraction", arrowprops={'arrowstyle': '->',
                     'shrinkA':1,'shrinkB':0})
 
-    # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k_E to
-    # t_1'/epsilon = t' = t*sqrt(g*h)*k_E
+    # Plot t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k_E
     # (Primes denote the nondim variables used throughout this solver)
     fig.legend(np.around(posSystem.snapshot_ts/eps,1),
-            title=r'Time'+'\n'+r'$t \sqrt{g h} k_E$',loc='right')
+            title=r'Time'+'\n'+r'$t \epsilon \sqrt{g h} k_E$',loc='right')
 
     # Make background transparent
     fig.patch.set_alpha(0)
@@ -1927,10 +1925,10 @@ if(plot_skew_asymm_cnoidal):
         ax[1,indx].plot(t[indx],skewnesses[indx])
         ax[2,indx].plot(t[indx],asymmetries[indx])
 
-    # Convert P' = P*k/(rho_w*g)/eps to P'*eps = P*k/(rho_w*g)
+    # Plot P' = P*k/(rho_w*g)/eps
     # (Primes denote the nondim variables used throughout this solver)
-    leg = fig.legend(lines, np.around(skew_asymm_Ps*eps,3),
-            title=r'Pressure'+'\n'+r'Magnitude'+'\n'+r'$P_J k/(\rho_w g)$',
+    leg = fig.legend(lines, np.around(skew_asymm_Ps,3),
+            title=r'Pressure'+'\n'+r'Magnitude'+'\n'+r'$P_J k/(\rho_w g \epsilon)$',
             loc='right')
     leg.get_title().set_multialignment('center')
 
