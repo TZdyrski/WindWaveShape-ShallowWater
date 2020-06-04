@@ -2064,8 +2064,13 @@ if(plot_power_spec_Jeffreys):
     negSnapshotsPower = np.absolute(negSnapshotsFFT)**2
 
     # Generate spatial FFT conjugate coordinate
+    # Convert from matplotlib's wavenumber in cycles per x-unit to our
+    # radians per x-unit by multiplying by 2*pi radians/cycle
     kappa = np.fft.fftfreq(posSystem.xNum*repeat_times,
-            posSystem.dx)*posSystem.WaveLength
+            posSystem.dx)*2*np.pi
+    # Convert from kappa' = kappa/k_E to
+    #  kappa'/k' = kappa/k_E/k*k_E = kappa/k
+    kappa = kappa*posSystem.WaveLength/2/np.pi
 
     # Find peaks in initial data (peaks shouldn't move over time either)
     posSnapshotsPowerPeaks = sp.signal.find_peaks(posSnapshotsPower[:,0])[0]
@@ -2154,6 +2159,7 @@ if(plot_power_spec_Jeffreys):
 
     fig.subplots_adjust(left=0.175,right=0.825,top=0.875,bottom=0.125,hspace=0.3)
 
+    # Plot kappa'/k' = kappa/k
     ax[1].set_xlabel(r'Harmonic $\kappa/k$')
     ax[0].set_ylabel(r'$\abs{\hat{\eta}}^2 k^2/h^2$')
     ax[1].set_ylabel(r'$\abs{\hat{\eta}}^2 k^2/h^2$')
@@ -2253,8 +2259,13 @@ if(plot_power_spec_vs_time_Jeffreys):
     negSnapshotsPower = np.absolute(negSnapshotsFFT)**2
 
     # Generate spatial FFT conjugate coordinate
+    # Convert from matplotlib's wavenumber in cycles per x-unit to our
+    # radians per x-unit by multiplying by 2*pi radians/cycle
     kappa = np.fft.fftfreq(posSystem.xNum*repeat_times,
-            posSystem.dx)*posSystem.WaveLength
+            posSystem.dx)*2*np.pi
+    # Convert from kappa' = kappa/k_E to
+    #  kappa'/k' = kappa/k_E/k*k_E = kappa/k
+    kappa = kappa*posSystem.WaveLength/2/np.pi
 
     # Find peaks in initial data (peaks shouldn't move over time either)
     posSnapshotsPowerPeaks = sp.signal.find_peaks(posSnapshotsPower[:,0])[0]
@@ -2411,10 +2422,21 @@ if(plot_double_power_spec_Jeffreys):
     negSnapshotsRepeated = np.tile(negSnapshots, (repeat_times,1))
 
     # Generate spatial FFT conjugate coordinate
+    # Convert from matplotlib's wavenumber in cycles per x-unit to our
+    # radians per x-unit by multiplying by 2*pi radians/cycle
     kappa = np.fft.fftfreq(posSystem.xNum*repeat_times,
-            posSystem.dx)*posSystem.WaveLength
+            posSystem.dx)*2*np.pi
+    # Convert from kappa' = kappa/k_E to
+    #  kappa'/k' = kappa/k_E/k*k_E = kappa/k
+    kappa = kappa*posSystem.WaveLength/2/np.pi
+
+    # Convert from matplotlib's wavenumber in cycles per t-unit to our
+    # radians per t-unit by multiplying by 2*pi radians/cycle
     omega = np.fft.fftfreq(posSystem.tNum,
-            posSystem.dt)*posSystem.WaveLength
+            posSystem.dt)*2*np.pi
+    # Convert from omega' = omega/k_E/sqrt(g*h) to
+    #  omega'/k' = omega/k_E/sqrt(g*h)/k*k_E = omega/sqrt(g*h)/k
+    omega = omega*posSystem.WaveLength/2/np.pi
 
     # Make a mesh of unshifted frequencies first for multiplying each
     # mode by exp(sqrt(1+P)*k*t)
@@ -2497,6 +2519,7 @@ if(plot_double_power_spec_Jeffreys):
 
     fig.subplots_adjust(left=0.175,right=0.825,top=0.875,bottom=0.125,hspace=0.3)
 
+    # Plot kappa'/k' = kappa/k
     ax[1].set_xlabel(r'Harmonic $\kappa/k$')
     ax[0].set_ylabel(r'Frequency $\omega/\sqrt{g/h}$')
     ax[1].set_ylabel(r'Frequency $\omega/\sqrt{g/h}$')
@@ -2583,8 +2606,13 @@ if(plot_power_spec_GM):
     negSnapshotsPower = np.absolute(negSnapshotsFFT)**2
 
     # Generate spatial FFT conjugate coordinate
+    # Convert from matplotlib's wavenumber in cycles per x-unit to our
+    # radians per x-unit by multiplying by 2*pi radians/cycle
     kappa = np.fft.fftfreq(posSystem.xNum*repeat_times,
-            posSystem.dx)*posSystem.WaveLength
+            posSystem.dx)*2*np.pi
+    # Convert from kappa' = kappa/k_E to
+    #  kappa'/k' = kappa/k_E/k*k_E = kappa/k
+    kappa = kappa*posSystem.WaveLength/2/np.pi
 
     # Find peaks in initial data (peaks shouldn't move over time either)
     posSnapshotsPowerPeaks = sp.signal.find_peaks(posSnapshotsPower[:,0])[0]
@@ -2673,6 +2701,7 @@ if(plot_power_spec_GM):
 
     fig.subplots_adjust(left=0.175,right=0.825,top=0.875,bottom=0.125,hspace=0.3)
 
+    # Plot kappa'/k' = kappa/k
     ax[1].set_xlabel(r'Harmonic $\kappa/k$')
     ax[0].set_ylabel(r'$\abs{\hat{\eta}}^2 k^2/h^2$')
     ax[1].set_ylabel(r'$\abs{\hat{\eta}}^2 k^2/h^2$')
@@ -2772,8 +2801,13 @@ if(plot_power_spec_vs_time_GM):
     negSnapshotsPower = np.absolute(negSnapshotsFFT)**2
 
     # Generate spatial FFT conjugate coordinate
+    # Convert from matplotlib's wavenumber in cycles per x-unit to our
+    # radians per x-unit by multiplying by 2*pi radians/cycle
     kappa = np.fft.fftfreq(posSystem.xNum*repeat_times,
-            posSystem.dx)*posSystem.WaveLength
+            posSystem.dx)*2*np.pi
+    # Convert from kappa' = kappa/k_E to
+    #  kappa'/k' = kappa/k_E/k*k_E = kappa/k
+    kappa = kappa*posSystem.WaveLength/2/np.pi
 
     # Find peaks in initial data (peaks shouldn't move over time either)
     posSnapshotsPowerPeaks = sp.signal.find_peaks(posSnapshotsPower[:,0])[0]
