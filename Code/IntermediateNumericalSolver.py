@@ -41,8 +41,8 @@ omega_to_T = 1/2/np.pi # conversion from omega to 1/T
 ## Physical parameters to convert from normalized, nondimensional
 ## variables to non-normalized, dimensional variables
 eps = 0.1 # a/h
-mu= 0.8 # (kh)**2
-mu_solitary = 6*eps # (kh)**2 fixed for solitary waves
+mu = 0.8 # (k_E h)**2 >= 6*eps
+mu_solitary = 6*eps # (k_E h)**2 fixed for solitary waves
 
 # For plots with a pair of epsilon and mu values
 pairedEps = [eps, 2*eps]
@@ -1001,9 +1001,9 @@ if(plot_trig_funcs):
     # Plot x'*lambda' = x*k_E/lambda/k_E = x/lambda
     # (Primes denote the nondim variables used throughout this solver)
     ax[1].set_xlabel(r'Distance $x/\lambda$')
-    ax[0].set_title(r'Builtin Solver after exactly 1 Period: $a/h={eps}$, $kh = {kh}$'.format(
+    ax[0].set_title(r'Builtin Solver after exactly 1 Period: $a/h={eps}$, $k_E h = {kh}$'.format(
         eps=eps,kh=round(np.sqrt(mu_solitary),1)))
-    ax[1].set_title(r'FD Solver after exactly 1 Period: $a/h={eps}$, $kh = {kh}$'.format(
+    ax[1].set_title(r'FD Solver after exactly 1 Period: $a/h={eps}$, $k_E h = {kh}$'.format(
         eps=eps,kh=round(np.sqrt(mu_solitary),1)))
 
     ax[0].plot(xMasked,builtinSnapshots)
@@ -1073,7 +1073,7 @@ if(plot_snapshots):
     ax.set_ylabel(r'Surface Height $\eta / h$')
     # Convert P' = P*k/(rho_w*g)/eps to P'*eps = P*k/(rho_w*g)
     # (Primes denote the nondim variables used throughout this solver)
-    ax.set_title(r'Surface Height vs Time: $a/h={eps}$, $kh = {kh}$, $P_J k/(\rho_w g) = {P}$'.format(
+    ax.set_title(r'Surface Height vs Time: $a/h={eps}$, $k_E h = {kh}$, $P_J k/(\rho_w g) = {P}$'.format(
         eps=eps,kh=round(np.sqrt(mu_solitary),1),P=round(eps*P,3)))
 
     ax.plot(xMasked,snapshots)
@@ -1158,7 +1158,7 @@ if(plot_negative_snapshots):
     ax.set_ylabel(r'Surface Height $\eta / h$')
     # Convert P' = P*k/(rho_w*g)/eps to P'*eps = P*k/(rho_w*g)
     # (Primes denote the nondim variables used throughout this solver)
-    ax.set_title(r'Surface Height vs Time: $a/h={eps}$, $kh = {kh}$, $P_J k/(\rho_w g) = {P}$'.format(
+    ax.set_title(r'Surface Height vs Time: $a/h={eps}$, $k_E h = {kh}$, $P_J k/(\rho_w g) = {P}$'.format(
         eps=eps,kh=round(np.sqrt(mu_solitary),1),P=round(eps*(-P),3)))
 
     ax.plot(xMasked,snapshots)
@@ -1399,7 +1399,7 @@ if(plot_skew_asymm):
     ax[0].set_ylabel(r'Height')
     ax[1].set_ylabel(r'Skewness')
     ax[2].set_ylabel(r'Asymmetry')
-    fig.suptitle(r'\begin{{tabular}}{{c}}Height, Skewness, and Asymmetry: \\ $a/h={eps}$, $kh = {kh}$\end{{tabular}}'.format(
+    fig.suptitle(r'\begin{{tabular}}{{c}}Height, Skewness, and Asymmetry: \\ $a/h={eps}$, $k_E h = {kh}$\end{{tabular}}'.format(
         eps=eps,kh=round(np.sqrt(mu_solitary),1),P=P))
 
     # Put horizontal line at y=1
@@ -1496,7 +1496,7 @@ if(plot_skew_asymm_kh):
     fig.set_tight_layout(False)
     fig.subplots_adjust(left=0.175,right=0.9,top=0.875,bottom=0.15)
 
-    ax[-1].set_xlabel(r'Nondimensional Depth $kh$')
+    ax[-1].set_xlabel(r'Nondimensional Depth $k_E h$')
     ax[0].set_ylabel(r'Height')
     ax[1].set_ylabel(r'Skewness')
     ax[2].set_ylabel(r'Asymmetry')
@@ -1581,7 +1581,7 @@ if(plot_snapshots_cnoidal):
     ax.set_ylabel(r'Surface Height $\eta / h$')
     # Convert P' = P*k/(rho_w*g)/eps to P'*eps = P*k/(rho_w*g)
     # (Primes denote the nondim variables used throughout this solver)
-    ax.set_title(r'Surface Height vs Time: $a/h={eps}$, $kh = {kh}$, $P_J k/(\rho_w g) = {P}$'.format(
+    ax.set_title(r'Surface Height vs Time: $a/h={eps}$, $k_E h = {kh}$, $P_J k/(\rho_w g) = {P}$'.format(
         eps=eps,kh=round(np.sqrt(mu),1),P=round(eps*P,3)))
 
     ax.plot(xMasked,snapshots)
@@ -1665,7 +1665,7 @@ if(plot_negative_snapshots_cnoidal):
     ax.set_ylabel(r'Surface Height $\eta / h$')
     # Convert P' = P*k/(rho_w*g)/eps to P'*eps = P*k/(rho_w*g)
     # (Primes denote the nondim variables used throughout this solver)
-    ax.set_title(r'Surface Height vs Time: $a/h={eps}$, $kh = {kh}$, $P_J k/(\rho_w g) = {P}$'.format(
+    ax.set_title(r'Surface Height vs Time: $a/h={eps}$, $k_E h = {kh}$, $P_J k/(\rho_w g) = {P}$'.format(
         eps=eps,kh=round(np.sqrt(mu),1),P=round(eps*(-P),3)))
 
     ax.plot(xMasked,snapshots)
@@ -1911,7 +1911,7 @@ if(plot_skew_asymm_cnoidal):
     ax[0,0].set_ylabel(r'Height')
     ax[1,0].set_ylabel(r'Skewness')
     ax[2,0].set_ylabel(r'Asymmetry')
-    fig.suptitle(r'\begin{{tabular}}{{c}}Height, Skewness, and Asymmetry: \\ $a/h={eps}$, $kh = {kh}$\end{{tabular}}'.format(
+    fig.suptitle(r'\begin{{tabular}}{{c}}Height, Skewness, and Asymmetry: \\ $a/h={eps}$, $k_E h = {kh}$\end{{tabular}}'.format(
         eps=eps,kh=round(np.sqrt(mu),1),P=P))
 
     for indx in [0,1]:
@@ -2014,7 +2014,7 @@ if(plot_skew_asymm_cnoidal_kh):
     fig.set_tight_layout(False)
     fig.subplots_adjust(left=0.175,right=0.9,top=0.875,bottom=0.15)
 
-    ax[-1].set_xlabel(r'Nondimensional Depth $kh$')
+    ax[-1].set_xlabel(r'Nondimensional Depth $k_E h$')
     ax[0].set_ylabel(r'Height')
     ax[1].set_ylabel(r'Skewness')
     ax[2].set_ylabel(r'Asymmetry')
@@ -2194,7 +2194,7 @@ if(plot_power_spec_Jeffreys):
     ax[1].set_ylabel(r'$\abs{\hat{\eta}}^2 k_E^2/h^2$')
     # Convert P' = P*k/(rho_w*g)/eps to P'*eps = P*k/(rho_w*g)
     # (Primes denote the nondim variables used throughout this solver)
-    fig.suptitle(r'Power Spectrum vs Time: $a/h={eps}$, $kh = {kh}$'.format(
+    fig.suptitle(r'Power Spectrum vs Time: $a/h={eps}$, $k_E h = {kh}$'.format(
         eps=eps,kh=round(np.sqrt(mu),1)))
     ax[0].set_title(r'Co-Wind: $P_J k/(\rho_w g) = {P}$'.format(
         P=round(eps*(P),3)))
@@ -2358,7 +2358,7 @@ if(plot_power_spec_vs_time_Jeffreys):
 
     # Convert P' = P*k/(rho_w*g)/eps to P'*eps = P*k/(rho_w*g)
     # (Primes denote the nondim variables used throughout this solver)
-    fig.suptitle(r'Power Spectrum vs Time: $a/h={eps}$, $kh = {kh}$'.format(
+    fig.suptitle(r'Power Spectrum vs Time: $a/h={eps}$, $k_E h = {kh}$'.format(
         eps=eps,kh=round(np.sqrt(mu),1)))
     ax[0].set_title(r'Co-Wind: $P_J k/(\rho_w g) = {P}$'.format(
         P=round(eps*(P),3)))
@@ -2580,7 +2580,7 @@ if(plot_double_power_spec_Jeffreys):
     ax[1].set_ylabel(r'Frequency $\omega/\sqrt{g h} k_E$')
     # Convert P' = P*k/(rho_w*g)/eps to P'*eps = P*k/(rho_w*g)
     # (Primes denote the nondim variables used throughout this solver)
-    fig.suptitle(r'Wavenumber Frequency Plot of $\abs{{\hat{{\eta}}}}^2$: $a/h={eps}$, $kh = {kh}$'.format(
+    fig.suptitle(r'Wavenumber Frequency Plot of $\abs{{\hat{{\eta}}}}^2$: $a/h={eps}$, $k_E h = {kh}$'.format(
         eps=eps,kh=round(np.sqrt(mu),1)))
     ax[0].set_title(r'Co-Wind: $P_J k/(\rho_w g) = {P}$'.format(
         P=round(eps*(P),3)))
@@ -2772,7 +2772,7 @@ if(plot_power_spec_GM):
     ax[1].set_ylabel(r'$\abs{\hat{\eta}}^2 k_E^2/h^2$')
     # Convert P' = P*k/(rho_w*g)/eps to P'*eps = P*k/(rho_w*g)
     # (Primes denote the nondim variables used throughout this solver)
-    fig.suptitle(r'Power Spectrum vs Time: $a/h={eps}$, $kh = {kh}$'.format(
+    fig.suptitle(r'Power Spectrum vs Time: $a/h={eps}$, $k_E h = {kh}$'.format(
         eps=eps,kh=round(np.sqrt(mu),1)))
     ax[0].set_title(r'Co-Wind: $P_G k/(\rho_w g) = {P}$'.format(
         P=round(eps*(P),3)))
@@ -2936,7 +2936,7 @@ if(plot_power_spec_vs_time_GM):
 
     # Convert P' = P*k/(rho_w*g)/eps to P'*eps = P*k/(rho_w*g)
     # (Primes denote the nondim variables used throughout this solver)
-    fig.suptitle(r'Power Spectrum vs Time: $a/h={eps}$, $kh = {kh}$'.format(
+    fig.suptitle(r'Power Spectrum vs Time: $a/h={eps}$, $k_E h = {kh}$'.format(
         eps=eps,kh=round(np.sqrt(mu),1)))
     ax[0].set_title(r'Co-Wind: $P_G k/(\rho_w g) = {P}$'.format(
         P=round(eps*(P),3)))
@@ -3071,7 +3071,7 @@ if(plot_pos_neg_snapshots_cnoidal_GM):
     ax[1].set_ylabel(r'$\eta / h$')
     # Convert P' = P*k/(rho_w*g)/eps to P'*eps = P*k/(rho_w*g)
     # (Primes denote the nondim variables used throughout this solver)
-    fig.suptitle(r'Surface Height vs Time: $a/h={eps}$, $kh = {kh}$'.format(
+    fig.suptitle(r'Surface Height vs Time: $a/h={eps}$, $k_E h = {kh}$'.format(
         eps=eps,kh=round(np.sqrt(mu),1)))
     ax[0].set_title(r'$P_G k/(\rho_w g) = {P}$'.format(
         P=round(eps*(P_GM),3)))
