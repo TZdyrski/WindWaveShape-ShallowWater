@@ -363,7 +363,7 @@ class kdvSystem():
             sigFigs = 5
             m = round(m, sigFigs-1-int(np.floor(np.log10(np.absolute(m)))))
             if m > 1 or m < 0:
-                raise(ValueError("m = 2*B/3/C*eps/mu must be at least 0"+
+                raise(ValueError("m = 2*B/3/C must be at least 0"+
                     " and less than 1; m was calculated to be "+
                     str(m)))
             self.m = m
