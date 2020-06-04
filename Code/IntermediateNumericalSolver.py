@@ -2076,14 +2076,20 @@ if(plot_power_spec_Jeffreys):
     posSnapshotsRepeated = np.tile(posSnapshots, (repeat_times,1))
     negSnapshotsRepeated = np.tile(negSnapshots, (repeat_times,1))
 
-    # Take spatial FFT (scale FFT by 1/N and multiply by 2 since we
-    # ignore the negative frequencies)
+    # Take spatial FFT \hat'{eps*eta'} = \hat{eps*eta'}*k_E = \hat{eta}*k_E/h
+    # (Primes denote the nondim variables used throughout this solver)
+    # (scale FFT by 1/N so the FFT of a sinusoid has unit amplitude;
+    # this also gives it the same units as the continuous Fourier
+    # Transform; also multiply by 2 since we ignore the negative
+    # frequencies)
     posSnapshotsFFT = 2*np.fft.fft(posSnapshotsRepeated,
             axis=0)/posSystem.xNum/repeat_times
     negSnapshotsFFT = 2*np.fft.fft(negSnapshotsRepeated,
             axis=0)/negSystem.xNum/repeat_times
 
-    # Convert to power spectrum (ie abs squared)
+    # Calculate power spectrum (ie abs squared) \abs{\hat'{eps*eta'}}^2 =
+    # \abs{\hat{eta}}^2*k^2_E/h^2
+    # (Primes denote the nondim variables used throughout this solver)
     posSnapshotsPower = np.absolute(posSnapshotsFFT)**2
     negSnapshotsPower = np.absolute(negSnapshotsFFT)**2
 
@@ -2185,8 +2191,10 @@ if(plot_power_spec_Jeffreys):
 
     # Plot kappa'/k' = kappa/k
     ax[1].set_xlabel(r'Harmonic $\kappa/k$')
-    ax[0].set_ylabel(r'$\abs{\hat{\eta}}^2 k^2/h^2$')
-    ax[1].set_ylabel(r'$\abs{\hat{\eta}}^2 k^2/h^2$')
+    # Plot power spectrum \abs{\hat'{eps*eta'}}^2 = \abs{\hat{eta}}^2*k^2_E/h^2
+    # (Primes denote the nondim variables used throughout this solver)
+    ax[0].set_ylabel(r'$\abs{\hat{\eta}}^2 k_E^2/h^2$')
+    ax[1].set_ylabel(r'$\abs{\hat{\eta}}^2 k_E^2/h^2$')
     # Convert P' = P*k/(rho_w*g)/eps to P'*eps = P*k/(rho_w*g)
     # (Primes denote the nondim variables used throughout this solver)
     fig.suptitle(r'Power Spectrum vs Time: $a/h={eps}$, $kh = {kh}$'.format(
@@ -2275,14 +2283,20 @@ if(plot_power_spec_vs_time_Jeffreys):
     posSnapshotsRepeated = np.tile(posSnapshots, (repeat_times,1))
     negSnapshotsRepeated = np.tile(negSnapshots, (repeat_times,1))
 
-    # Take spatial FFT (scale FFT by 1/N and multiply by 2 since we
-    # ignore the negative frequencies)
+    # Take spatial FFT \hat'{eps*eta'} = \hat{eps*eta'}*k_E = \hat{eta}*k_E/h
+    # (Primes denote the nondim variables used throughout this solver)
+    # (scale FFT by 1/N so the FFT of a sinusoid has unit amplitude;
+    # this also gives it the same units as the continuous Fourier
+    # Transform; also multiply by 2 since we ignore the negative
+    # frequencies)
     posSnapshotsFFT = 2*np.fft.fft(posSnapshotsRepeated,
             axis=0)/posSystem.xNum/repeat_times
     negSnapshotsFFT = 2*np.fft.fft(negSnapshotsRepeated,
             axis=0)/negSystem.xNum/repeat_times
 
-    # Convert to power spectrum (ie abs squared)
+    # Calculate power spectrum (ie abs squared) \abs{\hat'{eps*eta'}}^2 =
+    # \abs{\hat{eta}}^2*k^2_E/h^2
+    # (Primes denote the nondim variables used throughout this solver)
     posSnapshotsPower = np.absolute(posSnapshotsFFT)**2
     negSnapshotsPower = np.absolute(negSnapshotsFFT)**2
 
@@ -2388,9 +2402,11 @@ if(plot_power_spec_vs_time_Jeffreys):
     secondHarmonicAx[1].plot(t,negSnapshotsPower[negSecondHarmonicIndex,:],'b')
 
     for indx in [0,1]:
-        ax[indx].set_ylabel(r'Primary $\abs{\hat{\eta}}^2 k^2/h^2$')
-        firstHarmonicAx[indx].set_ylabel(r'First Harmonic $\abs{\hat{\eta}}^2 k^2/h^2$')
-        secondHarmonicAx[indx].set_ylabel(r'Second Harmonic $\abs{\hat{\eta}}^2 k^2/h^2$')
+        # Plot power spectrum \abs{\hat'{eps*eta'}}^2 = \abs{\hat{eta}}^2*k^2_E/h^2
+        # (Primes denote the nondim variables used throughout this solver)
+        ax[indx].set_ylabel(r'Primary $\abs{\hat{\eta}}^2 k_E^2/h^2$')
+        firstHarmonicAx[indx].set_ylabel(r'First Harmonic $\abs{\hat{\eta}}^2 k_E^2/h^2$')
+        secondHarmonicAx[indx].set_ylabel(r'Second Harmonic $\abs{\hat{\eta}}^2 k_E^2/h^2$')
 
         ax[indx].yaxis.label.set_color(line1.get_color())
         firstHarmonicAx[indx].yaxis.label.set_color(line2.get_color())
@@ -2473,8 +2489,12 @@ if(plot_double_power_spec_Jeffreys):
     # mode by exp(sqrt(1+P)*k*t)
     omega_mesh,kappa_mesh = np.meshgrid(omega,kappa)
 
-    # Take spatial FFT (scale FFT by 1/N and multiply by 2 since we
-    # ignore the negative frequencies)
+    # Take spatial FFT \hat'{eps*eta'} = \hat{eps*eta'}*k_E = \hat{eta}*k_E/h
+    # (Primes denote the nondim variables used throughout this solver)
+    # (scale FFT by 1/N so the FFT of a sinusoid has unit amplitude;
+    # this also gives it the same units as the continuous Fourier
+    # Transform; also multiply by 2 since we ignore the negative
+    # frequencies)
     posSnapshotsFFT = 2*np.fft.fft(posSnapshotsRepeated,
             axis=0)/(posSystem.xNum*repeat_times)
     negSnapshotsFFT = 2*np.fft.fft(negSnapshotsRepeated,
@@ -2511,14 +2531,23 @@ if(plot_double_power_spec_Jeffreys):
             /4.14027 # fudge factor
             )*negSnapshotsFFT
 
-    # Take temporal FFT (scale FFT by 1/N and multiply by 2 since we
-    # ignore the negative frequencies)
+    # Take temporal FFT \hat'{\hat'{eps*eta'}} =
+    # \hat'{\hat{eps*eta'}}*k_E = \hat{\hat{eps*eta'}}*k_E^2*sqrt(g*h) =
+    # \hat{\hat{eta}} k_E^2*sqrt(g/h)
+    # (Primes denote the nondim variables used throughout this solver)
+    # (scale FFT by 1/N so the FFT of a sinusoid has unit amplitude;
+    # this also gives it the same units as the continuous Fourier
+    # Transform; also multiply by 2 since we ignore the negative
+    # frequencies)
     posSnapshotsDoubleFFT = 2*np.fft.fft(posSnapshotsModifiedFFT,
             axis=1)/(posSystem.tNum)
     negSnapshotsDoubleFFT = 2*np.fft.fft(negSnapshotsModifiedFFT,
             axis=1)/(negSystem.tNum)
 
-    # Convert to power spectrum (ie abs squared)
+    # Calculate power spectrum (ie abs squared)
+    # \abs{\hat'{\hat'{eps*eta'}}}^2 =
+    # \abs{\hat{\hat{eta}}}^2*k^4_E*g/h
+    # (Primes denote the nondim variables used throughout this solver)
     posSnapshotsPower = np.absolute(posSnapshotsDoubleFFT)**2
     negSnapshotsPower = np.absolute(negSnapshotsDoubleFFT)**2
 
@@ -2573,6 +2602,9 @@ if(plot_double_power_spec_Jeffreys):
             locator=mpl.ticker.SymmetricalLogLocator(linthresh=np.amax(negSnapshotsPower)/1e6,base=10),
             norm=mpl.colors.SymLogNorm(linthresh=np.amax(negSnapshotsPower)/1e6,base=10))
 
+    # Plot power spectrum \abs{\hat'{\hat'{eps*eta'}}}^2 =
+    # \abs{\hat{\hat{eta}}}^2*k^4_E*g/h
+    # (Primes denote the nondim variables used throughout this solver)
     # Add colorbars
     fig.colorbar(cs[0],ax=ax[0],format=mpl.ticker.LogFormatterMathtext())
     fig.colorbar(cs[1],ax=ax[1],format=mpl.ticker.LogFormatterMathtext())
@@ -2626,14 +2658,20 @@ if(plot_power_spec_GM):
     posSnapshotsRepeated = np.tile(posSnapshots, (repeat_times,1))
     negSnapshotsRepeated = np.tile(negSnapshots, (repeat_times,1))
 
-    # Take spatial FFT (scale FFT by 1/N and multiply by 2 since we
-    # ignore the negative frequencies)
+    # Take spatial FFT \hat'{eps*eta'} = \hat{eps*eta'}*k_E = \hat{eta}*k_E/h
+    # (Primes denote the nondim variables used throughout this solver)
+    # (scale FFT by 1/N so the FFT of a sinusoid has unit amplitude;
+    # this also gives it the same units as the continuous Fourier
+    # Transform; also multiply by 2 since we ignore the negative
+    # frequencies)
     posSnapshotsFFT = 2*np.fft.fft(posSnapshotsRepeated,
             axis=0)/posSystem.xNum/repeat_times
     negSnapshotsFFT = 2*np.fft.fft(negSnapshotsRepeated,
             axis=0)/negSystem.xNum/repeat_times
 
-    # Convert to power spectrum (ie abs squared)
+    # Calculate power spectrum (ie abs squared) \abs{\hat'{eps*eta'}}^2 =
+    # \abs{\hat{eta}}^2*k^2_E/h^2
+    # (Primes denote the nondim variables used throughout this solver)
     posSnapshotsPower = np.absolute(posSnapshotsFFT)**2
     negSnapshotsPower = np.absolute(negSnapshotsFFT)**2
 
@@ -2735,8 +2773,10 @@ if(plot_power_spec_GM):
 
     # Plot kappa'/k' = kappa/k
     ax[1].set_xlabel(r'Harmonic $\kappa/k$')
-    ax[0].set_ylabel(r'$\abs{\hat{\eta}}^2 k^2/h^2$')
-    ax[1].set_ylabel(r'$\abs{\hat{\eta}}^2 k^2/h^2$')
+    # Plot power spectrum \abs{\hat'{eps*eta'}}^2 = \abs{\hat{eta}}^2*k^2_E/h^2
+    # (Primes denote the nondim variables used throughout this solver)
+    ax[0].set_ylabel(r'$\abs{\hat{\eta}}^2 k_E^2/h^2$')
+    ax[1].set_ylabel(r'$\abs{\hat{\eta}}^2 k_E^2/h^2$')
     # Convert P' = P*k/(rho_w*g)/eps to P'*eps = P*k/(rho_w*g)
     # (Primes denote the nondim variables used throughout this solver)
     fig.suptitle(r'Power Spectrum vs Time: $a/h={eps}$, $kh = {kh}$'.format(
@@ -2825,14 +2865,20 @@ if(plot_power_spec_vs_time_GM):
     posSnapshotsRepeated = np.tile(posSnapshots, (repeat_times,1))
     negSnapshotsRepeated = np.tile(negSnapshots, (repeat_times,1))
 
-    # Take spatial FFT (scale FFT by 1/N and multiply by 2 since we
-    # ignore the negative frequencies)
+    # Take spatial FFT \hat'{eps*eta'} = \hat{eps*eta'}*k_E = \hat{eta}*k_E/h
+    # (Primes denote the nondim variables used throughout this solver)
+    # (scale FFT by 1/N so the FFT of a sinusoid has unit amplitude;
+    # this also gives it the same units as the continuous Fourier
+    # Transform; also multiply by 2 since we ignore the negative
+    # frequencies)
     posSnapshotsFFT = 2*np.fft.fft(posSnapshotsRepeated,
             axis=0)/posSystem.xNum/repeat_times
     negSnapshotsFFT = 2*np.fft.fft(negSnapshotsRepeated,
             axis=0)/negSystem.xNum/repeat_times
 
-    # Convert to power spectrum (ie abs squared)
+    # Calculate power spectrum (ie abs squared) \abs{\hat'{eps*eta'}}^2 =
+    # \abs{\hat{eta}}^2*k^2_E/h^2
+    # (Primes denote the nondim variables used throughout this solver)
     posSnapshotsPower = np.absolute(posSnapshotsFFT)**2
     negSnapshotsPower = np.absolute(negSnapshotsFFT)**2
 
@@ -2938,9 +2984,11 @@ if(plot_power_spec_vs_time_GM):
     secondHarmonicAx[1].plot(t,negSnapshotsPower[negSecondHarmonicIndex,:],'b')
 
     for indx in [0,1]:
-        ax[indx].set_ylabel(r'Primary $\abs{\hat{\eta}}^2 k^2/h^2$')
-        firstHarmonicAx[indx].set_ylabel(r'First Harmonic $\abs{\hat{\eta}}^2 k^2/h^2$')
-        secondHarmonicAx[indx].set_ylabel(r'Second Harmonic $\abs{\hat{\eta}}^2 k^2/h^2$')
+        # Plot power spectrum \abs{\hat'{eps*eta'}}^2 = \abs{\hat{eta}}^2*k^2_E/h^2
+        # (Primes denote the nondim variables used throughout this solver)
+        ax[indx].set_ylabel(r'Primary $\abs{\hat{\eta}}^2 k_E^2/h^2$')
+        firstHarmonicAx[indx].set_ylabel(r'First Harmonic $\abs{\hat{\eta}}^2 k_E^2/h^2$')
+        secondHarmonicAx[indx].set_ylabel(r'Second Harmonic $\abs{\hat{\eta}}^2 k_E^2/h^2$')
 
         ax[indx].yaxis.label.set_color(line1.get_color())
         firstHarmonicAx[indx].yaxis.label.set_color(line2.get_color())
