@@ -46,8 +46,11 @@ omega_to_T = 1/2/np.pi # conversion from omega to 1/T
 ## Physical parameters to convert from normalized, nondimensional
 ## variables to non-normalized, dimensional variables
 eps = 0.1 # a_0/h
-mu = 0.8 # (k_E h)**2 >= 6*eps
-mu_solitary = 6*eps # (k_E h)**2 fixed for solitary waves
+mu = 0.1 # (k*h)**2
+mu_solitary = eps # (k*h)**2; strictly speaking, this is zero for
+                  # solitary waves; however, when plotting as a function
+                  # of $x/h$, the $kh$ drops out; choose mu = eps for
+                  # numerical niceness
 
 # For plots with a pair of epsilon and mu values
 pairedEps = [eps, 2*eps]
@@ -355,10 +358,28 @@ class kdvSystem():
         else:
             self.Height = 2*np.sign(self.B*self.C)
 
-        if type(y0) != np.ndarray and (y0 == 'solitary' or y0 ==
-                'cnoidal'):
+        if type(y0) == np.ndarray:
+            self.y0 = y0
+        elif y0 == 'solitary':
+            if np.sign(self.Height) != np.sign(self.B*self.C):
+                raise(ValueError("sgn(H) must equal sgn(B*C)"))
+            self.y0 = self.Height*1/np.cosh(np.sqrt(self.Height*self.B/self.C/12) \
+                    *self.x)**2
+
+        elif y0 == 'cnoidal':
+
             # If mu and eps are specified, then m is fixed
-            m = self.Height*self.B/(3*self.C)
+            mEq = lambda m: m*spec.ellipk(m)**2 - self.B/self.C*np.pi**2/6
+            # For the solver, start very close to 1, since it blows up
+            # there
+            mInitialGuess = 0.9999999
+            # Solve for m
+            m,infodict,ier,msg = sp.optimize.fsolve(mEq,
+                    mInitialGuess,full_output=True)
+            if ier != 1:
+                raise(ValueError("Could not determine m"))
+            # Take first (and only) solution
+            m = m[0]
 
             # Round to sigFigs significant figures (to prevent machine
             # precision causing, eg, m = 1.0000000000000002 to throw and
@@ -368,35 +389,18 @@ class kdvSystem():
             sigFigs = 5
             m = round(m, sigFigs-1-int(np.floor(np.log10(np.absolute(m)))))
             if m > 1 or m < 0:
-                raise(ValueError("m = 2*B/3/C must be at least 0"+
-                    " and less than 1; m was calculated to be "+
+                raise(ValueError("m calculated implicitly from m*K(m)^2 = 2*B/3/C"+
+                    " must be at least 0 and less than 1; m was calculated to be "+
                     str(m)))
             self.m = m
 
-        if type(y0) == np.ndarray:
-            self.y0 = y0
-        elif y0 == 'solitary' or m == 1:
-            if np.sign(self.Height) != np.sign(self.B*self.C):
-                raise(ValueError("sgn(H) must equal sgn(B*C)"))
-            # mu and eps must satisfy specific relationship for
-            # solitary waves (corresponding to m=1; see below)
-            if m != 1:
-                raise(ValueError("Must have Height*B/(3*C) = 1 for "+
-                    "solitary waves, but equals "+
-                    str(self.Height*self.B/(3*self.C))))
-            self.y0 = self.Height*1/np.cosh(np.sqrt(self.Height*self.B/self.C/12) \
-                    *self.x)**2
-
-        elif y0 == 'cnoidal':
             K = spec.ellipk(m)
             E = spec.ellipe(m)
 
             # Adjust the length of a wavelength to be 4*K(m) in
             # nondimensional units, since we want one wavelength to be
-            # k*(x=lambda) = k*lambda = (2/Delta)*lambda = 4*K(m)
-            # Note: we defined k=2/Delta so that it reduces to the usual
-            # definition 2*pi/lambda for m=0
-            self.WaveLength = 4*K
+            # k*(x=lambda) = k*lambda = (2*pi/lambda)*lambda = 2*pi
+            self.WaveLength = 2*np.pi
 
             # Also adjust xLen to fit the new wavelengths
             if redo_grids:
@@ -1078,7 +1082,7 @@ if(plot_trig_funcs):
     xMasked = builtinSolver.get_masked_x()
 
     # Normalize x by wavelength
-    # Convert from x' = x*k_E to x'/lambda' = x*k_E/lambda/k_E = x/lambda
+    # Convert from x' = x*k to x'/lambda' = x*k/lambda/k = x/lambda
     # (Primes denote the nondim variables used throughout this solver)
     xMasked = xMasked/builtinSolver.WaveLength
 
@@ -1096,22 +1100,22 @@ if(plot_trig_funcs):
     # Initialize figure
     fig, ax = texplot.newfig(0.9,nrows=2,sharex=True,sharey=False,golden=True)
 
-    # Plot x'*lambda' = x*k_E/lambda/k_E = x/lambda
+    # Plot x'*lambda' = x*k/lambda/k = x/lambda
     # (Primes denote the nondim variables used throughout this solver)
     ax[1].set_xlabel(r'Distance $x/\lambda$')
-    ax[0].set_title(r'Builtin Solver after exactly 1 Period: $a_0/h={eps}$, $k_E h = {kh}$'.format(
+    ax[0].set_title(r'Builtin Solver after exactly 1 Period: $a_0/h={eps}$, $kh = {kh}$'.format(
         eps=eps,kh=round(np.sqrt(mu_solitary),1)))
-    ax[1].set_title(r'FD Solver after exactly 1 Period: $a_0/h={eps}$, $k_E h = {kh}$'.format(
+    ax[1].set_title(r'FD Solver after exactly 1 Period: $a_0/h={eps}$, $kh = {kh}$'.format(
         eps=eps,kh=round(np.sqrt(mu_solitary),1)))
 
     ax[0].plot(xMasked,builtinSnapshots)
     ax[1].plot(xMasked,FDSnapshots)
 
-    # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k_E to
-    # t_1'/epsilon = t' = t*sqrt(g*h)*k_E
+    # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k to
+    # t_1'/epsilon = t' = t*sqrt(g*h)*k
     # (Primes denote the nondim variables used throughout this solver)
     fig.legend(np.around(builtinSolver.snapshot_ts/eps,1),
-            title=r'Time $t \sqrt{g h} k_E$',
+            title=r'Time $t \sqrt{g h} k$',
             loc='right')
 
     # Label subplots
@@ -1152,7 +1156,7 @@ if(plot_snapshots):
     xMasked = snapshotSystem.get_masked_x()
 
     # Normalize x by wavelength
-    # Convert from x' = x*k_E to x'/sqrt(mu) = x*k_E/(k_E*h) = x/h
+    # Convert from x' = x*k to x'/sqrt(mu) = x*k/(k*h) = x/h
     # (Primes denote the nondim variables used throughout this solver)
     xMasked = xMasked/np.sqrt(mu_solitary)
 
@@ -1176,7 +1180,7 @@ if(plot_snapshots):
     ax.set_ylabel(r'Surface Height $\eta / h$')
     # Convert P' = P*k/(rho_w*g)/eps to P'*eps = P*k/(rho_w*g)
     # (Primes denote the nondim variables used throughout this solver)
-    ax.set_title(r'Surface Height vs Time: $a_0/h={eps}$, $k_E h = {kh}$, $P_J k_E/(\rho_w g) = {P}$'.format(
+    ax.set_title(r'Surface Height vs Time: $a_0/h={eps}$, $kh = {kh}$, $P_J k/(\rho_w g) = {P}$'.format(
         eps=eps,kh=round(np.sqrt(mu_solitary),1),P=round(eps*P,3)))
 
     ax.plot(xMasked,snapshots)
@@ -1198,11 +1202,11 @@ if(plot_snapshots):
             xycoords="axes fraction", arrowprops={'arrowstyle': '<-',
                 'shrinkA':1,'shrinkB':0})
 
-    # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k_E to
-    # t_1'/epsilon = t' = t*sqrt(g*h)*k_E
+    # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k to
+    # t_1'/epsilon = t' = t*sqrt(g*h)*k
     # (Primes denote the nondim variables used throughout this solver)
     fig.legend(np.around(snapshotSystem.snapshot_ts/eps,1),
-            title=r'Time $t \sqrt{g h} k_E$',loc='right')
+            title=r'Time $t \sqrt{g h} k$',loc='right')
 
     # Make background transparent
     fig.patch.set_alpha(0)
@@ -1238,7 +1242,7 @@ if(plot_negative_snapshots):
     xMasked = snapshotSystem.get_masked_x()
 
     # Normalize x by wavelength
-    # Convert from x' = x*k_E to x'/sqrt(mu) = x*k_E/(k_E*h) = x/h
+    # Convert from x' = x*k to x'/sqrt(mu) = x*k/(k*h) = x/h
     # (Primes denote the nondim variables used throughout this solver)
     xMasked = xMasked/np.sqrt(mu_solitary)
 
@@ -1262,7 +1266,7 @@ if(plot_negative_snapshots):
     ax.set_ylabel(r'Surface Height $\eta / h$')
     # Convert P' = P*k/(rho_w*g)/eps to P'*eps = P*k/(rho_w*g)
     # (Primes denote the nondim variables used throughout this solver)
-    ax.set_title(r'Surface Height vs Time: $a_0/h={eps}$, $k_E h = {kh}$, $P_J k_E/(\rho_w g) = {P}$'.format(
+    ax.set_title(r'Surface Height vs Time: $a_0/h={eps}$, $kh = {kh}$, $P_J k/(\rho_w g) = {P}$'.format(
         eps=eps,kh=round(np.sqrt(mu_solitary),1),P=round(eps*(-P),3)))
 
     ax.plot(xMasked,snapshots)
@@ -1284,11 +1288,11 @@ if(plot_negative_snapshots):
             xycoords="axes fraction", arrowprops={'arrowstyle': '->',
                 'shrinkA':1,'shrinkB':0})
 
-    # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k_E to
-    # t_1'/epsilon = t' = t*sqrt(g*h)*k_E
+    # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k to
+    # t_1'/epsilon = t' = t*sqrt(g*h)*k
     # (Primes denote the nondim variables used throughout this solver)
     fig.legend(np.around(snapshotSystem.snapshot_ts/eps,1),
-            title=r'Time $t \sqrt{g h} k_E$',loc='right')
+            title=r'Time $t \sqrt{g h} k$',loc='right')
 
     # Make background transparent
     fig.patch.set_alpha(0)
@@ -1337,7 +1341,7 @@ if(plot_pos_neg_snapshots):
         xMasked[indx] = posSystem.get_masked_x()
 
         # Normalize x by wavelength
-        # Convert from x' = x*k_E to x'/sqrt(mu) = x*k_E/(k_E*h) = x/h
+        # Convert from x' = x*k to x'/sqrt(mu) = x*k/(k*h) = x/h
         # (Primes denote the nondim variables used throughout this solver)
         xMasked[indx] = xMasked[indx]/np.sqrt(eps_val/eps*mu_solitary)
 
@@ -1378,9 +1382,9 @@ if(plot_pos_neg_snapshots):
         # Convert P' = P*k/(rho_w*g)/eps to P'*eps = P*k/(rho_w*g)
         # (Primes denote the nondim variables used throughout this solver)
 
-        ax[0,indx].set_title(r'\begin{{tabular}}{{c}}$\epsilon = {eps}$, $\mu = {mu}$\\$P_J k_E/(\rho_w g) = {P}$\end{{tabular}}'.format(
+        ax[0,indx].set_title(r'\begin{{tabular}}{{c}}$\epsilon = {eps}$, $\mu = {mu}$\\$P_J k/(\rho_w g) = {P}$\end{{tabular}}'.format(
             P=round(eps*(P),3),eps=pairedEps[indx],mu=round(pairedEps[indx]/eps*mu_solitary,3)))
-        ax[1,indx].set_title(r'$P_J k_E/(\rho_w g) = {P}$'.format(P=round(eps*(-P),3)))
+        ax[1,indx].set_title(r'$P_J k/(\rho_w g) = {P}$'.format(P=round(eps*(-P),3)))
 
         ax[0,indx].plot(xMasked[indx],posSnapshots[indx])
         ax[1,indx].plot(xMasked[indx],negSnapshots[indx])
@@ -1415,10 +1419,10 @@ if(plot_pos_neg_snapshots):
                 xycoords="axes fraction", arrowprops={'arrowstyle': '->',
                     'shrinkA':1,'shrinkB':0})
 
-    # Plot t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k_E
+    # Plot t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k
     # (Primes denote the nondim variables used throughout this solver)
     fig.legend(np.around(posSystem.snapshot_ts,1),
-            title=r'Time'+'\n'+r'$t \epsilon \sqrt{g h} k_E$',loc='right')
+            title=r'Time'+'\n'+r'$t \epsilon \sqrt{g h} k$',loc='right')
 
     # Label subplots
     ax[0,0].annotate('a)', xy=(0.02,0.8), xycoords='axes fraction')
@@ -1458,8 +1462,8 @@ if(plot_skew_asymm):
         skewAsymSystem.boost_to_lab_frame(velocity='solitary')
 
         # Save timesteps
-        # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k_E to
-        # t_1'/epsilon = t' = t*sqrt(g*h)*k_E
+        # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k to
+        # t_1'/epsilon = t' = t*sqrt(g*h)*k
         # (Primes denote the nondim variables used throughout this solver)
         t = skewAsymSystem.t/eps
 
@@ -1503,14 +1507,14 @@ if(plot_skew_asymm):
     fig.set_tight_layout(False)
     fig.subplots_adjust(left=0.175,right=0.8,top=0.875,bottom=0.15)
 
-    # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k_E to
-    # t_1'/epsilon = t' = t*sqrt(g*h)*k_E
+    # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k to
+    # t_1'/epsilon = t' = t*sqrt(g*h)*k
     # (Primes denote the nondim variables used throughout this solver)
-    ax[-1].set_xlabel(r'Time $t \sqrt{g h} k_E$')
+    ax[-1].set_xlabel(r'Time $t \sqrt{g h} k$')
     ax[0].set_ylabel(r'Height')
     ax[1].set_ylabel(r'Skewness')
     ax[2].set_ylabel(r'Asymmetry')
-    fig.suptitle(r'\begin{{tabular}}{{c}}Height, Skewness, and Asymmetry: \\ $a_0/h={eps}$, $k_E h = {kh}$\end{{tabular}}'.format(
+    fig.suptitle(r'\begin{{tabular}}{{c}}Height, Skewness, and Asymmetry: \\ $a_0/h={eps}$, $kh = {kh}$\end{{tabular}}'.format(
         eps=eps,kh=round(np.sqrt(mu_solitary),1),P=P))
 
     # Put horizontal line at y=1
@@ -1527,7 +1531,7 @@ if(plot_skew_asymm):
     # Convert P' = P*k/(rho_w*g)/eps to P'*eps = P*k/(rho_w*g)
     # (Primes denote the nondim variables used throughout this solver)
     leg = fig.legend(lines, np.around(skew_asymm_Ps*eps,3),
-            title=r'Pressure'+'\n'+r'Magnitude'+'\n'+r'$P_J k_E/(\rho_w g)$',
+            title=r'Pressure'+'\n'+r'Magnitude'+'\n'+r'$P_J k/(\rho_w g)$',
             loc='right')
     leg.get_title().set_multialignment('center')
 
@@ -1612,11 +1616,11 @@ if(plot_skew_asymm_kh):
     fig.set_tight_layout(False)
     fig.subplots_adjust(left=0.175,right=0.9,top=0.875,bottom=0.15)
 
-    ax[-1].set_xlabel(r'Nondimensional Depth $k_E h$')
+    ax[-1].set_xlabel(r'Nondimensional Depth $kh$')
     ax[0].set_ylabel(r'Height')
     ax[1].set_ylabel(r'Skewness')
     ax[2].set_ylabel(r'Asymmetry')
-    fig.suptitle(r'Height, Skewness, and Asymmetry: $t \epsilon \sqrt{{g h}} k_E = {t}$'.format(
+    fig.suptitle(r'Height, Skewness, and Asymmetry: $t \epsilon \sqrt{{g h}} k = {t}$'.format(
         P=P,t=round(t[-1],0)))
 
     def mu2eps(x):
@@ -1678,7 +1682,7 @@ if(plot_snapshots_cnoidal):
     xMasked = snapshotSystem.get_masked_x()
 
     # Normalize x by wavelength
-    # Convert from x' = x*k_E to x'/lambda' = x*k_E/lambda/k_E = x/lambda
+    # Convert from x' = x*k to x'/lambda' = x*k/lambda/k = x/lambda
     # (Primes denote the nondim variables used throughout this solver)
     xMasked = xMasked/snapshotSystem.WaveLength
 
@@ -1694,7 +1698,7 @@ if(plot_snapshots_cnoidal):
     # Initialize figure
     fig, ax = texplot.newfig(0.9,golden=True)
 
-    # Plot x'*lambda' = x*k_E/lambda/k_E = x/lambda
+    # Plot x'*lambda' = x*k/lambda/k = x/lambda
     # (Primes denote the nondim variables used throughout this solver)
     ax.set_xlabel(r'Distance $x/\lambda$')
     # Plot eta'*eps = eta/a*eps = eta/h
@@ -1702,7 +1706,7 @@ if(plot_snapshots_cnoidal):
     ax.set_ylabel(r'Surface Height $\eta / h$')
     # Convert P' = P*k/(rho_w*g)/eps to P'*eps = P*k/(rho_w*g)
     # (Primes denote the nondim variables used throughout this solver)
-    ax.set_title(r'Surface Height vs Time: $a_0/h={eps}$, $k_E h = {kh}$, $P_J k_E/(\rho_w g) = {P}$'.format(
+    ax.set_title(r'Surface Height vs Time: $a_0/h={eps}$, $kh = {kh}$, $P_J k/(\rho_w g) = {P}$'.format(
         eps=eps,kh=round(np.sqrt(mu),1),P=round(eps*P,3)))
 
     ax.plot(xMasked,snapshots)
@@ -1724,11 +1728,11 @@ if(plot_snapshots_cnoidal):
             xycoords="axes fraction", arrowprops={'arrowstyle': '<-',
                 'shrinkA':1,'shrinkB':0})
 
-    # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k_E to
-    # t_1'/epsilon = t' = t*sqrt(g*h)*k_E
+    # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k to
+    # t_1'/epsilon = t' = t*sqrt(g*h)*k
     # (Primes denote the nondim variables used throughout this solver)
     fig.legend(np.around(snapshotSystem.snapshot_ts/eps,1),
-            title=r'Time $t \sqrt{g h} k_E$',loc='right')
+            title=r'Time $t \sqrt{g h} k$',loc='right')
 
     # Make background transparent
     fig.patch.set_alpha(0)
@@ -1762,7 +1766,7 @@ if(plot_negative_snapshots_cnoidal):
     xMasked = snapshotSystem.get_masked_x()
 
     # Normalize x by wavelength
-    # Convert from x' = x*k_E to x'/lambda' = x*k_E/lambda/k_E = x/lambda
+    # Convert from x' = x*k to x'/lambda' = x*k/lambda/k = x/lambda
     # (Primes denote the nondim variables used throughout this solver)
     xMasked = xMasked/snapshotSystem.WaveLength
 
@@ -1778,7 +1782,7 @@ if(plot_negative_snapshots_cnoidal):
     # Initialize figure
     fig, ax = texplot.newfig(0.9,golden=True)
 
-    # Plot x'*lambda' = x*k_E/lambda/k_E = x/lambda
+    # Plot x'*lambda' = x*k/lambda/k = x/lambda
     # (Primes denote the nondim variables used throughout this solver)
     ax.set_xlabel(r'Distance $x/\lambda$')
     # Plot eta'*eps = eta/a*eps = eta/h
@@ -1786,7 +1790,7 @@ if(plot_negative_snapshots_cnoidal):
     ax.set_ylabel(r'Surface Height $\eta / h$')
     # Convert P' = P*k/(rho_w*g)/eps to P'*eps = P*k/(rho_w*g)
     # (Primes denote the nondim variables used throughout this solver)
-    ax.set_title(r'Surface Height vs Time: $a_0/h={eps}$, $k_E h = {kh}$, $P_J k_E/(\rho_w g) = {P}$'.format(
+    ax.set_title(r'Surface Height vs Time: $a_0/h={eps}$, $kh = {kh}$, $P_J k/(\rho_w g) = {P}$'.format(
         eps=eps,kh=round(np.sqrt(mu),1),P=round(eps*(-P),3)))
 
     ax.plot(xMasked,snapshots)
@@ -1808,11 +1812,11 @@ if(plot_negative_snapshots_cnoidal):
             xycoords="axes fraction", arrowprops={'arrowstyle': '->',
                 'shrinkA':1,'shrinkB':0})
 
-    # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k_E to
-    # t_1'/epsilon = t' = t*sqrt(g*h)*k_E
+    # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k to
+    # t_1'/epsilon = t' = t*sqrt(g*h)*k
     # (Primes denote the nondim variables used throughout this solver)
     fig.legend(np.around(snapshotSystem.snapshot_ts/eps,1),
-            title=r'Time $t \sqrt{g h} k_E$',loc='right')
+            title=r'Time $t \sqrt{g h} k$',loc='right')
 
     # Make background transparent
     fig.patch.set_alpha(0)
@@ -1885,7 +1889,7 @@ if(plot_pos_neg_snapshots_cnoidal):
     fig.subplots_adjust(left=0.175,right=0.825,top=0.8,bottom=0.125,hspace=0.3)
 
     for indx in [0,1]:
-        # Plot x'*lambda' = x*k_E/lambda/k_E = x/lambda
+        # Plot x'*lambda' = x*k/lambda/k = x/lambda
         # (Primes denote the nondim variables used throughout this solver)
         ax[1,indx].set_xlabel(r'Distance $x/\lambda$')
         # Plot eta'*eps = eta/a*eps = eta/h
@@ -1898,9 +1902,9 @@ if(plot_pos_neg_snapshots_cnoidal):
         # Convert P' = P*k/(rho_w*g)/eps to P'*eps = P*k/(rho_w*g)
         # (Primes denote the nondim variables used throughout this solver)
 
-        ax[0,indx].set_title(r'\begin{{tabular}}{{c}}$\epsilon = {eps}$, $\mu = {mu}$\\$P_J k_E/(\rho_w g) = {P}$\end{{tabular}}'.format(
+        ax[0,indx].set_title(r'\begin{{tabular}}{{c}}$\epsilon = {eps}$, $\mu = {mu}$\\$P_J k/(\rho_w g) = {P}$\end{{tabular}}'.format(
             P=round(eps*(P),3),eps=pairedEps[indx],mu=pairedMu[indx]))
-        ax[1,indx].set_title(r'$P_J k_E/(\rho_w g) = {P}$'.format(
+        ax[1,indx].set_title(r'$P_J k/(\rho_w g) = {P}$'.format(
             P=round(eps*(-P),3),eps=pairedEps[indx],mu=pairedMu[indx]))
 
         ax[0,indx].plot(xMasked[indx],posSnapshots[indx])
@@ -1936,10 +1940,10 @@ if(plot_pos_neg_snapshots_cnoidal):
                 xycoords="axes fraction", arrowprops={'arrowstyle': '->',
                     'shrinkA':1,'shrinkB':0})
 
-    # Plot t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k_E
+    # Plot t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k
     # (Primes denote the nondim variables used throughout this solver)
     fig.legend(np.around(posSystem.snapshot_ts/eps,1),
-            title=r'Time'+'\n'+r'$t \epsilon \sqrt{g h} k_E$',loc='right')
+            title=r'Time'+'\n'+r'$t \epsilon \sqrt{g h} k$',loc='right')
 
     # Label subplots
     ax[0,0].annotate('a)', xy=(0.02,0.8), xycoords='axes fraction')
@@ -1983,8 +1987,8 @@ if(plot_skew_asymm_cnoidal):
             skewAsymSystem.boost_to_lab_frame(velocity='cnoidal')
 
             # Save timesteps
-            # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k_E to
-            # t_1'/epsilon = t' = t*sqrt(g*h)*k_E
+            # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k to
+            # t_1'/epsilon = t' = t*sqrt(g*h)*k
             # (Primes denote the nondim variables used throughout this solver)
             t[indx] = skewAsymSystem.t/eps_val
 
@@ -2030,6 +2034,11 @@ if(plot_skew_asymm_cnoidal):
     fig.set_tight_layout(False)
     fig.subplots_adjust(left=0.175,right=0.8,top=0.875,bottom=0.15)
 
+    # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k to
+    # t_1'/epsilon = t' = t*sqrt(g*h)*k
+    # (Primes denote the nondim variables used throughout this solver)
+    ax[-1,0].set_xlabel(r'Time $t \sqrt{g h} k$')
+    ax[-1,1].set_xlabel(r'Time $t \sqrt{g h} k$')
     ax[0,0].set_ylabel(r'Height')
     ax[1,0].set_ylabel(r'Skewness')
     ax[2,0].set_ylabel(r'Asymmetry')
@@ -2039,10 +2048,10 @@ if(plot_skew_asymm_cnoidal):
         ax[0,indx].set_title(r'$\epsilon={eps}$, $\mu = {mu}$'.format(
             eps=pairedEps[indx],mu=pairedMu[indx]))
 
-        # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k_E to
-        # t_1'/epsilon = t' = t*sqrt(g*h)*k_E
+        # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k to
+        # t_1'/epsilon = t' = t*sqrt(g*h)*k
         # (Primes denote the nondim variables used throughout this solver)
-        ax[-1,indx].set_xlabel(r'Time $t \sqrt{g h} k_E$')
+        ax[-1,indx].set_xlabel(r'Time $t \sqrt{g h} k$')
 
         # Put horizontal line at y=1
         ax[0,indx].axhline(1, color='0.75')
@@ -2058,7 +2067,7 @@ if(plot_skew_asymm_cnoidal):
     # Plot P' = P*k/(rho_w*g)/eps
     # (Primes denote the nondim variables used throughout this solver)
     leg = fig.legend(lines, np.around(skew_asymm_Ps,3),
-            title=r'Pressure'+'\n'+r'Magnitude'+'\n'+r'$P_J k_E/(\rho_w g \epsilon)$',
+            title=r'Pressure'+'\n'+r'Magnitude'+'\n'+r'$P_J k/(\rho_w g \epsilon)$',
             loc='right')
     leg.get_title().set_multialignment('center')
 
@@ -2132,7 +2141,7 @@ if(plot_skew_asymm_cnoidal_kh):
         repeat_times = 10
         snapshotsRepeated = np.tile(snapshots, (repeat_times,1))
 
-        # Take spatial FFT \hat'{eps*eta'} = \hat{eps*eta'}*k_E = \hat{eta}*k_E/h
+        # Take spatial FFT \hat'{eps*eta'} = \hat{eps*eta'}*k = \hat{eta}*k/h
         # (Primes denote the nondim variables used throughout this solver)
         # (scale FFT by 1/N so the FFT of a sinusoid has unit amplitude;
         # this also gives it the same units as the continuous Fourier
@@ -2150,9 +2159,6 @@ if(plot_skew_asymm_cnoidal_kh):
         # radians per x-unit by multiplying by 2*pi radians/cycle
         kappa = np.fft.fftfreq(skewAsymSystem.xNum*repeat_times,
                 skewAsymSystem.dx)*2*np.pi
-        # Convert from kappa' = kappa/k_E to
-        #  kappa'/k' = kappa/k_E/k*k_E = kappa/k
-        kappa = kappa*skewAsymSystem.WaveLength/2/np.pi
 
         # Find peaks in initial data (peaks shouldn't move over time either)
         snapshotsPowerPeaks = sp.signal.find_peaks(snapshotsPower[:,0])[0]
@@ -2222,12 +2228,12 @@ if(plot_skew_asymm_cnoidal_kh):
     fig.set_tight_layout(False)
     fig.subplots_adjust(left=0.175,right=0.9,top=0.925,bottom=0.1)
 
-    ax[-1].set_xlabel(r'Nondimensional Depth $k_E h$')
+    ax[-1].set_xlabel(r'Nondimensional Depth $kh$')
     ax[0].set_ylabel(r'Height')
     ax[1].set_ylabel(r'Skewness')
     ax[2].set_ylabel(r'Asymmetry')
     ax[3].set_ylabel(r'Biphase')
-    fig.suptitle(r'Height, Skewness, Asymmetry, and Biphase: $t \epsilon \sqrt{{g h}} k_E = {t}$'.format(
+    fig.suptitle(r'Height, Skewness, Asymmetry, and Biphase: $t \epsilon \sqrt{{g h}} k = {t}$'.format(
         P=P,t=round(t[-1],0)))
 
     # Put horizontal line at y=1
@@ -2296,7 +2302,7 @@ if(plot_power_spec_Jeffreys):
     posSnapshotsRepeated = np.tile(posSnapshots, (repeat_times,1))
     negSnapshotsRepeated = np.tile(negSnapshots, (repeat_times,1))
 
-    # Take spatial FFT \hat'{eps*eta'} = \hat{eps*eta'}*k_E = \hat{eta}*k_E/h
+    # Take spatial FFT \hat'{eps*eta'} = \hat{eps*eta'}*k = \hat{eta}*k/h
     # (Primes denote the nondim variables used throughout this solver)
     # (scale FFT by 1/N so the FFT of a sinusoid has unit amplitude;
     # this also gives it the same units as the continuous Fourier
@@ -2317,9 +2323,6 @@ if(plot_power_spec_Jeffreys):
     # radians per x-unit by multiplying by 2*pi radians/cycle
     kappa = np.fft.fftfreq(posSystem.xNum*repeat_times,
             posSystem.dx)*2*np.pi
-    # Convert from kappa' = kappa/k_E to
-    #  kappa'/k' = kappa/k_E/k*k_E = kappa/k
-    kappa = kappa*posSystem.WaveLength/2/np.pi
 
     # Find peaks in initial data (peaks shouldn't move over time either)
     posSnapshotsPowerPeaks = sp.signal.find_peaks(posSnapshotsPower[:,0])[0]
@@ -2412,15 +2415,15 @@ if(plot_power_spec_Jeffreys):
     ax[1].set_xlabel(r'Harmonic $\kappa/k$')
     # Plot power spectrum \abs{\hat'{eps*eta'}}^2 = \abs{\hat{eta}}^2*k^2_E/h^2
     # (Primes denote the nondim variables used throughout this solver)
-    ax[0].set_ylabel(r'$\abs{\hat{\eta}}^2 k_E^2/h^2$')
-    ax[1].set_ylabel(r'$\abs{\hat{\eta}}^2 k_E^2/h^2$')
+    ax[0].set_ylabel(r'$\abs{\hat{\eta}}^2 k^2/h^2$')
+    ax[1].set_ylabel(r'$\abs{\hat{\eta}}^2 k^2/h^2$')
     # Convert P' = P*k/(rho_w*g)/eps to P'*eps = P*k/(rho_w*g)
     # (Primes denote the nondim variables used throughout this solver)
-    fig.suptitle(r'Power Spectrum vs Time: $a_0/h={eps}$, $k_E h = {kh}$'.format(
+    fig.suptitle(r'Power Spectrum vs Time: $a_0/h={eps}$, $kh = {kh}$'.format(
         eps=eps,kh=round(np.sqrt(mu),1)))
-    ax[0].set_title(r'Co-Wind: $P_J k_E/(\rho_w g) = {P}$'.format(
+    ax[0].set_title(r'Co-Wind: $P_J k/(\rho_w g) = {P}$'.format(
         P=round(eps*(P),3)))
-    ax[1].set_title(r'Counter-Wind: $P_J k_E/(\rho_w g) = {P}$'.format(
+    ax[1].set_title(r'Counter-Wind: $P_J k/(\rho_w g) = {P}$'.format(
         P=round(eps*(-P),3)))
 
     ax[0].plot(kappa,posSnapshotsPower)
@@ -2447,11 +2450,11 @@ if(plot_power_spec_Jeffreys):
     axins[1].set_yticklabels([])
     axins[1].set_xticklabels([])
 
-    # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k_E to
-    # t_1'/epsilon = t' = t*sqrt(g*h)*k_E
+    # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k to
+    # t_1'/epsilon = t' = t*sqrt(g*h)*k
     # (Primes denote the nondim variables used throughout this solver)
     fig.legend(np.around(posSystem.snapshot_ts/eps,1),
-            title=r'Time'+'\n'+r'$t \sqrt{g h} k_E$',loc='right')
+            title=r'Time'+'\n'+r'$t \sqrt{g h} k$',loc='right')
 
     # Label subplots
     ax[0].annotate('a)', xy=(0.02,0.8), xycoords='axes fraction')
@@ -2496,8 +2499,8 @@ if(plot_power_spec_vs_time_Jeffreys):
     negSnapshots = negSystem.get_snapshots()*eps
 
     # Save timesteps
-    # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k_E to
-    # t_1'/epsilon = t' = t*sqrt(g*h)*k_E
+    # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k to
+    # t_1'/epsilon = t' = t*sqrt(g*h)*k
     # (Primes denote the nondim variables used throughout this solver)
     t = posSystem.t/eps
 
@@ -2506,7 +2509,7 @@ if(plot_power_spec_vs_time_Jeffreys):
     posSnapshotsRepeated = np.tile(posSnapshots, (repeat_times,1))
     negSnapshotsRepeated = np.tile(negSnapshots, (repeat_times,1))
 
-    # Take spatial FFT \hat'{eps*eta'} = \hat{eps*eta'}*k_E = \hat{eta}*k_E/h
+    # Take spatial FFT \hat'{eps*eta'} = \hat{eps*eta'}*k = \hat{eta}*k/h
     # (Primes denote the nondim variables used throughout this solver)
     # (scale FFT by 1/N so the FFT of a sinusoid has unit amplitude;
     # this also gives it the same units as the continuous Fourier
@@ -2527,9 +2530,6 @@ if(plot_power_spec_vs_time_Jeffreys):
     # radians per x-unit by multiplying by 2*pi radians/cycle
     kappa = np.fft.fftfreq(posSystem.xNum*repeat_times,
             posSystem.dx)*2*np.pi
-    # Convert from kappa' = kappa/k_E to
-    #  kappa'/k' = kappa/k_E/k*k_E = kappa/k
-    kappa = kappa*posSystem.WaveLength/2/np.pi
 
     # Find peaks in initial data (peaks shouldn't move over time either)
     posSnapshotsPowerPeaks = sp.signal.find_peaks(posSnapshotsPower[:,0])[0]
@@ -2583,18 +2583,18 @@ if(plot_power_spec_vs_time_Jeffreys):
 
     fig.subplots_adjust(left=0.175,right=0.825,top=0.875,bottom=0.125,hspace=0.3)
 
-    # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k_E to
-    # t_1'/epsilon = t' = t*sqrt(g*h)*k_E
+    # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k to
+    # t_1'/epsilon = t' = t*sqrt(g*h)*k
     # (Primes denote the nondim variables used throughout this solver)
-    ax[1].set_xlabel(r'Time $t\sqrt{g h} k_E$')
+    ax[1].set_xlabel(r'Time $t\sqrt{g h} k$')
 
     # Convert P' = P*k/(rho_w*g)/eps to P'*eps = P*k/(rho_w*g)
     # (Primes denote the nondim variables used throughout this solver)
-    fig.suptitle(r'Power Spectrum vs Time: $a_0/h={eps}$, $k_E h = {kh}$'.format(
+    fig.suptitle(r'Power Spectrum vs Time: $a_0/h={eps}$, $kh = {kh}$'.format(
         eps=eps,kh=round(np.sqrt(mu),1)))
-    ax[0].set_title(r'Co-Wind: $P_J k_E/(\rho_w g) = {P}$'.format(
+    ax[0].set_title(r'Co-Wind: $P_J k/(\rho_w g) = {P}$'.format(
         P=round(eps*(P),3)))
-    ax[1].set_title(r'Counter-Wind: $P_J k_E/(\rho_w g) = {P}$'.format(
+    ax[1].set_title(r'Counter-Wind: $P_J k/(\rho_w g) = {P}$'.format(
         P=round(eps*(-P),3)))
 
     # Source: https://matplotlib.org/3.1.1/gallery/ticks_and_spines/multiple_yaxis_with_spines.html
@@ -2616,9 +2616,9 @@ if(plot_power_spec_vs_time_Jeffreys):
     ax[1].plot(t[::10],negSnapshotsPower[negSecondHarmonicIndex,::10],'b')
 
     for indx in [0,1]:
-        # Plot power spectrum \abs{\hat'{eps*eta'}}^2 = \abs{\hat{eta}}^2*k^2_E/h^2
+        # Plot power spectrum \abs{\hat'{eps*eta'}}^2 = \abs{\hat{eta}}^2*k^2/h^2
         # (Primes denote the nondim variables used throughout this solver)
-        ax[indx].set_ylabel(r'\begin{tabular}{c}Normalized \\ Energy $\abs{\hat{\eta}}^2 k_E^2 / h^2$\end{tabular}')
+        ax[indx].set_ylabel(r'\begin{tabular}{c}Normalized \\ Energy $\abs{\hat{\eta}}^2 k^2 / h^2$\end{tabular}')
         ax[indx].set_ylim(bottom=0)
 
     fig.legend(loc='upper right',bbox_to_anchor=(1,0.45))
@@ -2684,23 +2684,17 @@ if(plot_double_power_spec_Jeffreys):
     # radians per x-unit by multiplying by 2*pi radians/cycle
     kappa = np.fft.fftfreq(posSystem.xNum*repeat_times,
             posSystem.dx)*2*np.pi
-    # Convert from kappa' = kappa/k_E to
-    #  kappa'/k' = kappa/k_E/k*k_E = kappa/k
-    kappa = kappa*posSystem.WaveLength/2/np.pi
 
     # Convert from matplotlib's wavenumber in cycles per t-unit to our
     # radians per t-unit by multiplying by 2*pi radians/cycle
     omega = np.fft.fftfreq(tResampled.size,
             posSystem.dt*downsampleFactor)*2*np.pi
-    # Convert from omega' = omega/k_E/sqrt(g*h) to
-    #  omega'/k' = omega/k_E/sqrt(g*h)/k*k_E = omega/sqrt(g*h)/k
-    omega = omega*posSystem.WaveLength/2/np.pi
 
     # Make a mesh of unshifted frequencies first for multiplying each
     # mode by exp(sqrt(1+P)*k*t)
     omega_mesh,kappa_mesh = np.meshgrid(omega,kappa)
 
-    # Take spatial FFT \hat'{eps*eta'} = \hat{eps*eta'}*k_E = \hat{eta}*k_E/h
+    # Take spatial FFT \hat'{eps*eta'} = \hat{eps*eta'}*k = \hat{eta}*k/h
     # (Primes denote the nondim variables used throughout this solver)
     # (scale FFT by 1/N so the FFT of a sinusoid has unit amplitude;
     # this also gives it the same units as the continuous Fourier
@@ -2742,8 +2736,8 @@ if(plot_double_power_spec_Jeffreys):
             )*negSnapshotsFFT
 
     # Take temporal FFT \hat'{\hat'{eps*eta'}} =
-    # \hat'{\hat{eps*eta'}}*k_E = \hat{\hat{eps*eta'}}*k_E^2*sqrt(g*h) =
-    # \hat{\hat{eta}} k_E^2*sqrt(g/h)
+    # \hat'{\hat{eps*eta'}}*k = \hat{\hat{eps*eta'}}*k^2*sqrt(g*h) =
+    # \hat{\hat{eta}} k^2*sqrt(g/h)
     # (Primes denote the nondim variables used throughout this solver)
     # (scale FFT by 1/N so the FFT of a sinusoid has unit amplitude;
     # this also gives it the same units as the continuous Fourier
@@ -2791,18 +2785,18 @@ if(plot_double_power_spec_Jeffreys):
     # Plot kappa'/k' = kappa/k
     ax[1].set_xlabel(r'Harmonic $\kappa/k$')
     # Plot omega'/k' = omega/sqrt(g*h)/k
-    ax[0].set_ylabel(r'Frequency $\omega/\sqrt{g h} k_E$')
-    ax[1].set_ylabel(r'Frequency $\omega/\sqrt{g h} k_E$')
+    ax[0].set_ylabel(r'Frequency $\omega/\sqrt{g h} k$')
+    ax[1].set_ylabel(r'Frequency $\omega/\sqrt{g h} k$')
     # Plot power spectrum \abs{\hat'{\hat'{eps*eta'}}}^2 =
-    # \abs{\hat{\hat{eta}}}^2*k^4_E*g/h
+    # \abs{\hat{\hat{eta}}}^2*k^4*g/h
     # (Primes denote the nondim variables used throughout this solver)
     # Convert P' = P*k/(rho_w*g)/eps to P'*eps = P*k/(rho_w*g)
     # (Primes denote the nondim variables used throughout this solver)
-    fig.suptitle(r'Wavenumber Frequency Plot of $\abs{{\hat{{\eta}}}}^2 k_E^4 g / h$: $a_0/h={eps}$, $k_E h = {kh}$'.format(
+    fig.suptitle(r'Wavenumber Frequency Plot of $\abs{{\hat{{\eta}}}}^2 k^4 g / h$: $a_0/h={eps}$, $kh = {kh}$'.format(
         eps=eps,kh=round(np.sqrt(mu),1)))
-    ax[0].set_title(r'Co-Wind: $P_J k_E/(\rho_w g) = {P}$'.format(
+    ax[0].set_title(r'Co-Wind: $P_J k/(\rho_w g) = {P}$'.format(
         P=round(eps*(P),3)))
-    ax[1].set_title(r'Counter-Wind: $P_J k_E/(\rho_w g) = {P}$'.format(
+    ax[1].set_title(r'Counter-Wind: $P_J k/(\rho_w g) = {P}$'.format(
         P=round(eps*(-P),3)))
 
     cs = [None,None]
@@ -2874,7 +2868,7 @@ if(plot_power_spec_GM):
     posSnapshotsRepeated = np.tile(posSnapshots, (repeat_times,1))
     negSnapshotsRepeated = np.tile(negSnapshots, (repeat_times,1))
 
-    # Take spatial FFT \hat'{eps*eta'} = \hat{eps*eta'}*k_E = \hat{eta}*k_E/h
+    # Take spatial FFT \hat'{eps*eta'} = \hat{eps*eta'}*k = \hat{eta}*k/h
     # (Primes denote the nondim variables used throughout this solver)
     # (scale FFT by 1/N so the FFT of a sinusoid has unit amplitude;
     # this also gives it the same units as the continuous Fourier
@@ -2895,9 +2889,6 @@ if(plot_power_spec_GM):
     # radians per x-unit by multiplying by 2*pi radians/cycle
     kappa = np.fft.fftfreq(posSystem.xNum*repeat_times,
             posSystem.dx)*2*np.pi
-    # Convert from kappa' = kappa/k_E to
-    #  kappa'/k' = kappa/k_E/k*k_E = kappa/k
-    kappa = kappa*posSystem.WaveLength/2/np.pi
 
     # Find peaks in initial data (peaks shouldn't move over time either)
     posSnapshotsPowerPeaks = sp.signal.find_peaks(posSnapshotsPower[:,0])[0]
@@ -2990,15 +2981,15 @@ if(plot_power_spec_GM):
     ax[1].set_xlabel(r'Harmonic $\kappa/k$')
     # Plot power spectrum \abs{\hat'{eps*eta'}}^2 = \abs{\hat{eta}}^2*k^2_E/h^2
     # (Primes denote the nondim variables used throughout this solver)
-    ax[0].set_ylabel(r'$\abs{\hat{\eta}}^2 k_E^2/h^2$')
-    ax[1].set_ylabel(r'$\abs{\hat{\eta}}^2 k_E^2/h^2$')
+    ax[0].set_ylabel(r'$\abs{\hat{\eta}}^2 k^2/h^2$')
+    ax[1].set_ylabel(r'$\abs{\hat{\eta}}^2 k^2/h^2$')
     # Convert P' = P*k/(rho_w*g)/eps to P'*eps = P*k/(rho_w*g)
     # (Primes denote the nondim variables used throughout this solver)
-    fig.suptitle(r'Power Spectrum vs Time: $a_0/h={eps}$, $k_E h = {kh}$'.format(
+    fig.suptitle(r'Power Spectrum vs Time: $a_0/h={eps}$, $kh = {kh}$'.format(
         eps=eps,kh=round(np.sqrt(mu),1)))
-    ax[0].set_title(r'Co-Wind: $P_G k_E/(\rho_w g) = {P}$'.format(
+    ax[0].set_title(r'Co-Wind: $P_G k/(\rho_w g) = {P}$'.format(
         P=round(eps*(P),3)))
-    ax[1].set_title(r'Counter-Wind: $P_G k_E/(\rho_w g) = {P}$'.format(
+    ax[1].set_title(r'Counter-Wind: $P_G k/(\rho_w g) = {P}$'.format(
         P=round(eps*(-P),3)))
 
     ax[0].plot(kappa,posSnapshotsPower)
@@ -3025,11 +3016,11 @@ if(plot_power_spec_GM):
     axins[1].set_yticklabels([])
     axins[1].set_xticklabels([])
 
-    # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k_E to
-    # t_1'/epsilon = t' = t*sqrt(g*h)*k_E
+    # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k to
+    # t_1'/epsilon = t' = t*sqrt(g*h)*k
     # (Primes denote the nondim variables used throughout this solver)
     fig.legend(np.around(posSystem.snapshot_ts/eps,1),
-            title=r'Time'+'\n'+r'$t \sqrt{g h} k_E$',loc='right')
+            title=r'Time'+'\n'+r'$t \sqrt{g h} k$',loc='right')
 
     # Label subplots
     ax[0].annotate('a)', xy=(0.02,0.8), xycoords='axes fraction')
@@ -3074,8 +3065,8 @@ if(plot_power_spec_vs_time_GM):
     negSnapshots = negSystem.get_snapshots()*eps
 
     # Save timesteps
-    # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k_E to
-    # t_1'/epsilon = t' = t*sqrt(g*h)*k_E
+    # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k to
+    # t_1'/epsilon = t' = t*sqrt(g*h)*k
     # (Primes denote the nondim variables used throughout this solver)
     t = posSystem.t/eps
 
@@ -3084,7 +3075,7 @@ if(plot_power_spec_vs_time_GM):
     posSnapshotsRepeated = np.tile(posSnapshots, (repeat_times,1))
     negSnapshotsRepeated = np.tile(negSnapshots, (repeat_times,1))
 
-    # Take spatial FFT \hat'{eps*eta'} = \hat{eps*eta'}*k_E = \hat{eta}*k_E/h
+    # Take spatial FFT \hat'{eps*eta'} = \hat{eps*eta'}*k = \hat{eta}*k/h
     # (Primes denote the nondim variables used throughout this solver)
     # (scale FFT by 1/N so the FFT of a sinusoid has unit amplitude;
     # this also gives it the same units as the continuous Fourier
@@ -3105,9 +3096,6 @@ if(plot_power_spec_vs_time_GM):
     # radians per x-unit by multiplying by 2*pi radians/cycle
     kappa = np.fft.fftfreq(posSystem.xNum*repeat_times,
             posSystem.dx)*2*np.pi
-    # Convert from kappa' = kappa/k_E to
-    #  kappa'/k' = kappa/k_E/k*k_E = kappa/k
-    kappa = kappa*posSystem.WaveLength/2/np.pi
 
     # Find peaks in initial data (peaks shouldn't move over time either)
     posSnapshotsPowerPeaks = sp.signal.find_peaks(posSnapshotsPower[:,0])[0]
@@ -3161,18 +3149,18 @@ if(plot_power_spec_vs_time_GM):
 
     fig.subplots_adjust(left=0.175,right=0.825,top=0.875,bottom=0.125,hspace=0.3)
 
-    # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k_E to
-    # t_1'/epsilon = t' = t*sqrt(g*h)*k_E
+    # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k to
+    # t_1'/epsilon = t' = t*sqrt(g*h)*k
     # (Primes denote the nondim variables used throughout this solver)
-    ax[1].set_xlabel(r'Time $t\sqrt{g h} k_E$')
+    ax[1].set_xlabel(r'Time $t\sqrt{g h} k$')
 
     # Convert P' = P*k/(rho_w*g)/eps to P'*eps = P*k/(rho_w*g)
     # (Primes denote the nondim variables used throughout this solver)
-    fig.suptitle(r'Power Spectrum vs Time: $a_0/h={eps}$, $k_E h = {kh}$'.format(
+    fig.suptitle(r'Power Spectrum vs Time: $a_0/h={eps}$, $kh = {kh}$'.format(
         eps=eps,kh=round(np.sqrt(mu),1)))
-    ax[0].set_title(r'Co-Wind: $P_G k_E/(\rho_w g) = {P}$'.format(
+    ax[0].set_title(r'Co-Wind: $P_G k/(\rho_w g) = {P}$'.format(
         P=round(eps*(P),3)))
-    ax[1].set_title(r'Counter-Wind: $P_G k_E/(\rho_w g) = {P}$'.format(
+    ax[1].set_title(r'Counter-Wind: $P_G k/(\rho_w g) = {P}$'.format(
         P=round(eps*(-P),3)))
 
     # Source: https://matplotlib.org/3.1.1/gallery/ticks_and_spines/multiple_yaxis_with_spines.html
@@ -3194,9 +3182,9 @@ if(plot_power_spec_vs_time_GM):
     ax[1].plot(t[::10],negSnapshotsPower[negSecondHarmonicIndex,::10],'b')
 
     for indx in [0,1]:
-        # Plot power spectrum \abs{\hat'{eps*eta'}}^2 = \abs{\hat{eta}}^2*k^2_E/h^2
+        # Plot power spectrum \abs{\hat'{eps*eta'}}^2 = \abs{\hat{eta}}^2*k^2/h^2
         # (Primes denote the nondim variables used throughout this solver)
-        ax[indx].set_ylabel(r'\begin{tabular}{c}Normalized \\ Energy $\abs{\hat{\eta}}^2 k_E^2 / h^2$\end{tabular}')
+        ax[indx].set_ylabel(r'\begin{tabular}{c}Normalized \\ Energy $\abs{\hat{\eta}}^2 k^2 / h^2$\end{tabular}')
         ax[indx].set_ylim(bottom=0)
 
     fig.legend(loc='upper right',bbox_to_anchor=(1,0.45))
@@ -3245,7 +3233,7 @@ if(plot_pos_neg_snapshots_cnoidal_GM):
     xMasked = posSystem.get_masked_x()
 
     # Normalize x by wavelength
-    # Convert from x' = x*k_E to x'/lambda' = x*k_E/lambda/k_E = x/lambda
+    # Convert from x' = x*k to x'/lambda' = x*k/lambda/k = x/lambda
     # (Primes denote the nondim variables used throughout this solver)
     xMasked = xMasked/posSystem.WaveLength
 
@@ -3268,7 +3256,7 @@ if(plot_pos_neg_snapshots_cnoidal_GM):
 
     fig.subplots_adjust(left=0.175,right=0.9,top=0.875,bottom=0.125,hspace=0.3)
 
-    # Plot x'*lambda' = x*k_E/lambda/k_E = x/lambda
+    # Plot x'*lambda' = x*k/lambda/k = x/lambda
     # (Primes denote the nondim variables used throughout this solver)
     ax[1].set_xlabel(r'Distance $x/\lambda$')
     # Plot eta'*eps = eta/a*eps = eta/h
@@ -3277,11 +3265,11 @@ if(plot_pos_neg_snapshots_cnoidal_GM):
     ax[1].set_ylabel(r'$\eta / h$')
     # Convert P' = P*k/(rho_w*g)/eps to P'*eps = P*k/(rho_w*g)
     # (Primes denote the nondim variables used throughout this solver)
-    fig.suptitle(r'Surface Height vs Time: $a_0/h={eps}$, $k_E h = {kh}$'.format(
+    fig.suptitle(r'Surface Height vs Time: $a_0/h={eps}$, $kh = {kh}$'.format(
         eps=eps,kh=round(np.sqrt(mu),1)))
-    ax[0].set_title(r'$P_G k_E/(\rho_w g) = {P}$'.format(
+    ax[0].set_title(r'$P_G k/(\rho_w g) = {P}$'.format(
         P=round(eps*(P),3)))
-    ax[1].set_title(r'$P_G k_E/(\rho_w g) = {P}$'.format(
+    ax[1].set_title(r'$P_G k/(\rho_w g) = {P}$'.format(
         P=round(eps*(-P),3)))
 
     ax[0].plot(xMasked,posSnapshots)
@@ -3315,11 +3303,11 @@ if(plot_pos_neg_snapshots_cnoidal_GM):
             xycoords="axes fraction", arrowprops={'arrowstyle': '->',
                 'shrinkA':1,'shrinkB':0})
 
-    # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k_E to
-    # t_1'/epsilon = t' = t*sqrt(g*h)*k_E
+    # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k to
+    # t_1'/epsilon = t' = t*sqrt(g*h)*k
     # (Primes denote the nondim variables used throughout this solver)
     fig.legend(np.around(posSystem.snapshot_ts/eps,1),
-            title=r'Time'+'\n'+r'$t \sqrt{g h} k_E$',loc='right')
+            title=r'Time'+'\n'+r'$t \sqrt{g h} k$',loc='right')
 
     # Label subplots
     ax[0].annotate('a)', xy=(0.02,0.8), xycoords='axes fraction')
@@ -3367,7 +3355,7 @@ if(plot_forcing_types):
     ax[0].set_ylabel(r'Elevation $\eta/H$')
     ax[1].set_ylabel(r'\begin{tabular}{c}Pressure $p$\end{tabular}')
 
-    # Plot x'*lambda' = x*k_E/lambda/k_E = x/lambda
+    # Plot x'*lambda' = x*k/lambda/k = x/lambda
     # (Primes denote the nondim variables used throughout this solver)
     ax[1].set_xlabel(r'Distance $x/\lambda$')
 
@@ -3432,12 +3420,12 @@ if(plot_total_energy_Jeffreys):
         energyDensity = np.sum(energySnapshots**2,axis=0)/energySystem.xNum
 
         # Convert from energy density dE' = E/h^2/rho_w/g to total energy
-        # E' = L'*dE' = L*E*k_E/h^2/rho_w/g
+        # E' = L'*dE' = L*E*k/h^2/rho_w/g
         energies[idx] = energyDensity*energySystem.xLen
 
         # Save timesteps
-        # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k_E to
-        # t_1'/epsilon = t' = t*sqrt(g*h)*k_E
+        # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k to
+        # t_1'/epsilon = t' = t*sqrt(g*h)*k
         # (Primes denote the nondim variables used throughout this solver)
         t = energySystem.t/eps
 
@@ -3466,14 +3454,14 @@ if(plot_total_energy_Jeffreys):
     fig.set_tight_layout(False)
     fig.subplots_adjust(left=0.175,right=0.8,top=0.875,bottom=0.15)
 
-    # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k_E to
-    # t_1'/epsilon = t' = t*sqrt(g*h)*k_E
+    # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k to
+    # t_1'/epsilon = t' = t*sqrt(g*h)*k
     # (Primes denote the nondim variables used throughout this solver)
-    ax.set_xlabel(r'Time $t \sqrt{g h} k_E$')
+    ax.set_xlabel(r'Time $t \sqrt{g h} k$')
 
-    # Plot E' = L'*eta'^2 = L*E*k_E/h^2/rho_w/g
-    ax.set_ylabel(r'Normalized Energy $E k_E/(\rho_w g h^2)$')
-    ax.set_title(r'Total Energy: $a_0/h={eps}$, $k_E h = {kh}$'.format(
+    # Plot E' = L'*eta'^2 = L*E*k/h^2/rho_w/g
+    ax.set_ylabel(r'Normalized Energy $E k/(\rho_w g h^2)$')
+    ax.set_title(r'Total Energy: $a_0/h={eps}$, $kh = {kh}$'.format(
         eps=eps,kh=round(np.sqrt(mu_solitary),1),P=P))
 
     # Put horizontal line at energy=1
@@ -3485,7 +3473,7 @@ if(plot_total_energy_Jeffreys):
     # Convert P' = P*k/(rho_w*g)/eps to P'*eps = P*k/(rho_w*g)
     # (Primes denote the nondim variables used throughout this solver)
     leg = fig.legend(lines, np.around(skew_asymm_Ps*eps,3),
-            title=r'Pressure'+'\n'+r'Magnitude'+'\n'+r'$P_J k_E/(\rho_w g)$',
+            title=r'Pressure'+'\n'+r'Magnitude'+'\n'+r'$P_J k/(\rho_w g)$',
             loc='right')
     leg.get_title().set_multialignment('center')
 
@@ -3531,12 +3519,12 @@ if(plot_total_energy_GM):
         energyDensity = np.sum(energySnapshots**2,axis=0)/energySystem.xNum
 
         # Convert from energy density dE' = E/h^2/rho_w/g to total energy
-        # E' = L'*dE' = L*E*k_E/h^2/rho_w/g
+        # E' = L'*dE' = L*E*k/h^2/rho_w/g
         energies[idx] = energyDensity*energySystem.xLen
 
         # Save timesteps
-        # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k_E to
-        # t_1'/epsilon = t' = t*sqrt(g*h)*k_E
+        # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k to
+        # t_1'/epsilon = t' = t*sqrt(g*h)*k
         # (Primes denote the nondim variables used throughout this solver)
         t = energySystem.t/eps
 
@@ -3565,14 +3553,14 @@ if(plot_total_energy_GM):
     fig.set_tight_layout(False)
     fig.subplots_adjust(left=0.175,right=0.8,top=0.875,bottom=0.15)
 
-    # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k_E to
-    # t_1'/epsilon = t' = t*sqrt(g*h)*k_E
+    # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k to
+    # t_1'/epsilon = t' = t*sqrt(g*h)*k
     # (Primes denote the nondim variables used throughout this solver)
-    ax.set_xlabel(r'Time $t \sqrt{g h} k_E$')
+    ax.set_xlabel(r'Time $t \sqrt{g h} k$')
 
-    # Plot E' = L'*eta'^2 = L*E*k_E/h^2/rho_w/g
-    ax.set_ylabel(r'Normalized Energy $E k_E/(\rho_w g h^2)$')
-    ax.set_title(r'Total Energy: $a_0/h={eps}$, $k_E h = {kh}$'.format(
+    # Plot E' = L'*eta'^2 = L*E*k/h^2/rho_w/g
+    ax.set_ylabel(r'Normalized Energy $E k/(\rho_w g h^2)$')
+    ax.set_title(r'Total Energy: $a_0/h={eps}$, $kh = {kh}$'.format(
         eps=eps,kh=round(np.sqrt(mu_solitary),1),P=P))
 
     # Put horizontal line at energy=1
@@ -3584,7 +3572,7 @@ if(plot_total_energy_GM):
     # Convert P' = P*k/(rho_w*g)/eps to P'*eps = P*k/(rho_w*g)
     # (Primes denote the nondim variables used throughout this solver)
     leg = fig.legend(lines, np.around(skew_asymm_Ps*eps,3),
-            title=r'Pressure'+'\n'+r'Magnitude'+'\n'+r'$P_G k_E/(\rho_w g)$',
+            title=r'Pressure'+'\n'+r'Magnitude'+'\n'+r'$P_G k/(\rho_w g)$',
             loc='right')
     leg.get_title().set_multialignment('center')
 
@@ -3622,7 +3610,7 @@ if(plot_long_run_check):
     xMasked = snapshotSystem.get_masked_x()
 
     # Normalize x by wavelength
-    # Convert from x' = x*k_E to x'/sqrt(mu) = x*k_E/(k_E*h) = x/h
+    # Convert from x' = x*k to x'/sqrt(mu) = x*k/(k*h) = x/h
     # (Primes denote the nondim variables used throughout this solver)
     xMasked = xMasked/np.sqrt(mu_solitary)
 
@@ -3646,7 +3634,7 @@ if(plot_long_run_check):
     ax.set_ylabel(r'Surface Height $\eta / h$')
     # Convert P' = P*k/(rho_w*g)/eps to P'*eps = P*k/(rho_w*g)
     # (Primes denote the nondim variables used throughout this solver)
-    ax.set_title(r'Surface Height vs Time: $a_0/h={eps}$, $k_E h = {kh}$, $P_J k_E/(\rho_w g) = {P}$'.format(
+    ax.set_title(r'Surface Height vs Time: $a_0/h={eps}$, $kh = {kh}$, $P_J k/(\rho_w g) = {P}$'.format(
         eps=eps,kh=round(np.sqrt(mu_solitary),1),P=0))
 
     ax.plot(xMasked,snapshots)
@@ -3668,11 +3656,11 @@ if(plot_long_run_check):
             xycoords="axes fraction", arrowprops={'arrowstyle': '<-',
                 'shrinkA':1,'shrinkB':0})
 
-    # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k_E to
-    # t_1'/epsilon = t' = t*sqrt(g*h)*k_E
+    # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k to
+    # t_1'/epsilon = t' = t*sqrt(g*h)*k
     # (Primes denote the nondim variables used throughout this solver)
     fig.legend(np.around(snapshotSystem.snapshot_ts/eps,1),
-            title=r'Time $t \sqrt{g h} k_E$',loc='right')
+            title=r'Time $t \sqrt{g h} k$',loc='right')
 
     # Make background transparent
     fig.patch.set_alpha(0)
