@@ -2665,10 +2665,19 @@ if(plot_double_power_spec_Jeffreys):
     posSnapshots = posSystem.get_snapshots()*eps
     negSnapshots = negSystem.get_snapshots()*eps
 
+    # Down sample the time component to save space since we don't need
+    # the higher frequencies
+    downsampleFactor = 10
+    posSnapshotsResampled = sp.signal.decimate(posSnapshots,
+            downsampleFactor)
+    negSnapshotsResampled = sp.signal.decimate(negSnapshots,
+            downsampleFactor)
+    tResampled = sp.signal.decimate(posSystem.t, downsampleFactor)
+
     # Resample (via interpolation) to get a higher FFT resolution
     repeat_times = 20
-    posSnapshotsRepeated = np.tile(posSnapshots, (repeat_times,1))
-    negSnapshotsRepeated = np.tile(negSnapshots, (repeat_times,1))
+    posSnapshotsRepeated = np.tile(posSnapshotsResampled, (repeat_times,1))
+    negSnapshotsRepeated = np.tile(negSnapshotsResampled, (repeat_times,1))
 
     # Generate spatial FFT conjugate coordinate
     # Convert from matplotlib's wavenumber in cycles per x-unit to our
@@ -2681,8 +2690,8 @@ if(plot_double_power_spec_Jeffreys):
 
     # Convert from matplotlib's wavenumber in cycles per t-unit to our
     # radians per t-unit by multiplying by 2*pi radians/cycle
-    omega = np.fft.fftfreq(posSystem.tNum,
-            posSystem.dt)*2*np.pi
+    omega = np.fft.fftfreq(tResampled.size,
+            posSystem.dt*downsampleFactor)*2*np.pi
     # Convert from omega' = omega/k_E/sqrt(g*h) to
     #  omega'/k' = omega/k_E/sqrt(g*h)/k*k_E = omega/sqrt(g*h)/k
     omega = omega*posSystem.WaveLength/2/np.pi
@@ -2722,13 +2731,13 @@ if(plot_double_power_spec_Jeffreys):
     posSnapshotsModifiedFFT = np.exp(-np.imag(1/2*eps*1j*P)
             *2*np.pi/posSystem.WaveLength
             *np.abs(kappa_mesh)
-            *posSystem.t
+            *tResampled
             /4.14027 # fudge factor
             )*posSnapshotsFFT
     negSnapshotsModifiedFFT = np.exp(-np.imag(1/2*eps*(-1j*P))
             *2*np.pi/posSystem.WaveLength
             *np.abs(kappa_mesh)
-            *negSystem.t
+            *tResampled
             /4.14027 # fudge factor
             )*negSnapshotsFFT
 
@@ -2740,9 +2749,9 @@ if(plot_double_power_spec_Jeffreys):
     # this also gives it the same units as the continuous Fourier
     # Transform)
     posSnapshotsDoubleFFT = np.fft.fft(posSnapshotsModifiedFFT,
-            axis=1)/(posSystem.tNum)
+            axis=1)/(tResampled.size)
     negSnapshotsDoubleFFT = np.fft.fft(negSnapshotsModifiedFFT,
-            axis=1)/(negSystem.tNum)
+            axis=1)/(tResampled.size)
 
     # Calculate power spectrum (ie abs squared)
     # \abs{\hat'{\hat'{eps*eta'}}}^2 =
