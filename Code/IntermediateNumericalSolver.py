@@ -747,7 +747,7 @@ class kdvSystem():
 
         # RHS function
         # y'(t,x) = f(t,y(t,x))
-        def f(t,y0,dx):
+        def f(t,y0,dx,G):
             y2 = np.concatenate(([y0[-1]], y0, [y0[0]]))
             y4 = np.concatenate((y0[-2:], y0, y0[0:2]))
 
@@ -760,7 +760,7 @@ class kdvSystem():
             if self.diffeq == 'KdVB':
                 dy2dx2 = (y2[2:] - 2*y2[1:-1] + y2[0:-2])/(dx**2)
                 RHS = -(self.F*dydx + self.B*y0*dydx + self.C*dy3dx3 -
-                        self.G*dy2dx2 + self.H*dy4dx4)
+                        G*dy2dx2 + self.H*dy4dx4)
             elif self.diffeq == 'KdVNL':
                 dydxnl = np.roll(dydx,
                         shift=int(round(-self.psiP*self.WaveLength/(2*np.pi)/dx)),
@@ -803,8 +803,13 @@ class kdvSystem():
             # RK Stages
             k = np.zeros((yn.size,s))
             tn = n*dt
+            # Ramp up over 5 wave periods (ie t_1'=t'*eps=5*eps)
+            rampTime = 5*self.eps
+            # Convert rampTime to indices
+            rampIndex = rampTime/dt
+            G = self.G*min(n/rampIndex,1)
             for j in range(0,s):
-              k[:,j] = f(tn+c[j]*dt,yn+dt*np.dot(k,a[j,:]),dx)
+                k[:,j] = f(tn+c[j]*dt,yn+dt*np.dot(k,a[j,:]),dx,G)
 
             y[n+1,:] = y[n,:] + dt*np.dot(k,b)
 
