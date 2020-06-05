@@ -408,7 +408,7 @@ class kdvSystem():
         else:
             raise(ValueError("y0 must be array_like, 'solitary', or 'cnoidal'"))
 
-    def set_x_window(self, xMin=None, xMax=None):
+    def set_x_window(self, xMin=None, xMax=None,xScale=1):
         """Set x_window, the portion of the x domain to plot.
 
         Parameters
@@ -421,6 +421,8 @@ class kdvSystem():
             Maximum x coordinate of x_window. 'nice_value' gives a nice
             window of 20*np.sqrt(abs(C)/abs(B))-xOffset. Default is
             xLen/2-xOffset.
+        xScale : float
+            Amount to scale xMin and xMax by. Default is 1.
 
         Returns
         -------
@@ -442,7 +444,7 @@ class kdvSystem():
             self.xMax = self.xLen/2-self.xOffset
 
 
-        self.xWin = [self.xMin, self.xMax]
+        self.xWin = [self.xMin*xScale, self.xMax*xScale]
 
     def get_masked_x(self):
         """Get the x coordinate vector with coordinates outside x_window
@@ -1044,8 +1046,9 @@ if(plot_snapshots):
     snapshotSystem.set_snapshot_ts([0,1/3,2/3,1])
     snapshots = snapshotSystem.get_snapshots()*eps
 
-    # Hide solution outside of window
-    snapshotSystem.set_x_window(xMin=-4,xMax=5)
+    # Hide solution outside of window; for consistency, scale by
+    # Wavelength since we scale x coordinate by 1/WaveLength
+    snapshotSystem.set_x_window(xMin=-4,xMax=5,xScale=snapshotSystem.WaveLength)
     xMasked = snapshotSystem.get_masked_x()
 
     # Normalize x by wavelength
@@ -1129,8 +1132,9 @@ if(plot_negative_snapshots):
     snapshotSystem.set_snapshot_ts([0,1/3,2/3,1])
     snapshots = snapshotSystem.get_snapshots()*eps
 
-    # Hide solution outside of window
-    snapshotSystem.set_x_window(xMin=-4,xMax=5)
+    # Hide solution outside of window; for consistency, scale by
+    # Wavelength since we scale x coordinate by 1/WaveLength
+    snapshotSystem.set_x_window(xMin=-4,xMax=5,xScale=snapshotSystem.WaveLength)
     xMasked = snapshotSystem.get_masked_x()
 
     # Normalize x by wavelength
@@ -1227,8 +1231,9 @@ if(plot_pos_neg_snapshots):
         posSnapshots[indx] = posSystem.get_snapshots()*eps_val
         negSnapshots[indx] = negSystem.get_snapshots()*eps_val
 
-        # Hide solution outside of window
-        posSystem.set_x_window(xMin=-4,xMax=5)
+        # Hide solution outside of window; for consistency, scale by
+        # Wavelength since we scale x coordinate by 1/WaveLength
+        posSystem.set_x_window(xMin=-4,xMax=5,xScale=posSystem.WaveLength)
         xMasked[indx] = posSystem.get_masked_x()
 
         # Normalize x by wavelength
