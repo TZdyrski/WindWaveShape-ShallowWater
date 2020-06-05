@@ -842,39 +842,47 @@ This gives
   = \frac{H}{2} \cos \pqty{\frac{2}{\Delta} \bqty{x-c_1 t}}
   \qq{as} m \to 0 \,.
 \end{equation}
-Now, we choose $k_E$:
+Since we want this to reduce to the usual $(H/2) \cos(k[x-c_1 t])$, we
+define (for all $m$)
 \begin{equation}
-  k_E \coloneqq k = \frac{2\pi}{\lambda}
+  k_E \coloneqq \frac{2}{\Delta}
 \end{equation}
+Note that \cref{eq:nondim_lambda} also means
+\begin{equation}
+  \lambda' = 2 K(m) \Delta' = 2 K(m) \Delta k_E = 4 K(m) \,.
+\end{equation}
+Note that, in particular, this means
+\begin{equation}
+  k = \frac{2 \pi}{\lambda} = \frac{2 \pi}{\lambda'} k_E
+  = \frac{\pi}{2 K(m)} k_E \,.
+\end{equation}
+So, as $m \to 0$, $k \to k_E$, while $m \to 1$ yields $k \to 0$.
 
-Finally, we can now fix $m$ as a function of $\mu$ and $\epsilon$ using
-\cref{eq:nondim_lambda}:
+Finally, we can now fix $m$ as a function of $\mu$ and $\epsilon$:
 \begin{equation}
-  k_E = \frac{2 \pi}{\lambda} = \frac{2 \pi k_E}{\lambda'}
-  = \frac{2 \pi k_E}{2 K(m) \Delta'}
-  \implies \Delta' = \frac{\pi}{K(m)} \,.
+  k_E = \frac{2}{\Delta} = \frac{2 k_E}{\Delta'}
+  \implies \Delta' = 2 \,.
 \end{equation}
-So, as $m \to 0$, $\Delta' \to 1$, while $m \to 1$ yields $\Delta \to
-0$.
 However, using \cref{eq:nondim_cnoidal_params}, we have
 \begin{equation}
-  \frac{\pi}{K(m)} = \Delta ' = \sqrt{\frac{12 \mathcal{C}}{\mathcal{B}}
+  2 = \Delta ' = \sqrt{\frac{12 \mathcal{C}}{\mathcal{B}}
     \frac{m}{H'}}
   = \sqrt{\frac{12 \mathcal{C}}{\mathcal{B}} \frac{m}{2}}
-  \implies m K(m)^2 = \frac{\pi^2 \mathcal{B}}{6 \mathcal{C}} \,.
+  \implies m = \frac{2 \mathcal{B}}{3 \mathcal{C}} \,.
 \end{equation}
 For our particular values of $\mathcal{B} = 3/2$ and $\mathcal{C} =
 \mu/(6 \epsilon)$, we have
 \begin{equation}
-  m K(m)^2 = \frac{3 \pi**2}{2} \frac{\epsilon}{\mu} \,.
+  m = 6 \frac{\epsilon}{\mu} \,.
 \end{equation}
-This is an implicit equation for $m$ in terms of $\epsilon \coloneqq
-a/h$ and $\mu \coloneqq (kh)^2$.
+Since $m \in [0,1]$, this implies $0 \le \epsilon \le \mu/6$.
 Finally, note that since $m = 1$ gives the solitary wave solution, this
 means that we have the requirement that
 \begin{equation}
-  \mu = 0 \,.
+  \mu = 6 \epsilon
 \end{equation}
+for solitary waves; this is simply the well-known fact that the height
+and width of a solitary wave satisfy a fixed relationship.
 
 Therefore, the nondimensional equation we are solving is
 \begin{equation}
