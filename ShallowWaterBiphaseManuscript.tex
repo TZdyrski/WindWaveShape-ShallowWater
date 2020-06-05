@@ -158,10 +158,10 @@ Generalized Miles profiles.
 
 \section{Normalization}
 We will normalize by identifying characteristic scales.
-The parameters we know \apriori are the wavenumber $k$, the wave
-amplitude $a$, the depth $h$, the gravitational acceleration $g$, and
-the wind speed $U$ expressed as a pressure magnitude $P \propto \rho_a
-U^2$.
+The parameters we know \apriori are the wavenumber $k$, the (initial)
+wave amplitude $a_0$, the depth $h$, the gravitational acceleration $g$,
+and the wind speed $U$ expressed as a pressure magnitude $P \propto
+\rho_a U^2$.
 However, instead of using the conventional wavenumber $k \coloneqq 2 \pi
 / \lambda$, we will instead use an effective wavenumber $k_E \coloneqq 2
 \pi/ L$ with $L$ a characteristic length over which $\eta$ changes
@@ -197,7 +197,7 @@ Denoting nondimensional variables with an accent, we have
     = \frac{\alpha}{\sqrt{\mu}} P' \rho_w g h \,.
   \end{aligned}
 \end{equation*}
-Here, we have defined the parameters $\epsilon \coloneqq a/h$, $\mu
+Here, we have defined the parameters $\epsilon \coloneqq a_0/h$, $\mu
 \coloneqq (kh)^2$, and $\alpha \coloneqq \order{P k_E/(\rho_w g
 )}$.
 Furthermore, we see that $\epsilon/\mu$ is (up to some numerical
@@ -332,7 +332,7 @@ For instance, $U_{10} = \SI{50}{\meter\per\second}$ gives
 $P'_M \alpha = \num{6.5e-3} \approx \epsilon^2$.
 
 If we instead consider laboratory conditions with $h=\SI{0.37}{\meter}$,
-$kh = 1.2$, and $a/h = 0.14$ as in \citet{feddersen2005wind}, we
+$kh = 1.2$, and $a_0/h = 0.14$ as in \citet{feddersen2005wind}, we
 instead get
 \[
   y = \num{0.17} \pqty{U_{10} \SI{0.73}{\second\per\meter} - 1}^2
