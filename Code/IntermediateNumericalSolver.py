@@ -33,6 +33,8 @@ plot_power_spec_GM = False
 plot_power_spec_vs_time_GM = False
 plot_pos_neg_snapshots_cnoidal_GM = False
 plot_forcing_types = False
+plot_total_energy_Jeffreys = False
+plot_total_energy_GM = False
 
 ### Set global parameters
 ## Conversion factors
@@ -97,6 +99,8 @@ skew_asymm_Hs = np.absolute(skew_asymm_Ps)*0.05
 
 kh_mus = np.linspace(eps*6,eps*12,8)
 kh_tLen = 1
+
+energy_tLen = 10
 
 # Trig function plotting parameters`
 trig_mode = 1
@@ -3135,3 +3139,201 @@ if(plot_forcing_types):
             va='bottom')
 
     texplot.savefig(fig,'../Figures/Forcing-Types')
+
+if(plot_total_energy_Jeffreys):
+
+    energies = [None]*(skew_asymm_Ps.size)
+    t = None
+
+    for idx,Pval in enumerate(skew_asymm_Ps):
+        print("Computing the solution.")
+        # Create KdV-Burgers or nonlocal KdV system
+        energySystem = kdvSystem(P=Pval,
+                H=skew_asymm_Hs[idx],psiP=psiP,diffeq='KdVB', eps=eps,
+                mu=mu_solitary)
+        # Set spatial and temporal grid
+        energySystem.set_spatial_grid(
+                xLen=skew_asymm_xLen[idx],
+                xStep=skew_asymm_xStep[idx])
+        energySystem.set_temporal_grid(tLen=energy_tLen,tNum=skew_asymm_tNum)
+        # Set initial conditions
+        energySystem.set_initial_conditions(y0='cnoidal')
+        # Solve KdV-Burgers system
+        energySystem.solve_system_rk3()
+
+        # Boost to co-moving frame
+        energySystem.boost_to_lab_frame(velocity='cnoidal')
+
+        # Convert back to non-normalized variables
+        # Convert from eta' = eta/a = eta/h/eps to eta'*eps = eta/a*eps = eta/h
+        # (Primes denote the nondim variables used throughout this solver)
+        energySystem.set_snapshot_ts(np.linspace(0,1,num=energySystem.tNum))
+        energySnapshots = energySystem.get_snapshots()*eps
+
+        # Calculate energy
+        # Convert from eta'^2 = eta^2/h^2 to energy density (energy per
+        # unit length) dE' = eta'^2 = (eta/h)^2/rho_w/g =  E/h^2/rho_w/g
+        # (Primes denote the nondim variables used throughout this solver)
+        energyDensity = np.sum(energySnapshots**2,axis=0)/energySystem.xNum
+
+        # Convert from energy density dE' = E/h^2/rho_w/g to total energy
+        # E' = L'*dE' = L*E*k_E/h^2/rho_w/g
+        energies[idx] = energyDensity*energySystem.xLen
+
+        # Save timesteps
+        # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k_E to
+        # t_1'/epsilon = t' = t*sqrt(g*h)*k_E
+        # (Primes denote the nondim variables used throughout this solver)
+        t = energySystem.t/eps
+
+    energies = np.array(energies).transpose()
+    # Normalize energies by t=0 maximum
+    energies = energies/energies[0,:]
+
+    print("Plotting.")
+
+    ## Color cycle
+    num_lines = skew_asymm_Ps.size # Number of lines
+    # Make the colors go from blue to black to red
+    MaxColorAbs = 0.4
+    new_colors = [plt.get_cmap('twilight')((i-num_lines/2+1/2)*2*MaxColorAbs/(num_lines+1)+0.5)
+            for i in range(num_lines)]
+    # Make the first half dotted
+    linestyles = [*((0,(1,1+i)) for i in reversed(range(round((num_lines-1)/2))))]
+    # Make the second half dashed (with the middle one solid)
+    linestyles.extend([*((0,(3+i,i)) for i in range(round((num_lines+1)/2)))])
+    plt.rc('axes', prop_cycle=(cycler('color', new_colors) +
+                               cycler('linestyle', linestyles)))
+
+    # Initialize figure
+    fig, ax = texplot.newfig(0.9,golden=True)
+
+    fig.set_tight_layout(False)
+    fig.subplots_adjust(left=0.175,right=0.8,top=0.875,bottom=0.15)
+
+    # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k_E to
+    # t_1'/epsilon = t' = t*sqrt(g*h)*k_E
+    # (Primes denote the nondim variables used throughout this solver)
+    ax.set_xlabel(r'Time $t \sqrt{g h} k_E$')
+
+    # Plot E' = L'*eta'^2 = L*E*k_E/h^2/rho_w/g
+    ax.set_ylabel(r'Normalized Energy $E k_E/(\rho_w g h^2)$')
+    ax.set_title(r'Total Energy: $a_0/h={eps}$, $k_E h = {kh}$'.format(
+        eps=eps,kh=round(np.sqrt(mu_solitary),1),P=P))
+
+    # Put horizontal line at energy=1
+    ax.axhline(1, color='0.75')
+
+    # Plot every 10th point to save storage space
+    lines = ax.semilogy(t[::10],energies[::10,:])
+
+    # Convert P' = P*k/(rho_w*g)/eps to P'*eps = P*k/(rho_w*g)
+    # (Primes denote the nondim variables used throughout this solver)
+    leg = fig.legend(lines, np.around(skew_asymm_Ps*eps,3),
+            title=r'Pressure'+'\n'+r'Magnitude'+'\n'+r'$P_J k/(\rho_w g)$',
+            loc='right')
+    leg.get_title().set_multialignment('center')
+
+    # Make background transparent
+    fig.patch.set_alpha(0)
+
+    texplot.savefig(fig,'../Figures/Total-Energy-Jeffreys')
+
+if(plot_total_energy_GM):
+
+    energies = [None]*(skew_asymm_Ps.size)
+    t = None
+
+    for idx,Pval in enumerate(skew_asymm_Ps):
+        print("Computing the solution.")
+        # Create KdV-Burgers or nonlocal KdV system
+        energySystem = kdvSystem(P=Pval,
+                H=skew_asymm_Hs[idx],psiP=psiP,diffeq='KdVNL', eps=eps,
+                mu=mu_solitary)
+        # Set spatial and temporal grid
+        energySystem.set_spatial_grid(
+                xLen=skew_asymm_xLen[idx],
+                xStep=skew_asymm_xStep[idx])
+        energySystem.set_temporal_grid(tLen=energy_tLen,tNum=skew_asymm_tNum)
+        # Set initial conditions
+        energySystem.set_initial_conditions(y0='cnoidal')
+        # Solve KdV-Burgers system
+        energySystem.solve_system_rk3()
+
+        # Boost to co-moving frame
+        energySystem.boost_to_lab_frame(velocity='cnoidal')
+
+        # Convert back to non-normalized variables
+        # Convert from eta' = eta/a = eta/h/eps to eta'*eps = eta/a*eps = eta/h
+        # (Primes denote the nondim variables used throughout this solver)
+        energySystem.set_snapshot_ts(np.linspace(0,1,num=energySystem.tNum))
+        energySnapshots = energySystem.get_snapshots()*eps
+
+        # Calculate energy
+        # Convert from eta'^2 = eta^2/h^2 to energy density (energy per
+        # unit length) dE' = eta'^2 = (eta/h)^2/rho_w/g =  E/h^2/rho_w/g
+        # (Primes denote the nondim variables used throughout this solver)
+        energyDensity = np.sum(energySnapshots**2,axis=0)/energySystem.xNum
+
+        # Convert from energy density dE' = E/h^2/rho_w/g to total energy
+        # E' = L'*dE' = L*E*k_E/h^2/rho_w/g
+        energies[idx] = energyDensity*energySystem.xLen
+
+        # Save timesteps
+        # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k_E to
+        # t_1'/epsilon = t' = t*sqrt(g*h)*k_E
+        # (Primes denote the nondim variables used throughout this solver)
+        t = energySystem.t/eps
+
+    energies = np.array(energies).transpose()
+    # Normalize energies by t=0 maximum
+    energies = energies/energies[0,:]
+
+    print("Plotting.")
+
+    ## Color cycle
+    num_lines = skew_asymm_Ps.size # Number of lines
+    # Make the colors go from blue to black to red
+    MaxColorAbs = 0.4
+    new_colors = [plt.get_cmap('twilight')((i-num_lines/2+1/2)*2*MaxColorAbs/(num_lines+1)+0.5)
+            for i in range(num_lines)]
+    # Make the first half dotted
+    linestyles = [*((0,(1,1+i)) for i in reversed(range(round((num_lines-1)/2))))]
+    # Make the second half dashed (with the middle one solid)
+    linestyles.extend([*((0,(3+i,i)) for i in range(round((num_lines+1)/2)))])
+    plt.rc('axes', prop_cycle=(cycler('color', new_colors) +
+                               cycler('linestyle', linestyles)))
+
+    # Initialize figure
+    fig, ax = texplot.newfig(0.9,golden=True)
+
+    fig.set_tight_layout(False)
+    fig.subplots_adjust(left=0.175,right=0.8,top=0.875,bottom=0.15)
+
+    # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k_E to
+    # t_1'/epsilon = t' = t*sqrt(g*h)*k_E
+    # (Primes denote the nondim variables used throughout this solver)
+    ax.set_xlabel(r'Time $t \sqrt{g h} k_E$')
+
+    # Plot E' = L'*eta'^2 = L*E*k_E/h^2/rho_w/g
+    ax.set_ylabel(r'Normalized Energy $E k_E/(\rho_w g h^2)$')
+    ax.set_title(r'Total Energy: $a_0/h={eps}$, $k_E h = {kh}$'.format(
+        eps=eps,kh=round(np.sqrt(mu_solitary),1),P=P))
+
+    # Put horizontal line at energy=1
+    ax.axhline(1, color='0.75')
+
+    # Plot every 10th point to save storage space
+    lines = ax.semilogy(t[::10],energies[::10,:])
+
+    # Convert P' = P*k/(rho_w*g)/eps to P'*eps = P*k/(rho_w*g)
+    # (Primes denote the nondim variables used throughout this solver)
+    leg = fig.legend(lines, np.around(skew_asymm_Ps*eps,3),
+            title=r'Pressure'+'\n'+r'Magnitude'+'\n'+r'$P_G k/(\rho_w g)$',
+            loc='right')
+    leg.get_title().set_multialignment('center')
+
+    # Make background transparent
+    fig.patch.set_alpha(0)
+
+    texplot.savefig(fig,'../Figures/Total-Energy-GM')
