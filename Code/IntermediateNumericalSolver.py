@@ -1904,18 +1904,20 @@ if(plot_skew_asymm_cnoidal):
     fig.set_tight_layout(False)
     fig.subplots_adjust(left=0.175,right=0.8,top=0.875,bottom=0.15)
 
-    # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k_E to
-    # t_1'/epsilon = t' = t*sqrt(g*h)*k_E
-    # (Primes denote the nondim variables used throughout this solver)
-    ax[-1,0].set_xlabel(r'Time $t \sqrt{g h} k_E$')
-    ax[-1,1].set_xlabel(r'Time $t \sqrt{g h} k_E$')
     ax[0,0].set_ylabel(r'Height')
     ax[1,0].set_ylabel(r'Skewness')
     ax[2,0].set_ylabel(r'Asymmetry')
-    fig.suptitle(r'\begin{{tabular}}{{c}}Height, Skewness, and Asymmetry: \\ $a_0/h={eps}$, $k_E h = {kh}$\end{{tabular}}'.format(
-        eps=eps,kh=round(np.sqrt(mu),1),P=P))
+    fig.suptitle(r'Height, Skewness, and Asymmetry')
 
     for indx in [0,1]:
+        ax[0,indx].set_title(r'$a_0/h={eps}$, $k_E h = {kh}$'.format(
+            eps=pairedEps[indx],kh=round(np.sqrt(pairedMu[indx]),1)))
+
+        # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k_E to
+        # t_1'/epsilon = t' = t*sqrt(g*h)*k_E
+        # (Primes denote the nondim variables used throughout this solver)
+        ax[-1,indx].set_xlabel(r'Time $t \sqrt{g h} k_E$')
+
         # Put horizontal line at y=1
         ax[0,indx].axhline(1, color='0.75')
 
