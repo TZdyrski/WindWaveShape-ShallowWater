@@ -35,6 +35,7 @@ plot_pos_neg_snapshots_cnoidal_GM = False
 plot_forcing_types = False
 plot_total_energy_Jeffreys = False
 plot_total_energy_GM = False
+plot_long_run_check = False
 
 ### Set global parameters
 ## Conversion factors
@@ -101,6 +102,8 @@ kh_mus = np.linspace(eps*6,eps*12,8)
 kh_tLen = 1
 
 energy_tLen = 10
+
+long_run_tLen = 30
 
 # Trig function plotting parameters`
 trig_mode = 1
@@ -3337,3 +3340,89 @@ if(plot_total_energy_GM):
     fig.patch.set_alpha(0)
 
     texplot.savefig(fig,'../Figures/Total-Energy-GM')
+
+if(plot_long_run_check):
+    print("Computing the solution.")
+
+    # Create KdV-Burgers or nonlocal KdV system
+    snapshotSystem = kdvSystem(P=0,H=0,psiP=psiP,diffeq=diffeq, eps=eps,
+            mu=mu_solitary)
+    # Set spatial and temporal grid
+    snapshotSystem.set_spatial_grid(xLen=xLen,xStep=xStep)
+    snapshotSystem.set_temporal_grid(tLen=long_run_tLen,tNum='density')
+    # Set initial conditions
+    snapshotSystem.set_initial_conditions(y0='solitary')
+    # Solve KdV-Burgers system
+    snapshotSystem.solve_system_rk3()
+
+    # Boost to co-moving frame
+    snapshotSystem.boost_to_lab_frame(velocity='solitary')
+
+    # Convert back to non-normalized variables
+    # Convert from eta' = eta/a = eta/h/eps to eta'*eps = eta/a*eps = eta/h
+    # (Primes denote the nondim variables used throughout this solver)
+    snapshotSystem.set_snapshot_ts([0,1/3,2/3,1])
+    snapshots = snapshotSystem.get_snapshots()*eps
+
+    # Hide solution outside of window; for consistency, scale by
+    # sqrt(mu) since we scale x coordinate by 1/sqrt(mu)
+    snapshotSystem.set_x_window(xScale=np.sqrt(mu_solitary))
+    xMasked = snapshotSystem.get_masked_x()
+
+    # Normalize x by wavelength
+    # Convert from x' = x*k_E to x'/sqrt(mu) = x*k_E/(k_E*h) = x/h
+    # (Primes denote the nondim variables used throughout this solver)
+    xMasked = xMasked/np.sqrt(mu_solitary)
+
+    print("Plotting.")
+    ## Color cycle
+    num_lines = snapshots[1,:].size # Number of lines
+    new_colors = [plt.get_cmap('viridis')(1. * (i)/(num_lines)) for i in
+            range(num_lines)]
+    linestyles = [*((0,(3+i,i)) for i in range(num_lines))]
+    plt.rc('axes', prop_cycle=(cycler('color', new_colors) +
+                           cycler('linestyle', linestyles)))
+
+    # Initialize figure
+    fig, ax = texplot.newfig(0.9,golden=True)
+
+    # Plot x'/sqrt(mu) = x/h
+    # (Primes denote the nondim variables used throughout this solver)
+    ax.set_xlabel(r'Distance $x/h$')
+    # Plot eta'*eps = eta/a*eps = eta/h
+    # (Primes denote the nondim variables used throughout this solver)
+    ax.set_ylabel(r'Surface Height $\eta / h$')
+    # Convert P' = P*k/(rho_w*g)/eps to P'*eps = P*k/(rho_w*g)
+    # (Primes denote the nondim variables used throughout this solver)
+    ax.set_title(r'Surface Height vs Time: $a_0/h={eps}$, $k_E h = {kh}$, $P_J k/(\rho_w g) = {P}$'.format(
+        eps=eps,kh=round(np.sqrt(mu_solitary),1),P=0))
+
+    ax.plot(xMasked,snapshots)
+
+    # Add arrow depicting wind direction
+    arrowLeft = np.array([0.05,0.4])
+    arrowRight = np.array([0.25,0.4])
+    textBottom = (arrowLeft+arrowRight)/2 + np.array([0,0.05])
+    spacing = np.array([0.6,0])
+    ax.annotate(r'Phase'+'\n'+r'Speed', xy=textBottom, xycoords='axes fraction',
+            ha='center',va='bottom',ma='center')
+    ax.annotate('', xy=arrowLeft, xytext=arrowRight,
+            xycoords="axes fraction", arrowprops={'arrowstyle': '<-',
+                'shrinkA':1,'shrinkB':0})
+    ax.annotate(r'Wind', xy=textBottom+spacing,
+            xycoords='axes fraction', ha='center',va='bottom',
+            ma='center')
+    ax.annotate('', xy=arrowLeft+spacing, xytext=arrowRight+spacing,
+            xycoords="axes fraction", arrowprops={'arrowstyle': '<-',
+                'shrinkA':1,'shrinkB':0})
+
+    # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k_E to
+    # t_1'/epsilon = t' = t*sqrt(g*h)*k_E
+    # (Primes denote the nondim variables used throughout this solver)
+    fig.legend(np.around(snapshotSystem.snapshot_ts/eps,1),
+            title=r'Time $t \sqrt{g h} k_E$',loc='right')
+
+    # Make background transparent
+    fig.patch.set_alpha(0)
+
+    texplot.savefig(fig,'../Figures/Long-Run')
