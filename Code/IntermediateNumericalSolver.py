@@ -1046,15 +1046,15 @@ if(plot_snapshots):
     snapshotSystem.set_snapshot_ts([0,1/3,2/3,1])
     snapshots = snapshotSystem.get_snapshots()*eps
 
-    # Hide solution outside of window; for consistency, scale by 2 since
-    # we scale x coordinate by 1/2
-    snapshotSystem.set_x_window(xMin=-4,xMax=5,xScale=2)
+    # Hide solution outside of window; for consistency, scale by
+    # sqrt(mu) since we scale x coordinate by 1/sqrt(mu)
+    snapshotSystem.set_x_window(xMin=-4,xMax=5,xScale=np.sqrt(mu_solitary))
     xMasked = snapshotSystem.get_masked_x()
 
     # Normalize x by wavelength
-    # Convert from x' = x*k_E = 2*x/Delta to x'/2 = x*k_E/2 = x/Delta
+    # Convert from x' = x*k_E to x'/sqrt(mu) = x*k_E/(k_E*h) = x/h
     # (Primes denote the nondim variables used throughout this solver)
-    xMasked = xMasked/2
+    xMasked = xMasked/np.sqrt(mu_solitary)
 
     print("Plotting.")
     ## Color cycle
@@ -1068,9 +1068,9 @@ if(plot_snapshots):
     # Initialize figure
     fig, ax = texplot.newfig(0.9,golden=True)
 
-    # Plot x'/2 = x*k_E/2 = x/Delta
+    # Plot x'/sqrt(mu) = x/h
     # (Primes denote the nondim variables used throughout this solver)
-    ax.set_xlabel(r'Distance $x/\Delta$')
+    ax.set_xlabel(r'Distance $x/h$')
     # Plot eta'*eps = eta/a*eps = eta/h
     # (Primes denote the nondim variables used throughout this solver)
     ax.set_ylabel(r'Surface Height $\eta / h$')
@@ -1132,15 +1132,15 @@ if(plot_negative_snapshots):
     snapshotSystem.set_snapshot_ts([0,1/3,2/3,1])
     snapshots = snapshotSystem.get_snapshots()*eps
 
-    # Hide solution outside of window; for consistency, scale by 2 since
-    # we scale x coordinate by 1/2
-    snapshotSystem.set_x_window(xMin=-4,xMax=5,xScale=2)
+    # Hide solution outside of window; for consistency, scale by
+    # sqrt(mu) since we scale x coordinate by 1/sqrt(mu)
+    snapshotSystem.set_x_window(xMin=-4,xMax=5,xScale=np.sqrt(mu_solitary))
     xMasked = snapshotSystem.get_masked_x()
 
     # Normalize x by wavelength
-    # Convert from x' = x*k_E = 2*x/Delta to x'/2 = x*k_E/2 = x/Delta
+    # Convert from x' = x*k_E to x'/sqrt(mu) = x*k_E/(k_E*h) = x/h
     # (Primes denote the nondim variables used throughout this solver)
-    xMasked = xMasked/2
+    xMasked = xMasked/np.sqrt(mu_solitary)
 
     print("Plotting.")
     ## Color cycle
@@ -1154,9 +1154,9 @@ if(plot_negative_snapshots):
     # Initialize figure
     fig, ax = texplot.newfig(0.9,golden=True)
 
-    # Plot x'/2 = x*k_E/2 = x/Delta
+    # Plot x'/sqrt(mu) = x/h
     # (Primes denote the nondim variables used throughout this solver)
-    ax.set_xlabel(r'Distance $x/\Delta$')
+    ax.set_xlabel(r'Distance $x/h$')
     # Plot eta'*eps = eta/a*eps = eta/h
     # (Primes denote the nondim variables used throughout this solver)
     ax.set_ylabel(r'Surface Height $\eta / h$')
@@ -1231,15 +1231,15 @@ if(plot_pos_neg_snapshots):
         posSnapshots[indx] = posSystem.get_snapshots()*eps_val
         negSnapshots[indx] = negSystem.get_snapshots()*eps_val
 
-        # Hide solution outside of window; for consistency, scale by 2 since
-        # we scale x coordinate by 1/2
-        posSystem.set_x_window(xMin=-4,xMax=5,xScale=2)
+        # Hide solution outside of window; for consistency, scale by
+        # sqrt(mu) since we scale x coordinate by 1/sqrt(mu)
+        posSystem.set_x_window(xMin=-4,xMax=5,xScale=np.sqrt(eps_val/eps*mu_solitary))
         xMasked[indx] = posSystem.get_masked_x()
 
         # Normalize x by wavelength
-        # Convert from x' = x*k_E = 2*x/Delta to x'/2 = x*k_E/2 = x/Delta
+        # Convert from x' = x*k_E to x'/sqrt(mu) = x*k_E/(k_E*h) = x/h
         # (Primes denote the nondim variables used throughout this solver)
-        xMasked[indx] = xMasked[indx]/2
+        xMasked[indx] = xMasked[indx]/np.sqrt(eps_val/eps*mu_solitary)
 
     print("Plotting.")
 
@@ -1265,9 +1265,9 @@ if(plot_pos_neg_snapshots):
     fig.subplots_adjust(left=0.175,right=0.825,top=0.8,bottom=0.125,hspace=0.3)
 
     for indx in [0,1]:
-        # Plot x'/2 = x*k_E/2 = x/Delta
+        # Plot x'/sqrt(mu) = x/h
         # (Primes denote the nondim variables used throughout this solver)
-        ax[1,indx].set_xlabel(r'Distance $x/\Delta$')
+        ax[1,indx].set_xlabel(r'Distance $x/h$')
         # Plot eta'*eps = eta/a*eps = eta/h
         # (Primes denote the nondim variables used throughout this solver)
         ax[indx,0].set_ylabel(r'$\eta / h$')
