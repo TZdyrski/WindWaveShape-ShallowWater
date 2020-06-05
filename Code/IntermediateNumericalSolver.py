@@ -12,6 +12,8 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 from matplotlib.ticker import StrMethodFormatter,MultipleLocator
 from copy import deepcopy
+import fractions
+import re
 import texplot
 
 ### Debug options
@@ -944,6 +946,97 @@ class kdvSystem():
 
         self.sol = sol
 
+
+## Return tick labels in units of pi*multiple
+def PiLabelFormat(x,pos=0):
+    # Convert ticklabel to fractions
+    ticklabel =fractions.Fraction(x/sp.pi).limit_denominator()
+    # Convert integer multiples of pi numbers back to ints
+    if ticklabel.denominator == 1: ticklabel = ticklabel.numerator
+    # Format fractions using latex
+    if type(ticklabel) == fractions.Fraction:
+        ticklabel = r'$' + str(r'-' if ticklabel <0 else '') + \
+        r'\tfrac{'+ str(abs(ticklabel.numerator) if
+                abs(ticklabel.numerator) != 1 else '') + r' \pi}{' + \
+        str(ticklabel.denominator) + r'}$'
+    elif ticklabel == 1:
+        ticklabel = r'$\pi$'
+    elif ticklabel == -1:
+        ticklabel = r'$-\pi$'
+    elif type(ticklabel) == int and ticklabel != 0:
+        ticklabel = r'$' + str(ticklabel) + r' \pi $'
+    return ticklabel
+
+# Default wind phase in radians (inline and without '$')
+psi_P_text = re.sub(r'\\tfrac\{(.*?)\}\{(.*?)\}',r'\1/\2',
+        PiLabelFormat(psiP).replace('$',''))
+
+## Return formatter for tick labels in units of pi*multiple
+## Note: PiFormatter rounds to the nearest rational multiple of pi (with
+## maximum denominator given by limit_denominator's max_denominator
+## default); therefore, for most accurate labels, ensure ticks are
+## placed at rational multiples of pi using the PiLocator locator
+def PiFormatter():
+
+    formatter = mpl.ticker.FuncFormatter(PiLabelFormat)
+
+    return formatter
+
+## Return locator giving ticks in units of pi*multiple
+def PiLocator(multiple):
+    # Define unit as pi times multiple
+    unit = sp.pi*multiple
+
+    # Round to nearest fraction
+    unit = fractions.Fraction(unit/sp.pi).limit_denominator()*sp.pi
+
+    # Create locators
+    locator = mpl.ticker.MultipleLocator(unit)
+
+    return locator
+
+## Set tick mark locations as multiples of $\pi$
+def PiMultipleTicks(ax,whichAxis,multiple,minorMultiple=0):
+
+    majorLocator = PiLocator(multiple)
+
+    if minorMultiple != 0: minorLocator = PiLocator(minorMultiple)
+
+    if whichAxis == 'x':
+        # Draw ticks
+        ax.xaxis.set_major_locator(majorLocator)
+        if minorMultiple != 0: ax.xaxis.set_minor_locator(minorLocator)
+
+        # Label major tick
+        ax.xaxis.set_major_formatter(PiFormatter())
+
+        # The PGF backend has a problem aligning tick labels; manually
+        # align by baseline and pad
+        for lab in ax.xaxis.get_ticklabels():
+            lab.set_verticalalignment('baseline')
+
+        # Pad tick labels
+        if len(ax.xaxis.get_ticklabels()) != 0:
+            fontsize = ax.xaxis.get_ticklabels()[0].get_size()
+            ax.tick_params(axis='x', pad=fontsize+.8)
+
+        return
+    elif whichAxis == 'y':
+        # Draw ticks
+        ax.yaxis.set_major_locator(majorLocator)
+        if minorMultiple != 0: ax.yaxis.set_minor_locator(minorLocator)
+
+        # Label major tick
+        ax.yaxis.set_major_formatter(PiFormatter())
+
+        # Vertically center tick labels since PGF has an issue with
+        # vertical alignment)
+        for tick in ax.yaxis.get_major_ticks():
+            tick.label1.set_verticalalignment('center')
+
+        return
+    else:
+        raise ValueError("Option 'whichAxis' passed to PiMultipleTicks must be one of {'x','y'}")
 
 if(plot_trig_funcs):
     print("Computing the solution.")
@@ -1953,6 +2046,7 @@ if(plot_skew_asymm_cnoidal_kh):
     maximums = [None]*(kh_mus.size)
     skewnesses = [None]*(kh_mus.size)
     asymmetries = [None]*(kh_mus.size)
+    biphases = [None]*(kh_mus.size)
     t = None
 
     for idx,mu_val in enumerate(kh_mus):
@@ -1989,16 +2083,85 @@ if(plot_skew_asymm_cnoidal_kh):
         print("Computing the Asymmetry.")
         asymmetries[idx] = skewAsymSystem.asymmetry()[[0,-1]]
 
+        print("Computing the Biphase.")
+
+        # Convert back to non-normalized variables
+        # Convert from eta' = eta/a = eta/h/eps to eta'*eps = eta/a*eps = eta/h
+        # (Primes denote the nondim variables used throughout this solver)
+        #
+        # Since we only use the first and last element, just save those
+        # so all outputs are the same size
+        skewAsymSystem.set_snapshot_ts([0,1])
+        snapshots = skewAsymSystem.get_snapshots()*eps
+
+        # Resample (via interpolation) to get a higher FFT resolution
+        repeat_times = 10
+        snapshotsRepeated = np.tile(snapshots, (repeat_times,1))
+
+        # Take spatial FFT \hat'{eps*eta'} = \hat{eps*eta'}*k_E = \hat{eta}*k_E/h
+        # (Primes denote the nondim variables used throughout this solver)
+        # (scale FFT by 1/N so the FFT of a sinusoid has unit amplitude;
+        # this also gives it the same units as the continuous Fourier
+        # Transform)
+        snapshotsFFT = np.fft.fft(snapshotsRepeated,
+                axis=0)/skewAsymSystem.xNum/repeat_times
+
+        # Calculate power spectrum (ie abs squared) \abs{\hat'{eps*eta'}}^2 =
+        # \abs{\hat{eta}}^2*k^2_E/h^2
+        # (Primes denote the nondim variables used throughout this solver)
+        snapshotsPower = np.absolute(snapshotsFFT)**2
+
+        # Generate spatial FFT conjugate coordinate
+        # Convert from matplotlib's wavenumber in cycles per x-unit to our
+        # radians per x-unit by multiplying by 2*pi radians/cycle
+        kappa = np.fft.fftfreq(skewAsymSystem.xNum*repeat_times,
+                skewAsymSystem.dx)*2*np.pi
+        # Convert from kappa' = kappa/k_E to
+        #  kappa'/k' = kappa/k_E/k*k_E = kappa/k
+        kappa = kappa*skewAsymSystem.WaveLength/2/np.pi
+
+        # Find peaks in initial data (peaks shouldn't move over time either)
+        snapshotsPowerPeaks = sp.signal.find_peaks(snapshotsPower[:,0])[0]
+
+        # Only keep non-negative kappa peaks
+        snapshotsPowerPeaks = snapshotsPowerPeaks[kappa[snapshotsPowerPeaks] >= 0]
+
+        # Sort the peaks
+        snapshotsPowerPeaks = snapshotsPowerPeaks[np.argsort(
+            snapshotsPower[snapshotsPowerPeaks,0])[::-1]]
+
+        # Only include first 2 peaks
+        snapshotsPowerPeaks = snapshotsPowerPeaks[0:2]
+
+        # Get indices for primary (m=1) and first harmonic (m=2)
+        primaryIndex = snapshotsPowerPeaks[0]
+        firstHarmonicIndex = snapshotsPowerPeaks[1]
+
+        # Calculate bispectra
+        bispectra = snapshotsFFT[primaryIndex,:]**2*\
+                np.conjugate(snapshotsFFT[firstHarmonicIndex])
+
+        # Calculate biphase
+        biphases[idx] = np.angle(bispectra)
+
     maximums = np.array(maximums).transpose()
     # Normalize maximums by t=0 maximum
     maximums = maximums/maximums[0,:]
     skewnesses = np.array(skewnesses).transpose()
     asymmetries = np.array(asymmetries).transpose()
+    biphases = np.array(biphases).transpose()
 
     # Only use last (t=1) value
     maximums = maximums[-1,:]
     skewnesses = skewnesses[-1,:]
     asymmetries = asymmetries[-1,:]
+    biphases = biphases[-1,:]
+
+    # Note: use unwrap to get continuous biphases; also, multiply by 2,
+    # unwrap, then divide by 2 to ensure unwrap catches jumps (it only fixes
+    # jumps greater than pi, so if by rounding our jump is slightly less
+    # than pi, we need to magnify it second)
+    biphases = np.unwrap(biphases*2)/2
 
     print("Plotting.")
 
@@ -2016,20 +2179,21 @@ if(plot_skew_asymm_cnoidal_kh):
                                cycler('linestyle', linestyles)))
 
     # Initialize figure
-    fig, ax = texplot.newfig(0.9,nrows=3,sharex=True,sharey=False,golden=True)
+    fig, ax = texplot.newfig(0.9,nrows=4,sharex=True,sharey=False,golden=True)
 
     # Adjust figure height
     figsize = fig.get_size_inches()
-    fig.set_size_inches([figsize[0],figsize[1]*1.3])
+    fig.set_size_inches([figsize[0],figsize[1]*1.6])
 
     fig.set_tight_layout(False)
-    fig.subplots_adjust(left=0.175,right=0.9,top=0.875,bottom=0.15)
+    fig.subplots_adjust(left=0.175,right=0.9,top=0.925,bottom=0.1)
 
     ax[-1].set_xlabel(r'Nondimensional Depth $k_E h$')
     ax[0].set_ylabel(r'Height')
     ax[1].set_ylabel(r'Skewness')
     ax[2].set_ylabel(r'Asymmetry')
-    fig.suptitle(r'Height, Skewness, and Asymmetry: $t \epsilon \sqrt{{g h}} k_E = {t}$'.format(
+    ax[3].set_ylabel(r'Biphase')
+    fig.suptitle(r'Height, Skewness, Asymmetry, and Biphase: $t \epsilon \sqrt{{g h}} k_E = {t}$'.format(
         P=P,t=round(t[-1],0)))
 
     # Put horizontal line at y=1
@@ -2038,9 +2202,16 @@ if(plot_skew_asymm_cnoidal_kh):
     # Put horizontal line at A=0
     ax[2].axhline(0, color='0.75')
 
+    # Put horizontal line at biphase=0
+    ax[3].axhline(0, color='0.75')
+
     ax[0].plot(np.sqrt(kh_mus),maximums)
     ax[1].plot(np.sqrt(kh_mus),skewnesses)
     ax[2].plot(np.sqrt(kh_mus),asymmetries)
+    ax[3].plot(np.sqrt(kh_mus),biphases)
+
+    # Set y-ticks as multiples of \pi
+    PiMultipleTicks(ax[3],'y',1/64,1/128)
 
     # Make background transparent
     fig.patch.set_alpha(0)
