@@ -2777,16 +2777,19 @@ if(plot_double_power_spec_Jeffreys):
     figsize = fig.get_size_inches()
     fig.set_size_inches([figsize[0],figsize[1]*1.3])
 
-    fig.subplots_adjust(left=0.175,right=0.825,top=0.875,bottom=0.125,hspace=0.3)
+    fig.subplots_adjust(left=0.175,right=0.825,top=0.85,bottom=0.125,hspace=0.3)
 
     # Plot kappa'/k' = kappa/k
     ax[1].set_xlabel(r'Harmonic $\kappa/k$')
     # Plot omega'/k' = omega/sqrt(g*h)/k
     ax[0].set_ylabel(r'Frequency $\omega/\sqrt{g h} k_E$')
     ax[1].set_ylabel(r'Frequency $\omega/\sqrt{g h} k_E$')
+    # Plot power spectrum \abs{\hat'{\hat'{eps*eta'}}}^2 =
+    # \abs{\hat{\hat{eta}}}^2*k^4_E*g/h
+    # (Primes denote the nondim variables used throughout this solver)
     # Convert P' = P*k/(rho_w*g)/eps to P'*eps = P*k/(rho_w*g)
     # (Primes denote the nondim variables used throughout this solver)
-    fig.suptitle(r'Wavenumber Frequency Plot of $\abs{{\hat{{\eta}}}}^2$: $a_0/h={eps}$, $k_E h = {kh}$'.format(
+    fig.suptitle(r'Wavenumber Frequency Plot of $\abs{{\hat{{\eta}}}}^2 k_E^4 g / h$: $a_0/h={eps}$, $kh = {kh}$'.format(
         eps=eps,kh=round(np.sqrt(mu),1)))
     ax[0].set_title(r'Co-Wind: $P_J k/(\rho_w g) = {P}$'.format(
         P=round(eps*(P),3)))
