@@ -1409,10 +1409,10 @@ if(plot_skew_asymm):
     # Put horizontal line at A=0
     ax[2].axhline(0, color='0.75')
 
-    lines = ax[0].plot(t,maximums)
-    ax[1].plot(t,skewnesses)
-    ax[2].plot(t,asymmetries)
-
+    # Plot every 10th point to save storage space
+    lines = ax[0].plot(t[::10],maximums[::10,:])
+    ax[1].plot(t[::10],skewnesses[::10,:])
+    ax[2].plot(t[::10],asymmetries[::10,:])
 
     # Convert P' = P*k/(rho_w*g)/eps to P'*eps = P*k/(rho_w*g)
     # (Primes denote the nondim variables used throughout this solver)
@@ -1924,9 +1924,10 @@ if(plot_skew_asymm_cnoidal):
         # Put horizontal line at A=0
         ax[2,indx].axhline(0, color='0.75')
 
-        lines = ax[0,indx].plot(t[indx],maximums[indx])
-        ax[1,indx].plot(t[indx],skewnesses[indx])
-        ax[2,indx].plot(t[indx],asymmetries[indx])
+        # Plot every 10th point to save storage space
+        lines = ax[0,indx].plot(t[indx][::10],maximums[indx][::10,:])
+        ax[1,indx].plot(t[indx][::10],skewnesses[indx][::10,:])
+        ax[2,indx].plot(t[indx][::10],asymmetries[indx][::10,:])
 
     # Plot P' = P*k/(rho_w*g)/eps
     # (Primes denote the nondim variables used throughout this solver)
@@ -2381,15 +2382,16 @@ if(plot_power_spec_vs_time_Jeffreys):
         for sp in ax.spines.values():
             sp.set_visible(False)
 
-    ax[0].plot(t,posSnapshotsPower[posPrimaryIndex,:],'r',
+    # Plot every 10th point to save storage space
+    ax[0].plot(t[::10],posSnapshotsPower[posPrimaryIndex,::10],'r',
             label='Primary')[0]
-    ax[0].plot(t,posSnapshotsPower[posFirstHarmonicIndex,:],'g',
+    ax[0].plot(t[::10],posSnapshotsPower[posFirstHarmonicIndex,::10],'g',
             label='First Harmonic')[0]
-    ax[0].plot(t,posSnapshotsPower[posSecondHarmonicIndex,:],'b',
+    ax[0].plot(t[::10],posSnapshotsPower[posSecondHarmonicIndex,::10],'b',
             label='Second Harmonic')[0]
-    ax[1].plot(t,negSnapshotsPower[negPrimaryIndex,:],'r')
-    ax[1].plot(t,negSnapshotsPower[negFirstHarmonicIndex,:],'g')
-    ax[1].plot(t,negSnapshotsPower[negSecondHarmonicIndex,:],'b')
+    ax[1].plot(t[::10],negSnapshotsPower[negPrimaryIndex,::10],'r')
+    ax[1].plot(t[::10],negSnapshotsPower[negFirstHarmonicIndex,::10],'g')
+    ax[1].plot(t[::10],negSnapshotsPower[negSecondHarmonicIndex,::10],'b')
 
     for indx in [0,1]:
         ax[indx].set_ylabel(r'\begin{tabular}{c}Normalized \\ Energy $\abs{\hat{\eta}}^2 k_E^2 / h^2$\end{tabular}')
@@ -2932,15 +2934,16 @@ if(plot_power_spec_vs_time_GM):
         for sp in ax.spines.values():
             sp.set_visible(False)
 
-    ax[0].plot(t,posSnapshotsPower[posPrimaryIndex,:],'r',
+    # Plot every 10th point to save storage space
+    ax[0].plot(t[::10],posSnapshotsPower[posPrimaryIndex,::10],'r',
             label='Primary')[0]
-    ax[0].plot(t,posSnapshotsPower[posFirstHarmonicIndex,:],'g',
+    ax[0].plot(t[::10],posSnapshotsPower[posFirstHarmonicIndex,::10],'g',
             label='First Harmonic')[0]
-    ax[0].plot(t,posSnapshotsPower[posSecondHarmonicIndex,:],'b',
+    ax[0].plot(t[::10],posSnapshotsPower[posSecondHarmonicIndex,::10],'b',
             label='Second Harmonic')[0]
-    ax[1].plot(t,negSnapshotsPower[negPrimaryIndex,:],'r')
-    ax[1].plot(t,negSnapshotsPower[negFirstHarmonicIndex,:],'g')
-    ax[1].plot(t,negSnapshotsPower[negSecondHarmonicIndex,:],'b')
+    ax[1].plot(t[::10],negSnapshotsPower[negPrimaryIndex,::10],'r')
+    ax[1].plot(t[::10],negSnapshotsPower[negFirstHarmonicIndex,::10],'g')
+    ax[1].plot(t[::10],negSnapshotsPower[negSecondHarmonicIndex,::10],'b')
 
     for indx in [0,1]:
         ax[indx].set_ylabel(r'\begin{tabular}{c}Normalized \\ Energy $\abs{\hat{\eta}}^2 k_E^2 / h^2$\end{tabular}')
