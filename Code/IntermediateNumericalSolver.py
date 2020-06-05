@@ -2333,6 +2333,12 @@ if(plot_power_spec_vs_time_Jeffreys):
     negFirstHarmonicIndex = negSnapshotsPowerPeaks[1]
     negSecondHarmonicIndex = negSnapshotsPowerPeaks[2]
 
+    # Normalize by initial time
+    posSnapshotsPower = posSnapshotsPower/np.expand_dims(
+            posSnapshotsPower[:,0], axis=-1)
+    negSnapshotsPower = negSnapshotsPower/np.expand_dims(
+            negSnapshotsPower[:,0], axis=-1)
+
     print("Plotting.")
     ## Color cycle
     num_lines = posSnapshots[1,:].size # Number of lines
@@ -2350,7 +2356,7 @@ if(plot_power_spec_vs_time_Jeffreys):
     figsize = fig.get_size_inches()
     fig.set_size_inches([figsize[0],figsize[1]*1.3])
 
-    fig.subplots_adjust(left=0.125,right=0.775,top=0.875,bottom=0.125,hspace=0.3)
+    fig.subplots_adjust(left=0.175,right=0.825,top=0.875,bottom=0.125,hspace=0.3)
 
     # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k_E to
     # t_1'/epsilon = t' = t*sqrt(g*h)*k_E
@@ -2373,54 +2379,21 @@ if(plot_power_spec_vs_time_Jeffreys):
         for sp in ax.spines.values():
             sp.set_visible(False)
 
-    firstHarmonicAx = [None,None]
-    secondHarmonicAx = [None,None]
-    for indx in [0,1]:
-        firstHarmonicAx[indx] = ax[indx].twinx()
-        secondHarmonicAx[indx] = ax[indx].twinx()
-
-        # Offset the right spine of secondHarmoincAx.
-        # The ticks and label have already been placed on the right by twinx above.
-        secondHarmonicAx[indx].spines["right"].set_position(("axes", 1.2))
-
-        # Having been created by twinx, secondHarmonicAx has its frame
-        # off, so the line of its detached spine is invisible.
-        # First, activate the frame but make the patch and spines invisible.
-        make_patch_spines_invisible(secondHarmonicAx[indx])
-
-        # Second, show the right spine.
-        secondHarmonicAx[indx].spines["right"].set_visible(True)
-
-    line1 = ax[0].plot(t,posSnapshotsPower[posPrimaryIndex,:],'r')[0]
-    line2 = firstHarmonicAx[0].plot(t,posSnapshotsPower[posFirstHarmonicIndex,:],'g')[0]
-    line3 = secondHarmonicAx[0].plot(t,posSnapshotsPower[posSecondHarmonicIndex,:],'b')[0]
+    ax[0].plot(t,posSnapshotsPower[posPrimaryIndex,:],'r',
+            label='Primary')[0]
+    ax[0].plot(t,posSnapshotsPower[posFirstHarmonicIndex,:],'g',
+            label='First Harmonic')[0]
+    ax[0].plot(t,posSnapshotsPower[posSecondHarmonicIndex,:],'b',
+            label='Second Harmonic')[0]
     ax[1].plot(t,negSnapshotsPower[negPrimaryIndex,:],'r')
-    firstHarmonicAx[1].plot(t,negSnapshotsPower[negFirstHarmonicIndex,:],'g')
-    secondHarmonicAx[1].plot(t,negSnapshotsPower[negSecondHarmonicIndex,:],'b')
+    ax[1].plot(t,negSnapshotsPower[negFirstHarmonicIndex,:],'g')
+    ax[1].plot(t,negSnapshotsPower[negSecondHarmonicIndex,:],'b')
 
     for indx in [0,1]:
-        # Plot power spectrum \abs{\hat'{eps*eta'}}^2 = \abs{\hat{eta}}^2*k^2_E/h^2
-        # (Primes denote the nondim variables used throughout this solver)
-        ax[indx].set_ylabel(r'Primary $\abs{\hat{\eta}}^2 k_E^2/h^2$')
-        firstHarmonicAx[indx].set_ylabel(r'First Harmonic $\abs{\hat{\eta}}^2 k_E^2/h^2$')
-        secondHarmonicAx[indx].set_ylabel(r'Second Harmonic $\abs{\hat{\eta}}^2 k_E^2/h^2$')
-
-        ax[indx].yaxis.label.set_color(line1.get_color())
-        firstHarmonicAx[indx].yaxis.label.set_color(line2.get_color())
-        secondHarmonicAx[indx].yaxis.label.set_color(line3.get_color())
-
-        ax[indx].tick_params(axis='y', colors=line1.get_color())
-        firstHarmonicAx[indx].tick_params(axis='y', colors=line2.get_color())
-        secondHarmonicAx[indx].tick_params(axis='y', colors=line3.get_color())
-        ax[indx].tick_params(axis='x')
-
-        ax[indx].ticklabel_format(style='sci',axis='y',scilimits=(0,0))
-        firstHarmonicAx[indx].ticklabel_format(style='sci',axis='y',scilimits=(0,0))
-        secondHarmonicAx[indx].ticklabel_format(style='sci',axis='y',scilimits=(0,0))
-
+        ax[indx].set_ylabel(r'\begin{tabular}{c}Normalized \\ Energy $\abs{\hat{\eta}}^2 k_E^2 / h^2$\end{tabular}')
         ax[indx].set_ylim(bottom=0)
-        firstHarmonicAx[indx].set_ylim(bottom=0)
-        secondHarmonicAx[indx].set_ylim(bottom=0)
+
+    fig.legend(loc='upper right',bbox_to_anchor=(1,0.45))
 
     # Make background transparent
     fig.patch.set_alpha(0)
@@ -2911,6 +2884,12 @@ if(plot_power_spec_vs_time_GM):
     negFirstHarmonicIndex = negSnapshotsPowerPeaks[1]
     negSecondHarmonicIndex = negSnapshotsPowerPeaks[2]
 
+    # Normalize by initial time
+    posSnapshotsPower = posSnapshotsPower/np.expand_dims(
+            posSnapshotsPower[:,0], axis=-1)
+    negSnapshotsPower = negSnapshotsPower/np.expand_dims(
+            negSnapshotsPower[:,0], axis=-1)
+
     print("Plotting.")
     ## Color cycle
     num_lines = posSnapshots[1,:].size # Number of lines
@@ -2928,7 +2907,7 @@ if(plot_power_spec_vs_time_GM):
     figsize = fig.get_size_inches()
     fig.set_size_inches([figsize[0],figsize[1]*1.3])
 
-    fig.subplots_adjust(left=0.125,right=0.775,top=0.875,bottom=0.125,hspace=0.3)
+    fig.subplots_adjust(left=0.175,right=0.825,top=0.875,bottom=0.125,hspace=0.3)
 
     # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k_E to
     # t_1'/epsilon = t' = t*sqrt(g*h)*k_E
@@ -2951,54 +2930,21 @@ if(plot_power_spec_vs_time_GM):
         for sp in ax.spines.values():
             sp.set_visible(False)
 
-    firstHarmonicAx = [None,None]
-    secondHarmonicAx = [None,None]
-    for indx in [0,1]:
-        firstHarmonicAx[indx] = ax[indx].twinx()
-        secondHarmonicAx[indx] = ax[indx].twinx()
-
-        # Offset the right spine of secondHarmoincAx.
-        # The ticks and label have already been placed on the right by twinx above.
-        secondHarmonicAx[indx].spines["right"].set_position(("axes", 1.2))
-
-        # Having been created by twinx, secondHarmonicAx has its frame
-        # off, so the line of its detached spine is invisible.
-        # First, activate the frame but make the patch and spines invisible.
-        make_patch_spines_invisible(secondHarmonicAx[indx])
-
-        # Second, show the right spine.
-        secondHarmonicAx[indx].spines["right"].set_visible(True)
-
-    line1 = ax[0].plot(t,posSnapshotsPower[posPrimaryIndex,:],'r')[0]
-    line2 = firstHarmonicAx[0].plot(t,posSnapshotsPower[posFirstHarmonicIndex,:],'g')[0]
-    line3 = secondHarmonicAx[0].plot(t,posSnapshotsPower[posSecondHarmonicIndex,:],'b')[0]
+    ax[0].plot(t,posSnapshotsPower[posPrimaryIndex,:],'r',
+            label='Primary')[0]
+    ax[0].plot(t,posSnapshotsPower[posFirstHarmonicIndex,:],'g',
+            label='First Harmonic')[0]
+    ax[0].plot(t,posSnapshotsPower[posSecondHarmonicIndex,:],'b',
+            label='Second Harmonic')[0]
     ax[1].plot(t,negSnapshotsPower[negPrimaryIndex,:],'r')
-    firstHarmonicAx[1].plot(t,negSnapshotsPower[negFirstHarmonicIndex,:],'g')
-    secondHarmonicAx[1].plot(t,negSnapshotsPower[negSecondHarmonicIndex,:],'b')
+    ax[1].plot(t,negSnapshotsPower[negFirstHarmonicIndex,:],'g')
+    ax[1].plot(t,negSnapshotsPower[negSecondHarmonicIndex,:],'b')
 
     for indx in [0,1]:
-        # Plot power spectrum \abs{\hat'{eps*eta'}}^2 = \abs{\hat{eta}}^2*k^2_E/h^2
-        # (Primes denote the nondim variables used throughout this solver)
-        ax[indx].set_ylabel(r'Primary $\abs{\hat{\eta}}^2 k_E^2/h^2$')
-        firstHarmonicAx[indx].set_ylabel(r'First Harmonic $\abs{\hat{\eta}}^2 k_E^2/h^2$')
-        secondHarmonicAx[indx].set_ylabel(r'Second Harmonic $\abs{\hat{\eta}}^2 k_E^2/h^2$')
-
-        ax[indx].yaxis.label.set_color(line1.get_color())
-        firstHarmonicAx[indx].yaxis.label.set_color(line2.get_color())
-        secondHarmonicAx[indx].yaxis.label.set_color(line3.get_color())
-
-        ax[indx].tick_params(axis='y', colors=line1.get_color())
-        firstHarmonicAx[indx].tick_params(axis='y', colors=line2.get_color())
-        secondHarmonicAx[indx].tick_params(axis='y', colors=line3.get_color())
-        ax[indx].tick_params(axis='x')
-
-        ax[indx].ticklabel_format(style='sci',axis='y',scilimits=(0,0))
-        firstHarmonicAx[indx].ticklabel_format(style='sci',axis='y',scilimits=(0,0))
-        secondHarmonicAx[indx].ticklabel_format(style='sci',axis='y',scilimits=(0,0))
-
+        ax[indx].set_ylabel(r'\begin{tabular}{c}Normalized \\ Energy $\abs{\hat{\eta}}^2 k_E^2 / h^2$\end{tabular}')
         ax[indx].set_ylim(bottom=0)
-        firstHarmonicAx[indx].set_ylim(bottom=0)
-        secondHarmonicAx[indx].set_ylim(bottom=0)
+
+    fig.legend(loc='upper right',bbox_to_anchor=(1,0.45))
 
     # Make background transparent
     fig.patch.set_alpha(0)
