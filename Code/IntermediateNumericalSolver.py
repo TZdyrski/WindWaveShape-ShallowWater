@@ -1114,6 +1114,10 @@ if(plot_trig_funcs):
             title=r'Time $t \sqrt{g h} k_E$',
             loc='right')
 
+    # Label subplots
+    ax[0].annotate('a)', xy=(0.02,0.8), xycoords='axes fraction')
+    ax[1].annotate('b)', xy=(0.02,0.8), xycoords='axes fraction')
+
     # Make background transparent
     fig.patch.set_alpha(0)
 
@@ -1416,6 +1420,12 @@ if(plot_pos_neg_snapshots):
     fig.legend(np.around(posSystem.snapshot_ts,1),
             title=r'Time'+'\n'+r'$t \epsilon \sqrt{g h} k_E$',loc='right')
 
+    # Label subplots
+    ax[0,0].annotate('a)', xy=(0.02,0.8), xycoords='axes fraction')
+    ax[1,0].annotate('b)', xy=(0.02,0.8), xycoords='axes fraction')
+    ax[0,1].annotate('c)', xy=(0.02,0.8), xycoords='axes fraction')
+    ax[1,1].annotate('d)', xy=(0.02,0.8), xycoords='axes fraction')
+
     # Make background transparent
     fig.patch.set_alpha(0)
 
@@ -1521,6 +1531,11 @@ if(plot_skew_asymm):
             loc='right')
     leg.get_title().set_multialignment('center')
 
+    # Label subplots
+    ax[0].annotate('a)', xy=(0.02,0.8), xycoords='axes fraction')
+    ax[1].annotate('b)', xy=(0.02,0.8), xycoords='axes fraction')
+    ax[2].annotate('c)', xy=(0.02,0.8), xycoords='axes fraction')
+
     # Make background transparent
     fig.patch.set_alpha(0)
 
@@ -1625,6 +1640,11 @@ if(plot_skew_asymm_kh):
     ax[0].plot(np.sqrt(kh_mus),maximums)
     ax[1].plot(np.sqrt(kh_mus),skewnesses)
     ax[2].plot(np.sqrt(kh_mus),asymmetries)
+
+    # Label subplots
+    ax[0].annotate('a)', xy=(0.02,0.8), xycoords='axes fraction')
+    ax[1].annotate('b)', xy=(0.02,0.8), xycoords='axes fraction')
+    ax[2].annotate('c)', xy=(0.02,0.8), xycoords='axes fraction')
 
     # Make background transparent
     fig.patch.set_alpha(0)
@@ -1921,6 +1941,12 @@ if(plot_pos_neg_snapshots_cnoidal):
     fig.legend(np.around(posSystem.snapshot_ts/eps,1),
             title=r'Time'+'\n'+r'$t \epsilon \sqrt{g h} k_E$',loc='right')
 
+    # Label subplots
+    ax[0,0].annotate('a)', xy=(0.02,0.8), xycoords='axes fraction')
+    ax[1,0].annotate('b)', xy=(0.02,0.8), xycoords='axes fraction')
+    ax[0,1].annotate('c)', xy=(0.02,0.8), xycoords='axes fraction')
+    ax[1,1].annotate('d)', xy=(0.02,0.8), xycoords='axes fraction')
+
     # Make background transparent
     fig.patch.set_alpha(0)
 
@@ -2035,6 +2061,14 @@ if(plot_skew_asymm_cnoidal):
             title=r'Pressure'+'\n'+r'Magnitude'+'\n'+r'$P_J k/(\rho_w g \epsilon)$',
             loc='right')
     leg.get_title().set_multialignment('center')
+
+    # Label subplots
+    ax[0,0].annotate('a)', xy=(0.02,0.8), xycoords='axes fraction')
+    ax[1,0].annotate('b)', xy=(0.02,0.8), xycoords='axes fraction')
+    ax[2,0].annotate('c)', xy=(0.02,0.8), xycoords='axes fraction')
+    ax[0,1].annotate('d)', xy=(0.02,0.8), xycoords='axes fraction')
+    ax[1,1].annotate('e)', xy=(0.02,0.8), xycoords='axes fraction')
+    ax[2,1].annotate('f)', xy=(0.02,0.8), xycoords='axes fraction')
 
     # Make background transparent
     fig.patch.set_alpha(0)
@@ -2212,6 +2246,12 @@ if(plot_skew_asymm_cnoidal_kh):
 
     # Set y-ticks as multiples of \pi
     PiMultipleTicks(ax[3],'y',1/64,1/128)
+
+    # Label subplots
+    ax[0].annotate('a)', xy=(0.02,0.8), xycoords='axes fraction')
+    ax[1].annotate('b)', xy=(0.02,0.8), xycoords='axes fraction')
+    ax[2].annotate('c)', xy=(0.02,0.8), xycoords='axes fraction')
+    ax[3].annotate('d)', xy=(0.02,0.8), xycoords='axes fraction')
 
     # Make background transparent
     fig.patch.set_alpha(0)
@@ -2413,6 +2453,10 @@ if(plot_power_spec_Jeffreys):
     fig.legend(np.around(posSystem.snapshot_ts/eps,1),
             title=r'Time'+'\n'+r'$t \sqrt{g h} k_E$',loc='right')
 
+    # Label subplots
+    ax[0].annotate('a)', xy=(0.02,0.8), xycoords='axes fraction')
+    ax[1].annotate('b)', xy=(0.02,0.8), xycoords='axes fraction')
+
     # Make background transparent
     fig.patch.set_alpha(0)
 
@@ -2576,6 +2620,10 @@ if(plot_power_spec_vs_time_Jeffreys):
         ax[indx].set_ylim(bottom=0)
 
     fig.legend(loc='upper right',bbox_to_anchor=(1,0.45))
+
+    # Label subplots
+    ax[0].annotate('a)', xy=(0.02,0.8), xycoords='axes fraction')
+    ax[1].annotate('b)', xy=(0.02,0.8), xycoords='axes fraction')
 
     # Make background transparent
     fig.patch.set_alpha(0)
@@ -2764,6 +2812,10 @@ if(plot_double_power_spec_Jeffreys):
     ax[0].set_ylim(-100,100)
     ax[1].set_xlim(-3.5,3.5)
     ax[1].set_ylim(-100,100)
+
+    # Label subplots
+    ax[0].annotate('a)', xy=(0.02,0.8), xycoords='axes fraction')
+    ax[1].annotate('b)', xy=(0.02,0.8), xycoords='axes fraction')
 
     # Make background transparent
     fig.patch.set_alpha(0)
@@ -2965,6 +3017,10 @@ if(plot_power_spec_GM):
     fig.legend(np.around(posSystem.snapshot_ts/eps,1),
             title=r'Time'+'\n'+r'$t \sqrt{g h} k_E$',loc='right')
 
+    # Label subplots
+    ax[0].annotate('a)', xy=(0.02,0.8), xycoords='axes fraction')
+    ax[1].annotate('b)', xy=(0.02,0.8), xycoords='axes fraction')
+
     # Make background transparent
     fig.patch.set_alpha(0)
 
@@ -3129,6 +3185,10 @@ if(plot_power_spec_vs_time_GM):
 
     fig.legend(loc='upper right',bbox_to_anchor=(1,0.45))
 
+    # Label subplots
+    ax[0].annotate('a)', xy=(0.02,0.8), xycoords='axes fraction')
+    ax[1].annotate('b)', xy=(0.02,0.8), xycoords='axes fraction')
+
     # Make background transparent
     fig.patch.set_alpha(0)
 
@@ -3245,6 +3305,10 @@ if(plot_pos_neg_snapshots_cnoidal_GM):
     fig.legend(np.around(posSystem.snapshot_ts/eps,1),
             title=r'Time'+'\n'+r'$t \sqrt{g h} k_E$',loc='right')
 
+    # Label subplots
+    ax[0].annotate('a)', xy=(0.02,0.8), xycoords='axes fraction')
+    ax[1].annotate('b)', xy=(0.02,0.8), xycoords='axes fraction')
+
     # Make background transparent
     fig.patch.set_alpha(0)
 
@@ -3291,6 +3355,7 @@ if(plot_forcing_types):
     # (Primes denote the nondim variables used throughout this solver)
     ax[1].set_xlabel(r'Distance $x/\lambda$')
 
+    # Label subplots
     ax[0].annotate('a)', xy=(0.02,0.8), xycoords='axes fraction')
     ax[1].annotate('b)', xy=(0.02,0.8), xycoords='axes fraction')
 
