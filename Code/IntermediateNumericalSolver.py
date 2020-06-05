@@ -2789,7 +2789,7 @@ if(plot_double_power_spec_Jeffreys):
     # (Primes denote the nondim variables used throughout this solver)
     # Convert P' = P*k/(rho_w*g)/eps to P'*eps = P*k/(rho_w*g)
     # (Primes denote the nondim variables used throughout this solver)
-    fig.suptitle(r'Wavenumber Frequency Plot of $\abs{{\hat{{\eta}}}}^2 k_E^4 g / h$: $a_0/h={eps}$, $kh = {kh}$'.format(
+    fig.suptitle(r'Wavenumber Frequency Plot of $\abs{{\hat{{\eta}}}}^2 k_E^4 g / h$: $a_0/h={eps}$, $k_E h = {kh}$'.format(
         eps=eps,kh=round(np.sqrt(mu),1)))
     ax[0].set_title(r'Co-Wind: $P_J k/(\rho_w g) = {P}$'.format(
         P=round(eps*(P),3)))
