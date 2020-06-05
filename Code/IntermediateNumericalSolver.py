@@ -1910,8 +1910,8 @@ if(plot_skew_asymm_cnoidal):
     fig.suptitle(r'Height, Skewness, and Asymmetry')
 
     for indx in [0,1]:
-        ax[0,indx].set_title(r'$a_0/h={eps}$, $k_E h = {kh}$'.format(
-            eps=pairedEps[indx],kh=round(np.sqrt(pairedMu[indx]),1)))
+        ax[0,indx].set_title(r'$\epsilon={eps}$, $\mu = {mu}$'.format(
+            eps=pairedEps[indx],mu=pairedMu[indx]))
 
         # Convert from t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k_E to
         # t_1'/epsilon = t' = t*sqrt(g*h)*k_E
