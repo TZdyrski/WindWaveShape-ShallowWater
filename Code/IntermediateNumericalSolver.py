@@ -2616,6 +2616,8 @@ if(plot_power_spec_vs_time_Jeffreys):
     ax[1].plot(t[::10],negSnapshotsPower[negSecondHarmonicIndex,::10],'b')
 
     for indx in [0,1]:
+        # Plot power spectrum \abs{\hat'{eps*eta'}}^2 = \abs{\hat{eta}}^2*k^2_E/h^2
+        # (Primes denote the nondim variables used throughout this solver)
         ax[indx].set_ylabel(r'\begin{tabular}{c}Normalized \\ Energy $\abs{\hat{\eta}}^2 k_E^2 / h^2$\end{tabular}')
         ax[indx].set_ylim(bottom=0)
 
@@ -3180,6 +3182,8 @@ if(plot_power_spec_vs_time_GM):
     ax[1].plot(t[::10],negSnapshotsPower[negSecondHarmonicIndex,::10],'b')
 
     for indx in [0,1]:
+        # Plot power spectrum \abs{\hat'{eps*eta'}}^2 = \abs{\hat{eta}}^2*k^2_E/h^2
+        # (Primes denote the nondim variables used throughout this solver)
         ax[indx].set_ylabel(r'\begin{tabular}{c}Normalized \\ Energy $\abs{\hat{\eta}}^2 k_E^2 / h^2$\end{tabular}')
         ax[indx].set_ylim(bottom=0)
 
