@@ -1176,7 +1176,7 @@ if(plot_snapshots):
     ax.set_ylabel(r'Surface Height $\eta / h$')
     # Convert P' = P*k/(rho_w*g)/eps to P'*eps = P*k/(rho_w*g)
     # (Primes denote the nondim variables used throughout this solver)
-    ax.set_title(r'Surface Height vs Time: $a_0/h={eps}$, $k_E h = {kh}$, $P_J k/(\rho_w g) = {P}$'.format(
+    ax.set_title(r'Surface Height vs Time: $a_0/h={eps}$, $k_E h = {kh}$, $P_J k_E/(\rho_w g) = {P}$'.format(
         eps=eps,kh=round(np.sqrt(mu_solitary),1),P=round(eps*P,3)))
 
     ax.plot(xMasked,snapshots)
@@ -1262,7 +1262,7 @@ if(plot_negative_snapshots):
     ax.set_ylabel(r'Surface Height $\eta / h$')
     # Convert P' = P*k/(rho_w*g)/eps to P'*eps = P*k/(rho_w*g)
     # (Primes denote the nondim variables used throughout this solver)
-    ax.set_title(r'Surface Height vs Time: $a_0/h={eps}$, $k_E h = {kh}$, $P_J k/(\rho_w g) = {P}$'.format(
+    ax.set_title(r'Surface Height vs Time: $a_0/h={eps}$, $k_E h = {kh}$, $P_J k_E/(\rho_w g) = {P}$'.format(
         eps=eps,kh=round(np.sqrt(mu_solitary),1),P=round(eps*(-P),3)))
 
     ax.plot(xMasked,snapshots)
@@ -1378,9 +1378,9 @@ if(plot_pos_neg_snapshots):
         # Convert P' = P*k/(rho_w*g)/eps to P'*eps = P*k/(rho_w*g)
         # (Primes denote the nondim variables used throughout this solver)
 
-        ax[0,indx].set_title(r'\begin{{tabular}}{{c}}$\epsilon = {eps}$, $\mu = {mu}$\\$P_J k/(\rho_w g) = {P}$\end{{tabular}}'.format(
+        ax[0,indx].set_title(r'\begin{{tabular}}{{c}}$\epsilon = {eps}$, $\mu = {mu}$\\$P_J k_E/(\rho_w g) = {P}$\end{{tabular}}'.format(
             P=round(eps*(P),3),eps=pairedEps[indx],mu=round(pairedEps[indx]/eps*mu_solitary,3)))
-        ax[1,indx].set_title(r'$P_J k/(\rho_w g) = {P}$'.format(P=round(eps*(-P),3)))
+        ax[1,indx].set_title(r'$P_J k_E/(\rho_w g) = {P}$'.format(P=round(eps*(-P),3)))
 
         ax[0,indx].plot(xMasked[indx],posSnapshots[indx])
         ax[1,indx].plot(xMasked[indx],negSnapshots[indx])
@@ -1527,7 +1527,7 @@ if(plot_skew_asymm):
     # Convert P' = P*k/(rho_w*g)/eps to P'*eps = P*k/(rho_w*g)
     # (Primes denote the nondim variables used throughout this solver)
     leg = fig.legend(lines, np.around(skew_asymm_Ps*eps,3),
-            title=r'Pressure'+'\n'+r'Magnitude'+'\n'+r'$P_J k/(\rho_w g)$',
+            title=r'Pressure'+'\n'+r'Magnitude'+'\n'+r'$P_J k_E/(\rho_w g)$',
             loc='right')
     leg.get_title().set_multialignment('center')
 
@@ -1702,7 +1702,7 @@ if(plot_snapshots_cnoidal):
     ax.set_ylabel(r'Surface Height $\eta / h$')
     # Convert P' = P*k/(rho_w*g)/eps to P'*eps = P*k/(rho_w*g)
     # (Primes denote the nondim variables used throughout this solver)
-    ax.set_title(r'Surface Height vs Time: $a_0/h={eps}$, $k_E h = {kh}$, $P_J k/(\rho_w g) = {P}$'.format(
+    ax.set_title(r'Surface Height vs Time: $a_0/h={eps}$, $k_E h = {kh}$, $P_J k_E/(\rho_w g) = {P}$'.format(
         eps=eps,kh=round(np.sqrt(mu),1),P=round(eps*P,3)))
 
     ax.plot(xMasked,snapshots)
@@ -1786,7 +1786,7 @@ if(plot_negative_snapshots_cnoidal):
     ax.set_ylabel(r'Surface Height $\eta / h$')
     # Convert P' = P*k/(rho_w*g)/eps to P'*eps = P*k/(rho_w*g)
     # (Primes denote the nondim variables used throughout this solver)
-    ax.set_title(r'Surface Height vs Time: $a_0/h={eps}$, $k_E h = {kh}$, $P_J k/(\rho_w g) = {P}$'.format(
+    ax.set_title(r'Surface Height vs Time: $a_0/h={eps}$, $k_E h = {kh}$, $P_J k_E/(\rho_w g) = {P}$'.format(
         eps=eps,kh=round(np.sqrt(mu),1),P=round(eps*(-P),3)))
 
     ax.plot(xMasked,snapshots)
@@ -1898,9 +1898,9 @@ if(plot_pos_neg_snapshots_cnoidal):
         # Convert P' = P*k/(rho_w*g)/eps to P'*eps = P*k/(rho_w*g)
         # (Primes denote the nondim variables used throughout this solver)
 
-        ax[0,indx].set_title(r'\begin{{tabular}}{{c}}$\epsilon = {eps}$, $\mu = {mu}$\\$P_J k/(\rho_w g) = {P}$\end{{tabular}}'.format(
+        ax[0,indx].set_title(r'\begin{{tabular}}{{c}}$\epsilon = {eps}$, $\mu = {mu}$\\$P_J k_E/(\rho_w g) = {P}$\end{{tabular}}'.format(
             P=round(eps*(P),3),eps=pairedEps[indx],mu=pairedMu[indx]))
-        ax[1,indx].set_title(r'$P_J k/(\rho_w g) = {P}$'.format(
+        ax[1,indx].set_title(r'$P_J k_E/(\rho_w g) = {P}$'.format(
             P=round(eps*(-P),3),eps=pairedEps[indx],mu=pairedMu[indx]))
 
         ax[0,indx].plot(xMasked[indx],posSnapshots[indx])
@@ -2058,7 +2058,7 @@ if(plot_skew_asymm_cnoidal):
     # Plot P' = P*k/(rho_w*g)/eps
     # (Primes denote the nondim variables used throughout this solver)
     leg = fig.legend(lines, np.around(skew_asymm_Ps,3),
-            title=r'Pressure'+'\n'+r'Magnitude'+'\n'+r'$P_J k/(\rho_w g \epsilon)$',
+            title=r'Pressure'+'\n'+r'Magnitude'+'\n'+r'$P_J k_E/(\rho_w g \epsilon)$',
             loc='right')
     leg.get_title().set_multialignment('center')
 
@@ -2418,9 +2418,9 @@ if(plot_power_spec_Jeffreys):
     # (Primes denote the nondim variables used throughout this solver)
     fig.suptitle(r'Power Spectrum vs Time: $a_0/h={eps}$, $k_E h = {kh}$'.format(
         eps=eps,kh=round(np.sqrt(mu),1)))
-    ax[0].set_title(r'Co-Wind: $P_J k/(\rho_w g) = {P}$'.format(
+    ax[0].set_title(r'Co-Wind: $P_J k_E/(\rho_w g) = {P}$'.format(
         P=round(eps*(P),3)))
-    ax[1].set_title(r'Counter-Wind: $P_J k/(\rho_w g) = {P}$'.format(
+    ax[1].set_title(r'Counter-Wind: $P_J k_E/(\rho_w g) = {P}$'.format(
         P=round(eps*(-P),3)))
 
     ax[0].plot(kappa,posSnapshotsPower)
@@ -2592,9 +2592,9 @@ if(plot_power_spec_vs_time_Jeffreys):
     # (Primes denote the nondim variables used throughout this solver)
     fig.suptitle(r'Power Spectrum vs Time: $a_0/h={eps}$, $k_E h = {kh}$'.format(
         eps=eps,kh=round(np.sqrt(mu),1)))
-    ax[0].set_title(r'Co-Wind: $P_J k/(\rho_w g) = {P}$'.format(
+    ax[0].set_title(r'Co-Wind: $P_J k_E/(\rho_w g) = {P}$'.format(
         P=round(eps*(P),3)))
-    ax[1].set_title(r'Counter-Wind: $P_J k/(\rho_w g) = {P}$'.format(
+    ax[1].set_title(r'Counter-Wind: $P_J k_E/(\rho_w g) = {P}$'.format(
         P=round(eps*(-P),3)))
 
     # Source: https://matplotlib.org/3.1.1/gallery/ticks_and_spines/multiple_yaxis_with_spines.html
@@ -2800,9 +2800,9 @@ if(plot_double_power_spec_Jeffreys):
     # (Primes denote the nondim variables used throughout this solver)
     fig.suptitle(r'Wavenumber Frequency Plot of $\abs{{\hat{{\eta}}}}^2 k_E^4 g / h$: $a_0/h={eps}$, $k_E h = {kh}$'.format(
         eps=eps,kh=round(np.sqrt(mu),1)))
-    ax[0].set_title(r'Co-Wind: $P_J k/(\rho_w g) = {P}$'.format(
+    ax[0].set_title(r'Co-Wind: $P_J k_E/(\rho_w g) = {P}$'.format(
         P=round(eps*(P),3)))
-    ax[1].set_title(r'Counter-Wind: $P_J k/(\rho_w g) = {P}$'.format(
+    ax[1].set_title(r'Counter-Wind: $P_J k_E/(\rho_w g) = {P}$'.format(
         P=round(eps*(-P),3)))
 
     cs = [None,None]
@@ -2996,9 +2996,9 @@ if(plot_power_spec_GM):
     # (Primes denote the nondim variables used throughout this solver)
     fig.suptitle(r'Power Spectrum vs Time: $a_0/h={eps}$, $k_E h = {kh}$'.format(
         eps=eps,kh=round(np.sqrt(mu),1)))
-    ax[0].set_title(r'Co-Wind: $P_G k/(\rho_w g) = {P}$'.format(
+    ax[0].set_title(r'Co-Wind: $P_G k_E/(\rho_w g) = {P}$'.format(
         P=round(eps*(P),3)))
-    ax[1].set_title(r'Counter-Wind: $P_G k/(\rho_w g) = {P}$'.format(
+    ax[1].set_title(r'Counter-Wind: $P_G k_E/(\rho_w g) = {P}$'.format(
         P=round(eps*(-P),3)))
 
     ax[0].plot(kappa,posSnapshotsPower)
@@ -3170,9 +3170,9 @@ if(plot_power_spec_vs_time_GM):
     # (Primes denote the nondim variables used throughout this solver)
     fig.suptitle(r'Power Spectrum vs Time: $a_0/h={eps}$, $k_E h = {kh}$'.format(
         eps=eps,kh=round(np.sqrt(mu),1)))
-    ax[0].set_title(r'Co-Wind: $P_G k/(\rho_w g) = {P}$'.format(
+    ax[0].set_title(r'Co-Wind: $P_G k_E/(\rho_w g) = {P}$'.format(
         P=round(eps*(P),3)))
-    ax[1].set_title(r'Counter-Wind: $P_G k/(\rho_w g) = {P}$'.format(
+    ax[1].set_title(r'Counter-Wind: $P_G k_E/(\rho_w g) = {P}$'.format(
         P=round(eps*(-P),3)))
 
     # Source: https://matplotlib.org/3.1.1/gallery/ticks_and_spines/multiple_yaxis_with_spines.html
@@ -3279,9 +3279,9 @@ if(plot_pos_neg_snapshots_cnoidal_GM):
     # (Primes denote the nondim variables used throughout this solver)
     fig.suptitle(r'Surface Height vs Time: $a_0/h={eps}$, $k_E h = {kh}$'.format(
         eps=eps,kh=round(np.sqrt(mu),1)))
-    ax[0].set_title(r'$P_G k/(\rho_w g) = {P}$'.format(
+    ax[0].set_title(r'$P_G k_E/(\rho_w g) = {P}$'.format(
         P=round(eps*(P),3)))
-    ax[1].set_title(r'$P_G k/(\rho_w g) = {P}$'.format(
+    ax[1].set_title(r'$P_G k_E/(\rho_w g) = {P}$'.format(
         P=round(eps*(-P),3)))
 
     ax[0].plot(xMasked,posSnapshots)
@@ -3485,7 +3485,7 @@ if(plot_total_energy_Jeffreys):
     # Convert P' = P*k/(rho_w*g)/eps to P'*eps = P*k/(rho_w*g)
     # (Primes denote the nondim variables used throughout this solver)
     leg = fig.legend(lines, np.around(skew_asymm_Ps*eps,3),
-            title=r'Pressure'+'\n'+r'Magnitude'+'\n'+r'$P_J k/(\rho_w g)$',
+            title=r'Pressure'+'\n'+r'Magnitude'+'\n'+r'$P_J k_E/(\rho_w g)$',
             loc='right')
     leg.get_title().set_multialignment('center')
 
@@ -3584,7 +3584,7 @@ if(plot_total_energy_GM):
     # Convert P' = P*k/(rho_w*g)/eps to P'*eps = P*k/(rho_w*g)
     # (Primes denote the nondim variables used throughout this solver)
     leg = fig.legend(lines, np.around(skew_asymm_Ps*eps,3),
-            title=r'Pressure'+'\n'+r'Magnitude'+'\n'+r'$P_G k/(\rho_w g)$',
+            title=r'Pressure'+'\n'+r'Magnitude'+'\n'+r'$P_G k_E/(\rho_w g)$',
             loc='right')
     leg.get_title().set_multialignment('center')
 
@@ -3646,7 +3646,7 @@ if(plot_long_run_check):
     ax.set_ylabel(r'Surface Height $\eta / h$')
     # Convert P' = P*k/(rho_w*g)/eps to P'*eps = P*k/(rho_w*g)
     # (Primes denote the nondim variables used throughout this solver)
-    ax.set_title(r'Surface Height vs Time: $a_0/h={eps}$, $k_E h = {kh}$, $P_J k/(\rho_w g) = {P}$'.format(
+    ax.set_title(r'Surface Height vs Time: $a_0/h={eps}$, $k_E h = {kh}$, $P_J k_E/(\rho_w g) = {P}$'.format(
         eps=eps,kh=round(np.sqrt(mu_solitary),1),P=0))
 
     ax.plot(xMasked,snapshots)
