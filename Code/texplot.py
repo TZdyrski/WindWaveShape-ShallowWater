@@ -69,7 +69,7 @@ else:
     raise('Variable `useBackend` in texplot must be one of {pgf,mplcairoEps}')
 
 # Return figure size [width,height] for a given scale
-def figsize(scale,golden=True,orientation='landscape',columnWidth=False):
+def figsize(figScale=1, golden=True, orientation='landscape', columnWidth=False):
     text_width_pt = 384.0                        # Get this from LaTeX
                                                  #   using \the\textwidth
                                                  #   or \the\contentwidth
@@ -91,9 +91,9 @@ def figsize(scale,golden=True,orientation='landscape',columnWidth=False):
                                                  #   could change this)
 
     if columnWidth:
-        fig_width = column_width_pt*inches_per_pt*scale # width in inches
+        fig_width = column_width_pt*inches_per_pt*figScale # width in inches
     else:
-        fig_width = text_width_pt*inches_per_pt*scale # width in inches
+        fig_width = text_width_pt*inches_per_pt*figScale # width in inches
 
     if golden:
         if orientation == 'landscape':
@@ -101,10 +101,9 @@ def figsize(scale,golden=True,orientation='landscape',columnWidth=False):
         elif orientation == 'portrait':
             fig_height = fig_width/golden_mean
         else:
-            print(orientation)
             raise ValueError('Option `orientation` must be either `landscape` (default) or `portrait`')
     else:
-        fig_height = text_height_pt*inches_per_pt*scale   # height in inches
+        fig_height = text_height_pt*inches_per_pt*figScale   # height in inches
 
     fig_size = [fig_width,fig_height]
 
@@ -167,32 +166,35 @@ mpl.rcParams.update(pgf_with_latex)
 import matplotlib.pyplot as plt
 
 # Create a new figure
-def newfig(width,nrows=1,ncols=1,pad=0.3,sharex=False,sharey=True,
-        orientation='landscape',columnWidth=False,golden=False, *args, **kargs):
+def newfig(figScale, pad=0.3, orientation=None, columnWidth=None,
+        golden=None, *args, **kwargs):
     plt.close()
-    fig, ax = plt.subplots(nrows,ncols,figsize=figsize(width,
-        orientation=orientation,columnWidth=columnWidth,golden=golden),
-        sharex=sharex,sharey=sharey,*args,**kargs)
+    figsize_args = {'figScale' : figScale, 'orientation' : orientation,
+            'columnWidth' : columnWidth, 'golden' : golden}
+    fig, ax = plt.subplots(figsize=figsize(
+        **{k : v for k,v in figsize_args.items() if v != None}
+        ), *args,**kwargs)
     # Set padding
     fig.set_tight_layout({'pad':pad})
     return fig, ax
 
 # Create a new 3D figure
-def new3Dfig(width,nrows=1,ncols=1,pad=0.3,sharex=False,sharey=True,
-        orientation='landscape',columnWidth=False,golden=False, *args, **kargs):
+def new3dfig(pad=0.3, figScale=None, orientation=None, columnWidth=None,
+        golden=None, *args, **kwargs):
     plt.close()
-    fig, ax = plt.subplots(nrows,ncols,figsize=figsize(width,
-        orientation=orientation,columnWidth=columnWidth,golden=golden),
-        sharex=sharex,sharey=sharey,
-        subplot_kw={'projection': '3d'},*args,**kargs)
+    figsize_args = {'figScale' : figscale, 'orientation' : orientation,
+            'columnWidth' : columnWidth, 'golden' : golden}
+    fig, ax = plt.subplots(figsize=figsize(
+        **{k : v for k,v in figsize_args.items() if v != None}
+        ), subplot_kw={'projection': '3d'}, *args, **kwargs)
     # Set padding
     fig.set_tight_layout({'pad':pad})
     return fig, ax
 
 # Save a pdf and pgf version of the figure
-def savefig(fig,filename,*args,**kargs):
+def savefig(fig,filename,*args,**kwargs):
     if useBackend == 'pgf':
-        fig.savefig('{}.pgf'.format(filename),facecolor=fig.get_facecolor(),*args,**kargs)
+        fig.savefig('{}.pgf'.format(filename),facecolor=fig.get_facecolor(),*args,**kwargs)
     elif useBackend == 'mplcairoEps':
-        fig.savefig('{}.eps'.format(filename),facecolor=fig.get_facecolor(),*args,**kargs)
-    fig.savefig('{}.pdf'.format(filename),facecolor=fig.get_facecolor(),*args,**kargs)
+        fig.savefig('{}.eps'.format(filename),facecolor=fig.get_facecolor(),*args,**kwargs)
+    fig.savefig('{}.pdf'.format(filename),facecolor=fig.get_facecolor(),*args,**kwargs)
