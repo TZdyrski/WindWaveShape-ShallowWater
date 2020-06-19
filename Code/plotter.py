@@ -721,7 +721,7 @@ def plot_forcing_types_template(data_arrays):
     label_subplots(ax)
 
     # Add legend
-    fig.legend(loc='right', bbox_to_anchor=(0.5,0.5))
+    fig.legend(loc='right', bbox_to_anchor=(0.525,0.5))
 
     # Make background transparent
     fig.patch.set_alpha(0)
