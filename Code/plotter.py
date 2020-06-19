@@ -216,7 +216,7 @@ def plot_multiplot_template(data_arrays, x_coordinate, suptitle=None, ax_title=N
 
     subplot_adjust_params = {'hspace':0.3, 'wspace':0.2}
     if suptitle is not None:
-        subplot_adjust_params['top'] = 0.825
+        subplot_adjust_params['top'] = 0.875
 
     if show_legend is not None:
         subplot_adjust_params['right'] = 0.825
