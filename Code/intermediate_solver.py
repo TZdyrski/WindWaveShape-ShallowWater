@@ -421,10 +421,12 @@ class kdvSystem():
             ux = psdiff(u, period=self.xLen)
             uxx = psdiff(u, period=self.xLen, order=2)
             uxxx = psdiff(u, period=self.xLen, order=3)
+            uxxxx = psdiff(u, period=self.xLen, order=4)
 
         # Compute du/dt
         dudt = -u*ux*self.B/self.A -uxxx*self.C/self.A \
-                -ux*self.F/self.A + uxx*self.G/self.A
+                -ux*self.F/self.A + uxx*self.G/self.A \
+                -uxxxx*self.H/self.A
 
         return dudt
 
