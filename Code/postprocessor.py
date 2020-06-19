@@ -253,6 +253,55 @@ def biphase(profile):
 
     return biphase
 
+def bicoherence(profile):
+    # Note: this function is not useful for deterministic outputs (like
+    # ours) since the bicoherence is identically unity
+
+    # Take spatial FFT \hat'{eps*eta'} = \hat{eps*eta'}*k_E = \hat{eta}*k_E/h
+    # (Primes denote the nondim variables used throughout this solver)
+    # (scale FFT by 1/N so the FFT of a sinusoid has unit amplitude;
+    # this also gives it the same units as the continuous Fourier
+    # Transform)
+    fourier = spatial_fourier_transform(profile)
+
+    fourier = convert_k_E_to_k(fourier)
+
+    wrap_upper = fourier['kappa/k'].max()
+    wrap_lower = fourier['kappa/k'].min()
+    wrap_to_kappa = lambda x : (x - wrap_lower) % (wrap_upper -
+            wrap_lower)+wrap_lower
+
+    bispectra = xr.DataArray(None, dims=('kappa1/k','kappa2/k'),
+        coords={'kappa1/k':fourier['kappa/k'].values,
+        'kappa2/k':fourier['kappa/k'].values})
+    bicoherence = bispectra
+
+    # Calculate bispectra
+    bispectra_eq =  lambda kappa1, kappa2 : fourier.loc[{'kappa/k' : kappa1}]*\
+            fourier.loc[{'kappa/k' : kappa2}]*\
+            np.conjugate(fourier.sel({'kappa/k' :
+                wrap_to_kappa(kappa1+kappa2)}, method='nearest'))
+    bispectra = bispectra_eq(bispectra['kappa1/k'],
+            bispectra['kappa2/k'])
+
+    # Calculate bicoherence
+    bicoherence_eq = lambda kappa1,kappa2 : \
+        np.abs(bispectra.sel({'kappa1/k':kappa1, 'kappa2/k':kappa2}))/\
+                np.abs(fourier.sel({'kappa/k':kappa1}, method='nearest')*\
+                fourier.sel({'kappa/k':kappa2}, method='nearest'))/\
+                np.abs(fourier.sel({'kappa/k':wrap_to_kappa(kappa1+kappa2)},
+                    method='nearest'))
+    bicoherence = bicoherence_eq(bicoherence['kappa1/k'],\
+            bicoherence['kappa2/k'])
+
+    bicoherence.attrs = profile.attrs
+    bicoherence.name = 'bicoherence'
+
+    # Remove extraneous dimension
+    bicoherence = bicoherence.reset_coords(names='kappa/k', drop=True)
+
+    return bicoherence
+
 def find_initial_peaks(signal, num_peaks=5):
     signal_initial = signal[{'t*eps*sqrt(g*h)*k_E':0}].reset_coords(
             't*eps*sqrt(g*h)*k_E', drop=True)
@@ -537,6 +586,25 @@ def process_wavenumber_frequency(load_prefix, save_prefix, *args, **kwargs):
         # Save wavenumber-frequency data
         data_csv.save_data(wavenum_freq, save_prefix+'Wavenum-Freq',
                 **data_array.attrs, stack_coords=True)
+
+def process_bicoherence(load_prefix, save_prefix, *args, **kwargs):
+    filename_base = 'Snapshots'
+
+    # Find filenames
+    filenames = data_csv.find_filenames(load_prefix, filename_base,
+            parameters={'wave_type':'cnoidal'},
+            allow_multiple_files=True)
+
+    for filename in filenames:
+        # Extract data
+        data_array = data_csv.load_data(filename)
+
+        # Calculate the bicoherence
+        bicoh = bicoherence(data_array)
+
+        # Save statistics
+        data_csv.save_data(bicoh, save_prefix+'Bicoherence',
+                **bicoh.attrs)
 
 def process_depth_varying(load_prefix, save_prefix, *args, **kwargs):
     filename_base = 'DepthVarying'
