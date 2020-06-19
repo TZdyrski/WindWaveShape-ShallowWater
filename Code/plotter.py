@@ -241,16 +241,11 @@ def plot_snapshots_template(data_arrays, norm_by_wavelength=True,
 
     ax_ylabel = r'Wave Height $\eta / h$'
 
-    suptitle = 'Wave Height vs Time' if data_arrays.size != 1 else None
-
     title_string =  r'$\epsilon = {eps}$,'+\
             r' $\mu_E = {mu}$,'+'\n'+r'$P k_E/(\rho_w g \epsilon) = {P}$'+\
             (r', $\psi_P = {psiP}$' if
                     data_arrays[0,0].attrs.get('forcing_type',None) ==
                     'GM' else '')
-
-    if data_arrays.size == 1:
-        title_string = 'Wave Height vs Time: ' + title_string
 
     ax_title = np.empty(data_arrays.shape,dtype=object)
     for iy, ix in np.ndindex(ax_title.shape):
@@ -284,7 +279,6 @@ def plot_snapshots_template(data_arrays, norm_by_wavelength=True,
     fig = plot_multiplot_template(**{
         'data_arrays':data_arrays,
         'x_coordinate':x_coordinate,
-        'suptitle':suptitle,
         'ax_title':ax_title,
         'ax_xlabel':ax_xlabel,
         'ax_ylabel':ax_ylabel,
@@ -387,15 +381,10 @@ def plot_shape_statistics_vs_time_template(data_arrays, **kwargs):
 
     ax_xlabel = r'Time $t \epsilon \sqrt{{g h}} k_E$'
 
-    suptitle = 'Shape Statistics vs Time' if data_arrays.size != 1 else None
-
     title_string =  r'$\epsilon = {eps}$, $\mu_E = {mu}$'+\
             (r', $\psi_P = {psiP}$' if
                     data_arrays[0].attrs.get('forcing_type',None) ==
                     'GM' else '')
-
-    if data_arrays.size == 1:
-        title_string = 'Shape Statistics vs Time: ' + title_string
 
     ax_title = np.empty(data_arrays.shape,dtype=object)
     for ix in np.ndindex(ax_title.shape):
@@ -411,7 +400,6 @@ def plot_shape_statistics_vs_time_template(data_arrays, **kwargs):
                 'ax_xlabel':ax_xlabel,
                 'ax_title':ax_title,
                 'x_coordinate':x_coordinate,
-                'suptitle':suptitle,
                 'show_legend':True,
                 'legend_title':legend_title,
                 **kwargs})
@@ -424,16 +412,11 @@ def plot_shape_statistics_vs_depth_template(data_arrays, **kwargs):
 
     ax_xlabel = r'Depth $k_E h$'
 
-    suptitle = 'Shape Statistics vs Time' if data_arrays.size != 1 else None
-
     title_string =  r'$\epsilon = {eps}$, '+\
             r'$t \epsilon \sqrt{{g h}} k_E = {t*eps*sqrt(g*h)*k_E}$'+\
             (r', $\psi_P = {psiP}$' if
                     data_arrays[0].attrs.get('forcing_type',None) ==
                     'GM' else '')
-
-    if data_arrays.size == 1:
-        title_string = 'Shape Statistics vs Time: ' + title_string
 
     ax_title = np.empty(data_arrays.shape,dtype=object)
     for ix in np.ndindex(ax_title.shape):
@@ -446,7 +429,6 @@ def plot_shape_statistics_vs_depth_template(data_arrays, **kwargs):
                 'ax_xlabel':ax_xlabel,
                 'ax_title':ax_title,
                 'x_coordinate':x_coordinate,
-                'suptitle':suptitle,
                 'color_class':'cyclic',
                 **kwargs})
 
@@ -527,7 +509,7 @@ def plot_power_spec_vs_kappa_template(data_arrays, **kwargs):
 
     # Use parameters from first data_array since we assume they're all
     # the same
-    suptitle = r'Power Spectrum vs Kappa: $\epsilon={eps}$, $\mu_E = {mu}$'+\
+    suptitle = r'$\epsilon={eps}$, $\mu_E = {mu}$'+\
             (r', $\psi_P = {psiP}$' if
                     data_arrays[0,0].attrs.get('forcing_type',None) ==
                     'GM' else '')
@@ -614,7 +596,7 @@ def plot_power_spec_vs_time_template(data_arrays, **kwargs):
 
     # Use parameters from first data_array since we assume they're all
     # the same
-    suptitle = r'Power Spectrum vs Kappa: $\epsilon={eps}$, $\mu_E = {mu}$'+\
+    suptitle = r'$\epsilon={eps}$, $\mu_E = {mu}$'+\
             (r', $\psi_P = {psiP}$' if
                     data_arrays[0,0].attrs.get('forcing_type',None) ==
                     'GM' else '')
@@ -664,8 +646,7 @@ def plot_wavenum_freq_template(data_arrays, **kwargs):
 
     # Use parameters from first data_array since we assume they're all
     # the same
-    suptitle = r'Wavenumber Frequency Plot of $\abs{{\hat{{\eta}}}}^2'+\
-            r' k_E^4 g / h$: $\epsilon = {eps}$, $\mu_E = {mu}$'+\
+    suptitle = '$\epsilon = {eps}$, $\mu_E = {mu}$'+\
             (r', $\psi_P = {psiP}$' if
                     data_arrays[0,0].attrs.get('forcing_type',None) ==
                     'GM' else '')
