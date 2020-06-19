@@ -102,3 +102,10 @@ def pi_multiple_ticks(ax,whichAxis,multiple,minorMultiple=0):
         return
     else:
         raise ValueError("Option 'whichAxis' passed to pi_multiple_ticks must be one of {'x','y'}")
+
+def float_to_pi(number):
+    # convert number to pi fractions (inline and without '$')
+    number_pi_frac = re.sub(r'\\tfrac\{(.*?)\}\{(.*?)\}',r'\1/\2',
+            str(_pi_label_format(number)).replace('$',''))
+
+    return number_pi_frac

@@ -9,7 +9,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1.inset_locator import zoomed_inset_axes
 from mpl_toolkits.axes_grid1.inset_locator import mark_inset
-from pi_formatter import pi_multiple_ticks
+from pi_formatter import pi_multiple_ticks, float_to_pi
 import itertools
 import texplot
 import data_csv
@@ -170,7 +170,9 @@ def plot_multiplot_template(data_arrays, x_coordinate, suptitle=None, ax_title=N
                         .format(**data_arrays[iy,ix].attrs))
         if ax_title is not None:
             ax[iy,ix].set_title(fill_to_shape(ax_title,ax.shape)[iy,ix]\
-                    .format(**data_arrays[iy,ix].attrs))
+                    .format(**{**data_arrays[iy,ix].attrs,
+                        'psiP' : float_to_pi(float(data_arrays[iy,ix].
+                                attrs.get('psiP', 0)))}))
 
         # Set property cycle
         prop_cycle = property_cycle(
@@ -241,8 +243,11 @@ def plot_snapshots_template(data_arrays, norm_by_wavelength=True,
 
     suptitle = 'Wave Height vs Time' if data_arrays.size != 1 else None
 
-    title_string =  r'$\epsilon = {eps}$, '+\
-            r'$\mu = {mu}$'+'\n'+r'$P k_E/(\rho_w g \epsilon) = {P}$'
+    title_string =  r'$\epsilon = {eps}$,'+\
+            r' $\mu = {mu}$'+'\n'+r'$P k_E/(\rho_w g \epsilon) = {P}$'+\
+            (r', $\psi_P = {psiP}$' if
+                    data_arrays[0,0].attrs.get('forcing_type',None) ==
+                    'GM' else '')
 
     if data_arrays.size == 1:
         title_string = 'Wave Height vs Time: ' + title_string
@@ -381,7 +386,10 @@ def plot_shape_statistics_vs_time_template(data_arrays, **kwargs):
 
     suptitle = 'Shape Statistics vs Time' if data_arrays.size != 1 else None
 
-    title_string =  r'$\epsilon = {eps}$, $\mu = {mu}$'
+    title_string =  r'$\epsilon = {eps}$, $\mu = {mu}$'+\
+            (r', $\psi_P = {psiP}$' if
+                    data_arrays[0].attrs.get('forcing_type',None) ==
+                    'GM' else '')
 
     if data_arrays.size == 1:
         title_string = 'Shape Statistics vs Time: ' + title_string
@@ -416,7 +424,10 @@ def plot_shape_statistics_vs_depth_template(data_arrays, **kwargs):
     suptitle = 'Shape Statistics vs Time' if data_arrays.size != 1 else None
 
     title_string =  r'$\epsilon = {eps}$, '+\
-            r'$t \epsilon \sqrt{{g h}} k_E = {t*eps*sqrt(g*h)*k_E}$'
+            r'$t \epsilon \sqrt{{g h}} k_E = {t*eps*sqrt(g*h)*k_E}$'+\
+            (r', $\psi_P = {psiP}$' if
+                    data_arrays[0].attrs.get('forcing_type',None) ==
+                    'GM' else '')
 
     if data_arrays.size == 1:
         title_string = 'Shape Statistics vs Time: ' + title_string
@@ -457,8 +468,14 @@ def plot_energy_template(data_arrays, **kwargs):
 
     # Use parameters from first data_array since we assume they're all
     # the same
-    title_string = r'Total Energy: $\epsilon = {eps}$, $\mu = {mu}$'.format(
-            **data_arrays[0].attrs)
+    title_string = r'Total Energy: $\epsilon = {eps}$, $\mu = {mu}$'+\
+            (r', $\psi_P = {psiP}$' if
+                    data_arrays[0].attrs.get('forcing_type',None) ==
+                    'GM' else '')
+    title_string = title_string.format(**{**data_arrays[0].attrs,
+        'psiP' : float_to_pi(float(data_arrays[0].attrs.
+            get('psiP', 0)))})
+
     if data_arrays.size == 1:
         ax_title = title_string
         suptitle = None
@@ -507,8 +524,13 @@ def plot_power_spec_vs_kappa_template(data_arrays, **kwargs):
 
     # Use parameters from first data_array since we assume they're all
     # the same
-    suptitle = r'Power Spectrum vs Kappa: $\epsilon={eps}$, $\mu = {mu}$'.\
-            format(**data_arrays[0,0].attrs)
+    suptitle = r'Power Spectrum vs Kappa: $\epsilon={eps}$, $\mu = {mu}$'+\
+            (r', $\psi_P = {psiP}$' if
+                    data_arrays[0,0].attrs.get('forcing_type',None) ==
+                    'GM' else '')
+    suptitle = suptitle.format(**{**data_arrays[0,0].attrs,
+        'psiP' : float_to_pi(float(data_arrays[0,0].attrs.
+            get('psiP', 0)))})
 
     # Convert P' = P*k/(rho_w*g)/eps to P'*eps = P*k/(rho_w*g)
     # (Primes denote the nondim variables used throughout this solver)
@@ -589,8 +611,13 @@ def plot_power_spec_vs_time_template(data_arrays, **kwargs):
 
     # Use parameters from first data_array since we assume they're all
     # the same
-    suptitle = r'Power Spectrum vs Time: $\epsilon = {eps}$, $\mu = {mu}$'.format(
-            **data_arrays[0,0].attrs)
+    suptitle = r'Power Spectrum vs Kappa: $\epsilon={eps}$, $\mu = {mu}$'+\
+            (r', $\psi_P = {psiP}$' if
+                    data_arrays[0,0].attrs.get('forcing_type',None) ==
+                    'GM' else '')
+    suptitle = suptitle.format(**{**data_arrays[0,0].attrs,
+        'psiP' : float_to_pi(float(data_arrays[0,0].attrs.
+            get('psiP', 0)))})
 
     title_string = r'$P k_E/(\rho_w g \epsilon) = {P}$'
 
@@ -635,8 +662,13 @@ def plot_wavenum_freq_template(data_arrays, **kwargs):
     # Use parameters from first data_array since we assume they're all
     # the same
     suptitle = r'Wavenumber Frequency Plot of $\abs{{\hat{{\eta}}}}^2'+\
-            r' k_E^4 g / h$: $\epsilon = {eps}$, $\mu = {mu}$'.format(
-            **data_arrays[0,0].attrs)
+            r' k_E^4 g / h$: $\epsilon = {eps}$, $\mu = {mu}$'+\
+            (r', $\psi_P = {psiP}$' if
+                    data_arrays[0,0].attrs.get('forcing_type',None) ==
+                    'GM' else '')
+    suptitle = suptitle.format(**{**data_arrays[0,0].attrs,
+        'psiP' : float_to_pi(float(data_arrays[0,0].attrs.
+                get('psiP', 0)))})
 
     title_string = r'$P k_E/(\rho_w g \epsilon) = {P}$'
 
@@ -748,7 +780,10 @@ def plot_trig_verf_noH(load_prefix, save_prefix, *args, **kwargs):
     data_arrays = np.atleast_2d(np.array(data_arrays))
 
     title_string = r'{solver} Solver after exactly 1 Period: '+\
-                '$\epsilon = {eps}$, $\mu = {mu}$'
+                '$\epsilon = {eps}$, $\mu = {mu}$'+\
+            (r', $\psi_P = {psiP}$' if
+                    data_arrays[0,0].attrs.get('forcing_type',None) ==
+                    'GM' else '')
 
     fig = plot_snapshots_template(data_arrays, suptitle=None,
             ax_ylabel=np.array([[''],['']]),
@@ -811,7 +846,10 @@ def plot_trig_verf(load_prefix, save_prefix, *args, **kwargs):
     data_arrays = np.atleast_2d(np.array(data_arrays))
 
     title_string = r'{solver} Solver after exactly 1 Period: '+\
-                '$\epsilon = {eps}$, $\mu = {mu}$'
+                '$\epsilon = {eps}$, $\mu = {mu}$'+\
+            (r', $\psi_P = {psiP}$' if
+                    data_arrays[0,0].attrs.get('forcing_type',None) ==
+                    'GM' else '')
 
     fig = plot_snapshots_template(data_arrays, suptitle=None,
             ax_ylabel=np.array([[''],['']]),
