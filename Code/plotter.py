@@ -207,7 +207,7 @@ def plot_multiplot_template(data_arrays, x_coordinate, suptitle=None, ax_title=N
         # Use values from first data_array since we assume they all use the same
         # values
         leg = fig.legend(np.around(data_arrays[0,0].sortby(line_coord)\
-                [line_coord].values,1),
+                [line_coord].values,2),
                 **({'title':legend_title} if legend_title is not None else
                     {}),
                 loc='right')
