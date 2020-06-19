@@ -243,8 +243,7 @@ def plot_snapshots_template(data_arrays, norm_by_wavelength=True,
 
     title_string =  r'$\epsilon = {eps}$,'+\
             r' $\mu_E = {mu}$,'+\
-            ('\n' if data_arrays.shape[1] > 1 else ' ')+\
-            r'$P k_E/(\rho_w g \epsilon) = {P}$'+\
+            r' $P k_E/(\rho_w g \epsilon) = {P}$'+\
             (r', $\psi_P = {psiP}$' if
                     data_arrays[0,0].attrs.get('forcing_type',None) ==
                     'GM' else '')
@@ -276,6 +275,10 @@ def plot_snapshots_template(data_arrays, norm_by_wavelength=True,
                     'x/lambda'})
             # Remove x/h coordinate
             data_arrays[iy,ix] = data_arrays[iy,ix].drop('x/h')
+
+    # Reorder into a single column
+    data_arrays = data_arrays.reshape((data_arrays.size,1), order='F')
+    ax_title = ax_title.reshape((ax_title.size,1), order='F')
 
     # Plot data
     fig = plot_multiplot_template(**{
