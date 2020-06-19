@@ -242,7 +242,9 @@ def plot_snapshots_template(data_arrays, norm_by_wavelength=True,
     ax_ylabel = r'Wave Height $\eta / h$'
 
     title_string =  r'$\epsilon = {eps}$,'+\
-            r' $\mu_E = {mu}$,'+'\n'+r'$P k_E/(\rho_w g \epsilon) = {P}$'+\
+            r' $\mu_E = {mu}$,'+\
+            ('\n' if data_arrays.shape[1] > 1 else ' ')+\
+            r'$P k_E/(\rho_w g \epsilon) = {P}$'+\
             (r', $\psi_P = {psiP}$' if
                     data_arrays[0,0].attrs.get('forcing_type',None) ==
                     'GM' else '')
