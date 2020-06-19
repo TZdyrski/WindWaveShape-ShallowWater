@@ -244,7 +244,7 @@ def plot_snapshots_template(data_arrays, norm_by_wavelength=True,
     suptitle = 'Wave Height vs Time' if data_arrays.size != 1 else None
 
     title_string =  r'$\epsilon = {eps}$,'+\
-            r' $\mu = {mu}$,'+'\n'+r'$P k_E/(\rho_w g \epsilon) = {P}$'+\
+            r' $\mu_E = {mu}$,'+'\n'+r'$P k_E/(\rho_w g \epsilon) = {P}$'+\
             (r', $\psi_P = {psiP}$' if
                     data_arrays[0,0].attrs.get('forcing_type',None) ==
                     'GM' else '')
@@ -386,7 +386,7 @@ def plot_shape_statistics_vs_time_template(data_arrays, **kwargs):
 
     suptitle = 'Shape Statistics vs Time' if data_arrays.size != 1 else None
 
-    title_string =  r'$\epsilon = {eps}$, $\mu = {mu}$'+\
+    title_string =  r'$\epsilon = {eps}$, $\mu_E = {mu}$'+\
             (r', $\psi_P = {psiP}$' if
                     data_arrays[0].attrs.get('forcing_type',None) ==
                     'GM' else '')
@@ -468,7 +468,7 @@ def plot_energy_template(data_arrays, **kwargs):
 
     # Use parameters from first data_array since we assume they're all
     # the same
-    title_string = r'Total Energy: $\epsilon = {eps}$, $\mu = {mu}$'+\
+    title_string = r'Total Energy: $\epsilon = {eps}$, $\mu_E = {mu}$'+\
             (r', $\psi_P = {psiP}$' if
                     data_arrays[0].attrs.get('forcing_type',None) ==
                     'GM' else '')
@@ -524,7 +524,7 @@ def plot_power_spec_vs_kappa_template(data_arrays, **kwargs):
 
     # Use parameters from first data_array since we assume they're all
     # the same
-    suptitle = r'Power Spectrum vs Kappa: $\epsilon={eps}$, $\mu = {mu}$'+\
+    suptitle = r'Power Spectrum vs Kappa: $\epsilon={eps}$, $\mu_E = {mu}$'+\
             (r', $\psi_P = {psiP}$' if
                     data_arrays[0,0].attrs.get('forcing_type',None) ==
                     'GM' else '')
@@ -611,7 +611,7 @@ def plot_power_spec_vs_time_template(data_arrays, **kwargs):
 
     # Use parameters from first data_array since we assume they're all
     # the same
-    suptitle = r'Power Spectrum vs Kappa: $\epsilon={eps}$, $\mu = {mu}$'+\
+    suptitle = r'Power Spectrum vs Kappa: $\epsilon={eps}$, $\mu_E = {mu}$'+\
             (r', $\psi_P = {psiP}$' if
                     data_arrays[0,0].attrs.get('forcing_type',None) ==
                     'GM' else '')
@@ -662,7 +662,7 @@ def plot_wavenum_freq_template(data_arrays, **kwargs):
     # Use parameters from first data_array since we assume they're all
     # the same
     suptitle = r'Wavenumber Frequency Plot of $\abs{{\hat{{\eta}}}}^2'+\
-            r' k_E^4 g / h$: $\epsilon = {eps}$, $\mu = {mu}$'+\
+            r' k_E^4 g / h$: $\epsilon = {eps}$, $\mu_E = {mu}$'+\
             (r', $\psi_P = {psiP}$' if
                     data_arrays[0,0].attrs.get('forcing_type',None) ==
                     'GM' else '')
@@ -780,7 +780,7 @@ def plot_trig_verf_noH(load_prefix, save_prefix, *args, **kwargs):
     data_arrays = np.atleast_2d(np.array(data_arrays))
 
     title_string = r'{solver} Solver after exactly 1 Period: '+\
-                '$\epsilon = {eps}$, $\mu = {mu}$'+\
+                '$\epsilon = {eps}$, $\mu_E = {mu}$'+\
             (r', $\psi_P = {psiP}$' if
                     data_arrays[0,0].attrs.get('forcing_type',None) ==
                     'GM' else '')
@@ -846,7 +846,7 @@ def plot_trig_verf(load_prefix, save_prefix, *args, **kwargs):
     data_arrays = np.atleast_2d(np.array(data_arrays))
 
     title_string = r'{solver} Solver after exactly 1 Period: '+\
-                '$\epsilon = {eps}$, $\mu = {mu}$'+\
+                '$\epsilon = {eps}$, $\mu_E = {mu}$'+\
             (r', $\psi_P = {psiP}$' if
                     data_arrays[0,0].attrs.get('forcing_type',None) ==
                     'GM' else '')
