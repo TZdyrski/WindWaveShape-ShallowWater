@@ -291,8 +291,14 @@ def plot_snapshots_template(data_arrays, norm_by_wavelength=True,
         **kwargs,
         })
 
-    # Add arrow depicting wind and wave directions
     ax = atleast_2d(fig.axes).reshape(data_arrays.shape)
+
+    # Zoom in on solitary wave
+    for iy, ix in np.ndindex(ax.shape):
+        if data_arrays[iy,ix].attrs.get('wave_type',None) == 'solitary':
+            ax[iy,ix].set_xlim(-10,10)
+
+    # Add arrow depicting wind and wave directions
     if wind_arrows:
         for iy, ix in np.ndindex(ax.shape):
             # Only put wind arrows if P is nonzero
