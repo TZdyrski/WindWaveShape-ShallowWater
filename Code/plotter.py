@@ -244,7 +244,7 @@ def plot_snapshots_template(data_arrays, norm_by_wavelength=True,
     suptitle = 'Wave Height vs Time' if data_arrays.size != 1 else None
 
     title_string =  r'$\epsilon = {eps}$,'+\
-            r' $\mu = {mu}$'+'\n'+r'$P k_E/(\rho_w g \epsilon) = {P}$'+\
+            r' $\mu = {mu}$,'+'\n'+r'$P k_E/(\rho_w g \epsilon) = {P}$'+\
             (r', $\psi_P = {psiP}$' if
                     data_arrays[0,0].attrs.get('forcing_type',None) ==
                     'GM' else '')
