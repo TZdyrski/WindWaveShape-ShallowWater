@@ -741,9 +741,6 @@ def plot_trig_verf(load_prefix, save_prefix, *args, **kwargs):
 
         data = data_csv.load_data(filename, stack_coords=True)
 
-        # Add kh = sqrt(mu) to attrs
-        data.attrs['kh'] = round(np.sqrt(data.attrs['mu']),1)
-
         indx = np.unravel_index(indx_num,data_arrays.shape)
         data_arrays[indx] = data
 
@@ -751,7 +748,7 @@ def plot_trig_verf(load_prefix, save_prefix, *args, **kwargs):
     data_arrays = np.atleast_2d(np.array(data_arrays))
 
     title_string = r'{solver} Solver after exactly 1 Period: '+\
-                '$a_0/h={eps}$, $k_E h = {kh}$'
+                '$\epsilon = {eps}$, $\mu = {mu}$'
 
     fig = plot_snapshots_template(data_arrays, suptitle=None,
             ax_ylabel=np.array([[''],['']]),
