@@ -175,11 +175,13 @@ def temporal_fourier_transform(signal, rel_tol=1e-3):
 
     tLen, tNum, dt = get_var_stats(signal, var='t*eps*sqrt(g*h)*k_E')
 
-    # Convert from matplotlib's wavenumber in cycles per t-unit to our
+    # Convert from matplotlib's wavenumber in cycles per t1-unit to our
     # radians per t-unit by multiplying by 2*pi radians/cycle
     omega = np.fft.fftfreq(tNum, dt)*2*np.pi
-    # Convert from omega' = omega/k_E/sqrt(g*h) to
-    #  omega'/k' = omega/k_E/sqrt(g*h)/k*k_E = omega/sqrt(g*h)/k
+    # Convert from omega' = omega/k_E/sqrt(g*h)/eps to
+    #  omega'/k' = omega/k_E/sqrt(g*h)/k*k_E/eps = omega/sqrt(g*h)/k*eps
+    # Note: the factor of eps comes from the fact that this is the
+    # t1=t*eps frequency
     omega = omega*float(signal.attrs['wave_length'])/2/np.pi
 
     # Shift zero to center
@@ -220,9 +222,9 @@ def temporal_fourier_transform(signal, rel_tol=1e-3):
     signal_double_fourier = np.fft.fftshift(signal_double_fourier,axes=1)
 
     signal_double_fourier = xr.DataArray(signal_double_fourier,
-            dims=('kappa/k', 'omega/sqrt(g*h)/k'),
-            coords={'kappa/k' : signal['kappa/k'], 'omega/sqrt(g*h)/k' :
-                omega}, attrs=signal.attrs)
+            dims=('kappa/k', 'omega/sqrt(g*h)/k/eps'),
+            coords={'kappa/k' : signal['kappa/k'],
+                'omega/sqrt(g*h)/k/eps' : omega}, attrs=signal.attrs)
 
     return signal_double_fourier
 

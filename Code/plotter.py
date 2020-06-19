@@ -653,7 +653,7 @@ def plot_wavenum_freq_template(data_arrays, **kwargs):
 
     ax_xlabel = r'Harmonic $\kappa/k$'
 
-    ax_ylabel = r'Frequency $\omega/\sqrt{{g h}} k_E$'
+    ax_ylabel = r'Frequency $\omega/(\epsilon \sqrt{{g h}} k_E)$'
 
     # Use parameters from first data_array since we assume they're all
     # the same
@@ -680,7 +680,7 @@ def plot_wavenum_freq_template(data_arrays, **kwargs):
     def contour_plotter(data_array, x_coord, axis):
         # Generate meshes for contour plot
         omega_mesh,kappa_mesh = np.meshgrid(
-                data_array['omega/sqrt(g*h)/k'],
+                data_array['omega/sqrt(g*h)/k/eps'],
                 data_array['kappa/k'],
                 )
 
