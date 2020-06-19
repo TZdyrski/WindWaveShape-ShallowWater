@@ -948,10 +948,12 @@ def plot_pos_neg_solitary(load_prefix, save_prefix, *args, **kwargs):
     # Arrange data and parameters into 2d array for plotting
     data_arrays = np.empty((2,1),dtype=object)
 
-    for indx_num, Psign in enumerate([1,-1]):
-        kwargs['P'] = Psign*kwargs['P']
+    P = float(kwargs.get('P'))
+
+    for indx_num, P_val in enumerate([P,-P]):
         filename = data_csv.find_filenames(load_prefix, filename_base,
-            parameters={'wave_type' : 'solitary', **kwargs})
+            parameters={'wave_type' : 'solitary', **kwargs,
+                'P' : P_val})
 
         # Extract data
         data_array = data_csv.load_data(filename, stack_coords=True)
@@ -1005,12 +1007,12 @@ def plot_pos_neg_cnoidal(load_prefix, save_prefix, *args, **kwargs):
     data_arrays = np.empty((2,2),dtype=object)
 
     mu = float(kwargs.get('mu'))
+    P = float(kwargs.get('P'))
 
-    for indx_num, (Psign, mu_val) in enumerate(itertools.product([1,-1],[mu,2*mu])):
-        kwargs['P'] = Psign*kwargs['P']
+    for indx_num, (P_val, mu_val) in enumerate(itertools.product([P,-P],[mu,2*mu])):
         filename = data_csv.find_filenames(load_prefix, filename_base,
                 parameters={'wave_type' : 'cnoidal', **kwargs,
-                    'mu' : mu_val})
+                    'P' : P_val, 'mu' : mu_val})
 
         # Extract data
         data_array = data_csv.load_data(filename, stack_coords=True)
@@ -1030,10 +1032,12 @@ def plot_pos_neg_cnoidal_GM(load_prefix, save_prefix, *args, **kwargs):
     # Arrange data and parameters into 2d array for plotting
     data_arrays = np.empty((2,1),dtype=object)
 
-    for indx_num, Psign in enumerate([1,-1]):
-        kwargs['P'] = Psign*kwargs['P']
+    P = float(kwargs.get('P'))
+
+    for indx_num, P_val in enumerate([P,-P]):
         filename = data_csv.find_filenames(load_prefix, filename_base,
-                parameters={'wave_type' : 'cnoidal', **kwargs})
+                parameters={'wave_type' : 'cnoidal', **kwargs,
+                    'P' : P_val})
 
         # Extract data
         data_array = data_csv.load_data(filename, stack_coords=True)
@@ -1214,10 +1218,12 @@ def plot_power_spec_vs_kappa(load_prefix, save_prefix, *args, **kwargs):
     # Arrange data and parameters into 2d array for plotting
     data_arrays = np.empty((2,1),dtype=object)
 
-    for indx_num, Psign in enumerate([1,-1]):
-        kwargs['P'] = Psign*kwargs['P']
+    P = float(kwargs.get('P'))
+
+    for indx_num, P_val in enumerate([P,-P]):
         filename = data_csv.find_filenames(load_prefix, filename_base,
-                parameters={'wave_type' : 'cnoidal', **kwargs})
+                parameters={'wave_type' : 'cnoidal', **kwargs,
+                    'P' : P_val})
 
         # Extract data
         data_array = data_csv.load_data(filename, stack_coords=True)
@@ -1237,10 +1243,12 @@ def plot_power_spec_vs_kappa_GM(load_prefix, save_prefix, *args, **kwargs):
     # Arrange data and parameters into 2d array for plotting
     data_arrays = np.empty((2,1),dtype=object)
 
-    for indx_num, Psign in enumerate([1,-1]):
-        kwargs['P'] = Psign*kwargs['P']
+    P = float(kwargs.get('P'))
+
+    for indx_num, P_val  in enumerate([P,-P]):
         filename = data_csv.find_filenames(load_prefix, filename_base,
-                parameters={'wave_type' : 'cnoidal', **kwargs})
+                parameters={'wave_type' : 'cnoidal', **kwargs,
+                    'P' : P_val})
 
         # Extract data
         data_array = data_csv.load_data(filename, stack_coords=True)
@@ -1258,10 +1266,12 @@ def plot_power_spec_vs_time(load_prefix, save_prefix, *args, **kwargs):
     # Arrange data and parameters into 2d array for plotting
     data_arrays = np.empty((2,1),dtype=object)
 
-    for indx_num, Psign in enumerate([1,-1]):
-        kwargs['P'] = Psign*kwargs['P']
+    P = float(kwargs.get('P'))
+
+    for indx_num, P_val in enumerate([P,-P]):
         filename = data_csv.find_filenames(load_prefix, filename_base,
-                parameters={'wave_type' : 'cnoidal', **kwargs})
+                parameters={'wave_type' : 'cnoidal', **kwargs,
+                    'P' : P_val})
 
         # Extract data
         data_array = data_csv.load_data(filename, stack_coords=True)
@@ -1281,10 +1291,12 @@ def plot_power_spec_vs_time_GM(load_prefix, save_prefix, *args, **kwargs):
     # Arrange data and parameters into 2d array for plotting
     data_arrays = np.empty((2,1),dtype=object)
 
-    for indx_num, Psign in enumerate([1,-1]):
-        kwargs['P'] = Psign*kwargs['P']
+    P = float(kwargs.get('P'))
+
+    for indx_num, P_val in enumerate([P,-P]):
         filename = data_csv.find_filenames(load_prefix, filename_base,
-                parameters={'wave_type' : 'cnoidal', **kwargs})
+                parameters={'wave_type' : 'cnoidal', **kwargs,
+                    'P' : P_val})
 
         # Extract data
         data_array = data_csv.load_data(filename, stack_coords=True)
@@ -1302,10 +1314,12 @@ def plot_wavenum_freq(load_prefix, save_prefix, *args, **kwargs):
     # Arrange data and parameters into 2d array for plotting
     data_arrays = np.empty((2,1),dtype=object)
 
-    for indx_num, Psign in enumerate([1,-1]):
-        kwargs['P'] = Psign*kwargs['P']
+    P = float(kwargs.get('P'))
+
+    for indx_num, P_val in enumerate([P,-P]):
         filename = data_csv.find_filenames(load_prefix, filename_base,
-                parameters={'wave_type' : 'cnoidal', **kwargs})
+                parameters={'wave_type' : 'cnoidal', **kwargs,
+                    'P' : P_val})
 
         # Extract data
         data_array = data_csv.load_data(filename, stack_coords=True)
@@ -1325,10 +1339,12 @@ def plot_wavenum_freq_GM(load_prefix, save_prefix, *args, **kwargs):
     # Arrange data and parameters into 2d array for plotting
     data_arrays = np.empty((2,1),dtype=object)
 
-    for indx_num, Psign in enumerate([1,-1]):
-        kwargs['P'] = Psign*kwargs['P']
+    P = float(kwargs.get('P'))
+
+    for indx_num, P_val in enumerate([P,-P]):
         filename = data_csv.find_filenames(load_prefix, filename_base,
-                parameters={'wave_type' : 'cnoidal', **kwargs})
+                parameters={'wave_type' : 'cnoidal', **kwargs,
+                    'P' : P_val})
 
         # Extract data
         data_array = data_csv.load_data(filename, stack_coords=True)
@@ -1346,10 +1362,12 @@ def plot_hofmiller_solitary(load_prefix, save_prefix, *args, **kwargs):
     # Arrange data and parameters into 2d array for plotting
     data_arrays = np.empty((2,1),dtype=object)
 
-    for indx_num, Psign in enumerate([1,-1]):
-        kwargs['P'] = Psign*kwargs['P']
+    P = float(kwargs.get('P'))
+
+    for indx_num, P_val in enumerate([P,-P]):
         filename = data_csv.find_filenames(load_prefix, filename_base,
-                parameters={'wave_type' : 'solitary', **kwargs})
+                parameters={'wave_type' : 'solitary', **kwargs,
+                    'P' : P_val})
 
         # Extract data
         data_array = data_csv.load_data(filename, stack_coords=True)
@@ -1367,10 +1385,12 @@ def plot_hofmiller_cnoidal(load_prefix, save_prefix, *args, **kwargs):
     # Arrange data and parameters into 2d array for plotting
     data_arrays = np.empty((2,1),dtype=object)
 
-    for indx_num, Psign in enumerate([1,-1]):
-        kwargs['P'] = Psign*kwargs['P']
+    P = float(kwargs.get('P'))
+
+    for indx_num, P_val in enumerate([P,-P]):
         filename = data_csv.find_filenames(load_prefix, filename_base,
-                parameters={'wave_type' : 'cnoidal', **kwargs})
+                parameters={'wave_type' : 'cnoidal', **kwargs,
+                    'P' : P_val})
 
         # Extract data
         data_array = data_csv.load_data(filename, stack_coords=True)
