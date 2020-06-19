@@ -132,6 +132,8 @@ pgf_with_latex = {                      # Setup matplotlib to use latex
                                          #   your fonts
         +r"\usepackage{physics}"         # Use physics package for symbols
         +r'\usepackage{amsmath}'         # Use amsmath to declare new math symbols
+        +r'\newcommand{\im}{\mathrm{i}}' # Define \im as Roman i
+        +r'\renewcommand*{\epsilon}{\varepsilon}' # Replace epsilon with varepsilon
     ,
     }
 
@@ -152,6 +154,8 @@ if useBackend == 'pgf':
                                              #  your fonts
             +r'\usepackage{physics}'         # Use physics package for symbols
             +r'\usepackage{amsmath}'         # Use amsmath to declare new math symbols
+            +r'\newcommand{\im}{\mathrm{i}}' # Define \im as Roman i
+            +r'\renewcommand*{\epsilon}{\varepsilon}' # Replace epsilon with varepsilon
         ,
     })
 elif useBackend == 'mplcairoEps':
