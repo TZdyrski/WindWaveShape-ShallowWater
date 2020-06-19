@@ -572,6 +572,31 @@ def process_depth_varying(load_prefix, save_prefix, *args, **kwargs):
             save_prefix+'Shape-vs-Depth',
             **statistics_datasets.attrs)
 
+def process_hofmiller(load_prefix, save_prefix, *args, **kwargs):
+    filename_base = 'Snapshots'
+
+    # Find filenames
+    filenames = data_csv.find_filenames(load_prefix, filename_base,
+            allow_multiple_files=True)
+
+    for filename in filenames:
+        # Extract data
+        data_array = data_csv.load_data(filename, stack_coords=True)
+
+        # Down sample time
+        data_array = time_downsample(data_array,4)
+
+        with xr.set_options(keep_attrs=True):
+            # Speed in vertical offset per unit time
+            speed = 0.1
+            # Offset amplitudes by time
+            data_array = data_array +\
+                    data_array['t*eps*sqrt(g*h)*k_E']*speed
+
+        # Save snapshots
+        data_csv.save_data(data_array, save_prefix+'Hofmiller',
+                **data_array.attrs, stack_coords=True)
+
 def trim_snapshots(load_prefix, save_prefix, *args, **kwargs):
     filename_base = 'Snapshots'
 
@@ -624,6 +649,7 @@ def main():
             'power_spec_vs_time' : process_power_spec_vs_time,
             'wavenum_freq' : process_wavenumber_frequency,
             'depth_varying' : process_depth_varying,
+            'hofmiller' : process_hofmiller,
             }
 
     if len(sys.argv) == 1:

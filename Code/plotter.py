@@ -707,6 +707,29 @@ def plot_wavenum_freq_template(data_arrays, **kwargs):
 
     return fig
 
+def plot_hofmiller_template(data_arrays, **kargs):
+
+    # Use parameters from first data_array since we assume they're all
+    # the same
+    norm_by_wavelength = data_arrays[0,0].attrs['wave_type'] \
+            == 'cnoidal'
+
+    def black_plotter(data_array, x_name, axis):
+        axis.plot(data_array[x_name], data_array, linestyle='-', c='k')
+
+    fig = plot_snapshots_template(**{
+        'data_arrays':data_arrays,
+        'show_legend':False,
+        'wind_arrows':False,
+        'plotter':black_plotter,
+        'norm_by_wavelength':norm_by_wavelength,
+        # Put kwargs last so any parameters will overwrite the defaults
+        # we've provided
+        **kargs,
+        })
+
+    return fig
+
 def plot_forcing_types_template(data_arrays):
     # Initialize figure
     fig, ax = texplot.newfig(1,nrows=2,ncols=1,sharex=True,
@@ -1311,6 +1334,48 @@ def plot_wavenum_freq_GM(load_prefix, save_prefix, *args, **kwargs):
 
     texplot.savefig(fig,save_prefix+'Double-Power-Spectrum-GM')
 
+def plot_hofmiller_solitary(load_prefix, save_prefix, *args, **kwargs):
+    filename_base = 'Hofmiller'
+
+    # Arrange data and parameters into 2d array for plotting
+    data_arrays = np.empty((2,1),dtype=object)
+
+    for indx_num, Psign in enumerate([1,-1]):
+        kwargs['P'] = Psign*kwargs['P']
+        filename = data_csv.find_filenames(load_prefix, filename_base,
+                parameters={'wave_type' : 'solitary', **kwargs})
+
+        # Extract data
+        data_array = data_csv.load_data(filename, stack_coords=True)
+
+        indx = np.unravel_index(indx_num,data_arrays.shape)
+        data_arrays[indx] = data_array
+
+    fig = plot_hofmiller_template(data_arrays)
+
+    texplot.savefig(fig,save_prefix+'Hofmiller')
+
+def plot_hofmiller_cnoidal(load_prefix, save_prefix, *args, **kwargs):
+    filename_base = 'Hofmiller'
+
+    # Arrange data and parameters into 2d array for plotting
+    data_arrays = np.empty((2,1),dtype=object)
+
+    for indx_num, Psign in enumerate([1,-1]):
+        kwargs['P'] = Psign*kwargs['P']
+        filename = data_csv.find_filenames(load_prefix, filename_base,
+                parameters={'wave_type' : 'cnoidal', **kwargs})
+
+        # Extract data
+        data_array = data_csv.load_data(filename, stack_coords=True)
+
+        indx = np.unravel_index(indx_num,data_arrays.shape)
+        data_arrays[indx] = data_array
+
+    fig = plot_hofmiller_template(data_arrays)
+
+    texplot.savefig(fig,save_prefix+'Hofmiller-Cnoidal')
+
 def plot_forcing_types(load_prefix, save_prefix, *args, **kwargs):
 
     import scipy.special as spec
@@ -1393,6 +1458,8 @@ def main():
             'power_spec_vs_time_GM' : plot_power_spec_vs_time_GM,
             'wavenum_freq' : plot_wavenum_freq,
             'wavenum_freq_GM' : plot_wavenum_freq_GM,
+            'hofmiller_solitary' : plot_hofmiller_solitary,
+            'hofmiller_cnoidal' : plot_hofmiller_cnoidal,
             'forcing_types' : plot_forcing_types,
             }
 
