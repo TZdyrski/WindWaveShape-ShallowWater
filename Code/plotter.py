@@ -143,7 +143,7 @@ def plot_multiplot_template(data_arrays, x_coordinate, suptitle=None, ax_title=N
         the xarray data_array for the corresponding subplot.
     """
     # Initialize figure
-    fig, ax = texplot.newfig(0.9,nrows=data_arrays.shape[0],
+    fig, ax = texplot.newfig(1,nrows=data_arrays.shape[0],
             ncols=data_arrays.shape[1], sharex=True,sharey='row')
 
     # Make 2d ndarrays even if only scalars or 1d arrays
@@ -691,7 +691,7 @@ def plot_wavenum_freq_template(data_arrays, **kwargs):
 
 def plot_forcing_types_template(data_arrays):
     # Initialize figure
-    fig, ax = texplot.newfig(0.9,nrows=2,ncols=1,sharex=True,
+    fig, ax = texplot.newfig(1,nrows=2,ncols=1,sharex=True,
             sharey=False)
 
     # Plot eta'/2 = eta/(2*a) = eta/H
