@@ -728,6 +728,69 @@ def plot_forcing_types_template(data_arrays):
 
     return fig
 
+def plot_trig_verf_noH(load_prefix, save_prefix, *args, **kwargs):
+    filename_base = 'TrigVerf'
+
+    # Arrange data and parameters into 2d array for plotting
+    data_arrays = np.empty((2,1),dtype=object)
+
+    # Extract data
+    for indx_num, solver in enumerate(['Builtin', 'RK3']):
+        filename = data_csv.find_filenames(load_prefix, filename_base,
+                required_words=[solver, 'H0'])
+
+        data = data_csv.load_data(filename, stack_coords=True)
+
+        indx = np.unravel_index(indx_num,data_arrays.shape)
+        data_arrays[indx] = data
+
+    # Make 2d ndarrays even if only scalars or 1d arrays
+    data_arrays = np.atleast_2d(np.array(data_arrays))
+
+    title_string = r'{solver} Solver after exactly 1 Period: '+\
+                '$\epsilon = {eps}$, $\mu = {mu}$'
+
+    fig = plot_snapshots_template(data_arrays, suptitle=None,
+            ax_ylabel=np.array([[''],['']]),
+            ax_title=np.array([[title_string],[title_string]]),
+            wind_arrows=False)
+
+    texplot.savefig(fig,save_prefix+filename_base+'-noH')
+
+def plot_long_verf_solitary_noH(load_prefix, save_prefix, *args, **kwargs):
+    filename_base = 'LongVerf'
+
+    filename = data_csv.find_filenames(load_prefix, filename_base,
+            parameters={'wave_type':'solitary'}, required_words=['H0'])
+
+    # Extract data
+    data_array = data_csv.load_data(filename, stack_coords=True)
+
+    # Arrange data and parameters into 2d array for plotting
+    data_arrays = np.empty((1,1),dtype=object)
+    data_arrays[0,0] = data_array
+
+    fig = plot_snapshots_template(data_arrays, norm_by_wavelength=False)
+
+    texplot.savefig(fig,save_prefix+'Long-Run-noH')
+
+def plot_long_verf_cnoidal_noH(load_prefix, save_prefix, *args, **kwargs):
+    filename_base = 'LongVerf'
+
+    filename = data_csv.find_filenames(load_prefix, filename_base,
+            parameters={'wave_type':'cnoidal'}, required_words=['H0'])
+
+    # Extract data
+    data_array = data_csv.load_data(filename, stack_coords=True)
+
+    # Arrange data and parameters into 2d array for plotting
+    data_arrays = np.empty((1,1),dtype=object)
+    data_arrays[0,0] = data_array
+
+    fig = plot_snapshots_template(data_arrays, norm_by_wavelength=False)
+
+    texplot.savefig(fig,save_prefix+'Long-Run-Cnoidal-noH')
+
 def plot_trig_verf(load_prefix, save_prefix, *args, **kwargs):
     filename_base = 'TrigVerf'
 
@@ -737,7 +800,7 @@ def plot_trig_verf(load_prefix, save_prefix, *args, **kwargs):
     # Extract data
     for indx_num, solver in enumerate(['Builtin', 'RK3']):
         filename = data_csv.find_filenames(load_prefix, filename_base,
-                required_words=[solver])
+                required_words=[solver], forbidden_words=['H0'])
 
         data = data_csv.load_data(filename, stack_coords=True)
 
@@ -761,7 +824,7 @@ def plot_long_verf_solitary(load_prefix, save_prefix, *args, **kwargs):
     filename_base = 'LongVerf'
 
     filename = data_csv.find_filenames(load_prefix, filename_base,
-            parameters={'wave_type':'solitary'})
+            parameters={'wave_type':'solitary'}, forbidden_words=['H0'])
 
     # Extract data
     data_array = data_csv.load_data(filename, stack_coords=True)
@@ -778,7 +841,7 @@ def plot_long_verf_cnoidal(load_prefix, save_prefix, *args, **kwargs):
     filename_base = 'LongVerf'
 
     filename = data_csv.find_filenames(load_prefix, filename_base,
-            parameters={'wave_type':'cnoidal'})
+            parameters={'wave_type':'cnoidal'}, forbidden_words=['H0'])
 
     # Extract data
     data_array = data_csv.load_data(filename, stack_coords=True)
@@ -1282,6 +1345,9 @@ def main():
             }
 
     callable_functions = {
+            'trig_verf_noH' : plot_trig_verf_noH,
+            'long_verf_solitary_noH' : plot_long_verf_solitary_noH,
+            'long_verf_cnoidal_noH' : plot_long_verf_cnoidal_noH,
             'trig_verf' : plot_trig_verf,
             'long_verf_solitary' : plot_long_verf_solitary,
             'long_verf_cnoidal' : plot_long_verf_cnoidal,

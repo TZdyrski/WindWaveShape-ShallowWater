@@ -90,7 +90,8 @@ def load_data(filename, extension='.csv', stack_coords=True):
     return data
 
 def find_filenames(load_prefix, filename_base, required_words=[],
-        parameters=dict(), allow_multiple_files=False):
+        forbidden_words=[], parameters=dict(),
+        allow_multiple_files=False):
 
     if parameters.get('wave_type', None) == 'solitary':
         # Cannot specify both 'wave_type'='solitary' and 'mu'
@@ -110,10 +111,20 @@ def find_filenames(load_prefix, filename_base, required_words=[],
     # Add required_words to parameters dict as keys without values
     parameters = {**{k : '' for k in required_words}, **parameters}
 
+    # Add required_words to forbidden_parameters dict as keys without values
+    forbidden_parameters = {**{k : '' for k in forbidden_words}}
+
     for param in parameters:
         # Select filenames with correct param
         filenames = [filename for filename in filenames if
-                param+str(parameters[param]) in filename]
+                param+str(parameters[param])+'_' in filename or
+                param+str(parameters[param])+'.csv' in filename]
+
+    for param in forbidden_parameters:
+        # Remove filenames containing forbidden parameters
+        filenames = [filename for filename in filenames if
+                param+str(forbidden_parameters[param])+'_' not in
+                filename]
 
     if len(filenames) < 1:
         # There should only be one option left

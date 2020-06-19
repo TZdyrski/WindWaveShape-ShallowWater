@@ -927,30 +927,32 @@ def gen_trig_verf(save_prefix, H=1.25e-2):
     tNum_trig = {'Builtin': 501, 'RK3': 10**5}
     snapshot_fracs = [0,1/3,2/3,1]
 
-    parameters = {
-            'A' : 1,
-            'B' : 0,
-            'C' : 1/6, # C = 1/6*mu/eps, so this requires mu=eps
-            'P' : 0,
-            'H' : H,
-            'eps' : 0.1,
-            'mu' : 0.1,
-            'wave_length' : wave_length,
-            }
+    for H_val in [H, 0]:
+        parameters = {
+                'A' : 1,
+                'B' : 0,
+                'C' : 1/6, # C = 1/6*mu/eps, so this requires mu=eps
+                'P' : 0,
+                'H' : H_val,
+                'eps' : 0.1,
+                'mu' : 0.1,
+                'wave_length' : wave_length,
+                }
 
-    for solver in ['Builtin','RK3']:
-        data, _ = default_solver(**parameters,
-            xLen=xLen, xNum=xNum, y0_func = y0_func,
-            tLen=(xLen/NumWaves)**3/(2*np.pi)**2*parameters['A']\
-                    /parameters['C'],
-            tNum=tNum_trig[solver],
-            snapshot_fracs = snapshot_fracs,
-            velocity=0,
-            solver=solver,
-            )
+        for solver in ['Builtin','RK3']:
+            data, _ = default_solver(**parameters,
+                xLen=xLen, xNum=xNum, y0_func = y0_func,
+                tLen=(xLen/NumWaves)**3/(2*np.pi)**2*parameters['A']\
+                        /parameters['C'],
+                tNum=tNum_trig[solver],
+                snapshot_fracs = snapshot_fracs,
+                velocity=0,
+                solver=solver,
+                )
 
-        data_csv.save_data(data, save_prefix+'TrigVerf-'+solver,
-                **parameters, solver=solver, stack_coords = True)
+            data_csv.save_data(data,
+                    save_prefix+'TrigVerf-'+solver+'_H'+str(H_val),
+                    **parameters, solver=solver, stack_coords = True)
 
 def gen_long_verf(save_prefix, mu=0.8, H=1.25e-2):
     # Generate verification data by running a solitary wave profile
@@ -959,29 +961,32 @@ def gen_long_verf(save_prefix, mu=0.8, H=1.25e-2):
     tLen = 30
     snapshot_fracs = [0,1/3,2/3,1]
 
-    for wave_type in ['solitary', 'cnoidal']:
-        parameters = {
-                'mu' : mu,
-                'P' : 0,
-                'H' : H,
-                'wave_type' : wave_type,
-                }
+    for H_val in [H, 0]:
+        for wave_type in ['solitary', 'cnoidal']:
+            parameters = {
+                    'mu' : mu,
+                    'P' : 0,
+                    'H' : H_val,
+                    'wave_type' : wave_type,
+                    }
 
-        # Use default mu for solitary waves
-        if wave_type == 'solitary':
-            parameters.pop('mu')
+            # Use default mu for solitary waves
+            if wave_type == 'solitary':
+                parameters.pop('mu')
 
-        data, dataClass = default_solver(**parameters,
-                tLen=tLen,
-                snapshot_fracs = snapshot_fracs,
-                )
+            data, dataClass = default_solver(**parameters,
+                    tLen=tLen,
+                    snapshot_fracs = snapshot_fracs,
+                    )
 
-        # Get default mu for solitary waves
-        if wave_type == 'solitary':
-            parameters['mu'] = dataClass.mu
+            # Get default mu for solitary waves
+            if wave_type == 'solitary':
+                parameters['mu'] = dataClass.mu
 
-        data_csv.save_data(data, save_prefix+'LongVerf', stack_coords = True,
-                eps=dataClass.eps, **parameters)
+            data_csv.save_data(data,
+                    save_prefix+'LongVerf_H'+str(H_val),
+                    stack_coords = True, eps=dataClass.eps,
+                    **parameters)
 
 def gen_snapshots(save_prefix, eps=0.1, mu=0.8, P=0.25, psiP=3/4*np.pi, H=1.25e-2):
     """ Generate snapshots for range of parameters. Save the results to
