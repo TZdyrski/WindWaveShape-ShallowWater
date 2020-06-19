@@ -988,7 +988,7 @@ def gen_long_verf(save_prefix, mu=0.8, H=1.25e-2):
                     stack_coords = True, eps=dataClass.eps,
                     **parameters)
 
-def gen_snapshots(save_prefix, eps=0.1, mu=0.8, P=0.25, psiP=3/4*np.pi, H=1.25e-2):
+def gen_snapshots(save_prefix, eps=0.1, mu=0.8, P=0.5, psiP=3/4*np.pi, H=1.25e-2):
     """ Generate snapshots for range of parameters. Save the results to
     the directory given by 'save_prefix'.
 
@@ -1018,7 +1018,7 @@ def gen_snapshots(save_prefix, eps=0.1, mu=0.8, P=0.25, psiP=3/4*np.pi, H=1.25e-
                 # We don't need GM applied to solitary waves, as it
                 # doesn't make as much sense
                 continue
-            for P_val in P*np.array([-2,-1,0,1,2]):
+            for P_val in P*np.array([-1,-0.5,0,0.5,1]):
 
                 for mu_val in mu*np.array([1,2]):
 
@@ -1058,7 +1058,7 @@ def gen_snapshots(save_prefix, eps=0.1, mu=0.8, P=0.25, psiP=3/4*np.pi, H=1.25e-
                         # affect the output)
                         break
 
-def gen_depth_varying(save_prefix, eps=0.1, mu=0.6, P=0.25, psiP=3/4*np.pi,
+def gen_depth_varying(save_prefix, eps=0.1, mu=0.6, P=0.5, psiP=3/4*np.pi,
         H=1.25e-2, forcing_type='Jeffreys'):
 
     # Linearly space khs
