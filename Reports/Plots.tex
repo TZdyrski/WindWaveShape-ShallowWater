@@ -9,8 +9,17 @@
 % Import custom style file containing common packages and options
 \setlength{\paperheight}{\pdfpageheight} % JFM class removes paperheight definition and hyperref raises a warning
 
+\usepackage[section]{placeins} % force floats to appear in their subsection
+\let\Oldsection\section
+\renewcommand{\section}{\FloatBarrier\Oldsection}
+\let\Oldsubsection\subsection
+\renewcommand{\subsection}{\FloatBarrier\Oldsubsection}
+\let\Oldsubsubsection\subsubsection
+\renewcommand{\subsubsection}{\FloatBarrier\Oldsubsubsection}
+
 % Import custom style file containing common packages and options
 \usepackage{preamble}
+
 \graphicspath{{./Figures/}}
 
 % Discrete Fourier Transform
@@ -58,6 +67,17 @@
   }
 \end{figure}
 
+\section{Verification}
+\begin{figure}
+  \centering
+  \includegraphics{TrigVerf.eps}
+  \caption{
+    Evolution of a sine wave without forcing or the nonlinear term for
+    the builtin solver and the RK3 solver (used throughout the rest of
+    the papers).
+  }
+\end{figure}
+
 \begin{figure}
   \centering
   \includegraphics{Long-Run.eps}
@@ -66,6 +86,8 @@
   }
 \end{figure}
 
+\section{Jeffreys Forcing}
+\subsection{Solitary Wave}
 \begin{figure}
   \centering
   \includegraphics{Snapshots-Positive-Negative.eps}
@@ -75,6 +97,16 @@
   }
 \end{figure}
 
+\begin{figure}
+  \centering
+  \includegraphics{Skew-Asymm.eps}
+  \caption{
+    Skewness and asymmetry of a solitary profile under onshore and offshore
+    Jeffreys forcing.
+  }
+\end{figure}
+
+\subsection{Cnoidal Wave}
 \begin{figure}
   \centering
   \includegraphics{Snapshots-Positive-Negative-Cnoidal.eps}
@@ -104,26 +136,9 @@
 
 \begin{figure}
   \centering
-  \includegraphics{Snapshots-Positive-Negative-Cnoidal-GM.eps}
-  \caption{
-    Evolution of a cnoidal profile under onshore and offshore Generalized
-    Miles forcing.
-  }
-\end{figure}
-
-\begin{figure}
-  \centering
   \includegraphics{Power-Spectrum-Jeffreys.eps}
   \caption{
     Power spectrum of a cnoidal wave under Jeffreys forcing.
-  }
-\end{figure}
-
-\begin{figure}
-  \centering
-  \includegraphics{Power-Spectrum-GM.eps}
-  \caption{
-    Power spectrum of a cnoidal wave under Generalized Miles forcing.
   }
 \end{figure}
 
@@ -138,19 +153,48 @@
 
 \begin{figure}
   \centering
-  \includegraphics{Power-Spectrum-vs-Time-GM.eps}
+  \includegraphics{Total-Energy-Jeffreys.eps}
   \caption{
-    Power spectrum of a cnoidal wave under Generalized Miles forcing as a
-    function of time.
+    Total energy of a cnoidal wave under Jeffreys forcing as a function
+    of time.
   }
 \end{figure}
 
 \begin{figure}
   \centering
-  \includegraphics{Total-Energy-Jeffreys.eps}
+  \includegraphics{Double-Power-Spectrum-Jeffreys.eps}
   \caption{
-    Total energy of a cnoidal wave under Jeffreys forcing as a function
-    of time.
+    Wavenumber-frequency plot of a cnoidal wave under Jeffreys forcing.
+    Each wavenumber $\kappa$ was pre-multiplied by $\exp[-(P k/\rho_w
+    g) \kappa t/2]$ before calculating the frequency spectra to remove
+    the largest growth components.
+  }
+\end{figure}
+
+\section{GM Forcing}
+\begin{figure}
+  \centering
+  \includegraphics{Snapshots-Positive-Negative-Cnoidal-GM.eps}
+  \caption{
+    Evolution of a cnoidal profile under onshore and offshore Generalized
+    Miles forcing.
+  }
+\end{figure}
+
+\begin{figure}
+  \centering
+  \includegraphics{Power-Spectrum-GM.eps}
+  \caption{
+    Power spectrum of a cnoidal wave under Generalized Miles forcing.
+  }
+\end{figure}
+
+\begin{figure}
+  \centering
+  \includegraphics{Power-Spectrum-vs-Time-GM.eps}
+  \caption{
+    Power spectrum of a cnoidal wave under Generalized Miles forcing as a
+    function of time.
   }
 \end{figure}
 
@@ -165,10 +209,11 @@
 
 \begin{figure}
   \centering
-  \includegraphics{Double-Power-Spectrum-Jeffreys.eps}
+  \includegraphics{Double-Power-Spectrum-GM.eps}
   \caption{
-    Wavenumber-frequency plot of a cnoidal wave under Jeffreys forcing.
-    Each wavenumber $\kappa$ was pre-multiplied by $\exp[-(P_J k/\rho_w
+    Wavenumber-frequency plot of a cnoidal wave under Generalized Miles
+    forcing.
+    Each wavenumber $\kappa$ was pre-multiplied by $\exp[-(P k/\rho_w
     g) \kappa t/2]$ before calculating the frequency spectra to remove
     the largest growth components.
   }
