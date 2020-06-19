@@ -299,8 +299,11 @@ def plot_snapshots_template(data_arrays, norm_by_wavelength=True,
     ax = atleast_2d(fig.axes).reshape(data_arrays.shape)
     if wind_arrows:
         for iy, ix in np.ndindex(ax.shape):
-            annotate_arrow(ax[iy,ix], data_arrays[iy,ix].attrs['P']>=0,
-                    wave_type=data_arrays[iy,ix].attrs['wave_type'])
+            # Only put wind arrows if P is nonzero
+            if data_arrays[iy,ix].attrs['P'] != 0:
+                annotate_arrow(ax[iy,ix],
+                        data_arrays[iy,ix].attrs['P']>0,
+                        wave_type=data_arrays[iy,ix].attrs['wave_type'])
 
     return fig
 
