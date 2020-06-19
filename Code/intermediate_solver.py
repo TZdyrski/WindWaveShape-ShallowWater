@@ -912,7 +912,7 @@ def default_solver(y0_func=None, solver='RK3', *args, **kwargs):
 
     return data, solverSystem
 
-def gen_trig_verf(save_prefix):
+def gen_trig_verf(save_prefix, H=1.25e-2):
     # Generate verification data by using sinusoidal initial conditions
     # with the Burgers equation
     NumWaves = 1
@@ -930,7 +930,7 @@ def gen_trig_verf(save_prefix):
             'B' : 0,
             'C' : 1/6, # C = 1/6*mu/eps, so this requires mu=eps
             'P' : 0,
-            'H' : 0,
+            'H' : H,
             'eps' : 0.1,
             'mu' : 0.1,
             'wave_length' : wave_length,
@@ -950,7 +950,7 @@ def gen_trig_verf(save_prefix):
         data_csv.save_data(data, save_prefix+'TrigVerf-'+solver,
                 **parameters, solver=solver, stack_coords = True)
 
-def gen_long_verf(save_prefix, mu=0.8):
+def gen_long_verf(save_prefix, mu=0.8, H=1.25e-2):
     # Generate verification data by running a solitary wave profile
     # without forcing for a long time
 
@@ -961,7 +961,7 @@ def gen_long_verf(save_prefix, mu=0.8):
         parameters = {
                 'mu' : mu,
                 'P' : 0,
-                'H' : 0,
+                'H' : H,
                 'wave_type' : wave_type,
                 }
 
