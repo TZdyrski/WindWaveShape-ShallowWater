@@ -104,8 +104,11 @@ def label_subplots(ax):
         subplotLabel = indxToAlpha + ')'
 
         # Add subplot labels
-        ax[indx].annotate(subplotLabel, xy=(0.05,0.9),xycoords='axes fraction',
-            va='top',ha='center')
+        t = ax[indx].text(0.05, 0.9, subplotLabel,
+                transform=ax[indx].transAxes, va='top',ha='left')
+        # Make box behind text semitransparent
+        t.set_bbox(dict(facecolor='white', edgecolor='white',
+            boxstyle='round'))
 
 def atleast_2d(input_data):
 
