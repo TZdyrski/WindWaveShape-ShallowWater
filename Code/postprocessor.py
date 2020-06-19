@@ -633,13 +633,6 @@ def move_verf(load_prefix, save_prefix, *args, **kwargs):
 def main():
     load_prefix = '../Data/Raw/'
     save_prefix = '../Data/Processed/'
-    default_params = {
-            'eps' : 0.1,
-            'P' : 0.25,
-            'H' : 0.25*0.05,
-            'psi_P' : 3/4*np.pi,
-            'forcing_type' : 'Jeffreys',
-            }
 
     callable_functions = {
             'shape_statistics' : process_shape_statistics,
@@ -655,7 +648,7 @@ def main():
     if len(sys.argv) == 1:
         # No option provided; run all plots
         for function in callable_functions.values():
-            function(load_prefix, save_prefix, **default_params)
+            function(load_prefix, save_prefix)
 
     else:
         if not sys.argv[1] in callable_functions:
@@ -665,8 +658,7 @@ def main():
             callable_functions[sys.argv[1]](load_prefix, save_prefix,
                     *sys.argv[2:])
         else:
-            callable_functions[sys.argv[1]](load_prefix, save_prefix,
-                    **default_params)
+            callable_functions[sys.argv[1]](load_prefix, save_prefix)
 
 if __name__ == '__main__':
     main()
