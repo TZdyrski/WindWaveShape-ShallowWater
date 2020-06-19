@@ -94,7 +94,7 @@ def find_filenames(load_prefix, filename_base, required_words=[],
 
     if parameters.get('wave_type', None) == 'solitary':
         # Cannot specify both 'wave_type'='solitary' and 'mu'
-        parameters.pop('mu')
+        parameters.pop('mu', None)
 
     filenames = glob.glob(load_prefix+filename_base+'*')
 
