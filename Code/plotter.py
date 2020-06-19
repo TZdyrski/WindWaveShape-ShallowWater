@@ -757,10 +757,11 @@ def plot_trig_verf(load_prefix, save_prefix, *args, **kwargs):
 
     texplot.savefig(fig,save_prefix+filename_base)
 
-def plot_long_verf(load_prefix, save_prefix, *args, **kwargs):
+def plot_long_verf_solitary(load_prefix, save_prefix, *args, **kwargs):
     filename_base = 'LongVerf'
 
-    filename = data_csv.find_filenames(load_prefix, filename_base)
+    filename = data_csv.find_filenames(load_prefix, filename_base,
+            parameters={'wave_type':'solitary'})
 
     # Extract data
     data_array = data_csv.load_data(filename, stack_coords=True)
@@ -772,6 +773,23 @@ def plot_long_verf(load_prefix, save_prefix, *args, **kwargs):
     fig = plot_snapshots_template(data_arrays, norm_by_wavelength=False)
 
     texplot.savefig(fig,save_prefix+'Long-Run')
+
+def plot_long_verf_cnoidal(load_prefix, save_prefix, *args, **kwargs):
+    filename_base = 'LongVerf'
+
+    filename = data_csv.find_filenames(load_prefix, filename_base,
+            parameters={'wave_type':'cnoidal'})
+
+    # Extract data
+    data_array = data_csv.load_data(filename, stack_coords=True)
+
+    # Arrange data and parameters into 2d array for plotting
+    data_arrays = np.empty((1,1),dtype=object)
+    data_arrays[0,0] = data_array
+
+    fig = plot_snapshots_template(data_arrays, norm_by_wavelength=False)
+
+    texplot.savefig(fig,save_prefix+'Long-Run-Cnoidal')
 
 def plot_pos_solitary(load_prefix, save_prefix, *args, **kwargs):
     filename_base = 'Snapshots'
@@ -1265,7 +1283,8 @@ def main():
 
     callable_functions = {
             'trig_verf' : plot_trig_verf,
-            'long_verf' : plot_long_verf,
+            'long_verf_solitary' : plot_long_verf_solitary,
+            'long_verf_cnoidal' : plot_long_verf_cnoidal,
             'pos_solitary' : plot_pos_solitary,
             'neg_solitary' : plot_neg_solitary,
             'pos_neg_solitary' : plot_pos_neg_solitary,
