@@ -1423,6 +1423,53 @@ def plot_hofmiller_cnoidal(load_prefix, save_prefix, *args, **kwargs):
 
     texplot.savefig(fig,save_prefix+'Hofmiller-Cnoidal')
 
+def plot_biviscosity(load_prefix, save_prefix, *args, **kwargs):
+    filename_base = 'Biviscosity'
+
+    # Remove 'H' parameter
+    kwargs.pop('H', None)
+
+    # Remove 'P' parameter
+    kwargs.pop('P', None)
+
+    # Arrange data and parameters into 1d array for plotting
+    data_arrays = np.empty((1),dtype=object)
+
+    mu = float(kwargs.get('mu'))
+
+    for indx_num, mu_val in enumerate([mu]):
+        filenames = data_csv.find_filenames(load_prefix, filename_base,
+                parameters={'wave_type' : 'cnoidal', **kwargs,
+                    'mu' : mu_val},
+                allow_multiple_files=True)
+
+        data_array_list = []
+        H_val_list = []
+        for filename in filenames:
+            # Extract data
+            data_array = data_csv.load_data(filename, stack_coords=False)
+
+            H_val = float(data_array.attrs['H'])
+
+            H_val_list.append(H_val)
+            data_array_list.append(data_array)
+
+        data_arrays[indx_num] = xr.concat(data_array_list,
+                dim=xr.DataArray(H_val_list, name='H', dims='H'))
+        # Transpose to put P coordinate at end; this makes plotting easier
+        data_arrays[indx_num] = data_arrays[indx_num].transpose()
+        # Remove P parameter attribute
+        data_arrays[indx_num].attrs.pop('H', None)
+
+    fig = plot_shape_statistics_vs_time_template(data_arrays,
+            color_class='sequential', legend_sig_figs=3,
+            legend_title=r'Biviscosity'+'\n'+\
+                    r'$\nu/(\rho_w g k_E \epsilon)$',
+            ax_title=r'$\epsilon = {eps}$, $\mu = {mu}$, '+\
+                    r'$P k_E/(\rho_w g \epsilon)= 0$')
+
+    texplot.savefig(fig,save_prefix+'Biviscosity')
+
 def plot_forcing_types(load_prefix, save_prefix, *args, **kwargs):
 
     import scipy.special as spec
@@ -1507,6 +1554,7 @@ def main():
             'wavenum_freq_GM' : plot_wavenum_freq_GM,
             'hofmiller_solitary' : plot_hofmiller_solitary,
             'hofmiller_cnoidal' : plot_hofmiller_cnoidal,
+            'biviscosity' : plot_biviscosity,
             'forcing_types' : plot_forcing_types,
             }
 

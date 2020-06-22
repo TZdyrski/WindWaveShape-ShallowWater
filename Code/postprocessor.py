@@ -726,6 +726,22 @@ def process_hofmiller(load_prefix, save_prefix, *args, **kwargs):
         data_csv.save_data(data_array, save_prefix+'Hofmiller',
                 **data_array.attrs, stack_coords=True)
 
+def process_biviscosity_variation(load_prefix, save_prefix, *args, **kwargs):
+    filename_base = 'Biviscosity'
+
+    # Find filenames
+    filenames = data_csv.find_filenames(load_prefix, filename_base,
+            allow_multiple_files=True)
+
+    for filename in filenames:
+        # Create shape statistics
+        statistics = generate_statistics(filename)
+
+        # Save statistics
+        data_csv.save_data(statistics,
+                save_prefix+'Biviscosity_H'+str(statistics.attrs['H']),
+                **statistics.attrs)
+
 def trim_snapshots(load_prefix, save_prefix, *args, **kwargs):
     filename_base = 'Snapshots'
 
@@ -772,6 +788,7 @@ def main():
             'wavenum_freq' : process_wavenumber_frequency,
             'depth_varying' : process_depth_varying,
             'hofmiller' : process_hofmiller,
+            'biviscosity' : process_biviscosity_variation,
             }
 
     if len(sys.argv) == 1:

@@ -1092,6 +1092,45 @@ def gen_depth_varying(save_prefix, eps=0.1, mu=0.6, P=0.5, psiP=3/4*np.pi,
                 wave_length=dataClass.WaveLength,
                 **parameters, stack_coords=True)
 
+def gen_biviscosity_variation(save_prefix, eps=0.1, mu=0.8, P=0, psiP=3/4*np.pi,
+        H=1.25e-2, forcing_type='Jeffreys', wave_type='cnoidal'):
+
+    H_vals = np.vectorize(round_sig_figs)(H*np.logspace(-3,1,5),3)
+    # Also include H=0
+    H_vals = np.insert(H_vals, 0, 0)
+
+    for H_val in H_vals:
+
+       parameters = {
+               'eps' : eps,
+               'mu' : mu,
+               'wave_type' : wave_type,
+               'forcing_type' : forcing_type,
+               'P' : P,
+               'psiP' : psiP,
+               'H' : H_val,
+               }
+
+       # Jeffreys does not just psiP
+       if forcing_type == 'Jeffreys':
+           parameters.pop('psiP')
+
+       # Use default mu for solitary waves
+       if wave_type == 'solitary':
+           parameters.pop('mu')
+
+       # Run model
+       data, dataClass = default_solver(**parameters)
+
+       # Get default mu for solitary waves
+       if wave_type == 'solitary':
+           parameters['mu'] = dataClass.mu
+
+       # Save data
+       data_csv.save_data(data, save_prefix+'Biviscosity_H'+str(H_val),
+               wave_length=dataClass.WaveLength,
+               **parameters, stack_coords=True)
+
 def main():
     save_prefix = '../Data/Raw/'
 
@@ -1100,6 +1139,7 @@ def main():
             'long_verf' : gen_long_verf,
             'snapshots' : gen_snapshots,
             'depth_varying' : gen_depth_varying,
+            'biviscosity' : gen_biviscosity_variation,
             }
 
     if len(sys.argv) == 1:
