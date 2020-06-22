@@ -113,6 +113,13 @@ def energy(profile):
 
     return energy
 
+def peak_location(profile):
+
+    peak_locations = find_peak_coords(profile, dim_to_search='x/h',
+            only_nonneg_coords=False, num_peaks=1)
+
+    return peak_locations
+
 def spatial_fourier_transform(profile, repeat_times = 5):
     xLen,xNum,dx = get_var_stats(profile)
 
@@ -238,7 +245,7 @@ def biphase(profile):
     power_spec = power_spectrum(fourier)
 
     # Only include first 2 peaks
-    power_spec_peak_indices = find_initial_peaks(power_spec, num_peaks=2)
+    power_spec_peak_indices = find_initial_peak_indices(power_spec, num_peaks=2)
 
     # Get indices for primary (m=1) and first harmonic (m=2)
     primaryIndex = power_spec_peak_indices[0]
@@ -302,36 +309,84 @@ def bicoherence(profile):
 
     return bicoherence
 
-def find_initial_peaks(signal, num_peaks=5):
+def find_peak_coords(signal, dim_to_search='t*eps*sqrt(g*h)*k_E', num_peaks=5,
+        only_nonneg_coords=True):
+
+    if only_nonneg_coords:
+        # Only keep peaks where the corresponding dim_to_search
+        # coordinate is nonnegative
+        signal = signal.where(signal[dim_to_search] >= 0, drop=True)
+
+    def find_peak_indices(signal, num_peaks):
+        # Need to do this to fix a bug in scipy
+        signal = signal.copy()
+
+        # Find peaks
+        peak_indices = sp.signal.find_peaks(signal)[0]
+
+        # Sort the peaks by the value of signal at that location
+        peak_indices = peak_indices[np.argsort(
+            signal[peak_indices]
+            )[::-1]]
+
+        # Only include num_peaks peaks
+        peak_indices = peak_indices[:num_peaks]
+
+        if peak_indices.size < num_peaks:
+            raise(ValueError('Not enough peaks found; requested '+\
+                    str(num_peaks)+' but only found '+\
+                    str(peak_indices.size)))
+
+        return peak_indices
+
+    peak_indices = xr.apply_ufunc(
+            find_peak_indices,
+            signal,
+            kwargs={'num_peaks':num_peaks},
+            input_core_dims=[[dim_to_search]],
+            output_core_dims=[['peak_mag_high_to_low']],
+            vectorize=True,
+            )
+
+    # Convert from indices to coordinates
+    peak_coords = signal[dim_to_search][peak_indices]
+
+    # Reduce number of dimensions
+    peak_coords = peak_coords.squeeze(drop=True)
+
+    # Remove extraneous dimension
+    peak_coords = peak_coords.reset_coords(names=dim_to_search, drop=True)
+
+    return peak_coords
+
+def find_initial_peak_indices(signal, **kwargs):
+
     signal_initial = signal[{'t*eps*sqrt(g*h)*k_E':0}].reset_coords(
             't*eps*sqrt(g*h)*k_E', drop=True)
-    # Find peaks in initial data (peaks shouldn't move over time either)
-    signal_peaks = sp.signal.find_peaks(signal_initial)[0]
 
     # Determine the name of the coordinate (there should be only one
     # since we removed the time coordinate)
-    coordinate = list(signal_initial.coords.keys())[0]
+    coordinate = list(signal_initial.coords.keys())
 
-    # Only keep non-negative kappa peaks
-    signal_peaks = signal_peaks[
-            np.array(
-                signal_initial[coordinate][signal_peaks] >= 0
-                )
-            ]
+    if len(coordinate) > 1:
+        raise(ValueError("Too many dimensions when trying to find"+\
+        "initial peak; there should only be the 't*eps*sqrt(g*h)*k_E"+\
+        "dimension and one additional dimension"))
+    else:
+        coordinate = coordinate[0]
 
-    # Sort the peaks
-    signal_peaks = signal_peaks[
-            np.argsort(
-                np.array(
-                    signal_initial[{coordinate:signal_peaks}]
-                    )
-                )[::-1]
-            ]
+    # Find coordinates of peaks
+    signal_peak_coords = find_peak_coords(signal_initial,
+            dim_to_search=coordinate, **kwargs).values
 
-    # Only include first num_peaks
-    signal_peaks = signal_peaks[0:num_peaks]
+    # Convert from coordinates to indices
+    # Source: https://stackoverflow.com/questions/32191029/32191125#32191125
+    sorter = np.argsort(signal_initial[coordinate].values)
+    signal_peak_indices = sorter[np.searchsorted(
+        signal_initial[coordinate].values,
+        signal_peak_coords, sorter=sorter)]
 
-    return signal_peaks
+    return signal_peak_indices
 
 def truncate_after_peak(signal, num_peaks=3):
     signal_initial = np.abs(signal[{'t*eps*sqrt(g*h)*k_E':0}])
@@ -339,11 +394,11 @@ def truncate_after_peak(signal, num_peaks=3):
     # Only include first num_peaks+1 (we need one extra since the
     # right-sided base always gives the right window limit, so we'll use
     # the n+1th left base limit to define the nth right base limit)
-    signal_peaks = find_initial_peaks(np.abs(signal), num_peaks=num_peaks+1)
+    signal_peak_indices = find_initial_peak_indices(np.abs(signal), num_peaks=num_peaks+1)
 
     # Find peak bases in initial data (peaks shouldn't move over time either)
     signal_left_base_indices = sp.signal.peak_prominences(
-            signal_initial, signal_peaks)[1]
+            signal_initial, signal_peak_indices)[1]
 
     # Use the n+1th left base limit to define the nth right base limit
     signal_right_base_indices = signal_left_base_indices[1:]
@@ -365,12 +420,12 @@ def annotate_peak_locations(signal, mode_num=1):
     signal_initial = np.abs(signal[{'t*eps*sqrt(g*h)*k_E':0}])
 
     # Only include first num_peaks
-    signal_peaks = find_initial_peaks(np.abs(signal), num_peaks=mode_num)
+    signal_peak_indices = find_initial_peak_indices(np.abs(signal), num_peaks=mode_num)
 
     # Store height (specifically, the largest height as a function of
     # time) and bases of second peak for inset image
     signal_peak_height = np.amax(signal[
-        {'kappa/k':signal_peaks[mode_num-1]}]).item()
+        {'kappa/k':signal_peak_indices[mode_num-1]}]).item()
 
     # Find bases of mode_num-th peak in initial data (peaks shouldn't
     # move over time either) Calculate using 0.9999 prominence since we
@@ -379,7 +434,7 @@ def annotate_peak_locations(signal, mode_num=1):
     # peak to the left side of mode_num+1-th peak, including all the
     # intervening flat space.
     signal_peak_base_indices = sp.signal.peak_widths(
-            signal_initial, [signal_peaks[mode_num-1]],
+            signal_initial, [signal_peak_indices[mode_num-1]],
             rel_height=0.9999)[2:]
 
     # Convert from indices to kappa values by multiplying by the
@@ -460,6 +515,9 @@ def generate_statistics(filename):
     # Normalize by initial energy
     energies_normalized = energies/energies[{'t*eps*sqrt(g*h)*k_E':0}]
 
+    # Calculate peak location
+    peak_locations = peak_location(data_array)
+
     # Combine shape statistics
     statistics = xr.Dataset(data_vars = {
         'max(eta)/max(eta_0)' : ('t*eps*sqrt(g*h)*k_E' ,
@@ -470,6 +528,7 @@ def generate_statistics(filename):
             save_biphase else {}),
         'E/E_0' : ('t*eps*sqrt(g*h)*k_E' ,
             energies_normalized),
+        'x_peak/h' : ('t*eps*sqrt(g*h)*k_E' , peak_locations),
         },
         coords = {'t*eps*sqrt(g*h)*k_E' :
             data_array['t*eps*sqrt(g*h)*k_E']},
@@ -545,7 +604,7 @@ def process_power_spec_vs_time(load_prefix, save_prefix, *args, **kwargs):
 
         # Restrict to first num_peaks modes
         power_spec = power_spec[{'kappa/k':
-            find_initial_peaks(power_spec, num_peaks=3)}]
+            find_initial_peak_indices(power_spec, num_peaks=3)}]
 
         # Normalize by initial time
         power_spec = power_spec/power_spec[{'t*eps*sqrt(g*h)*k_E':0}]

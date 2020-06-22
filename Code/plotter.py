@@ -317,20 +317,22 @@ def plot_shape_statistics_template(data_arrays, ax_title=None, **kwargs):
     # Set axis labels and titles
 
     plot_biphase = 'biphase' in data_arrays[0].data_vars
+    plot_peak_pos = 'x_peak/h' in data_arrays[0].data_vars
 
-    ax_ylabel = ['Height', 'Skewness', 'Asymmetry']
+    ax_ylabel_list = ['Height', 'Skewness', 'Asymmetry']
     if plot_biphase:
-        ax_ylabel.append('Biphase')
-    ax_ylabel = atleast_2d(np.array(ax_ylabel))
+        ax_ylabel_list.append('Biphase')
+    if plot_peak_pos:
+        # Insert after Height
+        ax_ylabel_list.insert(1,
+                r'Peak Position $x_{{\text{{peak}}}}/h$')
+    ax_ylabel = atleast_2d(np.array(ax_ylabel_list))
 
     if ax_title is not None:
         ax_title_full = fill_to_shape('', (len(ax_ylabel),data_arrays.size))
         ax_title_full[0,:] = ax_title
 
-    if plot_biphase:
-        data_arrays_rearranged = np.empty((4,data_arrays.size),dtype=object)
-    else:
-        data_arrays_rearranged = np.empty((3,data_arrays.size),dtype=object)
+    data_arrays_rearranged = np.empty((ax_ylabel.size,data_arrays.size),dtype=object)
 
     for shape_group in range(data_arrays_rearranged.shape[1]):
         split_data_arrays = [
@@ -340,6 +342,10 @@ def plot_shape_statistics_template(data_arrays, ax_title=None, **kwargs):
                 ]
         if plot_biphase:
             split_data_arrays.append(data_arrays[shape_group]['biphase'])
+        if plot_peak_pos:
+            # Insert after Height
+            split_data_arrays.insert(1,
+                    data_arrays[shape_group]['x_peak/h'])
 
         data_arrays_rearranged[:,shape_group] = split_data_arrays
         for iy in range(data_arrays_rearranged.shape[0]):
@@ -357,24 +363,28 @@ def plot_shape_statistics_template(data_arrays, ax_title=None, **kwargs):
         **kwargs,
         })
 
-    ax = atleast_2d(fig.axes).reshape((len(ax_ylabel),data_arrays.size))
+    ax = atleast_2d(fig.axes).reshape((len(ax_ylabel_list),
+        data_arrays.size))
     for ix in np.ndindex(ax.shape[1]):
         # Put horizontal line at y=1
-        ax[0,ix].item().axhline(1, color='0.75')
+        ax[ax_ylabel_list.index('Height'),ix].item().axhline(1,
+                color='0.75')
 
         # Put horizontal line at y=0
-        ax[2,ix].item().axhline(0, color='0.75')
+        ax[ax_ylabel_list.index('Asymmetry'),ix].item().axhline(0,
+                color='0.75')
 
         if plot_biphase:
             # Put horizontal line at y=0
-            ax[3,ix].item().axhline(0, color='0.75')
+            biphase_index = ax_ylabel_list.index('Biphase')
+            ax[biphase_index,ix].item().axhline(0, color='0.75')
 
             # Determine smallest ylim (positive or negative)
             min_ylim = np.amin(np.abs(np.array(\
-                    ax[3,ix].item().get_ylim())))
+                    ax[biphase_index,ix].item().get_ylim())))
             # Don't let min_ylim be smaller than 1/2 max_ylim
             minSize = 1/2*np.amax(np.abs(np.array(\
-                    ax[3,ix].item().get_ylim())))
+                    ax[biphase_index,ix].item().get_ylim())))
             min_ylim = max([minSize,min_ylim])
             # Determine smallest power of 2, n, such that min_ylim >=
             # pi/2^n
@@ -382,7 +392,13 @@ def plot_shape_statistics_template(data_arrays, ax_title=None, **kwargs):
             # Denominator of pi is 2^(power_of_two)
             pi_denom = 2**power_of_two
             # Set y-ticks as multiples of \pi
-            pi_multiple_ticks(ax[3,ix].item(),'y',1/pi_denom,1/(2*pi_denom))
+            pi_multiple_ticks(ax[biphase_index,ix].item(),'y',
+                    1/pi_denom,1/(2*pi_denom))
+
+        if plot_peak_pos:
+            ax[ax_ylabel_list.index(
+                r'Peak Position $x_{{\text{{peak}}}}/h$'),ix].\
+                        item().set_ylim(-2,2)
 
     return fig
 
