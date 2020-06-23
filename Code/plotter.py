@@ -402,11 +402,6 @@ def plot_shape_statistics_template(data_arrays, ax_title=None, **kwargs):
             pi_multiple_ticks(ax[biphase_index,ix].item(),'y',
                     1/pi_denom,1/(2*pi_denom))
 
-        if plot_peak_pos:
-            ax[ax_ylabel_list.index(
-                r'Peak Position $x_{{\text{{peak}}}}/h$'),ix].\
-                        item().set_ylim(-2,2)
-
     return fig
 
 def plot_shape_statistics_vs_time_template(data_arrays, **kwargs):
