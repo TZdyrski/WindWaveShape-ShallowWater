@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # plotter.py
 import sys
-import glob
 import numpy as np
 import xarray as xr
 from cycler import cycler
@@ -130,13 +129,32 @@ def fill_to_shape(scalar, shape):
     else:
         return scalar
 
+def convert_x_norm(data_arrays):
+    for iy,ix in np.ndindex(data_arrays.shape):
+        # Convert from x'/sqrt(mu) = x/h to
+        # x'/sqrt(mu)*sqrt(mu)/lambda' = x/lambda
+        # (Primes denote the nondim variables used throughout this
+        # solver)
+        data_arrays[iy,ix] = data_arrays[iy,ix].assign_coords(
+                {'x/lambda' : data_arrays[iy,ix]['x/h']*\
+                        np.sqrt(float(data_arrays[iy,ix].attrs['mu']))/\
+                        float(data_arrays[iy,ix].attrs['wave_length'])
+                        })
+        # Replace x/h with x/lambda as dimensional coordinate
+        data_arrays[iy,ix] = data_arrays[iy,ix].swap_dims({'x/h' :
+                'x/lambda'})
+        # Remove x/h coordinate
+        data_arrays[iy,ix] = data_arrays[iy,ix].drop('x/h')
+
+    return data_arrays
+
 def default_plotter(data_array, x_name, axis):
     axis.plot(data_array[x_name], data_array)
 
 def plot_multiplot_template(data_arrays, x_coordinate, suptitle=None, ax_title=None,
         ax_xlabel=None, ax_ylabel=None, color_class=None,
         show_legend=False, legend_title=None, plotter=default_plotter,
-        legend_sig_figs=2):
+        subplot_adjust_params={}, legend_sig_figs=2):
     """
     Parameters
     ----------
@@ -216,17 +234,18 @@ def plot_multiplot_template(data_arrays, x_coordinate, suptitle=None, ax_title=N
         # Set alignment in case provided legend_title is multilined
         leg.get_title().set_multialignment('center')
 
-    subplot_adjust_params = {'hspace':0.3, 'wspace':0.2}
+    default_subplot_adjust_params = {'hspace':0.3, 'wspace':0.2}
     if suptitle is not None:
-        subplot_adjust_params['top'] = 0.875
+        default_subplot_adjust_params['top'] = 0.875
 
     if show_legend is not None:
-        subplot_adjust_params['right'] = 0.825
+        default_subplot_adjust_params['right'] = 0.825
 
-    if subplot_adjust_params != {}:
+    if default_subplot_adjust_params != {}:
         fig.set_tight_layout(False)
         fig.tight_layout()
-        fig.subplots_adjust(**subplot_adjust_params)
+        fig.subplots_adjust(**{**default_subplot_adjust_params,
+            **subplot_adjust_params})
 
     # Make background transparent
     fig.patch.set_alpha(0)
@@ -262,21 +281,7 @@ def plot_snapshots_template(data_arrays, norm_by_wavelength=True,
     legend_title = r'Time'+'\n'+r'$t \epsilon \sqrt{g h} k_E$'
 
     if norm_by_wavelength:
-        for iy,ix in np.ndindex(data_arrays.shape):
-            # Convert from x'/sqrt(mu) = x/h to
-            # x'/sqrt(mu)*sqrt(mu)/lambda' = x/lambda
-            # (Primes denote the nondim variables used throughout this
-            # solver)
-            data_arrays[iy,ix] = data_arrays[iy,ix].assign_coords(
-                    {'x/lambda' : data_arrays[iy,ix]['x/h']*\
-                            np.sqrt(float(data_arrays[iy,ix].attrs['mu']))/\
-                            float(data_arrays[iy,ix].attrs['wave_length'])
-                            })
-            # Replace x/h with x/lambda as dimensional coordinate
-            data_arrays[iy,ix] = data_arrays[iy,ix].swap_dims({'x/h' :
-                    'x/lambda'})
-            # Remove x/h coordinate
-            data_arrays[iy,ix] = data_arrays[iy,ix].drop('x/h')
+        data_arrays = convert_x_norm(data_arrays)
 
     # Reorder into a single column
     data_arrays = data_arrays.reshape((data_arrays.size,1), order='F')
@@ -753,6 +758,72 @@ def plot_hofmiller_template(data_arrays, **kargs):
         # Put kwargs last so any parameters will overwrite the defaults
         # we've provided
         **kargs,
+        })
+
+    return fig
+
+def plot_spacetime_mesh_template(data_arrays, norm_by_wavelength=False,
+        **kwargs):
+
+    # Set axis labels and titles
+
+    ax_xlabel = r'Time $t \epsilon \sqrt{{g h}} k_E$'
+
+    ax_ylabel = r'Distance $x/\lambda$' if norm_by_wavelength else\
+            r'Distance $x/h$'
+
+    title_string =  r'$\epsilon = {eps}$,'+\
+            r' $\mu_E = {mu}$,'+\
+            r' $P k_E/(\rho_w g \epsilon) = {P}$'+\
+            (r', $\psi_P = {psiP}$' if
+                    data_arrays[0,0].attrs.get('forcing_type',None) ==
+                    'GM' else '')+\
+            (r', Forcing: {forcing_type}' if
+                    data_arrays[0,0].attrs.get('forcing_type',None) is
+                    not None else '')
+
+    if data_arrays.size == 1:
+        ax_title = title_string
+        suptitle = None
+    else:
+        suptitle = title_string
+        ax_title = None
+
+    x_coordinate = 'x/lambda' if norm_by_wavelength else 'x/h'
+
+    legend_title = r'Time'+'\n'+r'$t \epsilon \sqrt{g h} k_E$'
+
+    if norm_by_wavelength:
+        data_arrays = convert_x_norm(data_arrays)
+
+    # Define custom plotter
+    def spacetime_mesh_plotter(data_array, x_coord, axis):
+
+        # Generate meshes for contour plot
+        t_mesh,x_mesh = np.meshgrid(
+                data_array['t*eps*sqrt(g*h)*k_E'],
+                data_array[x_coord],
+                )
+
+        cs = axis.pcolormesh(t_mesh, x_mesh, data_array)
+
+        # Add colorbars
+        axis.figure.colorbar(cs ,ax=axis)
+        return
+
+    # Plot data
+    fig = plot_multiplot_template(**{
+        'data_arrays':data_arrays,
+        'x_coordinate':x_coordinate,
+        'suptitle':suptitle,
+        'ax_title':ax_title,
+        'ax_xlabel':ax_xlabel,
+        'ax_ylabel':ax_ylabel,
+        'plotter':spacetime_mesh_plotter,
+        'subplot_adjust_params':{'right':1},
+        # Put kwargs last so any parameters will overwrite the defaults
+        # we've provided
+        **kwargs,
         })
 
     return fig
@@ -1470,6 +1541,40 @@ def plot_biviscosity(load_prefix, save_prefix, *args, **kwargs):
 
     texplot.savefig(fig,save_prefix+'Biviscosity')
 
+def plot_spacetime_mesh(load_prefix, save_prefix, *args, **kwargs):
+    filename_base = 'Full-Snapshots'
+
+    # Using the default list of parameters, generate plots for ones with
+    # slightly different parameters
+    parameter_list = [
+            {**kwargs},
+            {**kwargs, 'forcing_type':'GM'},
+            {**kwargs, 'wave_type':'solitary'},
+            {**kwargs, 'P':-kwargs.get('P',0)},
+            {**kwargs, 'mu':2*kwargs.get('mu',0)},
+            ]
+    for parameters in parameter_list:
+
+        filename = data_csv.find_filenames(load_prefix, filename_base,
+                parameters=parameters)
+
+        # Extract data
+        data_array = data_csv.load_data(filename, stack_coords=True)
+
+        filename_end = filename.replace(load_prefix+filename_base,'').\
+                replace('.csv','')
+
+        # Arrange data and parameters into 2d array for plotting
+        data_arrays = np.empty((1,1),dtype=object)
+        data_arrays[0,0] = data_array
+
+        norm_by_wavelength = data_array.attrs['wave_type'] == 'cnoidal'
+
+        fig = plot_spacetime_mesh_template(data_arrays,
+                norm_by_wavelength=norm_by_wavelength)
+
+        texplot.savefig(fig,save_prefix+'Spacetime-Mesh'+filename_end)
+
 def plot_forcing_types(load_prefix, save_prefix, *args, **kwargs):
 
     import scipy.special as spec
@@ -1555,6 +1660,7 @@ def main():
             'hofmiller_solitary' : plot_hofmiller_solitary,
             'hofmiller_cnoidal' : plot_hofmiller_cnoidal,
             'biviscosity' : plot_biviscosity,
+            'spacetime_mesh' : plot_spacetime_mesh,
             'forcing_types' : plot_forcing_types,
             }
 

@@ -788,6 +788,24 @@ def trim_snapshots(load_prefix, save_prefix, *args, **kwargs):
         data_csv.save_data(data_array, save_prefix+'Snapshots',
                 **data_array.attrs, stack_coords=True)
 
+def process_spacetime_mesh(load_prefix, save_prefix, *args, **kwargs):
+    # Simply move the snapshot data from the load directory to the save
+    # directory unchanged
+    filename_base = 'Snapshots'
+
+    # Find filenames
+    old_filenames = glob.glob(load_prefix+'*'+filename_base+'*')
+
+    # Rename files
+    new_filenames = [filename.\
+            replace(load_prefix, save_prefix).\
+            replace(filename_base, 'Full-'+filename_base)
+            for filename in old_filenames]
+
+    for old_filename,new_filename in zip(old_filenames, new_filenames):
+        # Copy files
+        shutil.copy(old_filename, new_filename)
+
 def move_verf(load_prefix, save_prefix, *args, **kwargs):
     # Simply move the verification data from the load directory to the
     # save directory unchanged
@@ -817,6 +835,7 @@ def main():
             'depth_varying' : process_depth_varying,
             'hofmiller' : process_hofmiller,
             'biviscosity' : process_biviscosity_variation,
+            'spacetime_mesh' : process_spacetime_mesh
             }
 
     if len(sys.argv) == 1:
