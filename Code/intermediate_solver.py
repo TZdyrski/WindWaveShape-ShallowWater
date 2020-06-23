@@ -947,7 +947,7 @@ def gen_trig_verf(save_prefix, H=1.25e-2):
                         /parameters['C'],
                 tNum=tNum_trig[solver],
                 snapshot_fracs = snapshot_fracs,
-                velocity=0,
+                boostVelocity=0,
                 solver=solver,
                 )
 
