@@ -39,11 +39,8 @@ class kdvSystem():
         C : float or None
             Sets the importance of the dispersivity. Default is
             1/6*mu/eps.
-        F : float, 'soltion_frame', or None
-            Sets the background current strength. If 'soliton_frame', a
-            value of -abs(B)/3*np.sign(C) is chosen to cancel the
-            propagation of the default, solitonic solution with zero
-            damping. Default is 0.
+        F : float or None
+            Sets the background current strength. Default is 0.
         G : float or None
             Sets the strength of the damping. If None, determine G from
             G=-1/2*P, where P is the pressure forcing strength. Default
@@ -88,11 +85,7 @@ class kdvSystem():
         else:
             self.C = 1/6*mu/eps
 
-        if F == 'soliton_frame':
-            # Choose value to give default, solitonic solution zero
-            # propagation velocity
-            self.F = -abs(B)/3*np.sign(self.C)
-        elif F is not None:
+        if F is not None:
             self.F = F
         else:
             self.F = 0
@@ -307,6 +300,38 @@ class kdvSystem():
 
         else:
             raise(ValueError("y0 must be array_like, 'solitary', or 'cnoidal'"))
+
+    def boost_frame(self, boostVelocity=0, **kwargs):
+        """ Boost frame to boostVelocity.
+
+        Boost the frame to boostVelocity by adjusting the F coefficient
+        (corresponding to a Galilean boost or the introduction of a
+        background current).
+
+        Parameters
+        ----------
+        boostVelocity : float, 'solitary' or 'cnoidal'
+            The type of wave. If 'solitary', a value of
+            -abs(B)/3*np.sign(C) is chosen to cancel the propagation of
+            the default, solitonic solution with zero damping. If
+            'cnoidal', a value is chosen to cancel the propagation of
+            the default, cnoidal solution with zero damping.
+        """
+
+        if boostVelocity == 'solitary':
+            # Choose value to give default, solitonic solution zero
+            # propagation velocity
+            self.F = -self.B*self.Height/3
+        elif boostVelocity == 'cnoidal':
+            # Choose value to give default, cnoidal solution zero
+            # propagation velocity
+            m = self.m
+            K = spec.ellipk(m)
+            E = spec.ellipe(m)
+
+            self.F = -2/3*self.B*self.Height/m*(1-1/2*m-3/2*E/K)
+        else:
+            self.F = -boostVelocity*self.A
 
     def set_x_window(self, xMin=None, xMax=None, xScale=1, *args, **kwargs):
         """Set x_window, the portion of the x domain to plot.
@@ -871,6 +896,8 @@ def default_solver(y0_func=None, solver='RK3', *args, **kwargs):
         solverSystem.set_initial_conditions(y0=y0_func(solverSystem.x), **kwargs)
     else:
         solverSystem.set_initial_conditions(**kwargs)
+    # Boost to co-moving frame
+    solverSystem.boost_frame(**kwargs)
     # Set snapshot times
     solverSystem.set_snapshot_ts(**kwargs)
     # Solve KdV-Burgers system
@@ -883,9 +910,6 @@ def default_solver(y0_func=None, solver='RK3', *args, **kwargs):
     else:
         raise(ValueError("'solver' must be {'Builtin','RK3','AB2'}, but "+
             solver+" was provided"))
-
-    # Boost to co-moving frame
-    solverSystem.boost_to_lab_frame(**kwargs)
 
     # Convert back to non-normalized variables
     # Convert from eta' = eta/a = eta/h/eps to eta'*eps = eta/a*eps = eta/h
