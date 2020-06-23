@@ -116,7 +116,7 @@ def energy(profile):
 def peak_location(profile):
 
     peak_locations = find_peak_coords(profile, dim_to_search='x/h',
-            only_nonneg_coords=False, num_peaks=1)
+            only_nonneg_coords=False, num_peaks=1, center_domain=True)
 
     return peak_locations
 
@@ -310,12 +310,40 @@ def bicoherence(profile):
     return bicoherence
 
 def find_peak_coords(signal, dim_to_search='t*eps*sqrt(g*h)*k_E', num_peaks=5,
-        only_nonneg_coords=True):
+        only_nonneg_coords=True, center_domain=False):
 
     if only_nonneg_coords:
         # Only keep peaks where the corresponding dim_to_search
         # coordinate is nonnegative
         signal = signal.where(signal[dim_to_search] >= 0, drop=True)
+
+    if center_domain:
+        # Only look for peaks in the middle half of the (assumed)
+        # half-open domain [a,b).
+        # Useful when the domain contains two full waves, with peaks at
+        # the left boundary, middle, and right boundary)
+        domain = signal[dim_to_search].values
+
+        _,_,dvar = get_var_stats(signal, var=dim_to_search)
+
+        # We assume the domain is a half-open interval; temporarily add
+        # the upper limit to simplify the calculations
+        domain = np.append(domain, domain[-1]+dvar)
+
+        domain_center = (domain.max()+domain.min())/2
+        domain_range = (domain.max()-domain.min())
+        new_domain_range = domain_range/2
+        new_domain_upper_lim = domain_center+new_domain_range/2
+        new_domain_lower_lim = domain_center-new_domain_range/2
+
+        # Now remove the upper limit
+        new_domain_upper_lim = new_domain_upper_lim - dvar
+
+        signal = signal.where(np.logical_and(
+            signal[dim_to_search] >= new_domain_lower_lim,
+            signal[dim_to_search] < new_domain_upper_lim
+            ), drop=True)
+
 
     def find_peak_indices(signal, num_peaks):
         # Need to do this to fix a bug in scipy
