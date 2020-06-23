@@ -13,6 +13,7 @@ from pi_formatter import pi_multiple_ticks, float_to_pi
 import itertools
 import texplot
 import data_csv
+from useful_functions import round_sig_figs
 
 def property_cycle(num_lines,color_class='sequential'):
     """Generates a property cycle.
@@ -134,7 +135,8 @@ def default_plotter(data_array, x_name, axis):
 
 def plot_multiplot_template(data_arrays, x_coordinate, suptitle=None, ax_title=None,
         ax_xlabel=None, ax_ylabel=None, color_class=None,
-        show_legend=False, legend_title=None, plotter=default_plotter):
+        show_legend=False, legend_title=None, plotter=default_plotter,
+        legend_sig_figs=2):
     """
     Parameters
     ----------
@@ -206,8 +208,8 @@ def plot_multiplot_template(data_arrays, x_coordinate, suptitle=None, ax_title=N
         # Add legend
         # Use values from first data_array since we assume they all use the same
         # values
-        leg = fig.legend(np.around(data_arrays[0,0].sortby(line_coord)\
-                [line_coord].values,2),
+        leg = fig.legend(round_sig_figs(data_arrays[0,0].sortby(line_coord)\
+                [line_coord].values,legend_sig_figs),
                 **({'title':legend_title} if legend_title is not None else
                     {}),
                 loc='right')
