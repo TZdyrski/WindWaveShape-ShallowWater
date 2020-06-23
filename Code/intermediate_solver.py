@@ -10,6 +10,7 @@ from scipy.fftpack import diff as psdiff
 from numpy import gradient
 import xarray as xr
 import data_csv
+from useful_functions import round_sig_figs
 
 class kdvSystem():
 
@@ -253,13 +254,13 @@ class kdvSystem():
             # If mu and eps are specified, then m is fixed
             m = self.Height*self.B/(3*self.C)
 
-            # Round to sigFigs significant figures (to prevent machine
-            # precision causing, eg, m = 1.0000000000000002 to throw and
-            # error)
+            # Round to num_sig_figs significant figures (to prevent
+            # machine precision causing, eg, m = 1.0000000000000002 to
+            # throw and error)
             # Source:
-            # https://stackoverflow.com/questions/3410976/how-to-round-a-number-to-significant-figures-in-python
-            sigFigs = 5
-            m = round(m, sigFigs-1-int(np.floor(np.log10(np.absolute(m)))))
+            # https://stackoverflow.com/questions/3410976/
+            num_sig_figs = 5
+            m = round_sig_figs(m, num_sig_figs)
             if m > 1 or m < 0:
                 raise(ValueError("m = 2*B/3/C must be at least 0"+
                     " and less than 1; m was calculated to be "+
