@@ -253,11 +253,17 @@ class kdvSystem():
             # Source:
             # https://stackoverflow.com/questions/3410976/
             num_sig_figs = 5
-            m = round_sig_figs(m, num_sig_figs)
-            if m > 1 or m < 0:
+            m_rounded = round_sig_figs(m, num_sig_figs)
+            if m_rounded > 1 or m_rounded < 0:
                 raise(ValueError("m = 2*B/3/C must be at least 0"+
                     " and less than 1; m was calculated to be "+
-                    str(m)))
+                    str(m_rounded)))
+
+            if m_rounded == 1:
+                # Ensure that m = 1 identically for solitary waves, not
+                # just that m_rounded = 1
+                m = 1
+
             self.m = m
 
         if type(y0) == np.ndarray:
