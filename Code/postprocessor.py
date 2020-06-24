@@ -116,7 +116,7 @@ def energy(profile):
 def peak_location(profile):
 
     peak_locations = find_peak_coords(profile, dim_to_search='x/h',
-            only_nonneg_coords=False, num_peaks=1, center_domain=True)
+            only_nonneg_coords=False, num_peaks=1)
 
     return peak_locations
 

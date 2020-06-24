@@ -114,7 +114,7 @@ class kdvSystem():
 
     def set_spatial_grid(self, xLen=20, xNum=None,
             xStep=None, xOffset=None,
-            WaveLength=2*np.pi,NumWaves=2, *args, **kwargs):
+            WaveLength=2*np.pi,NumWaves=1, *args, **kwargs):
         """Set the x coordinate grid.
 
         Parameters
@@ -137,7 +137,7 @@ class kdvSystem():
             Wave length. Default is 2*np.pi.
         NumWaves : float or None
             Number of (periodic) waves to include in domain. Default is
-            2.
+            1.
 
         Returns
         -------
