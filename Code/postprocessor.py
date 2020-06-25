@@ -10,10 +10,17 @@ import numpy as np
 import xarray as xr
 import data_csv
 
-def get_var_stats(profile, var='x/h'):
+def get_var_stats(profile, var='x/h',periodic=True):
     varNum = profile[var].size
     varLen = float(profile[var].max()-profile[var].min())
     dvar = varLen/(varNum-1)
+    if periodic:
+        # If the domain in 'var' is assumed periodic, then the last
+        # point is not included. That is, only
+        # 0, dvar, 2*dvar, ..., (varNum-1)*dvar
+        # are provided, but the domain is assumed to have length
+        # varNum*dvar. Therefore adjust varLen
+        varLen = varNum*dvar
 
     return varLen, varNum, dvar
 
@@ -180,7 +187,8 @@ def power_spectrum(fourier_transformed):
 
 def temporal_fourier_transform(signal, rel_tol=1e-3):
 
-    tLen, tNum, dt = get_var_stats(signal, var='t*eps*sqrt(g*h)*k_E')
+    tLen, tNum, dt = get_var_stats(signal, var='t*eps*sqrt(g*h)*k_E',
+            periodic=False)
 
     # Convert from matplotlib's wavenumber in cycles per t1-unit to our
     # radians per t-unit by multiplying by 2*pi radians/cycle
@@ -467,7 +475,8 @@ def annotate_peak_locations(signal, mode_num=1):
 
     # Convert from indices to kappa values by multiplying by the
     # kappa[1] (since all steps are evenly spaced)
-    _,_,dkappa = get_var_stats(signal_initial, var='kappa/k')
+    _,_,dkappa = get_var_stats(signal_initial, var='kappa/k',
+            periodic=False)
     signal_peak_base = np.array(signal_peak_base_indices).flatten()*round(dkappa,2)
 
     # Cut off after the last base (add 1 since we want the last base

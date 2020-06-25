@@ -166,9 +166,9 @@ class kdvSystem():
         else:
             raise(ValueError('Exactly one of xNum or xStep must be specified'))
 
-        self.dx = self.xLen / self.xNum # Usually it would be
-          # dx=xLen/(xNum-1), but since we have periodic boundary
-          # conditions, we don't need the -1
+        # Usually it would be dx=xLen/(xNum-1), but since we have
+        # periodic boundary conditions, we don't need the -1
+        self.dx = self.xLen / self.xNum
 
         # Offset origin from display window
         if xOffset == 'nice_value':
