@@ -375,16 +375,17 @@ def plot_shape_statistics_template(data_arrays, ax_title=None, **kwargs):
     for ix in np.ndindex(ax.shape[1]):
         # Put horizontal line at y=1
         ax[ax_ylabel_list.index('Height'),ix].item().axhline(1,
-                color='0.75')
+                color='0.75', zorder=-1)
 
         # Put horizontal line at y=0
         ax[ax_ylabel_list.index('Asymmetry'),ix].item().axhline(0,
-                color='0.75')
+                color='0.75', zorder=-1)
 
         if plot_biphase:
             # Put horizontal line at y=0
             biphase_index = ax_ylabel_list.index('Biphase')
-            ax[biphase_index,ix].item().axhline(0, color='0.75')
+            ax[biphase_index,ix].item().axhline(0, color='0.75',
+                    zorder=-1)
 
             # Determine smallest ylim (positive or negative)
             min_ylim = np.amin(np.abs(np.array(\
@@ -522,7 +523,7 @@ def plot_energy_template(data_arrays, **kwargs):
     ax = atleast_2d(fig.axes)
     for ix in np.ndindex(ax.shape[1]):
         # Put horizontal line at y=1
-        ax[0,ix].item().axhline(1, color='0.75')
+        ax[0,ix].item().axhline(1, color='0.75', zorder=-1)
 
     return fig
 
