@@ -12,7 +12,7 @@ import data_csv
 
 def get_var_stats(profile, var='x/h'):
     varNum = profile[var].size
-    varLen = float(profile[var][-1]-profile[var][0])
+    varLen = float(profile[var].max()-profile[var].min())
     dvar = varLen/(varNum-1)
 
     return varLen, varNum, dvar
