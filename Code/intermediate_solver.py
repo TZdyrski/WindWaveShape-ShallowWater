@@ -267,6 +267,30 @@ class kdvSystem():
 
             self.m = m
 
+            if np.abs(m-1) < 1e-15:
+                # Near m=1, use ellipkm1 which is more accurate
+                K = spec.ellipkm1(1-m)
+            else:
+                K = spec.ellipk(m)
+            E = spec.ellipe(m)
+
+            # Also adjust xLen to fit the new wavelengths
+            if redo_grids:
+
+                # Adjust the length of a wavelength to be 4*K(m) in
+                # nondimensional units, since we want one wavelength to
+                # be k*(x=lambda) = k*lambda = (2/Delta)*lambda = 4*K(m)
+                # Note: we defined k=2/Delta so that it reduces to the
+                # usual definition 2*pi/lambda for m=0
+                self.WaveLength = 4*K
+
+                xLen = min(self.WaveLength*self.NumWaves, 20)
+
+                self.set_spatial_grid(xLen=xLen, xStep=self.dx,
+                        xOffset=self.xOffset,
+                        WaveLength=self.WaveLength,
+                        NumWaves=self.NumWaves)
+
         if type(y0) == np.ndarray:
             self.y0 = y0
         elif y0 == 'cnoidal' and m == 1:
@@ -280,26 +304,7 @@ class kdvSystem():
                     str(self.Height*self.B/(3*self.C))))
             self.y0 = self.Height*1/np.cosh(np.sqrt(self.Height*self.B/self.C/12) \
                     *self.x)**2
-            self.WaveLength = np.inf
-
         elif y0 == 'cnoidal':
-            K = spec.ellipk(m)
-            E = spec.ellipe(m)
-
-            # Adjust the length of a wavelength to be 4*K(m) in
-            # nondimensional units, since we want one wavelength to be
-            # k*(x=lambda) = k*lambda = (2/Delta)*lambda = 4*K(m)
-            # Note: we defined k=2/Delta so that it reduces to the usual
-            # definition 2*pi/lambda for m=0
-            self.WaveLength = 4*K
-
-            # Also adjust xLen to fit the new wavelengths
-            if redo_grids:
-                self.set_spatial_grid(xLen='fit', xStep=self.dx,
-                        xOffset=self.xOffset,
-                        WaveLength=self.WaveLength,
-                        NumWaves=self.NumWaves)
-
             cn = spec.ellipj(self.x/self.WaveLength*2*K,m)[1]
             trough = self.Height/m*(1-m-E/K)
             self.y0 = trough + self.Height*cn**2
