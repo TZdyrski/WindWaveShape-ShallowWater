@@ -152,19 +152,18 @@ class kdvSystem():
         else:
             self.xLen = xLen
 
-        if xNum != None and xStep == None:
+        if xNum is not None:
+            if xStep is not None:
+                raise(ValueError('Exactly one of xNum or xStep must be specified'))
             self.xNum = xNum
-        elif xNum == None and xStep != None:
+        else:
+            if xStep is None:
+                # Use default value of xStep = 0.1
+                xStep = 0.1
             # xNum = xLen/xStep = NumWaves*WaveLength/xStep, but to
             # prevent rounding errors; round WaveLength/xStep, then
             # multiply by NumWaves
             self.xNum = int(round(self.WaveLength/xStep)*self.NumWaves)
-        elif xNum == None and xStep == None:
-            # Use default value of xStep = 0.1
-            xStep = 0.1
-            self.xNum = int(round(self.WaveLength/xStep)*self.NumWaves)
-        else:
-            raise(ValueError('Exactly one of xNum or xStep must be specified'))
 
         # Usually it would be dx=xLen/(xNum-1), but since we have
         # periodic boundary conditions, we don't need the -1
