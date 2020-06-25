@@ -127,7 +127,7 @@ class kdvSystem():
             must be specified. Default is None.
         xStep : float or None
             Spacing between grid points in x domain. If
-            None, xNum must be specified. Default is 0.1.
+            None, xNum must be specified. Default is 1/3.15.
         xOffset : float, 'nice_value', or None
             Distance that origin is offset from the center of the
             domain. 'nice_value' gives a nice shift slightly to the
@@ -158,12 +158,15 @@ class kdvSystem():
             self.xNum = xNum
         else:
             if xStep is None:
-                # Use default value of xStep = 0.1
-                xStep = 0.1
-            # xNum = xLen/xStep = NumWaves*WaveLength/xStep, but to
-            # prevent rounding errors; round WaveLength/xStep, then
-            # multiply by NumWaves
-            self.xNum = int(round(self.WaveLength/xStep)*self.NumWaves)
+                # Use default value of xStep = 1/3.15
+                xStep = 1/3.15
+            if xLen == 'fit':
+                # xNum = xLen/xStep = NumWaves*WaveLength/xStep, but to
+                # prevent rounding errors; round WaveLength/xStep, then
+                # multiply by NumWaves
+                self.xNum = int(round(self.WaveLength/xStep)*self.NumWaves)
+            else:
+                self.xNum = int(round(self.xLen/xStep))
 
         # Usually it would be dx=xLen/(xNum-1), but since we have
         # periodic boundary conditions, we don't need the -1
