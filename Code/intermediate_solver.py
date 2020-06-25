@@ -127,7 +127,7 @@ class kdvSystem():
             must be specified. Default is None.
         xStep : float or None
             Spacing between grid points in x domain. If
-            None, xNum must be specified. Default is 1/3.15.
+            None, xNum must be specified. Default is 1/3.15
         xOffset : float, 'nice_value', or None
             Distance that origin is offset from the center of the
             domain. 'nice_value' gives a nice shift slightly to the
@@ -296,11 +296,10 @@ class kdvSystem():
 
             # Also adjust xLen to fit the new wavelengths
             if redo_grids:
-                self.set_spatial_grid(xLen='fit', xNum=self.xNum,
+                self.set_spatial_grid(xLen='fit', xStep=self.dx,
                         xOffset=self.xOffset,
                         WaveLength=self.WaveLength,
                         NumWaves=self.NumWaves)
-                self.set_temporal_grid(tNum='density', tLen=self.tLen)
 
             cn = spec.ellipj(self.x/self.WaveLength*2*K,m)[1]
             trough = self.Height/m*(1-m-E/K)
@@ -895,6 +894,21 @@ def default_solver(y0_func=None, solver='RK3', *args, **kwargs):
 
     # Create KdV-Burgers or nonlocal KdV system
     solverSystem = kdvSystem(**kwargs)
+
+    if 'WaveLength' not in kwargs and kwargs.get('wave_type') == 'cnoidal':
+        Height = kwargs.get('Height',2)
+        kwargs['Height'] = Height
+
+        NumWaves = kwargs.get('NumWaves',1)
+        kwargs['NumWaves'] = NumWaves
+
+        m = Height*solverSystem.B/(3*solverSystem.C)
+        K = spec.ellipk(m)
+        WaveLength = 4*K
+        kwargs['WaveLength'] = WaveLength
+        kwargs['xLen'] = 'fit'
+        kwargs['xStep'] = 4*K*NumWaves/20/3.15
+
     # Set spatial grid
     solverSystem.set_spatial_grid(**kwargs)
     # Set temporal grid
