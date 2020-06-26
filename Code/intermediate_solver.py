@@ -214,18 +214,15 @@ class kdvSystem():
 
         self.t, self.dt = np.linspace(0, self.tLen, self.tNum, retstep=True)
 
-
-    def set_initial_conditions(self, y0='solitary', Height=None,
+    def set_initial_conditions(self, y0='cnoidal', Height=None,
             redo_grids=True, *args, **kwargs):
         """Set the initial conditions.
         Parameters
         ----------
-        y0 : array_like, 'solitary', or 'cnoidal'
+        y0 : array_like or 'cnoidal'
             Given initial condition. If array_like, must have same size as
-            self.x array. 'solitary' gives a solitary wave profile which
-            satisfies the unforced KdV equation. 'cnoidal' gives a
-            cnoidal wave profile which satisfies the unforced KdV
-            equation. Default is a 'solitary'.
+            self.x array. 'cnoidal' gives a cnoidal wave profile which
+            satisfies the unforced KdV equation. Default is a 'cnoidal'.
         Height : float or None
             Height of initial condition. If None, then H is chosen to be
             2*sign(self.B*self.C). Default is None.
@@ -241,11 +238,13 @@ class kdvSystem():
 
         if Height is not None:
             self.Height = Height
+            if np.sign(self.Height) != np.sign(self.B*self.C) \
+                    and y0 == 'cnoidal':
+                raise(ValueError("sgn(H) must equal sgn(B*C)"))
         else:
             self.Height = 2*np.sign(self.B*self.C)
 
-        if type(y0) != np.ndarray and (y0 == 'solitary' or y0 ==
-                'cnoidal'):
+        if type(y0) != np.ndarray and y0 == 'cnoidal':
             # If mu and eps are specified, then m is fixed
             m = self.Height*self.B/(3*self.C)
 
@@ -270,7 +269,7 @@ class kdvSystem():
 
         if type(y0) == np.ndarray:
             self.y0 = y0
-        elif y0 == 'solitary' or m == 1:
+        elif y0 == 'cnoidal' and m == 1:
             if np.sign(self.Height) != np.sign(self.B*self.C):
                 raise(ValueError("sgn(H) must equal sgn(B*C)"))
             # mu and eps must satisfy specific relationship for
@@ -306,7 +305,7 @@ class kdvSystem():
             self.y0 = trough + self.Height*cn**2
 
         else:
-            raise(ValueError("y0 must be array_like, 'solitary', or 'cnoidal'"))
+            raise(ValueError("y0 must be array_like or 'cnoidal'"))
 
     def boost_frame(self, boostVelocity=0, **kwargs):
         """ Boost frame to boostVelocity.
@@ -317,19 +316,13 @@ class kdvSystem():
 
         Parameters
         ----------
-        boostVelocity : float, 'solitary' or 'cnoidal'
-            The type of wave. If 'solitary', a value of
-            -abs(B)/3*np.sign(C) is chosen to cancel the propagation of
-            the default, solitonic solution with zero damping. If
-            'cnoidal', a value is chosen to cancel the propagation of
-            the default, cnoidal solution with zero damping.
+        boostVelocity : float or 'cnoidal'
+            The type of wave. If 'cnoidal', a value is chosen to cancel
+            the propagation of the default, cnoidal solution with zero
+            damping.
         """
 
-        if boostVelocity == 'solitary':
-            # Choose value to give default, solitonic solution zero
-            # propagation velocity
-            self.F = -self.B*self.Height/3
-        elif boostVelocity == 'cnoidal':
+        if boostVelocity == 'cnoidal':
             # Choose value to give default, cnoidal solution zero
             # propagation velocity
             m = self.m
@@ -847,21 +840,18 @@ class kdvSystem():
         """
         Parameters
         ----------
-        boostVelocity : float, 'solitary', 'cnoidal', or None
+        boostVelocity : float, 'cnoidal', or None
             The velocity of the initial, wave frame relative to the lab
-            frame in units of [x]/[t]. 'solitary' boosts into the
-            co-moving frame of an unforced solitary wave. 'cnoidal'
-            boosts into the co-moving frame of an unforced cnoidal wave.
-            Default is -1/6.
+            frame in units of [x]/[t]. 'cnoidal' boosts into the
+            co-moving frame of an unforced cnoidal wave. Default is
+            -1/6.
 
         Returns
         -------
         None
         """
 
-        if boostVelocity == 'solitary':
-            boostVelocity = -(self.B*self.Height/3+self.F)/self.A
-        elif boostVelocity == 'cnoidal':
+        if boostVelocity == 'cnoidal':
             m = self.m
             Height = self.Height
             K = spec.ellipk(m)
@@ -881,11 +871,12 @@ class kdvSystem():
 
 def default_solver(y0_func=None, solver='RK3', *args, **kwargs):
 
-    if 'boostVelocity' not in kwargs and (kwargs.get('wave_type') == 'cnoidal'
-            or kwargs.get('wave_type') == 'solitary'):
+    wave_type = kwargs.get('wave_type',None)
+    if kwargs.get('wave_type',None) == 'solitary':
+        kwargs['wave_type'] = 'cnoidal'
+    if 'boostVelocity' not in kwargs and (kwargs.get('wave_type') == 'cnoidal'):
         kwargs['boostVelocity'] = kwargs['wave_type']
-    if 'y0' not in kwargs and (kwargs.get('wave_type') == 'cnoidal'
-            or kwargs.get('wave_type') == 'solitary'):
+    if 'y0' not in kwargs and kwargs.get('wave_type') == 'cnoidal':
         kwargs['y0'] = kwargs['wave_type']
 
     forcing_type_dict = {'Jeffreys' : 'KdVB', 'GM' : 'KdVNL'}
@@ -895,7 +886,8 @@ def default_solver(y0_func=None, solver='RK3', *args, **kwargs):
     # Create KdV-Burgers or nonlocal KdV system
     solverSystem = kdvSystem(**kwargs)
 
-    if 'WaveLength' not in kwargs and kwargs.get('wave_type') == 'cnoidal':
+    if 'WaveLength' not in kwargs and kwargs.get('wave_type') ==\
+            'cnoidal' and wave_type != 'solitary':
         Height = kwargs.get('Height',2)
         kwargs['Height'] = Height
 
