@@ -204,7 +204,7 @@ class kdvSystem():
             must be specified. Default is None.
         xStep : float or None
             Spacing between grid points in x domain. If
-            None, xNum must be specified. Default is 1/3.15
+            None, xNum must be specified. Default is 0.1.
         xOffset : float, 'nice_value', or None
             Distance that origin is offset from the center of the
             domain. 'nice_value' gives a nice shift slightly to the
@@ -245,8 +245,8 @@ class kdvSystem():
             self.xNum = xNum
         else:
             if xStep is None:
-                # Use default value of xStep = 1/3.15
-                xStep = 1/3.15
+                # Use default value of xStep = 0.1
+                xStep = 0.1
             if xLen == 'int_wave_lengths' or 'cnoidal':
                 # xNum = xLen/xStep = NumWaves*WaveLength/xStep, but to
                 # prevent rounding errors; round WaveLength/xStep, then
@@ -890,7 +890,9 @@ def derivative(u, dx=1, period=2*np.pi, axis=0, order=1,
 
 def default_solver(y0_func=None, solver='RK3', *args, **kwargs):
 
-    wave_type = kwargs.get('wave_type',None)
+    forcing_type_dict = {'Jeffreys' : 'KdVB', 'GM' : 'KdVNL'}
+    if 'forcing_type' in kwargs:
+        kwargs['diffeq'] = forcing_type_dict[kwargs['forcing_type']]
     if kwargs.get('wave_type',None) == 'solitary':
         kwargs['wave_type'] = 'cnoidal'
     if 'boostVelocity' not in kwargs and (kwargs.get('wave_type') == 'cnoidal'):
@@ -900,25 +902,8 @@ def default_solver(y0_func=None, solver='RK3', *args, **kwargs):
     if 'y0' not in kwargs and kwargs.get('wave_type') == 'cnoidal':
         kwargs['y0'] = kwargs['wave_type']
 
-    forcing_type_dict = {'Jeffreys' : 'KdVB', 'GM' : 'KdVNL'}
-    if 'forcing_type' in kwargs:
-        kwargs['diffeq'] = forcing_type_dict[kwargs['forcing_type']]
-
     # Create KdV-Burgers or nonlocal KdV system
     solverSystem = kdvSystem(**kwargs)
-
-    if 'WaveLength' not in kwargs and kwargs.get('wave_type') ==\
-            'cnoidal' and wave_type != 'solitary':
-        Height = kwargs.get('Height',2)
-        kwargs['Height'] = Height
-
-        NumWaves = kwargs.get('NumWaves',1)
-        kwargs['NumWaves'] = NumWaves
-
-        m = Height*solverSystem.B/(3*solverSystem.C)
-        K = spec.ellipk(m)
-        kwargs['xStep'] = 4*K*NumWaves/20/3.15
-
     # Set spatial grid
     solverSystem.set_spatial_grid(**kwargs)
     # Set temporal grid
