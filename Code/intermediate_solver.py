@@ -558,7 +558,7 @@ class kdvSystem():
                     )
         else:
             sol = sp.integrate.solve_ivp(
-                    lambda t,u: eqn(t,u,periodic_deriv=True),
+                    lambda t,u: eqn(t,u,deriv_type='FFT'),
                     (0,self.tLen),
                     self.y0,
                     t_eval=self.t,
@@ -590,87 +590,32 @@ class kdvSystem():
         y = np.empty((nt,nx),dtype=np.float128)
         y[0,:] = self.y0
 
-        i = 0
-        y0 = y[0,:]
-        y2 = np.concatenate(([y0[-1]], y0, [y0[0]]))
-        y4 = np.concatenate((y0[-2:], y0, y0[0:2]))
-
-        # Center difference with periodic boundary conditions
-        dydx = (y2[2:] - y2[0:-2])/(2*dx)
-        dy3dx3 = (y4[4:] - 2*y4[3:-1] + 2*y4[1:-3] - y4[0:-4])/(2*dx3)
-        dy4dx4 = (y4[4:] - 4*y4[3:-1] + 6*y4[2:-2] - 4*y4[1:-3] +
-                y4[0:-4])/(dx4)
+        n = 0
 
         if self.diffeq == 'KdVB':
-            dy2dx2 = (y2[2:] - 2*y2[1:-1] + y2[0:-2])/(dx2)
-            RHS0 = -(self.F*dydx + self.B*y0*dydx + self.C*dy3dx3 -
-                    self.G*dy2dx2 + self.H*dy4dx4)
+            rhs_eqn = self._kdvb
         elif self.diffeq == 'KdVNL':
-            dydxnl = np.roll(dydx,
-                    shift=int(round(-self.psiP*self.WaveLength/(2*np.pi)/dx)),
-                    axis=0)
-            RHS0 = -(self.F*dydx + self.B*y0*dydx + self.C*dy3dx3 -
-                    self.G*dydxnl + self.H*dy4dx4)
+            rhs_eqn = self._kdvnl
 
         # First step is an Euler step
-        y[i+1,:] = y[i,:] + dt*RHS0
-        i = i + 1
+        RHS0 = rhs_eqn(n*dt, y[n,:], deriv_type='periodic_fd')
+        y[n+1,:] = y[n,:] + dt*RHS0
+        n = n + 1
 
         RHS1 = RHS0
 
         # Second step is a 2nd order Adams-Bashforth step
-        y0 = y[i,:]
-        y2 = np.concatenate(([y0[-1]], y0, [y0[0]]))
-        y4 = np.concatenate((y0[-2:], y0, y0[0:2]))
-
-        # Center difference with periodic boundary conditions
-        dydx = (y2[2:] - y2[0:-2])/(2*dx)
-        dy3dx3 = (y4[4:] - 2*y4[3:-1] + 2*y4[1:-3] - y4[0:-4])/(2*dx3)
-        dy4dx4 = (y4[4:] - 4*y4[3:-1] + 6*y4[2:-2] - 4*y4[1:-3] +
-                y4[0:-4])/(dx4)
-
-        if self.diffeq == 'KdVB':
-            dy2dx2 = (y2[2:] - 2*y2[1:-1] + y2[0:-2])/(dx2)
-            RHS0 = -(self.F*dydx + self.B*y0*dydx + self.C*dy3dx3 -
-                    self.G*dy2dx2 + self.H*dy4dx4)
-        elif self.diffeq == 'KdVNL':
-            dydxnl = np.roll(dydx,
-                    shift=int(round(-self.psiP*self.WaveLength/(2*np.pi)/dx)),
-                    axis=0)
-            RHS0 = -(self.F*dydx + self.B*y0*dydx + self.C*dy3dx3 -
-                    self.G*dydxnl + self.H*dy4dx4)
-
-
-        y[i+1,:] = y[i,:] + (dt/2)*(3*RHS0 - RHS1)
-        i = i+1
+        RHS0 = rhs_eqn(n*dt, y[n,:], deriv_type='periodic_fd')
+        y[n+1,:] = y[n,:] + dt*(3/2*RHS0 - 1/2*RHS1)
+        n = n+1
 
         RHS2 = RHS1
         RHS1 = RHS0
 
-        for i in range(2,nt-1):
+        for n in range(2,nt-1):
             # Later steps are all 3rd order Adams-Bashforth steps
-            y0 = y[i,:]
-            y2 = np.concatenate(([y0[-1]], y0, [y0[0]]))
-            y4 = np.concatenate((y0[-2:], y0, y0[0:2]))
-
-            # Center difference with periodic boundary conditions
-            dydx = (y2[2:] - y2[0:-2])/(2*dx)
-            dy3dx3 = (y4[4:] - 2*y4[3:-1] + 2*y4[1:-3] - y4[0:-4])/(2*dx3)
-            dy4dx4 = (y4[4:] - 4*y4[3:-1] + 6*y4[2:-2] - 4*y4[1:-3] +
-                    y4[0:-4])/(dx4)
-
-            if self.diffeq == 'KdVB':
-                dy2dx2 = (y2[2:] - 2*y2[1:-1] + y2[0:-2])/(dx2)
-                RHS0 = -(self.F*dydx + self.B*y0*dydx + self.C*dy3dx3 -
-                        self.G*dy2dx2 + self.H*dy4dx4)
-            elif self.diffeq == 'KdVNL':
-                dydxnl = np.roll(dydx,
-                        shift=int(round(-self.psiP*self.WaveLength/(2*np.pi)/dx)),
-                        axis=0)
-                RHS0 = -(self.F*dydx + self.B*y0*dydx + self.C*dy3dx3 -
-                        self.G*dydxnl + self.H*dy4dx4)
-
-            y[i+1,:] = y[i,:] + (dt/12)*(23*RHS0 - 16*RHS1 + 5*RHS2)
+            RHS0 = rhs_eqn(n*dt, y[n,:], deriv_type='periodic_fd')
+            y[n+1,:] = y[n,:] + dt*(23/12*RHS0 - 16/12*RHS1 + 5/12*RHS2)
 
             RHS2 = RHS1
             RHS1 = RHS0
@@ -682,30 +627,6 @@ class kdvSystem():
         differential equation on a periodic domain. If self.diffeq ==
         'KdVB', solve the KdV-Burgers equation; if self.diffeq ==
         'KdVNL', solve the nonlocal KdV equation."""
-
-        # RHS function
-        # y'(t,x) = f(t,y(t,x))
-        def f(t,y0,dx):
-            y2 = np.concatenate(([y0[-1]], y0, [y0[0]]))
-            y4 = np.concatenate((y0[-2:], y0, y0[0:2]))
-
-            # Center difference with periodic boundary conditions
-            dydx = (y2[2:] - y2[0:-2])/(2*dx)
-            dy3dx3 = (y4[4:] - 2*y4[3:-1] + 2*y4[1:-3] - y4[0:-4])/(2*dx**3)
-            dy4dx4 = (y4[4:] - 4*y4[3:-1] + 6*y4[2:-2] - 4*y4[1:-3] +
-                    y4[0:-4])/(dx**4)
-
-            if self.diffeq == 'KdVB':
-                dy2dx2 = (y2[2:] - 2*y2[1:-1] + y2[0:-2])/(dx**2)
-                RHS = -(self.F*dydx + self.B*y0*dydx + self.C*dy3dx3 -
-                        self.G*dy2dx2 + self.H*dy4dx4)
-            elif self.diffeq == 'KdVNL':
-                dydxnl = np.roll(dydx,
-                        shift=int(round(-self.psiP*self.WaveLength/(2*np.pi)/dx)),
-                        axis=0)
-                RHS = -(self.F*dydx + self.B*y0*dydx + self.C*dy3dx3 -
-                        self.G*dydxnl + self.H*dy4dx4)
-            return RHS
 
         # Number of stages
         s = 3
@@ -735,6 +656,12 @@ class kdvSystem():
         y[0,:] = self.y0
 
         n = 0
+
+        if self.diffeq == 'KdVB':
+            rhs_eqn = self._kdvb
+        elif self.diffeq == 'KdVNL':
+            rhs_eqn = self._kdvnl
+
         for n in range(0,nt-1):
             yn = y[n,:]
 
@@ -742,7 +669,8 @@ class kdvSystem():
             k = np.zeros((yn.size,s))
             tn = n*dt
             for j in range(0,s):
-              k[:,j] = f(tn+c[j]*dt,yn+dt*np.dot(k,a[j,:]),dx)
+              k[:,j] = rhs_eqn(tn+c[j]*dt, yn+dt*np.dot(k,a[j,:]),
+                  deriv_type='periodic_fd')
 
             y[n+1,:] = y[n,:] + dt*np.dot(k,b)
 
@@ -872,20 +800,69 @@ class kdvSystem():
 
         self.sol = sol
 
-def derivative(self, u, dx=1, period=2*np.pi, axis=0, order=1,
-        periodic_deriv=False, *args, **kwargs):
-    """Calculate the derivative of order 'order'."""
-    if not periodic_deriv:
+def derivative(u, dx=1, period=2*np.pi, axis=0, order=1,
+        deriv_type='gradient', *args, **kwargs):
+    """Calculate the derivative of order 'order'.
+
+    Parameters
+    ----------
+    u : ndarray
+        Data of which to take the derivative.
+    dx : float
+        Spacing between points in u. Default is 1.
+    period : float
+        Period of u used for 'FFT' type calculation. Default is 2*np.pi.
+    axis : integer
+        Axis along which to take the derivative. Default is 0.
+    order : integer
+        Order of derivative. Default is 1.
+    deriv_type : 'gradient', 'FFT', or 'periodic_fd'
+        The type of derivative to take. 'gradient' yields a
+        non-periodic, finite-difference derivative. 'FFT' yields a
+        periodic derivative using the FFT. 'periodic_fd" yields a
+        periodic, finite-difference derivative. Default is 'gradient'.
+
+    """
+    if deriv_type == 'gradient':
         # Compute the x derivatives using the finite-difference method
         derivative = u
         for n in range(order):
             # Apply derivative 'order' times
             derivative = np.gradient(derivative, dx, axis=axis)
-    else:
+    elif deriv_type == 'FFT':
         # Compute the x derivatives using the pseudo-spectral method
         derivative = psdiff(u, period=period, order=order)
+    elif deriv_type == 'periodic_fd':
+        # Center difference with periodic boundary conditions
+        if order == 1:
+            u_padded_once = np.concatenate((u[[-1]], u, u[[0]]))
+            derivative = (u_padded_once[2:]-u_padded_once[0:-2])/\
+                    (2*dx)
+        elif order == 2:
+            u_padded_once = np.concatenate((u[[-1]], u, u[[0]]))
+            derivative = (u_padded_once[2:] - 2*u_padded_once[1:-1]
+                    + u_padded_once[0:-2])/(dx**2)
+        elif order == 3:
+            u_padded_twice = np.concatenate((u[-2:], u, u[0:2]))
+            derivative = (u_padded_twice[4:] -
+                    2*u_padded_twice[3:-1] + 2*u_padded_twice[1:-3]
+                    - u_padded_twice[0:-4])/(2*dx**3)
+        elif order == 4:
+            u_padded_twice = np.concatenate((u[-2:], u, u[0:2]))
+            derivative = (u_padded_twice[4:] -
+                    4*u_padded_twice[3:-1] + 6*u_padded_twice[2:-2]
+                    - 4*u_padded_twice[1:-3] +
+                    u_padded_twice[0:-4])/(dx**4)
+        else:
+            raise(ValueError("Derivatives of type 'periodic_fd'"+\
+                    "are only supported up to order 4, but "+\
+                    str(order)+" was given"))
+    else:
+        raise(ValueError("'deriv_type' must be either 'gradient',"+\
+        "'FFT', or 'periodic_fd', but "+deriv_type+" was given"))
 
     return derivative
+
 
 def default_solver(y0_func=None, solver='RK3', *args, **kwargs):
 
