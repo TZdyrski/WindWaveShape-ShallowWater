@@ -828,7 +828,8 @@ def derivative(u, dx=1, period=2*np.pi, axis=0, order=1,
         derivative = u
         for n in range(order):
             # Apply derivative 'order' times
-            derivative = np.gradient(derivative, dx, axis=axis)
+            derivative = np.gradient(derivative, dx, axis=axis,
+                    edge_order=2)
     elif deriv_type == 'FFT':
         # Compute the x derivatives using the pseudo-spectral method
         derivative = psdiff(u, period=period, order=order)
