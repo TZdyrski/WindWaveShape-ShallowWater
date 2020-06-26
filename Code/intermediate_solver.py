@@ -571,8 +571,8 @@ class kdvSystem():
         self.sol = sol['y']
 
 
-    def solve_system_ab2(self):
-        """Use 2nd-order Adams-Bashforth method to solve the
+    def solve_system_ab3(self):
+        """Use 3rd-order Adams-Bashforth method to solve the
         differential equation on a periodic domain. If self.diffeq ==
         'KdVB', solve the KdV-Burgers equation; if self.diffeq ==
         'KdVNL', solve the nonlocal KdV equation."""
@@ -648,6 +648,7 @@ class kdvSystem():
         RHS1 = RHS0
 
         for i in range(2,nt-1):
+            # Later steps are all 3rd order Adams-Bashforth steps
             y0 = y[i,:]
             y2 = np.concatenate(([y0[-1]], y0, [y0[0]]))
             y4 = np.concatenate((y0[-2:], y0, y0[0:2]))
@@ -935,10 +936,10 @@ def default_solver(y0_func=None, solver='RK3', *args, **kwargs):
         solverSystem.solve_system_builtin()
     elif solver == 'RK3':
         solverSystem.solve_system_rk3()
-    elif solver == 'AB2':
-        solverSystem.solve_system_ab2()
+    elif solver == 'AB3':
+        solverSystem.solve_system_ab3()
     else:
-        raise(ValueError("'solver' must be {'Builtin','RK3','AB2'}, but "+
+        raise(ValueError("'solver' must be {'Builtin','RK3','AB3'}, but "+
             solver+" was provided"))
 
     # Convert back to non-normalized variables
