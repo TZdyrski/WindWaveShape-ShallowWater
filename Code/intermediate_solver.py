@@ -558,7 +558,7 @@ class kdvSystem():
                     )
         else:
             sol = sp.integrate.solve_ivp(
-                    lambda t,u: eqn(t,u,deriv_type='FFT'),
+                    lambda t,u: eqn(t,u,deriv_type='periodic_fd'),
                     (0,self.tLen),
                     self.y0,
                     t_eval=self.t,
