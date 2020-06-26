@@ -454,27 +454,12 @@ class kdvSystem():
         self.snapshot_indxs = snapshot_indxs
         self.snapshot_ts = snapshot_ts
 
-    def _derivative(self, u, axis=0, order=1, periodic_deriv=False,
-            period=None, *args, **kwargs):
-        """Calculate the derivative of order 'order'."""
-        if not periodic_deriv:
-            # Compute the x derivatives using the finite-difference method
-            derivative = u
-            for n in range(order):
-                # Apply derivative 'order' times
-                derivative = np.gradient(derivative, self.dx, axis=axis)
-        else:
-            # Compute the x derivatives using the pseudo-spectral method
-            derivative = psdiff(u, period=self.xLen, order=order)
-
-        return derivative
-
     def _kdvb(self, t, u, *args, **kwargs):
         """Differential equation for the KdV-Burgers equation."""
-        ux = self._derivative(u, order=1, **kwargs)
-        uxx = self._derivative(u, order=2, **kwargs)
-        uxxx = self._derivative(u, order=3, **kwargs)
-        uxxxx = self._derivative(u, order=4, **kwargs)
+        ux = derivative(u, dx=self.dx, period=self.xLen, order=1, **kwargs)
+        uxx = derivative(u, dx=self.dx, period=self.xLen, order=2, **kwargs)
+        uxxx = derivative(u, dx=self.dx, period=self.xLen, order=3, **kwargs)
+        uxxxx = derivative(u, dx=self.dx, period=self.xLen, order=4, **kwargs)
 
         # Compute du/dt
         dudt = -u*ux*self.B/self.A -uxxx*self.C/self.A \
@@ -486,9 +471,9 @@ class kdvSystem():
     def _kdvnl(self, t, u, periodic_deriv=False, *args, **kwargs):
         """Differential equation for the nonlocal-KdV equation."""
 
-        ux = self._derivative(u, order=1, **kwargs)
-        uxx = self._derivative(u, order=2, **kwargs)
-        uxxx = self._derivative(u, order=3, **kwargs)
+        ux = derivative(u, dx=self.dx, period=self.xLen, order=1, **kwargs)
+        uxxx = derivative(u, dx=self.dx, period=self.xLen, order=3, **kwargs)
+        uxxxx = derivative(u, dx=self.dx, period=self.xLen, order=4, **kwargs)
         uxnl = np.roll(ux,
                 shift=int(round(-self.psiP*self.WaveLength/(2*np.pi)/self.dx)),
                 axis=0)
@@ -885,6 +870,21 @@ class kdvSystem():
             sol[:,time] = np.roll(sol[:,time],shift=int(round(coord_vel*time)))
 
         self.sol = sol
+
+def derivative(self, u, dx=1, period=2*np.pi, axis=0, order=1,
+        periodic_deriv=False, *args, **kwargs):
+    """Calculate the derivative of order 'order'."""
+    if not periodic_deriv:
+        # Compute the x derivatives using the finite-difference method
+        derivative = u
+        for n in range(order):
+            # Apply derivative 'order' times
+            derivative = np.gradient(derivative, dx, axis=axis)
+    else:
+        # Compute the x derivatives using the pseudo-spectral method
+        derivative = psdiff(u, period=period, order=order)
+
+    return derivative
 
 def default_solver(y0_func=None, solver='RK3', *args, **kwargs):
 
