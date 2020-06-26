@@ -454,19 +454,27 @@ class kdvSystem():
         self.snapshot_indxs = snapshot_indxs
         self.snapshot_ts = snapshot_ts
 
-    def _kdvb(self, t, u, periodic_deriv=False, *args, **kwargs):
-        """Differential equation for the KdV-Burgers equation."""
+    def _derivative(self, u, axis=0, order=1, periodic_deriv=False,
+            period=None, *args, **kwargs):
+        """Calculate the derivative of order 'order'."""
         if not periodic_deriv:
             # Compute the x derivatives using the finite-difference method
-            ux = np.gradient(u, self.dx, axis=0)
-            uxx = np.gradient(ux, self.dx, axis=0)
-            uxxx = np.gradient(uxx, self.dx, axis=0)
+            derivative = u
+            for n in range(order):
+                # Apply derivative 'order' times
+                derivative = np.gradient(derivative, self.dx, axis=axis)
         else:
             # Compute the x derivatives using the pseudo-spectral method
-            ux = psdiff(u, period=self.xLen)
-            uxx = psdiff(u, period=self.xLen, order=2)
-            uxxx = psdiff(u, period=self.xLen, order=3)
-            uxxxx = psdiff(u, period=self.xLen, order=4)
+            derivative = psdiff(u, period=self.xLen, order=order)
+
+        return derivative
+
+    def _kdvb(self, t, u, *args, **kwargs):
+        """Differential equation for the KdV-Burgers equation."""
+        ux = self._derivative(u, order=1, **kwargs)
+        uxx = self._derivative(u, order=2, **kwargs)
+        uxxx = self._derivative(u, order=3, **kwargs)
+        uxxxx = self._derivative(u, order=4, **kwargs)
 
         # Compute du/dt
         dudt = -u*ux*self.B/self.A -uxxx*self.C/self.A \
@@ -477,23 +485,13 @@ class kdvSystem():
 
     def _kdvnl(self, t, u, periodic_deriv=False, *args, **kwargs):
         """Differential equation for the nonlocal-KdV equation."""
-        if not periodic_deriv:
-            # Compute the x derivatives using the finite-difference method
-            ux = np.gradient(u, self.dx, axis=0)
-            uxx = np.gradient(ux, self.dx, axis=0)
-            uxxx = np.gradient(uxx, self.dx, axis=0)
-            uxxxx = np.gradient(uxxx, self.dx, axis=0)
-            uxnl = np.roll(ux,
-                    shift=int(round(-self.psiP*self.WaveLength/(2*np.pi)/self.dx)),
-                    axis=0)
-        else:
-            # Compute the x derivatives using the pseudo-spectral method
-            ux = psdiff(u, period=self.xLen)
-            uxxx = psdiff(u, period=self.xLen, order=3)
-            uxxxx = psdiff(u, period=self.xLen, order=4)
-            uxnl = np.roll(ux,
-                    shift=int(round(-self.psiP*self.WaveLength/(2*np.pi)/self.dx)),
-                    axis=0)
+
+        ux = self._derivative(u, order=1, **kwargs)
+        uxx = self._derivative(u, order=2, **kwargs)
+        uxxx = self._derivative(u, order=3, **kwargs)
+        uxnl = np.roll(ux,
+                shift=int(round(-self.psiP*self.WaveLength/(2*np.pi)/self.dx)),
+                axis=0)
 
         # Compute du/dt
         dudt = -u*ux*self.B/self.A -uxxx*self.C/self.A \
