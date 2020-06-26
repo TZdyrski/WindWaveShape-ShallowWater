@@ -15,7 +15,8 @@ from useful_functions import round_sig_figs
 class kdvSystem():
 
     def __init__(self, A=1, B=3/2, C=None, F=None, G=None, P=None, H=0,
-            psiP=0, diffeq='KdVB', eps=0.1, mu=0.6, *args, **kwargs):
+            psiP=0, diffeq='KdVB', eps=0.1, mu=0.6, Height=None, *args,
+            **kwargs):
         """Initialize kdvSystem class instance.
 
         Solves a KdV-Burgers equation of the form
@@ -57,6 +58,9 @@ class kdvSystem():
             The wind phase, or the shift of the pressure relative to the
             surface height p(x,t) = eta(x+psiP,t). This is used for
             Generalized Miles-type forcings. Default is 0.
+        Height : float or None
+            Height of initial condition. If None, then H is chosen to be
+            2*sign(self.B*self.C). Default is None.
         diffeq : 'KdVB' or 'KdVNL'
             Specifies for which equation we are generating the sparcity
             matrix. 'KdVB' is KdV-Burgers, while 'KdVNL' is nonlocal
@@ -112,6 +116,62 @@ class kdvSystem():
             self.G = -self.G
             self.psiP = -self.psiP
 
+        if Height is not None:
+            self.Height = Height
+        else:
+            self.Height = 2*np.sign(self.B*self.C)
+
+        self.m = self._calculate_m()
+
+    def _calculate_m(self):
+        # If mu and eps are specified, then m is fixed
+        m = self.Height*self.B/(3*self.C)
+
+        # Round to num_sig_figs significant figures (to prevent
+        # machine precision causing, eg, m = 1.0000000000000002 to
+        # throw an error)
+        # Source:
+        # https://stackoverflow.com/questions/3410976/
+        num_sig_figs = 5
+        m_rounded = round_sig_figs(m, num_sig_figs)
+        if m_rounded > 1 or m_rounded < 0:
+            raise(ValueError("m = 2*B/3/C must be at least 0"+
+                " and less than 1; m was calculated to be "+
+                str(m_rounded)))
+
+        if m_rounded == 1:
+            # Due to machine precision, it is possible that m is
+            # slightly larger than 1 (though not too much larger, since
+            # we have already checked m=1 to num_sig_figs significant
+            # figures). It is also possible that, due to machine
+            # precision, m is slightly less than 1 when it should be
+            # identically 1. Though this is less of an issue (any value
+            # of m in [0,1] is allowed), we have specific routines in
+            # place for m == 1 identically to deal with K(m) = infinity.
+            # Therefore, it is beneficial to ensure that all m
+            # approximately equal to 1 are rounded to 1 identically. In
+            # either case, set m to 1 identically.
+            m = 1
+
+        return m
+
+    def _cnoidal_wavelength(self):
+        """Return the wavelength of a cnoidal wave."""
+        K = spec.ellipk(self.m)
+
+        WaveLength = 4*K
+
+        return WaveLength
+
+    def _regularize_wavelength(self, WaveLength):
+        """Regularize cnoidal wavelength so we don't need an
+        infinitely-long domain."""
+
+        # Cut-off WaveLength at 20
+        regularized_wave_length = min(WaveLength,20)
+
+        return regularized_wave_length
+
     def set_spatial_grid(self, xLen=20, xNum=None,
             xStep=None, xOffset=None,
             WaveLength=2*np.pi,NumWaves=1, *args, **kwargs):
@@ -119,9 +179,11 @@ class kdvSystem():
 
         Parameters
         ----------
-        xLen : float, 'fit', or None
-            Length of x domain. If 'fit', choose xLen to fit NumWave
-            wavelengths of length WaveLegngth. Default is 10.
+        xLen : float, 'int_wave_lengths', 'cnoidal', or None
+            Length of x domain. If 'int_wave_lengths', choose xLen to
+            fit NumWaves wavelengths of length WaveLength. If 'cnoidal',
+            choose Xeln to fit NumWaves wavelengths of a cnoidal wave
+            wave-length. Default is 20.
         xNum : float or None
             Number of grid points in x domain. If None, xStep
             must be specified. Default is None.
@@ -145,10 +207,20 @@ class kdvSystem():
         """
 
         self.NumWaves = NumWaves
-        self.WaveLength = WaveLength
 
-        if xLen == 'fit':
-            self.xLen = self.NumWaves*self.WaveLength
+        if xLen == 'cnoidal':
+            self.WaveLength = self._cnoidal_wavelength()
+        else:
+            self.WaveLength = WaveLength
+
+        if xLen == 'cnoidal':
+            regularized_wave_length = \
+                    self._regularize_wavelength(self.WaveLength)
+        else:
+            regularized_wave_length = self.WaveLength
+
+        if xLen == 'int_wave_lengths' or xLen == 'cnoidal':
+            self.xLen = self.NumWaves*regularized_wave_length
         else:
             self.xLen = xLen
 
@@ -160,11 +232,12 @@ class kdvSystem():
             if xStep is None:
                 # Use default value of xStep = 1/3.15
                 xStep = 1/3.15
-            if xLen == 'fit':
+            if xLen == 'int_wave_lengths' or 'cnoidal':
                 # xNum = xLen/xStep = NumWaves*WaveLength/xStep, but to
                 # prevent rounding errors; round WaveLength/xStep, then
                 # multiply by NumWaves
-                self.xNum = int(round(self.WaveLength/xStep)*self.NumWaves)
+                self.xNum = int(round(regularized_wave_length/xStep)*
+                        self.NumWaves)
             else:
                 self.xNum = int(round(self.xLen/xStep))
 
@@ -214,8 +287,7 @@ class kdvSystem():
 
         self.t, self.dt = np.linspace(0, self.tLen, self.tNum, retstep=True)
 
-    def set_initial_conditions(self, y0='cnoidal', Height=None,
-            redo_grids=True, *args, **kwargs):
+    def set_initial_conditions(self, y0='cnoidal', *args, **kwargs):
         """Set the initial conditions.
         Parameters
         ----------
@@ -223,91 +295,33 @@ class kdvSystem():
             Given initial condition. If array_like, must have same size as
             self.x array. 'cnoidal' gives a cnoidal wave profile which
             satisfies the unforced KdV equation. Default is a 'cnoidal'.
-        Height : float or None
-            Height of initial condition. If None, then H is chosen to be
-            2*sign(self.B*self.C). Default is None.
-        redo_grids : boolean
-            If True, re-adjust xLen to fit NumWaves, keeping the number
-            of spatial points fixed, as well as updating tNum with
-            'density' parameter
 
         Returns
         -------
         None
         """
 
-        if Height is not None:
-            self.Height = Height
-            if np.sign(self.Height) != np.sign(self.B*self.C) \
-                    and y0 == 'cnoidal':
-                raise(ValueError("sgn(H) must equal sgn(B*C)"))
-        else:
-            self.Height = 2*np.sign(self.B*self.C)
-
-        if type(y0) != np.ndarray and y0 == 'cnoidal':
-            # If mu and eps are specified, then m is fixed
-            m = self.Height*self.B/(3*self.C)
-
-            # Round to num_sig_figs significant figures (to prevent
-            # machine precision causing, eg, m = 1.0000000000000002 to
-            # throw an error)
-            # Source:
-            # https://stackoverflow.com/questions/3410976/
-            num_sig_figs = 5
-            m_rounded = round_sig_figs(m, num_sig_figs)
-            if m_rounded > 1 or m_rounded < 0:
-                raise(ValueError("m = 2*B/3/C must be at least 0"+
-                    " and less than 1; m was calculated to be "+
-                    str(m_rounded)))
-
-            if m_rounded == 1:
-                # Ensure that m = 1 identically for solitary waves, not
-                # just that m_rounded = 1
-                m = 1
-
-            self.m = m
-
-            if np.abs(m-1) < 1e-15:
-                # Near m=1, use ellipkm1 which is more accurate
-                K = spec.ellipkm1(1-m)
-            else:
-                K = spec.ellipk(m)
-            E = spec.ellipe(m)
-
-            # Also adjust xLen to fit the new wavelengths
-            if redo_grids:
-
-                # Adjust the length of a wavelength to be 4*K(m) in
-                # nondimensional units, since we want one wavelength to
-                # be k*(x=lambda) = k*lambda = (2/Delta)*lambda = 4*K(m)
-                # Note: we defined k=2/Delta so that it reduces to the
-                # usual definition 2*pi/lambda for m=0
-                self.WaveLength = 4*K
-
-                xLen = min(self.WaveLength*self.NumWaves, 20)
-
-                self.set_spatial_grid(xLen=xLen, xStep=self.dx,
-                        xOffset=self.xOffset,
-                        WaveLength=self.WaveLength,
-                        NumWaves=self.NumWaves)
+        # If we are using 'cnoidal' initial conditions, ensure that the
+        # previously set height has the correct sign
+        if np.sign(self.Height) != np.sign(self.B*self.C) \
+                and y0 == 'cnoidal':
+            raise(ValueError("sgn(H) must equal sgn(B*C)"))
 
         if type(y0) == np.ndarray:
             self.y0 = y0
-        elif y0 == 'cnoidal' and m == 1:
-            if np.sign(self.Height) != np.sign(self.B*self.C):
-                raise(ValueError("sgn(H) must equal sgn(B*C)"))
-            # mu and eps must satisfy specific relationship for
-            # solitary waves (corresponding to m=1; see below)
-            if m != 1:
-                raise(ValueError("Must have Height*B/(3*C) = 1 for "+
-                    "solitary waves, but equals "+
-                    str(self.Height*self.B/(3*self.C))))
-            self.y0 = self.Height*1/np.cosh(np.sqrt(self.Height*self.B/self.C/12) \
-                    *self.x)**2
         elif y0 == 'cnoidal':
-            cn = spec.ellipj(self.x/self.WaveLength*2*K,m)[1]
-            trough = self.Height/m*(1-m-E/K)
-            self.y0 = trough + self.Height*cn**2
+            m = self.m
+
+            if m == 1:
+                self.y0 = self.Height*1/np.cosh(np.sqrt(
+                    self.Height*self.B/self.C/12)*self.x)**2
+            else:
+                K = spec.ellipk(m)
+                E = spec.ellipe(m)
+
+                cn = spec.ellipj(self.x/self.WaveLength*2*K,m)[1]
+                trough = self.Height/m*(1-m-E/K)
+                self.y0 = trough + self.Height*cn**2
 
         else:
             raise(ValueError("y0 must be array_like or 'cnoidal'"))
@@ -881,6 +895,8 @@ def default_solver(y0_func=None, solver='RK3', *args, **kwargs):
         kwargs['wave_type'] = 'cnoidal'
     if 'boostVelocity' not in kwargs and (kwargs.get('wave_type') == 'cnoidal'):
         kwargs['boostVelocity'] = kwargs['wave_type']
+    if 'xLen' not in kwargs and kwargs.get('wave_type') == 'cnoidal':
+        kwargs['xLen'] = kwargs['wave_type']
     if 'y0' not in kwargs and kwargs.get('wave_type') == 'cnoidal':
         kwargs['y0'] = kwargs['wave_type']
 
@@ -901,9 +917,6 @@ def default_solver(y0_func=None, solver='RK3', *args, **kwargs):
 
         m = Height*solverSystem.B/(3*solverSystem.C)
         K = spec.ellipk(m)
-        WaveLength = 4*K
-        kwargs['WaveLength'] = WaveLength
-        kwargs['xLen'] = 'fit'
         kwargs['xStep'] = 4*K*NumWaves/20/3.15
 
     # Set spatial grid
