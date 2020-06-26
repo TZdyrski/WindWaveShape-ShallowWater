@@ -250,7 +250,7 @@ class kdvSystem():
 
             # Round to num_sig_figs significant figures (to prevent
             # machine precision causing, eg, m = 1.0000000000000002 to
-            # throw and error)
+            # throw an error)
             # Source:
             # https://stackoverflow.com/questions/3410976/
             num_sig_figs = 5
