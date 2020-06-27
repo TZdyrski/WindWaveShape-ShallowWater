@@ -255,6 +255,11 @@ def plot_multiplot_template(data_arrays, x_coordinate,
                 {'P' : round_sig_figs(data_arrays[0,0]['P']*np.sqrt(
                     float(parameters[0,0]['mu'])/float(parameters[0,0]['eps'])),
                     3)})
+    elif line_coord == 'nu_bi':
+        data_arrays[0,0] = data_arrays[0,0].assign_coords(
+                {'nu_bi' : round_sig_figs(data_arrays[0,0]['nu_bi']*(
+                    float(parameters[0,0]['mu'])/float(parameters[0,0]['eps']))**(3/2),
+                    3)})
 
     if show_legend:
         # Add legend
@@ -916,7 +921,7 @@ def plot_forcing_types_template(data_arrays):
 
     return fig
 
-def plot_trig_verf_noH(load_prefix, save_prefix, *args, **kwargs):
+def plot_trig_verf_no_nu_bi(load_prefix, save_prefix, *args, **kwargs):
     filename_base = 'TrigVerf'
 
     # Arrange data and parameters into 2d array for plotting
@@ -925,7 +930,7 @@ def plot_trig_verf_noH(load_prefix, save_prefix, *args, **kwargs):
     # Extract data
     for indx_num, solver in enumerate(['Builtin', 'RK3']):
         filename = data_csv.find_filenames(load_prefix, filename_base,
-                required_words=[solver, 'H0'])
+                required_words=[solver, 'nu_bi0'])
 
         data = data_csv.load_data(filename, stack_coords=True)
 
@@ -946,13 +951,13 @@ def plot_trig_verf_noH(load_prefix, save_prefix, *args, **kwargs):
             ax_title=np.array([[title_string],[title_string]]),
             wind_arrows=False)
 
-    texplot.savefig(fig,save_prefix+filename_base+'-noH')
+    texplot.savefig(fig,save_prefix+filename_base+'-no-NuBi')
 
-def plot_long_verf_solitary_noH(load_prefix, save_prefix, *args, **kwargs):
+def plot_long_verf_solitary_no_nu_bi(load_prefix, save_prefix, *args, **kwargs):
     filename_base = 'LongVerf'
 
     filename = data_csv.find_filenames(load_prefix, filename_base,
-            parameters={'wave_type':'solitary'}, required_words=['H0'])
+            parameters={'wave_type':'solitary'}, required_words=['nu_bi0'])
 
     # Extract data
     data_array = data_csv.load_data(filename, stack_coords=True)
@@ -963,13 +968,13 @@ def plot_long_verf_solitary_noH(load_prefix, save_prefix, *args, **kwargs):
 
     fig = plot_snapshots_template(data_arrays, norm_by_wavelength=False)
 
-    texplot.savefig(fig,save_prefix+'Long-Run-noH')
+    texplot.savefig(fig,save_prefix+'Long-Run-no-NuBi')
 
-def plot_long_verf_cnoidal_noH(load_prefix, save_prefix, *args, **kwargs):
+def plot_long_verf_cnoidal_no_nu_bi(load_prefix, save_prefix, *args, **kwargs):
     filename_base = 'LongVerf'
 
     filename = data_csv.find_filenames(load_prefix, filename_base,
-            parameters={'wave_type':'cnoidal'}, required_words=['H0'])
+            parameters={'wave_type':'cnoidal'}, required_words=['nu_bi0'])
 
     # Extract data
     data_array = data_csv.load_data(filename, stack_coords=True)
@@ -980,7 +985,7 @@ def plot_long_verf_cnoidal_noH(load_prefix, save_prefix, *args, **kwargs):
 
     fig = plot_snapshots_template(data_arrays, norm_by_wavelength=False)
 
-    texplot.savefig(fig,save_prefix+'Long-Run-Cnoidal-noH')
+    texplot.savefig(fig,save_prefix+'Long-Run-Cnoidal-no-NuBi')
 
 def plot_trig_verf(load_prefix, save_prefix, *args, **kwargs):
     filename_base = 'TrigVerf'
@@ -991,7 +996,7 @@ def plot_trig_verf(load_prefix, save_prefix, *args, **kwargs):
     # Extract data
     for indx_num, solver in enumerate(['Builtin', 'RK3']):
         filename = data_csv.find_filenames(load_prefix, filename_base,
-                required_words=[solver], forbidden_words=['H0'])
+                required_words=[solver], forbidden_words=['nu_bi0'])
 
         data = data_csv.load_data(filename, stack_coords=True)
 
@@ -1018,7 +1023,7 @@ def plot_long_verf_solitary(load_prefix, save_prefix, *args, **kwargs):
     filename_base = 'LongVerf'
 
     filename = data_csv.find_filenames(load_prefix, filename_base,
-            parameters={'wave_type':'solitary'}, forbidden_words=['H0'])
+            parameters={'wave_type':'solitary'}, forbidden_words=['nu_bi0'])
 
     # Extract data
     data_array = data_csv.load_data(filename, stack_coords=True)
@@ -1035,7 +1040,7 @@ def plot_long_verf_cnoidal(load_prefix, save_prefix, *args, **kwargs):
     filename_base = 'LongVerf'
 
     filename = data_csv.find_filenames(load_prefix, filename_base,
-            parameters={'wave_type':'cnoidal'}, forbidden_words=['H0'])
+            parameters={'wave_type':'cnoidal'}, forbidden_words=['nu_bi0'])
 
     # Extract data
     data_array = data_csv.load_data(filename, stack_coords=True)
@@ -1549,8 +1554,8 @@ def plot_hofmiller_cnoidal(load_prefix, save_prefix, *args, **kwargs):
 def plot_biviscosity(load_prefix, save_prefix, *args, **kwargs):
     filename_base = 'Biviscosity'
 
-    # Remove 'H' parameter
-    kwargs.pop('H', None)
+    # Remove 'nu_bi' parameter
+    kwargs.pop('nu_bi', None)
 
     # Remove 'P' parameter
     kwargs.pop('P', None)
@@ -1567,22 +1572,22 @@ def plot_biviscosity(load_prefix, save_prefix, *args, **kwargs):
                 allow_multiple_files=True)
 
         data_array_list = []
-        H_val_list = []
+        nu_bi_val_list = []
         for filename in filenames:
             # Extract data
             data_array = data_csv.load_data(filename, stack_coords=False)
 
-            H_val = float(data_array.attrs['H'])
+            nu_bi_val = float(data_array.attrs['nu_bi'])
 
-            H_val_list.append(H_val)
+            nu_bi_val_list.append(nu_bi_val)
             data_array_list.append(data_array)
 
         data_arrays[indx_num] = xr.concat(data_array_list,
-                dim=xr.DataArray(H_val_list, name='H', dims='H'))
+                dim=xr.DataArray(nu_bi_val_list, name='nu_bi', dims='nu_bi'))
         # Transpose to put P coordinate at end; this makes plotting easier
         data_arrays[indx_num] = data_arrays[indx_num].transpose()
         # Remove P parameter attribute
-        data_arrays[indx_num].attrs.pop('H', None)
+        data_arrays[indx_num].attrs.pop('nu_bi', None)
 
     fig = plot_shape_statistics_vs_time_template(data_arrays,
             color_class='sequential', legend_sig_figs=3,
@@ -1678,15 +1683,15 @@ def main():
             'eps' : 0.1,
             'mu' : 0.8,
             'P' : 0.5,
-            'H' : 0.25*0.05,
+            'nu_bi' : 1.25e-2,
             'psi_P' : 3/4*np.pi,
             'forcing_type' : 'Jeffreys',
             }
 
     callable_functions = {
-            'trig_verf_noH' : plot_trig_verf_noH,
-            'long_verf_solitary_noH' : plot_long_verf_solitary_noH,
-            'long_verf_cnoidal_noH' : plot_long_verf_cnoidal_noH,
+            'trig_verf_no_nu_bi' : plot_trig_verf_no_nu_bi,
+            'long_verf_solitary_no_nu_bi' : plot_long_verf_solitary_no_nu_bi,
+            'long_verf_cnoidal_no_nu_bi' : plot_long_verf_cnoidal_no_nu_bi,
             'trig_verf' : plot_trig_verf,
             'long_verf_solitary' : plot_long_verf_solitary,
             'long_verf_cnoidal' : plot_long_verf_cnoidal,

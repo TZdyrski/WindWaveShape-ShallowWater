@@ -777,7 +777,7 @@ def process_biviscosity_variation(load_prefix, save_prefix, *args, **kwargs):
 
         # Save statistics
         data_csv.save_data(statistics,
-                save_prefix+'Biviscosity_H'+str(statistics.attrs['H']),
+                save_prefix+'Biviscosity_nubi'+str(statistics.attrs['nu_bi']),
                 **statistics.attrs)
 
 def trim_snapshots(load_prefix, save_prefix, *args, **kwargs):
