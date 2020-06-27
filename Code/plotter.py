@@ -255,11 +255,6 @@ def plot_multiplot_template(data_arrays, x_coordinate,
                 {'P' : round_sig_figs(data_arrays[0,0]['P']*np.sqrt(
                     float(parameters[0,0]['mu'])/float(parameters[0,0]['eps'])),
                     3)})
-    elif line_coord == 'nu_bi':
-        data_arrays[0,0] = data_arrays[0,0].assign_coords(
-                {'nu_bi' : round_sig_figs(data_arrays[0,0]['nu_bi']*(
-                    float(parameters[0,0]['mu'])/float(parameters[0,0]['eps']))**(3/2),
-                    3)})
 
     if show_legend:
         # Add legend
@@ -1683,7 +1678,7 @@ def main():
             'eps' : 0.1,
             'mu' : 0.8,
             'P' : 0.5,
-            'nu_bi' : 1.25e-2,
+            'nu_bi' : 1e-3,
             'psi_P' : 3/4*np.pi,
             'forcing_type' : 'Jeffreys',
             }

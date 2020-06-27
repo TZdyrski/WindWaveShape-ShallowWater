@@ -963,7 +963,7 @@ def default_solver(y0_func=None, solver='RK3', *args, **kwargs):
 
     return data, solverSystem
 
-def gen_trig_verf(save_prefix, nu_bi=1.25e-2):
+def gen_trig_verf(save_prefix, nu_bi=1e-3):
     # Generate verification data by using sinusoidal initial conditions
     # with the Burgers equation
     NumWaves = 1
@@ -1003,7 +1003,7 @@ def gen_trig_verf(save_prefix, nu_bi=1.25e-2):
                     save_prefix+'TrigVerf-'+solver+'_nu_bi'+str(nu_bi_val),
                     **parameters, solver=solver, stack_coords = True)
 
-def gen_long_verf(save_prefix, mu=0.8, nu_bi=1.25e-2):
+def gen_long_verf(save_prefix, mu=0.8, nu_bi=1e-3):
     # Generate verification data by running a solitary wave profile
     # without forcing for a long time
 
@@ -1015,14 +1015,13 @@ def gen_long_verf(save_prefix, mu=0.8, nu_bi=1.25e-2):
             parameters = {
                     'mu' : mu,
                     'P' : 0,
-                    'nu_bi' : nu_bi_val*(0.1/mu)**(3/2),
+                    'nu_bi' : nu_bi_val,
                     'wave_type' : wave_type,
                     }
 
             # Use default mu for solitary waves
             if wave_type == 'solitary':
                 parameters.pop('mu')
-                parameters['nu_bi'] = nu_bi_val*(0.1/0.6)**(3/2)
 
             data, dataClass = default_solver(**parameters,
                     tLen=tLen,
@@ -1039,7 +1038,7 @@ def gen_long_verf(save_prefix, mu=0.8, nu_bi=1.25e-2):
                     **parameters)
 
 def gen_snapshots(save_prefix, eps=0.1, mu=0.8, P=0.5, psiP=3/4*np.pi,
-        nu_bi=1.25e-2):
+        nu_bi=1e-3):
     """ Generate snapshots for range of parameters. Save the results to
     the directory given by 'save_prefix'.
 
@@ -1060,7 +1059,7 @@ def gen_snapshots(save_prefix, eps=0.1, mu=0.8, P=0.5, psiP=3/4*np.pi,
         to actually use P~1, so decrease it for stability
     nu_bi : float
         Nondimensional biviscosity needed for numerical stability.
-        Default is 1.25e-2.
+        Default is 1e-3.
     """
 
     for forcing_type in ['Jeffreys', 'GM']:
@@ -1080,7 +1079,7 @@ def gen_snapshots(save_prefix, eps=0.1, mu=0.8, P=0.5, psiP=3/4*np.pi,
                             'forcing_type' : forcing_type,
                             'P' : P_val*np.sqrt(eps/mu_val),
                             'psiP' : psiP,
-                            'nu_bi' : nu_bi*(eps/mu_val)**(3/2),
+                            'nu_bi' : nu_bi,
                             }
 
                     # Jeffreys does not just psiP
@@ -1091,7 +1090,6 @@ def gen_snapshots(save_prefix, eps=0.1, mu=0.8, P=0.5, psiP=3/4*np.pi,
                     if wave_type == 'solitary':
                         parameters.pop('mu')
                         parameters['P'] = P_val*np.sqrt(eps/0.6)
-                        parameters['nu_bi'] = nu_bi*(0.1/0.6)**(3/2)
 
                     # Run model
                     data, dataClass = default_solver(**parameters)
@@ -1112,7 +1110,7 @@ def gen_snapshots(save_prefix, eps=0.1, mu=0.8, P=0.5, psiP=3/4*np.pi,
                         break
 
 def gen_depth_varying(save_prefix, eps=0.1, mu=0.6, P=0.5, psiP=3/4*np.pi,
-        nu_bi=1.25e-2, forcing_type='Jeffreys'):
+        nu_bi=1e-3, forcing_type='Jeffreys'):
 
     # Linearly space khs
     kh_vals = np.sqrt(mu)*np.linspace(1,np.sqrt(2),num=30)
@@ -1129,7 +1127,7 @@ def gen_depth_varying(save_prefix, eps=0.1, mu=0.6, P=0.5, psiP=3/4*np.pi,
                 'forcing_type' : forcing_type,
                 'P' : P*np.sqrt(eps/mu_val),
                 'psiP' : psiP,
-                'nu_bi' : nu_bi*(eps/mu_val)**(3/2),
+                'nu_bi' : nu_bi,
                 }
 
         # Jeffreys does not just psiP
@@ -1145,9 +1143,9 @@ def gen_depth_varying(save_prefix, eps=0.1, mu=0.6, P=0.5, psiP=3/4*np.pi,
                 **parameters, stack_coords=True)
 
 def gen_biviscosity_variation(save_prefix, eps=0.1, mu=0.8, P=0, psiP=3/4*np.pi,
-        nu_bi=1.25e-2, forcing_type='Jeffreys', wave_type='cnoidal'):
+        nu_bi=1e-3, forcing_type='Jeffreys', wave_type='cnoidal'):
 
-    nu_bi_vals = np.vectorize(round_sig_figs)(nu_bi*np.logspace(-3,1,5),3)
+    nu_bi_vals = np.vectorize(round_sig_figs)(nu_bi*np.logspace(-3,0,4),3)
     # Also include nu_bi=0
     nu_bi_vals = np.insert(nu_bi_vals, 0, 0)
 
@@ -1160,7 +1158,7 @@ def gen_biviscosity_variation(save_prefix, eps=0.1, mu=0.8, P=0, psiP=3/4*np.pi,
                'forcing_type' : forcing_type,
                'P' : P*np.sqrt(eps/mu),
                'psiP' : psiP,
-               'nu_bi' : nu_bi_val*(eps/mu)**(3/2),
+               'nu_bi' : nu_bi_val,
                }
 
        # Jeffreys does not just psiP
@@ -1170,7 +1168,6 @@ def gen_biviscosity_variation(save_prefix, eps=0.1, mu=0.8, P=0, psiP=3/4*np.pi,
        # Use default mu for solitary waves
        if wave_type == 'solitary':
            parameters.pop('mu')
-           parameters['nu_bi'] = nu_bi_val*(0.1/0.6)**(3/2)
 
        # Run model
        data, dataClass = default_solver(**parameters)
