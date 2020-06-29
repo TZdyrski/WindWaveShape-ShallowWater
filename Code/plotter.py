@@ -480,6 +480,9 @@ def plot_energy_template(data_arrays, **kwargs):
                 ]
 
         data_arrays_rearranged[:,shape_group] = split_data_arrays
+        for iy in range(data_arrays_rearranged.shape[0]):
+            data_arrays_rearranged[iy,shape_group].attrs = \
+                    data_arrays[shape_group].attrs
 
     # Use parameters from first data_array since we assume they're all
     # the same
