@@ -18,7 +18,8 @@ def save_data(data, suffix, stack_coords=False, **kwargs):
     filename = suffix +\
             ''.join('_{}{}'.format(
                 str(k),
-                str(round(v,3) if isinstance(v,float) else v)
+                # If anything is float-0, replace it with int-0
+                str((0 if v==0 else round(v,3)) if isinstance(v,float) else v)
                 ) for k,v in
                 sorted(filename_params.items()))+\
             extension
