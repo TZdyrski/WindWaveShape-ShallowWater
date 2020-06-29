@@ -98,12 +98,6 @@ def find_filenames(load_prefix, filename_base, required_words=[],
         # Cannot specify both 'wave_type'='solitary' and 'mu'
         parameters.pop('mu', None)
 
-    if parameters.get('P',None) is not None:
-        parameters['P'] = round(
-                parameters.get('P')*np.sqrt(
-                    parameters.get('eps',0.1)/\
-                            parameters.get('mu',0.6)), 3)
-
     filenames = glob.glob(load_prefix+filename_base+'*')
 
     if len(filenames) < 1:

@@ -184,10 +184,6 @@ def plot_multiplot_template(data_arrays, x_coordinate,
     for iy, ix in np.ndindex(ax.shape):
         parameters[iy,ix] = data_arrays[iy,ix].attrs
 
-        parameters[iy,ix]['P'] = float(parameters[iy,ix].get('P',0))*\
-                np.sqrt(float(parameters[iy,ix].get('mu',0.6))/
-                        float(parameters[iy,ix].get('eps',0.1)))
-
         # Convert any the attrs dicts of data_arrays for all parameters in
         # pi_parameters
         for param in set(pi_parameters) & set(parameters[iy,ix].keys()):
@@ -249,12 +245,6 @@ def plot_multiplot_template(data_arrays, x_coordinate,
 
     # Add subplot labels
     label_subplots(ax)
-
-    if line_coord == 'P':
-        data_arrays[0,0] = data_arrays[0,0].assign_coords(
-                {'P' : round_sig_figs(data_arrays[0,0]['P']*np.sqrt(
-                    float(parameters[0,0]['mu'])/float(parameters[0,0]['eps'])),
-                    3)})
 
     if show_legend:
         # Add legend
@@ -1266,9 +1256,6 @@ def plot_shape_statistics_cnoidal(load_prefix, save_prefix, *args, **kwargs):
 def plot_shape_statistics_vs_depth(load_prefix, save_prefix, *args, **kwargs):
     filename_base = 'Shape-vs-Depth'
 
-    # Remove 'P' parameter
-    kwargs.pop('P', None)
-
     # Remove 'mu' parameter
     kwargs.pop('mu', None)
 
@@ -1677,7 +1664,7 @@ def main():
     default_params = {
             'eps' : 0.1,
             'mu' : 0.8,
-            'P' : 0.5,
+            'P' : 0.25,
             'nu_bi' : 1e-3,
             'psi_P' : 3/4*np.pi,
             'forcing_type' : 'Jeffreys',

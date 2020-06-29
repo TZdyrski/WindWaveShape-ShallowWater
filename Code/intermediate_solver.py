@@ -1037,7 +1037,7 @@ def gen_long_verf(save_prefix, mu=0.8, nu_bi=1e-3):
                     stack_coords = True, eps=dataClass.eps,
                     **parameters)
 
-def gen_snapshots(save_prefix, eps=0.1, mu=0.8, P=0.5, psiP=3/4*np.pi,
+def gen_snapshots(save_prefix, eps=0.1, mu=0.8, P=0.25, psiP=3/4*np.pi,
         nu_bi=1e-3):
     """ Generate snapshots for range of parameters. Save the results to
     the directory given by 'save_prefix'.
@@ -1077,7 +1077,7 @@ def gen_snapshots(save_prefix, eps=0.1, mu=0.8, P=0.5, psiP=3/4*np.pi,
                             'mu' : mu_val,
                             'wave_type' : wave_type,
                             'forcing_type' : forcing_type,
-                            'P' : P_val*np.sqrt(eps/mu_val),
+                            'P' : P_val,
                             'psiP' : psiP,
                             'nu_bi' : nu_bi,
                             }
@@ -1089,7 +1089,6 @@ def gen_snapshots(save_prefix, eps=0.1, mu=0.8, P=0.5, psiP=3/4*np.pi,
                     # Use default mu for solitary waves
                     if wave_type == 'solitary':
                         parameters.pop('mu')
-                        parameters['P'] = P_val*np.sqrt(eps/0.6)
 
                     # Run model
                     data, dataClass = default_solver(**parameters)
@@ -1109,7 +1108,7 @@ def gen_snapshots(save_prefix, eps=0.1, mu=0.8, P=0.5, psiP=3/4*np.pi,
                         # affect the output)
                         break
 
-def gen_depth_varying(save_prefix, eps=0.1, mu=0.6, P=0.5, psiP=3/4*np.pi,
+def gen_depth_varying(save_prefix, eps=0.1, mu=0.6, P=0.25, psiP=3/4*np.pi,
         nu_bi=1e-3, forcing_type='Jeffreys'):
 
     # Linearly space khs
@@ -1125,7 +1124,7 @@ def gen_depth_varying(save_prefix, eps=0.1, mu=0.6, P=0.5, psiP=3/4*np.pi,
                 'mu' : mu_val,
                 'wave_type' : 'cnoidal',
                 'forcing_type' : forcing_type,
-                'P' : P*np.sqrt(eps/mu_val),
+                'P' : P,
                 'psiP' : psiP,
                 'nu_bi' : nu_bi,
                 }
@@ -1156,7 +1155,7 @@ def gen_biviscosity_variation(save_prefix, eps=0.1, mu=0.8, P=0, psiP=3/4*np.pi,
                'mu' : mu,
                'wave_type' : wave_type,
                'forcing_type' : forcing_type,
-               'P' : P*np.sqrt(eps/mu),
+               'P' : P,
                'psiP' : psiP,
                'nu_bi' : nu_bi_val,
                }
