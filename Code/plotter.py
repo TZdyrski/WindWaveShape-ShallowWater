@@ -151,10 +151,12 @@ def convert_x_norm(data_arrays):
 def default_plotter(data_array, x_name, axis):
     axis.plot(data_array[x_name], data_array)
 
-def plot_multiplot_template(data_arrays, x_coordinate, suptitle=None, ax_title=None,
+def plot_multiplot_template(data_arrays, x_coordinate,
+        suptitle=None, format_title=False, ax_title=None,
         ax_xlabel=None, ax_ylabel=None, color_class=None,
         show_legend=False, legend_title=None, plotter=default_plotter,
-        subplot_adjust_params={}, legend_sig_figs=2):
+        subplot_adjust_params={}, label_sig_figs=3, legend_sig_figs=2,
+        pi_parameters=[]):
     """
     Parameters
     ----------
@@ -162,6 +164,7 @@ def plot_multiplot_template(data_arrays, x_coordinate, suptitle=None, ax_title=N
         An ndarray, dimension at most 2, with each element containing
         the xarray data_array for the corresponding subplot.
     """
+
     # Initialize figure
     fig, ax = texplot.newfig(1,nrows=data_arrays.shape[0],
             ncols=data_arrays.shape[1], sharex=True,sharey='row')
@@ -173,26 +176,39 @@ def plot_multiplot_template(data_arrays, x_coordinate, suptitle=None, ax_title=N
     figsize = fig.get_size_inches()
     fig.set_size_inches([figsize[0],figsize[1]*(0.7+0.3*ax.shape[0])])
 
-    if suptitle is not None:
-        fig.suptitle(suptitle)
+
+    # Save parameters into a separate array of dictionaries so we can
+    # edit without affecting the dictionary
+    parameters = np.empty(ax.shape, dtype=object)
 
     for iy, ix in np.ndindex(ax.shape):
+        parameters[iy,ix] = data_arrays[iy,ix].attrs
+
+        # Convert any the attrs dicts of data_arrays for all parameters in
+        # pi_parameters
+        for param in set(pi_parameters) & set(parameters[iy,ix].keys()):
+            parameters[iy,ix][param] = \
+            float_to_pi(float(parameters[iy,ix].get(param,'')))
+
+        # Round parameters to correct number of significant figures
+        parameters[iy,ix] = {k: round_sig_figs(v,label_sig_figs) if
+                isinstance(v,float) else v for k,v in
+                parameters[iy,ix].items()}
+
         # Label axes and titles
         if ax_xlabel is not None:
             axes_sharing = ax[iy,ix].get_shared_x_axes().get_siblings(ax[iy,ix])
             if iy == ax.shape[0]-1 or len(axes_sharing) == 1:
                 ax[iy,ix].set_xlabel(fill_to_shape(ax_xlabel,ax.shape)[iy,ix]\
-                        .format(**data_arrays[iy,ix].attrs))
+                        .format(**parameters[iy,ix]))
         if ax_ylabel is not None:
             axes_sharing = ax[iy,ix].get_shared_y_axes().get_siblings(ax[iy,ix])
             if ix == 0 or len(axes_sharing) == 1:
                 ax[iy,ix].set_ylabel(fill_to_shape(ax_ylabel,ax.shape)[iy,ix]\
-                        .format(**data_arrays[iy,ix].attrs))
+                        .format(**parameters[iy,ix]))
         if ax_title is not None:
             ax[iy,ix].set_title(fill_to_shape(ax_title,ax.shape)[iy,ix]\
-                    .format(**{**data_arrays[iy,ix].attrs,
-                        'psiP' : float_to_pi(float(data_arrays[iy,ix].
-                                attrs.get('psiP', 0)))}))
+                    .format(**parameters[iy,ix]))
 
         # Set property cycle
         prop_cycle = property_cycle(
@@ -218,6 +234,14 @@ def plot_multiplot_template(data_arrays, x_coordinate, suptitle=None, ax_title=N
 
         # Plot snapshots
         plotter(data_array_sorted, x_name, ax[iy,ix])
+
+    if suptitle is not None:
+        if format_title:
+            # Use values from first dataset since we assume they all use
+            # the same values
+            fig.suptitle(suptitle.format(**parameters[0,0]))
+        else:
+            fig.suptitle(suptitle)
 
     # Add subplot labels
     label_subplots(ax)
@@ -269,6 +293,9 @@ def plot_snapshots_template(data_arrays, norm_by_wavelength=True,
                     data_arrays[0,0].attrs.get('forcing_type',None) ==
                     'GM' else '')
 
+    # Convert psiP to fractions of pi
+    pi_parameters = ['psiP']
+
     ax_title = np.empty(data_arrays.shape,dtype=object)
     for iy, ix in np.ndindex(ax_title.shape):
         if iy == 0:
@@ -291,6 +318,7 @@ def plot_snapshots_template(data_arrays, norm_by_wavelength=True,
     fig = plot_multiplot_template(**{
         'data_arrays':data_arrays,
         'x_coordinate':x_coordinate,
+        'pi_parameters':pi_parameters,
         'ax_title':ax_title,
         'ax_xlabel':ax_xlabel,
         'ax_ylabel':ax_ylabel,
@@ -490,9 +518,9 @@ def plot_energy_template(data_arrays, **kwargs):
             (r', $\psi_P = {psiP}$' if
                     data_arrays[0].attrs.get('forcing_type',None) ==
                     'GM' else '')
-    title_string = title_string.format(**{**data_arrays[0].attrs,
-        'psiP' : float_to_pi(float(data_arrays[0].attrs.
-            get('psiP', 0)))})
+
+    # Convert psiP to fractions of pi
+    pi_parameters = ['psiP']
 
     if data_arrays.size == 1:
         ax_title = title_string
@@ -512,6 +540,8 @@ def plot_energy_template(data_arrays, **kwargs):
         'data_arrays':data_arrays_rearranged,
         'x_coordinate':x_coordinate,
         'suptitle':suptitle,
+        'format_title':True,
+        'pi_parameters':pi_parameters,
         'ax_title':ax_title,
         'ax_xlabel':ax_xlabel,
         'ax_ylabel':ax_ylabel,
@@ -546,9 +576,9 @@ def plot_power_spec_vs_kappa_template(data_arrays, **kwargs):
             (r', $\psi_P = {psiP}$' if
                     data_arrays[0,0].attrs.get('forcing_type',None) ==
                     'GM' else '')
-    suptitle = suptitle.format(**{**data_arrays[0,0].attrs,
-        'psiP' : float_to_pi(float(data_arrays[0,0].attrs.
-            get('psiP', 0)))})
+
+    # Convert psiP to fractions of pi
+    pi_parameters = ['psiP']
 
     # Convert P' = P*k/(rho_w*g)/eps to P'*eps = P*k/(rho_w*g)
     # (Primes denote the nondim variables used throughout this solver)
@@ -568,6 +598,8 @@ def plot_power_spec_vs_kappa_template(data_arrays, **kwargs):
         'data_arrays':data_arrays,
         'x_coordinate':x_coordinate,
         'suptitle':suptitle,
+        'format_title':True,
+        'pi_parameters':pi_parameters,
         'ax_title':ax_title,
         'ax_xlabel':ax_xlabel,
         'ax_ylabel':ax_ylabel,
@@ -633,9 +665,9 @@ def plot_power_spec_vs_time_template(data_arrays, **kwargs):
             (r', $\psi_P = {psiP}$' if
                     data_arrays[0,0].attrs.get('forcing_type',None) ==
                     'GM' else '')
-    suptitle = suptitle.format(**{**data_arrays[0,0].attrs,
-        'psiP' : float_to_pi(float(data_arrays[0,0].attrs.
-            get('psiP', 0)))})
+
+    # Convert psiP to fractions of pi
+    pi_parameters = ['psiP']
 
     title_string = r'$P k_E/(\rho_w g \epsilon) = {P}$'
 
@@ -653,6 +685,8 @@ def plot_power_spec_vs_time_template(data_arrays, **kwargs):
         'data_arrays':data_arrays,
         'x_coordinate':x_coordinate,
         'suptitle':suptitle,
+        'format_title':True,
+        'pi_parameters':pi_parameters,
         'ax_title':ax_title,
         'ax_xlabel':ax_xlabel,
         'ax_ylabel':ax_ylabel,
@@ -683,9 +717,9 @@ def plot_wavenum_freq_template(data_arrays, **kwargs):
             (r', $\psi_P = {psiP}$' if
                     data_arrays[0,0].attrs.get('forcing_type',None) ==
                     'GM' else '')
-    suptitle = suptitle.format(**{**data_arrays[0,0].attrs,
-        'psiP' : float_to_pi(float(data_arrays[0,0].attrs.
-                get('psiP', 0)))})
+
+    # Convert psiP to fractions of pi
+    pi_parameters = ['psiP']
 
     title_string = r'$P k_E/(\rho_w g \epsilon) = {P}$'
 
@@ -727,6 +761,8 @@ def plot_wavenum_freq_template(data_arrays, **kwargs):
         'data_arrays':data_arrays,
         'x_coordinate':x_coordinate,
         'suptitle':suptitle,
+        'format_title':True,
+        'pi_parameters':pi_parameters,
         'ax_title':ax_title,
         'ax_xlabel':ax_xlabel,
         'ax_ylabel':ax_ylabel,
@@ -792,6 +828,9 @@ def plot_spacetime_mesh_template(data_arrays, norm_by_wavelength=False,
 
     legend_title = r'Time'+'\n'+r'$t \epsilon \sqrt{g h} k_E$'
 
+    # Convert psiP to fractions of pi
+    pi_parameters = ['psiP']
+
     if norm_by_wavelength:
         data_arrays = convert_x_norm(data_arrays)
 
@@ -815,6 +854,7 @@ def plot_spacetime_mesh_template(data_arrays, norm_by_wavelength=False,
         'data_arrays':data_arrays,
         'x_coordinate':x_coordinate,
         'suptitle':suptitle,
+        'pi_parameters':pi_parameters,
         'ax_title':ax_title,
         'ax_xlabel':ax_xlabel,
         'ax_ylabel':ax_ylabel,
