@@ -44,16 +44,16 @@ class kdvSystem():
             Sets the background current strength. Default is 0.
         G : float or None
             Sets the strength of the damping. If None, determine G from
-            G=-1/2*P, where P is the pressure forcing strength. Default
-            is 0.
+            G=-1/2*P*sqrt(mu/eps), where P is the pressure forcing
+            strength. Default is 0.
         H : float or None
             Sets the strength of the "biviscosity" damping. Positive H
             is needed for stability when solving the KdV-Burgers
             equation with negative G. Default is 0.
         P : float or None
             Sets the strength of the pressure forcing. If None,
-            determine P from P=-2*G, where G is the strength of the
-            damping. Default is 0.
+            determine P from P=-2*G*sqrt(eps/mu), where G is the
+            strength of the damping. Default is 0.
         psiP : float or None
             The wind phase, or the shift of the pressure relative to the
             surface height p(x,t) = eta(x+psiP,t). This is used for
@@ -98,10 +98,10 @@ class kdvSystem():
             raise ValueError('Cannot provide both G and P to kdvSystem constructor.')
         elif P is not None:
             self.P = P
-            self.G = -1/2*P
+            self.G = -1/2*P*np.sqrt(mu/eps)
         elif G is not None:
             self.G = G
-            self.P = -2*G
+            self.P = -2*G*np.sqrt(eps/mu)
         else:
             self.G = 0
             self.P = 0
@@ -1061,7 +1061,7 @@ def gen_snapshots(save_prefix, eps=0.1, mu=0.8, P=0.5, psiP=3/4*np.pi, H=1.25e-2
                             'mu' : mu_val,
                             'wave_type' : wave_type,
                             'forcing_type' : forcing_type,
-                            'P' : P_val,
+                            'P' : P_val*np.sqrt(eps/mu_val),
                             'psiP' : psiP,
                             'H' : H,
                             }
@@ -1073,6 +1073,7 @@ def gen_snapshots(save_prefix, eps=0.1, mu=0.8, P=0.5, psiP=3/4*np.pi, H=1.25e-2
                     # Use default mu for solitary waves
                     if wave_type == 'solitary':
                         parameters.pop('mu')
+                        parameters['P'] = P_val*np.sqrt(eps/0.6)
 
                     # Run model
                     data, dataClass = default_solver(**parameters)
@@ -1108,7 +1109,7 @@ def gen_depth_varying(save_prefix, eps=0.1, mu=0.6, P=0.5, psiP=3/4*np.pi,
                 'mu' : mu_val,
                 'wave_type' : 'cnoidal',
                 'forcing_type' : forcing_type,
-                'P' : P,
+                'P' : P*np.sqrt(eps/mu_val),
                 'psiP' : psiP,
                 'H' : H,
                 }
@@ -1139,7 +1140,7 @@ def gen_biviscosity_variation(save_prefix, eps=0.1, mu=0.8, P=0, psiP=3/4*np.pi,
                'mu' : mu,
                'wave_type' : wave_type,
                'forcing_type' : forcing_type,
-               'P' : P,
+               'P' : P*np.sqrt(eps/mu),
                'psiP' : psiP,
                'H' : H_val,
                }

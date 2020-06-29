@@ -217,7 +217,8 @@ def temporal_fourier_transform(signal, rel_tol=1e-3):
 
     # Multiply each mode by exp(sqrt(1+P)*k*t)
     signal_modified = np.exp(
-            -np.imag(1/2*float(signal.attrs['eps'])*1j*float(signal.attrs['P']))
+            -np.imag(1/2*float(signal.attrs['eps'])*1j*float(signal.attrs['P'])*\
+                    np.sqrt(float(signal.attrs['mu'])/float(signal.attrs['eps'])))
             *2*np.pi/float(signal.attrs['wave_length'])
             *np.abs(kappa_mesh)
             *signal['t*eps*sqrt(g*h)*k_E'].values
