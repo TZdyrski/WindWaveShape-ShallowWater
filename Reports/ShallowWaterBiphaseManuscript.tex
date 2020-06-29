@@ -550,12 +550,23 @@ This gives
 This is the nonlocal Korteweg-de Vries (KdV) equation.
 This is a rare, difficult-to-solve equation.
 
-Alternatively, if we now specialize to the Jeffreys forcing type, $p_0 = P_J
-\pdv*{\eta_0}{x}$.
+Alternatively, we now specialize to the Jeffreys forcing type,
+\begin{equation}
+  p_0 = P_J \pdv*{\eta_0}{x} = P_J f_0''
+  \implies p'_0 = P'_J \sqrt{\frac{\mu}{\epsilon}} \pdv{\eta'_0}{x'}
+  \,.
+\end{equation}
 This gives
 \begin{equation}
-   \pdv{\eta_0}{t_1} + P_J \frac{1}{2} \eta_0'' + \frac{3}{2} \eta_0
-     \eta_0' + \frac{1}{6} \frac{\mu}{\epsilon} \eta_0^{(3)} = 0 \,.
+   \pdv{f_0'}{t_1} + P_J \sqrt{\frac{\mu}{\epsilon}} \frac{1}{2} f_0'''
+   + \frac{3}{2} f_0' f_0'' + \frac{1}{6} \frac{\mu}{\epsilon} f_0^{(4)}
+   = 0 \,.
+\end{equation}
+Finally, we can replace $f_0' = \eta_0$ to yield
+\begin{equation}
+   \pdv{\eta_0}{t_1} + P_J \sqrt{\frac{\mu}{\epsilon}} \frac{1}{2}
+   \eta_0'' + \frac{3}{2} \eta_0 \eta_0' + \frac{1}{6}
+   \frac{\mu}{\epsilon} \eta_0^{(3)} = 0 \,.
   \label{eq:kdv_burgers}
 \end{equation}
 This is the Korteweg-de Vries (KdV)-Burgers equation, though the
@@ -907,8 +918,9 @@ As a useful check on our earlier estimation of the magnitude of $P'$, we
 can derive the energy growth rate.
 Multiplying \cref{eq:kdv_burgers} by $\eta_0$, we find
 \begin{equation}
-  \frac{1}{2} \pdv{t_1} \eta_0^2 + P_J \frac{1}{4} (\eta_0^2)'' -
-  \frac{1}{2} P_J (\eta_0')^2 + \frac{1}{2} (\eta_0^3)' + \frac{1}{12}
+  \frac{1}{2} \pdv{t_1} \eta_0^2 + P_J \sqrt{\frac{\mu}{\epsilon}}
+  \frac{1}{4} (\eta_0^2)'' - \frac{1}{2} P_J \sqrt{\frac{\mu}{\epsilon}}
+  (\eta_0')^2 + \frac{1}{2} (\eta_0^3)' + \frac{1}{12}
   \frac{\mu}{\epsilon} (\eta_0^2)''' - \frac{1}{4} \frac{\mu}{\epsilon}
   \bqty{\pqty{\eta_0'}^2}' = 0 \,.
 \end{equation}
@@ -916,34 +928,37 @@ Then, integrating over a wavelength gives
 \begin{equation}
   \begin{split}
   &\pdv{t_1} \int_{-L/2}^{L/2} \frac{1}{2} \eta_0^2 \dd{x} \\
-  &\qquad= \int_{-L/2}^{L/2} \frac{1}{2} P_J (\eta_0')^2 \dd{x}
-  + \int_{-L/2}^{L/2} -P_J \frac{1}{4} (\eta_0^2)''  - \frac{1}{2} (\eta_0^3)' - \frac{1}{12}
-  \frac{\mu}{\epsilon} (\eta_0^2)''' + \frac{1}{4} \frac{\mu}{\epsilon}
-  \bqty{\pqty{\eta_0'}^2}' \dd{x}
+  &\qquad= \int_{-L/2}^{L/2} \frac{1}{2} P_J \sqrt{\frac{\mu}{\epsilon}}
+    (\eta_0')^2 \dd{x} + \int_{-L/2}^{L/2} -P_J
+    \sqrt{\frac{\mu}{\epsilon}} \frac{1}{4} (\eta_0^2)'' - \frac{1}{2}
+    (\eta_0^3)' - \frac{1}{12} \frac{\mu}{\epsilon} (\eta_0^2)''' +
+    \frac{1}{4} \frac{\mu}{\epsilon} \bqty{\pqty{\eta_0'}^2}' \dd{x}
   \\
   &\qquad=
-  \int_{-L/2}^{L/2} \frac{1}{2} P_J (\eta_0')^2 \dd{x}
-  + \eval{\bqty{-P_J \frac{1}{4} (\eta_0^2)'  - \frac{1}{2} (\eta_0^3) - \frac{1}{12}
-  \frac{\mu}{\epsilon} (\eta_0^2)'' + \frac{1}{4} \frac{\mu}{\epsilon}
-  \pqty{\eta_0'}^2}}_{-L/2}^{L/2}
+  \int_{-L/2}^{L/2} \frac{1}{2} P_J \sqrt{\frac{\mu}{\epsilon}}
+  (\eta_0')^2 \dd{x} + \eval{\bqty{-P_J \sqrt{\frac{\mu}{\epsilon}}
+      \frac{1}{4} (\eta_0^2)'  - \frac{1}{2} (\eta_0^3) - \frac{1}{12}
+      \frac{\mu}{\epsilon} (\eta_0^2)'' + \frac{1}{4}
+      \frac{\mu}{\epsilon} \pqty{\eta_0'}^2}}_{-L/2}^{L/2}
   \\
   &\qquad=
-  \int_{-L/2}^{L/2} \frac{1}{2} P_J (\eta_0')^2 \dd{x}
-   \,.
+  \int_{-L/2}^{L/2} \frac{1}{2} P_J \sqrt{\frac{\mu}{\epsilon}}
+  (\eta_0')^2 \dd{x} \,.
   \end{split}
 \end{equation}
 Redimensionalizing, we find
 \begin{equation}
   \frac{k}{\rho_w a^2} \frac{1}{\omega_0 \epsilon} \pdv{t} \int_{-L/2}^{L/2}
   \rho_w \eta^2 \dd{x} = \frac{1}{k a^2} \int_{-L/2}^{L/2} P_J'
-  (\partial_x \eta)^2 \dd{x}
+  \sqrt{\frac{\mu}{\epsilon}} (\partial_x \eta)^2 \dd{x}
 \end{equation}
 or
 \begin{equation}
   \frac{1}{\omega_0 E} \pdv{t} E =
   \epsilon
   \frac{
-    \int_{-L/2}^{L/2} P_J' (\partial_x \eta)^2 \dd{x}
+    \int_{-L/2}^{L/2} P_J' \sqrt{\frac{\mu}{\epsilon}} (\partial_x
+    \eta)^2 \dd{x}
   }
   {
     \int_{-L/2}^{L/2} k^2 \eta^2 \dd{x}
@@ -955,7 +970,8 @@ The left-hand side is simply $\gamma/\omega_0$.
 If, for simplicity, we consider a simple sinusoid $\eta_0 = A \cos(k x -
 \omega_0 t)$, we find
 \begin{equation}
-  \frac{\gamma}{\omega_0} = \epsilon P_J' = \frac{P_J k}{\rho_w g} \,,
+  \frac{\gamma}{\omega_0} = \epsilon P_J' \sqrt{\frac{\mu}{\epsilon}} =
+  \frac{P_J k}{\rho_w g} \sqrt{\frac{\mu}{\epsilon}} \,,
 \end{equation}
 where we used $\alpha = \epsilon$.
 
