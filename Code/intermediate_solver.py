@@ -464,7 +464,7 @@ class kdvSystem():
             snapshot_indxs[ts_too_big_indxs] = self.t.size-1
 
             # Get actual snapshot times
-            snapshot_ts = np.around(self.t[snapshot_indxs],1)
+            snapshot_ts = self.t[snapshot_indxs]
 
         self.snapshot_indxs = snapshot_indxs
         self.snapshot_ts = snapshot_ts
