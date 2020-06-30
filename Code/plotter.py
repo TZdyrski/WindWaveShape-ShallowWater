@@ -774,7 +774,7 @@ def plot_wavenum_freq_template(data_arrays, **kwargs):
 
     return fig
 
-def plot_hofmiller_template(data_arrays, **kargs):
+def plot_xt_offset_template(data_arrays, **kargs):
 
     # Use parameters from first data_array since we assume they're all
     # the same
@@ -1487,8 +1487,8 @@ def plot_wavenum_freq_GM(load_prefix, save_prefix, *args, **kwargs):
 
     texplot.savefig(fig,save_prefix+'Double-Power-Spectrum-GM')
 
-def plot_hofmiller_solitary(load_prefix, save_prefix, *args, **kwargs):
-    filename_base = 'Hofmiller'
+def plot_xt_offset_solitary(load_prefix, save_prefix, *args, **kwargs):
+    filename_base = 'XT-Offset'
 
     # Arrange data and parameters into 2d array for plotting
     data_arrays = np.empty((2,1),dtype=object)
@@ -1506,12 +1506,12 @@ def plot_hofmiller_solitary(load_prefix, save_prefix, *args, **kwargs):
         indx = np.unravel_index(indx_num,data_arrays.shape)
         data_arrays[indx] = data_array
 
-    fig = plot_hofmiller_template(data_arrays)
+    fig = plot_xt_offset_template(data_arrays)
 
-    texplot.savefig(fig,save_prefix+'Hofmiller')
+    texplot.savefig(fig,save_prefix+'XT-Offset')
 
-def plot_hofmiller_cnoidal(load_prefix, save_prefix, *args, **kwargs):
-    filename_base = 'Hofmiller'
+def plot_xt_offset_cnoidal(load_prefix, save_prefix, *args, **kwargs):
+    filename_base = 'XT-Offset'
 
     # Arrange data and parameters into 2d array for plotting
     data_arrays = np.empty((2,1),dtype=object)
@@ -1529,9 +1529,9 @@ def plot_hofmiller_cnoidal(load_prefix, save_prefix, *args, **kwargs):
         indx = np.unravel_index(indx_num,data_arrays.shape)
         data_arrays[indx] = data_array
 
-    fig = plot_hofmiller_template(data_arrays)
+    fig = plot_xt_offset_template(data_arrays)
 
-    texplot.savefig(fig,save_prefix+'Hofmiller-Cnoidal')
+    texplot.savefig(fig,save_prefix+'XT-Offset-Cnoidal')
 
 def plot_biviscosity(load_prefix, save_prefix, *args, **kwargs):
     filename_base = 'Biviscosity'
@@ -1695,8 +1695,8 @@ def main():
             'power_spec_vs_time_GM' : plot_power_spec_vs_time_GM,
             'wavenum_freq' : plot_wavenum_freq,
             'wavenum_freq_GM' : plot_wavenum_freq_GM,
-            'hofmiller_solitary' : plot_hofmiller_solitary,
-            'hofmiller_cnoidal' : plot_hofmiller_cnoidal,
+            'xt_offset_solitary' : plot_xt_offset_solitary,
+            'xt_offset_cnoidal' : plot_xt_offset_cnoidal,
             'biviscosity' : plot_biviscosity,
             'spacetime_mesh' : plot_spacetime_mesh,
             'forcing_types' : plot_forcing_types,

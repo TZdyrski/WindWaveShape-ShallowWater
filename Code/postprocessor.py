@@ -739,7 +739,7 @@ def process_depth_varying(load_prefix, save_prefix, *args, **kwargs):
             save_prefix+'Shape-vs-Depth',
             **statistics_datasets.attrs)
 
-def process_hofmiller(load_prefix, save_prefix, *args, **kwargs):
+def process_xt_offset(load_prefix, save_prefix, *args, **kwargs):
     filename_base = 'Snapshots'
 
     # Find filenames
@@ -761,7 +761,7 @@ def process_hofmiller(load_prefix, save_prefix, *args, **kwargs):
                     data_array['t*eps*sqrt(g*h)*k_E']*speed
 
         # Save snapshots
-        data_csv.save_data(data_array, save_prefix+'Hofmiller',
+        data_csv.save_data(data_array, save_prefix+'XT-Offset',
                 **data_array.attrs, stack_coords=True)
 
 def process_biviscosity_variation(load_prefix, save_prefix, *args, **kwargs):
@@ -843,7 +843,7 @@ def main():
             'power_spec_vs_time' : process_power_spec_vs_time,
             'wavenum_freq' : process_wavenumber_frequency,
             'depth_varying' : process_depth_varying,
-            'hofmiller' : process_hofmiller,
+            'xt_offset' : process_xt_offset,
             'biviscosity' : process_biviscosity_variation,
             'spacetime_mesh' : process_spacetime_mesh
             }
