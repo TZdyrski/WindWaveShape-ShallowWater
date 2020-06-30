@@ -445,7 +445,8 @@ class kdvSystem():
             snapshot_indxs = np.arange(start=0, stop=self.tNum,
                     step=int(self.tNum/self.xNum))
             # Ensure we also capture the last timestep
-            snapshot_indxs = np.append(snapshot_indxs, self.tNum-1)
+            if self.tNum-1 not in snapshot_indxs:
+                snapshot_indxs = np.append(snapshot_indxs, self.tNum-1)
             snapshot_ts = np.array(self.t)[snapshot_indxs]
 
         else:
