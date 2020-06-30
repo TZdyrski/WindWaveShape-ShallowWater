@@ -1625,8 +1625,7 @@ def plot_decaying_no_nu_bi(load_prefix, save_prefix, *args, **kwargs):
         data_arrays[indx_num].attrs.pop('P', None)
 
     fig = plot_shape_statistics_vs_time_template(data_arrays,
-            color_class='inverse_sequential',
-            suptitle=r'$\Delta x = {xStep}$', format_title=True)
+            color_class='inverse_sequential')
 
     texplot.savefig(fig,save_prefix+'Decaying-no-NuBi')
 

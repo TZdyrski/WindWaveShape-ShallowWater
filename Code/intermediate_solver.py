@@ -1190,7 +1190,6 @@ def gen_decaying_no_nu_bi(save_prefix, eps=0.1, mu=0.8, P=0.1,
                      'P' : P_val,
                      'psiP' : psiP,
                      'nu_bi' : nu_bi,
-                     'xStep' : 0.05,
                      }
 
              # Jeffreys does not just psiP
