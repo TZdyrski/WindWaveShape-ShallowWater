@@ -21,11 +21,11 @@ def property_cycle(num_lines,color_class='sequential'):
     ----------
     num_lines : int
         Number of lines in the cycle.
-    color_class : 'sequential' or 'cyclic'
+    color_class : 'sequential', 'inverse_sequential', or 'cyclic'
         Type of color class to use for lines. The 'sequential' option
-        uses the 'YlGnBu' color class. The 'cyclic' option uses the
-        'twilight' color class. Default is 'sequential'.
-
+        uses the 'YlGnBu' color class. The 'inverse_sequential' option
+        uses the 'YlGnBu' color class in reverse. The 'cyclic' option
+        uses the 'twilight' color class. Default is 'sequential'.
 
     Returns
     -------
@@ -41,6 +41,13 @@ def property_cycle(num_lines,color_class='sequential'):
                 range(num_lines)]
 
         linestyles = [*((0,(3+i,i)) for i in range(num_lines))]
+    elif color_class == 'inverse_sequential':
+        # Add 1 to numerator and denominator so we don't go all the way to 0
+        # (it's too light to see)
+        new_colors = [plt.get_cmap('viridis')(1. * (i)/(num_lines)) for i in
+                reversed(range(num_lines))]
+
+        linestyles = [*((0,(3+i,i)) for i in reversed(range(num_lines)))]
     elif color_class == 'cyclic':
         # Make the colors go from blue to black to red
         MaxColorAbs = 0.4
@@ -1582,6 +1589,47 @@ def plot_biviscosity(load_prefix, save_prefix, *args, **kwargs):
 
     texplot.savefig(fig,save_prefix+'Biviscosity')
 
+def plot_decaying_no_nu_bi(load_prefix, save_prefix, *args, **kwargs):
+    filename_base = 'Decaying-no-NuBi'
+
+    # Remove 'P' parameter
+    kwargs.pop('P', None)
+
+    # Arrange data and parameters into 1d array for plotting
+    data_arrays = np.empty((2),dtype=object)
+
+    mu = float(kwargs.get('mu'))
+
+    for indx_num, mu_val in enumerate([mu,2*mu]):
+        filenames = data_csv.find_filenames(load_prefix, filename_base,
+                parameters={'wave_type' : 'cnoidal', **kwargs,
+                    'mu' : mu_val},
+                allow_multiple_files=True)
+
+        data_array_list = []
+        P_val_list = []
+        for filename in filenames:
+            # Extract data
+            data_array = data_csv.load_data(filename, stack_coords=False)
+
+            P_val = float(data_array.attrs['P'])
+
+            P_val_list.append(P_val)
+            data_array_list.append(data_array)
+
+        data_arrays[indx_num] = xr.concat(data_array_list,
+                dim=xr.DataArray(P_val_list, name='P', dims='P'))
+        # Transpose to put P coordinate at end; this makes plotting easier
+        data_arrays[indx_num] = data_arrays[indx_num].transpose()
+        # Remove P parameter attribute
+        data_arrays[indx_num].attrs.pop('P', None)
+
+    fig = plot_shape_statistics_vs_time_template(data_arrays,
+            color_class='inverse_sequential',
+            suptitle=r'$\Delta x = {xStep}$', format_title=True)
+
+    texplot.savefig(fig,save_prefix+'Decaying-no-NuBi')
+
 def plot_spacetime_mesh(load_prefix, save_prefix, *args, **kwargs):
     filename_base = 'Full-Snapshots'
 
@@ -1701,6 +1749,7 @@ def main():
             'xt_offset_cnoidal' : plot_xt_offset_cnoidal,
             'biviscosity' : plot_biviscosity,
             'spacetime_mesh' : plot_spacetime_mesh,
+            'decaying_no_nu_bi' : plot_decaying_no_nu_bi,
             'forcing_types' : plot_forcing_types,
             }
 

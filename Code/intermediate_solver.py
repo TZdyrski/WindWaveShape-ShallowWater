@@ -1174,6 +1174,51 @@ def gen_biviscosity_variation(save_prefix, eps=0.1, mu=0.8, P=0, psiP=3/4*np.pi,
                wave_length=dataClass.WaveLength,
                **parameters, stack_coords=True)
 
+def gen_decaying_no_nu_bi(save_prefix, eps=0.1, mu=0.8, P=0.1,
+        psiP=3/4*np.pi, nu_bi=0, forcing_type='Jeffreys',
+        wave_type='cnoidal'):
+
+     for P_val in P*np.array([-1,-0.5,0]):
+
+         for mu_val in mu*np.array([1,2]):
+
+             parameters = {
+                     'eps' : eps,
+                     'mu' : mu_val,
+                     'wave_type' : wave_type,
+                     'forcing_type' : forcing_type,
+                     'P' : P_val,
+                     'psiP' : psiP,
+                     'nu_bi' : nu_bi,
+                     'xStep' : 0.05,
+                     }
+
+             # Jeffreys does not just psiP
+             if forcing_type == 'Jeffreys':
+                 parameters.pop('psiP')
+
+             # Use default mu for solitary waves
+             if wave_type == 'solitary':
+                 parameters.pop('mu')
+
+             # Run model
+             data, dataClass = default_solver(**parameters)
+
+             # Get default mu for solitary waves
+             if wave_type == 'solitary':
+                 parameters['mu'] = dataClass.mu
+
+             # Save data
+             data_csv.save_data(data, save_prefix+'Decaying-no-NuBi',
+                     wave_length=dataClass.WaveLength,
+                     **parameters, stack_coords=True)
+
+             if wave_type == 'solitary':
+                 # We don't use mu for solitary waves, so break
+                 # after a single run (since changing mu won't
+                 # affect the output)
+                 break
+
 def main():
     save_prefix = '../Data/Raw/'
 
@@ -1183,6 +1228,7 @@ def main():
             'snapshots' : gen_snapshots,
             'depth_varying' : gen_depth_varying,
             'biviscosity' : gen_biviscosity_variation,
+            'decaying_no_nu_bi' : gen_decaying_no_nu_bi,
             }
 
     if len(sys.argv) == 1:

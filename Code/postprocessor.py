@@ -780,6 +780,21 @@ def process_biviscosity_variation(load_prefix, save_prefix, *args, **kwargs):
                 save_prefix+'Biviscosity_nubi'+str(statistics.attrs['nu_bi']),
                 **statistics.attrs)
 
+def process_decaying_no_nu_bi(load_prefix, save_prefix, *args, **kwargs):
+    filename_base = 'Decaying-no-NuBi'
+
+    # Find filenames
+    filenames = data_csv.find_filenames(load_prefix, filename_base,
+            allow_multiple_files=True)
+
+    for filename in filenames:
+        # Create shape statistics
+        statistics = generate_statistics(filename)
+
+        # Save statistics
+        data_csv.save_data(statistics,
+                save_prefix+'Decaying-no-NuBi', **statistics.attrs)
+
 def trim_snapshots(load_prefix, save_prefix, *args, **kwargs):
     filename_base = 'Snapshots'
 
@@ -845,7 +860,8 @@ def main():
             'depth_varying' : process_depth_varying,
             'xt_offset' : process_xt_offset,
             'biviscosity' : process_biviscosity_variation,
-            'spacetime_mesh' : process_spacetime_mesh
+            'spacetime_mesh' : process_spacetime_mesh,
+            'decaying_no_nu_bi' : process_decaying_no_nu_bi,
             }
 
     if len(sys.argv) == 1:
