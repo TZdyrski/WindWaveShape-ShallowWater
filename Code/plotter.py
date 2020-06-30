@@ -460,6 +460,7 @@ def plot_shape_statistics_vs_time_template(data_arrays, **kwargs):
                 'x_coordinate':x_coordinate,
                 'show_legend':True,
                 'legend_title':legend_title,
+                'legend_sig_figs':3,
                 **kwargs})
 
     return fig
@@ -547,6 +548,7 @@ def plot_energy_template(data_arrays, **kwargs):
         'ax_ylabel':ax_ylabel,
         'show_legend':True,
         'legend_title':legend_title,
+        'legend_sig_figs':3,
         'color_class':'cyclic',
         # Put kwargs last so any parameters will overwrite the defaults
         # we've provided
