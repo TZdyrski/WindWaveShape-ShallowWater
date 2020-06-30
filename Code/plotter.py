@@ -1586,11 +1586,11 @@ def plot_spacetime_mesh(load_prefix, save_prefix, *args, **kwargs):
     # Using the default list of parameters, generate plots for ones with
     # slightly different parameters
     parameter_list = [
-            {**kwargs},
-            {**kwargs, 'forcing_type':'GM'},
-            {**kwargs, 'wave_type':'solitary'},
-            {**kwargs, 'P':-kwargs.get('P',0)},
-            {**kwargs, 'mu':2*kwargs.get('mu',0)},
+            {**kwargs, 'label':''},
+            {**kwargs, 'forcing_type':'GM', 'label':'GM'},
+            {**kwargs, 'wave_type':'solitary', 'label':'solitary'},
+            {**kwargs, 'P':-kwargs.get('P',0), 'label':'neg'},
+            {**kwargs, 'mu':2*kwargs.get('mu',0), 'label':'double_mu'},
             ]
     for parameters in parameter_list:
 
@@ -1599,9 +1599,6 @@ def plot_spacetime_mesh(load_prefix, save_prefix, *args, **kwargs):
 
         # Extract data
         data_array = data_csv.load_data(filename, stack_coords=True)
-
-        filename_end = filename.replace(load_prefix+filename_base,'').\
-                replace('.csv','')
 
         # Arrange data and parameters into 2d array for plotting
         data_arrays = np.empty((1,1),dtype=object)
@@ -1612,7 +1609,9 @@ def plot_spacetime_mesh(load_prefix, save_prefix, *args, **kwargs):
         fig = plot_spacetime_mesh_template(data_arrays,
                 norm_by_wavelength=norm_by_wavelength)
 
-        texplot.savefig(fig,save_prefix+'Spacetime-Mesh'+filename_end)
+        texplot.savefig(fig,save_prefix+'Spacetime-Mesh'+\
+                ('_'+parameters['label'] if parameters['label'] != ''
+                    else ''))
 
 def plot_forcing_types(load_prefix, save_prefix, *args, **kwargs):
 
