@@ -566,7 +566,7 @@ class kdvSystem():
                     eqn,
                     (0,self.tLen),
                     self.y0,
-                    t_eval=self.t,
+                    t_eval=self.snapshot_ts,
                     method='Radau',
                     vectorized=True,
                     jac_sparsity=self._JacSparcity()
@@ -576,7 +576,7 @@ class kdvSystem():
                     lambda t,u: eqn(t,u,deriv_type='periodic_fd'),
                     (0,self.tLen),
                     self.y0,
-                    t_eval=self.t,
+                    t_eval=self.snapshot_ts,
                     method='RK23',
                     )
 
@@ -592,48 +592,51 @@ class kdvSystem():
         'KdVB', solve the KdV-Burgers equation; if self.diffeq ==
         'KdVNL', solve the nonlocal KdV equation."""
 
-        dx = self.dx
         dt = self.dt
 
         nx = self.x.size
         nt = self.t.size
+        nt_snapshots = self.snapshot_indxs
 
-        dx2 = dx**2
-        dx3 = dx**3
-        dx4 = dx**4
-
-        y = np.empty((nt,nx),dtype=np.float128)
+        y = np.empty((nt_snapshots.size,nx), dtype=np.float128)
         y[0,:] = self.y0
-
-        n = 0
 
         if self.diffeq == 'KdVB':
             rhs_eqn = self._kdvb
         elif self.diffeq == 'KdVNL':
             rhs_eqn = self._kdvnl
 
-        # First step is an Euler step
-        RHS0 = rhs_eqn(n*dt, y[n,:], deriv_type='periodic_fd')
-        y[n+1,:] = y[n,:] + dt*RHS0
-        n = n + 1
+        yn = y[0,:]
+        for n in range(0,nt-1):
+            if n == 0:
+                # First step is an Euler step
+                RHS0 = rhs_eqn(n*dt, y[n,:], deriv_type='periodic_fd')
+                # Calculate next step
+                yn = yn + dt*RHS0
 
-        RHS1 = RHS0
+                RHS1 = RHS0
 
-        # Second step is a 2nd order Adams-Bashforth step
-        RHS0 = rhs_eqn(n*dt, y[n,:], deriv_type='periodic_fd')
-        y[n+1,:] = y[n,:] + dt*(3/2*RHS0 - 1/2*RHS1)
-        n = n+1
+            elif n == 1:
+                # Second step is a 2nd order Adams-Bashforth step
+                RHS0 = rhs_eqn(n*dt, y[n,:], deriv_type='periodic_fd')
+                # Calculate next step
+                yn = yn + dt*(3/2*RHS0 - 1/2*RHS1)
 
-        RHS2 = RHS1
-        RHS1 = RHS0
+                RHS2 = RHS1
+                RHS1 = RHS0
+            else:
+                # Later steps are all 3rd order Adams-Bashforth steps
+                RHS0 = rhs_eqn(n*dt, yn, deriv_type='periodic_fd')
+                # Calculate next step
+                yn = yn + dt*(23/12*RHS0 - 16/12*RHS1 + 5/12*RHS2)
 
-        for n in range(2,nt-1):
-            # Later steps are all 3rd order Adams-Bashforth steps
-            RHS0 = rhs_eqn(n*dt, y[n,:], deriv_type='periodic_fd')
-            y[n+1,:] = y[n,:] + dt*(23/12*RHS0 - 16/12*RHS1 + 5/12*RHS2)
+                RHS2 = RHS1
+                RHS1 = RHS0
 
-            RHS2 = RHS1
-            RHS1 = RHS0
+            if n+1 in nt_snapshots:
+                # Find index of n in nt_snapthos
+                snapshot_indx = np.nonzero(nt_snapshots == n+1)
+                y[snapshot_indx,:] = yn
 
         self.sol = y.transpose()
 
@@ -661,24 +664,22 @@ class kdvSystem():
         # RK matrix
         a = np.array([[0,0,0],[1,0,0],[1/4,1/4,0]])
 
-        dx = self.dx
         dt = self.dt
 
         nx = self.x.size
         nt = self.t.size
+        nt_snapshots = self.snapshot_indxs
 
-        y = np.empty((nt,nx),dtype=np.float128)
+        y = np.empty((nt_snapshots.size,nx), dtype=np.float128)
         y[0,:] = self.y0
-
-        n = 0
 
         if self.diffeq == 'KdVB':
             rhs_eqn = self._kdvb
         elif self.diffeq == 'KdVNL':
             rhs_eqn = self._kdvnl
 
+        yn = y[0,:]
         for n in range(0,nt-1):
-            yn = y[n,:]
 
             # RK Stages
             k = np.zeros((yn.size,s))
@@ -687,7 +688,13 @@ class kdvSystem():
               k[:,j] = rhs_eqn(tn+c[j]*dt, yn+dt*np.dot(k,a[j,:]),
                   deriv_type='periodic_fd')
 
-            y[n+1,:] = y[n,:] + dt*np.dot(k,b)
+            # Calculate next step
+            yn = yn + dt*np.dot(k,b)
+
+            if n+1 in nt_snapshots:
+                # Find index of n in nt_snapthos
+                snapshot_indx = np.nonzero(nt_snapshots == n+1)
+                y[snapshot_indx,:] = yn
 
         self.sol = y.transpose()
 
@@ -704,7 +711,7 @@ class kdvSystem():
             spatial domain, and rows corresponding to different time
             snapshots.
         """
-        return self.sol[:,self.snapshot_indxs]
+        return self.sol
 
 
     def skewness(self):
