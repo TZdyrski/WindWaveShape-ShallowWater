@@ -751,7 +751,10 @@ def process_xt_offset(load_prefix, save_prefix, *args, **kwargs):
         data_array = data_csv.load_data(filename, stack_coords=True)
 
         # Down sample time
-        data_array = time_downsample(data_array,4)
+        num_lines = 20
+        downsample_factor = int(round(
+                data_array['t*eps*sqrt(g*h)*k_E'].size/num_lines))
+        data_array = time_downsample(data_array,downsample_factor)
 
         with xr.set_options(keep_attrs=True):
             # Speed in vertical offset per unit time
