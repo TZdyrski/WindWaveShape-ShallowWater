@@ -7,6 +7,7 @@ import scipy as sp
 import scipy.integrate
 import scipy.signal
 import numpy as np
+import scipy.special as spec
 import xarray as xr
 import data_csv
 
@@ -215,15 +216,29 @@ def temporal_fourier_transform(signal, rel_tol=1e-3):
 
     signal[{'kappa/k' : kappa_always_small}] = 0
 
-    # Multiply each mode by exp(sqrt(1+P)*k*t)
-    signal_modified = np.exp(
-            -np.imag(1/2*float(signal.attrs['eps'])*1j*float(signal.attrs['P'])*\
-                    np.sqrt(float(signal.attrs['mu'])/float(signal.attrs['eps'])))
-            *2*np.pi/float(signal.attrs['wave_length'])
-            *np.abs(kappa_mesh)
-            *signal['t*eps*sqrt(g*h)*k_E'].values
-            /4.14027 # fudge factor
-            )*signal
+    # Save values we will need for a calculation
+    A = signal.attrs.get('A',1)
+    B = signal.attrs.get('B',3/2)
+    eps = signal.attrs.get('eps', 0.1)
+    mu = signal.attrs.get('mu', 0.6)
+    C = signal.attrs.get('C', 1/6*mu/eps)
+    P = signal.attrs.get('P', 0.1)
+    G = signal.attrs.get('G', -1/2*P*np.sqrt(mu/eps))
+    H0 = signal.attrs.get('H0', 2)
+    m = signal.attrs.get('m', H0*B/3/C)
+    E = spec.ellipe(m)
+    K = spec.ellipk(m)
+
+    if G != 0:
+        # Multiply each mode by (1+t/td) with
+        # td = 45/4*A*C/G/B*m/H0*(m^2-m+2*E/K-2*E^2/K^2)/(-m^2+3*m-2+2*(m^2-m+1)*E/K)
+        td = 45/4*A*C/G/B*m/H0*(m**2-m+2*E/K-2*E**2/K**2)/\
+                (-m**2+3*m-2+2*(m**2-m+1)*E/K)
+    else:
+        # Explicitly define td to prevent a divide by zero error
+        td = np.inf
+
+    signal_modified = (1+signal['t*eps*sqrt(g*h)*k_E'].values/td)*signal
 
     # Take temporal FFT \hat'{\hat'{eps*eta'}} =
     # \hat'{\hat{eps*eta'}}*k_E = \hat{\hat{eps*eta'}}*k_E^2*sqrt(g*h) =
