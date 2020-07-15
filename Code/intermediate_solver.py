@@ -967,7 +967,7 @@ def gen_trig_verf(save_prefix, nu_bi=1e-4):
     WaveNum = 2*np.pi/wave_length
     y0_func = lambda x : np.sin(WaveNum*x)
     tNum_trig = {'Builtin': 501, 'RK3': 10**5}
-    snapshot_fracs = [0,1/3,2/3,1]
+    snapshot_fracs = np.arange(100)/99
 
     for nu_bi_val in [nu_bi, 0]:
         parameters = {
@@ -987,7 +987,7 @@ def gen_trig_verf(save_prefix, nu_bi=1e-4):
                 tLen=(xLen/NumWaves)**3/(2*np.pi)**2*parameters['A']\
                         /parameters['C'],
                 tNum=tNum_trig[solver],
-                snapshot_fracs = snapshot_fracs,
+                snapshot_fracs=snapshot_fracs,
                 boostVelocity=0,
                 solver=solver,
                 )
@@ -1001,7 +1001,9 @@ def gen_long_verf(save_prefix, mu=0.8, nu_bi=1e-4):
     # without forcing for a long time
 
     tLen = 30
-    snapshot_fracs = [0,1/3,2/3,1]
+    snapshot_fracs = np.array([0,1/3,2/3,1])
+    full_snapshot_fracs = np.arange(100)/99
+
 
     for nu_bi_val in [nu_bi, 0]:
         for wave_type in ['solitary', 'cnoidal']:
@@ -1018,7 +1020,7 @@ def gen_long_verf(save_prefix, mu=0.8, nu_bi=1e-4):
 
             data, dataClass = default_solver(**parameters,
                     tLen=tLen,
-                    snapshot_fracs = snapshot_fracs,
+                    snapshot_fracs=full_snapshot_fracs,
                     )
 
             # Get default mu for solitary waves

@@ -947,6 +947,39 @@ def plot_trig_verf_no_nu_bi(load_prefix, save_prefix, *args, **kwargs):
 
     texplot.savefig(fig,save_prefix+filename_base+'-no-NuBi')
 
+def plot_trig_statistics_no_nu_bi(load_prefix, save_prefix, *args, **kwargs):
+    filename_base = 'TrigStatistics'
+
+    # Arrange data and parameters into 1d array for plotting
+    data_arrays = np.empty((2),dtype=object)
+
+    solver_names = ['Builtin', 'RK3']
+
+    # Extract data
+    for indx_num, solver in enumerate(solver_names):
+        filename = data_csv.find_filenames(load_prefix, filename_base,
+                required_words=[solver, 'nu_bi0'])
+
+        data = data_csv.load_data(filename, stack_coords=False)
+
+        indx = np.unravel_index(indx_num,data_arrays.shape)
+        data_arrays[indx] = data
+
+    title_string = r'Solver after exactly 1 Period: '+\
+                '$\epsilon = {eps}$, $\mu_E = {mu}$'+\
+            (r', $\psi_P = {psiP}$' if
+                    data_arrays[0].attrs.get('forcing_type',None) ==
+                    'GM' else '')
+
+    fig = plot_shape_statistics_vs_time_template(data_arrays,
+            suptitle = title_string,
+            format_title = True,
+            ax_title=solver_names,
+            show_legend=False,
+            )
+
+    texplot.savefig(fig,save_prefix+filename_base+'-no-NuBi')
+
 def plot_long_verf_solitary_no_nu_bi(load_prefix, save_prefix, *args, **kwargs):
     filename_base = 'LongVerf'
 
@@ -981,6 +1014,44 @@ def plot_long_verf_cnoidal_no_nu_bi(load_prefix, save_prefix, *args, **kwargs):
 
     texplot.savefig(fig,save_prefix+'Long-Run-Cnoidal-no-NuBi')
 
+def plot_long_statistics_solitary_no_nu_bi(load_prefix, save_prefix, *args, **kwargs):
+    filename_base = 'LongStatistics'
+
+    # Arrange data and parameters into 1d array for plotting
+    data_arrays = np.empty((1),dtype=object)
+
+    # Extract data
+    filename = data_csv.find_filenames(load_prefix, filename_base,
+            parameters={'wave_type':'solitary'},
+            required_words=['nu_bi0'])
+
+    data_arrays[0] = data_csv.load_data(filename, stack_coords=False)
+
+    fig = plot_shape_statistics_vs_time_template(data_arrays,
+            show_legend=False,
+            )
+
+    texplot.savefig(fig,save_prefix+filename_base+'-Solitary-no-NuBi')
+
+def plot_long_statistics_cnoidal_no_nu_bi(load_prefix, save_prefix, *args, **kwargs):
+    filename_base = 'LongStatistics'
+
+    # Arrange data and parameters into 1d array for plotting
+    data_arrays = np.empty((1),dtype=object)
+
+    # Extract data
+    filename = data_csv.find_filenames(load_prefix, filename_base,
+            parameters={'wave_type':'cnoidal'},
+            required_words=['nu_bi0'])
+
+    data_arrays[0] = data_csv.load_data(filename, stack_coords=False)
+
+    fig = plot_shape_statistics_vs_time_template(data_arrays,
+            show_legend=False,
+            )
+
+    texplot.savefig(fig,save_prefix+filename_base+'-Cnoidal-no-NuBi')
+
 def plot_trig_verf(load_prefix, save_prefix, *args, **kwargs):
     filename_base = 'TrigVerf'
 
@@ -1012,6 +1083,77 @@ def plot_trig_verf(load_prefix, save_prefix, *args, **kwargs):
             wind_arrows=False)
 
     texplot.savefig(fig,save_prefix+filename_base)
+
+def plot_trig_statistics(load_prefix, save_prefix, *args, **kwargs):
+    filename_base = 'TrigStatistics'
+
+    # Arrange data and parameters into 1d array for plotting
+    data_arrays = np.empty((2),dtype=object)
+
+    solver_names = ['Builtin', 'RK3']
+
+    # Extract data
+    for indx_num, solver in enumerate(solver_names):
+        filename = data_csv.find_filenames(load_prefix, filename_base,
+                forbidden_words=[solver, 'nu_bi0'])
+
+        data = data_csv.load_data(filename, stack_coords=False)
+
+        indx = np.unravel_index(indx_num,data_arrays.shape)
+        data_arrays[indx] = data
+
+    title_string = r'Solver after exactly 1 Period: '+\
+                '$\epsilon = {eps}$, $\mu_E = {mu}$'+\
+            (r', $\psi_P = {psiP}$' if
+                    data_arrays[0].attrs.get('forcing_type',None) ==
+                    'GM' else '')
+
+    fig = plot_shape_statistics_vs_time_template(data_arrays,
+            suptitle = title_string,
+            format_title = True,
+            ax_title=solver_names,
+            show_legend=False,
+            )
+
+    texplot.savefig(fig,save_prefix+filename_base)
+
+def plot_long_statistics_solitary(load_prefix, save_prefix, *args, **kwargs):
+    filename_base = 'LongStatistics'
+
+    # Arrange data and parameters into 1d array for plotting
+    data_arrays = np.empty((1),dtype=object)
+
+    # Extract data
+    filename = data_csv.find_filenames(load_prefix, filename_base,
+            parameters={'wave_type':'solitary'},
+            forbidden_words=['nu_bi0'])
+
+    data_arrays[0] = data_csv.load_data(filename, stack_coords=False)
+
+    fig = plot_shape_statistics_vs_time_template(data_arrays,
+            show_legend=False,
+            )
+
+    texplot.savefig(fig,save_prefix+filename_base+'-Solitary')
+
+def plot_long_statistics_cnoidal(load_prefix, save_prefix, *args, **kwargs):
+    filename_base = 'LongStatistics'
+
+    # Arrange data and parameters into 1d array for plotting
+    data_arrays = np.empty((1),dtype=object)
+
+    # Extract data
+    filename = data_csv.find_filenames(load_prefix, filename_base,
+            parameters={'wave_type':'cnoidal'},
+            forbidden_words=['nu_bi0'])
+
+    data_arrays[0] = data_csv.load_data(filename, stack_coords=False)
+
+    fig = plot_shape_statistics_vs_time_template(data_arrays,
+            show_legend=False,
+            )
+
+    texplot.savefig(fig,save_prefix+filename_base+'-Cnoidal')
 
 def plot_long_verf_solitary(load_prefix, save_prefix, *args, **kwargs):
     filename_base = 'LongVerf'
@@ -1725,11 +1867,17 @@ def main():
 
     callable_functions = {
             'trig_verf_no_nu_bi' : plot_trig_verf_no_nu_bi,
+            'trig_statistics_no_nu_bi' : plot_trig_statistics_no_nu_bi,
             'long_verf_solitary_no_nu_bi' : plot_long_verf_solitary_no_nu_bi,
             'long_verf_cnoidal_no_nu_bi' : plot_long_verf_cnoidal_no_nu_bi,
+            'long_statistics_solitary_no_nu_bi' : plot_long_statistics_solitary_no_nu_bi,
+            'long_statistics_cnoidal_no_nu_bi' : plot_long_statistics_cnoidal_no_nu_bi,
             'trig_verf' : plot_trig_verf,
+            'trig_statistics' : plot_trig_statistics,
             'long_verf_solitary' : plot_long_verf_solitary,
             'long_verf_cnoidal' : plot_long_verf_cnoidal,
+            'long_statistics_solitary' : plot_long_statistics_solitary,
+            'long_statistics_cnoidal' : plot_long_statistics_cnoidal,
             'pos_solitary' : plot_pos_solitary,
             'neg_solitary' : plot_neg_solitary,
             'pos_neg_solitary' : plot_pos_neg_solitary,

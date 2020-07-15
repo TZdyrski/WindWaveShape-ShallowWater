@@ -125,7 +125,7 @@ def energy(profile):
 def peak_location(profile):
 
     peak_locations = find_peak_coords(profile, dim_to_search='x/h',
-            only_nonneg_coords=False, num_peaks=1)
+            only_nonneg_coords=False, num_peaks=1, periodic=True)
 
     return peak_locations
 
@@ -335,7 +335,7 @@ def bicoherence(profile):
     return bicoherence
 
 def find_peak_coords(signal, dim_to_search='t*eps*sqrt(g*h)*k_E', num_peaks=5,
-        only_nonneg_coords=True, center_domain=False):
+        only_nonneg_coords=True, center_domain=False, periodic=False):
 
     if only_nonneg_coords:
         # Only keep peaks where the corresponding dim_to_search
@@ -370,12 +370,21 @@ def find_peak_coords(signal, dim_to_search='t*eps*sqrt(g*h)*k_E', num_peaks=5,
             ), drop=True)
 
 
-    def find_peak_indices(signal, num_peaks):
+    def find_peak_indices(signal, num_peaks, periodic=False):
         # Need to do this to fix a bug in scipy
         signal = signal.copy()
 
+        if periodic:
+            # Wrap signal periodically
+            signal = np.insert(signal, [0,len(signal)], [signal[-1], signal[0]])
+
         # Find peaks
         peak_indices = sp.signal.find_peaks(signal)[0]
+
+        if periodic:
+            # Decrease indices by one since we inserted an extra element at
+            # the beginning while wrapping
+            peak_indices = peak_indices - 1
 
         # Sort the peaks by the value of signal at that location
         peak_indices = peak_indices[np.argsort(
@@ -395,7 +404,9 @@ def find_peak_coords(signal, dim_to_search='t*eps*sqrt(g*h)*k_E', num_peaks=5,
     peak_indices = xr.apply_ufunc(
             find_peak_indices,
             signal,
-            kwargs={'num_peaks':num_peaks},
+            kwargs={'num_peaks':num_peaks,
+                **({'periodic':periodic} if periodic is not None else
+                    {})},
             input_core_dims=[[dim_to_search]],
             output_core_dims=[['peak_mag_high_to_low']],
             vectorize=True,
@@ -559,7 +570,7 @@ def generate_statistics(filename):
     # Calculate asymmetry
     asymmetries = asymmetry(data_array)
 
-    save_biphase = data_array.attrs['wave_type'] != 'solitary'
+    save_biphase = data_array.attrs.get('wave_type',None) == 'cnoidal'
     if save_biphase:
         # Calculate biphase
         biphases = biphase(data_array)
@@ -854,20 +865,92 @@ def process_spacetime_mesh(load_prefix, save_prefix, *args, **kwargs):
         # Copy files
         shutil.copy(old_filename, new_filename)
 
-def move_verf(load_prefix, save_prefix, *args, **kwargs):
-    # Simply move the verification data from the load directory to the
-    # save directory unchanged
+def trim_trig_verf(load_prefix, save_prefix, *args, **kwargs):
+    filename_base = 'TrigVerf'
 
     # Find filenames
-    old_filenames = glob.glob(load_prefix+'*'+'Verf'+'*')
+    filenames = data_csv.find_filenames(load_prefix, filename_base,
+            allow_multiple_files=True)
 
-    # Rename files
-    new_filenames = [filename.replace(load_prefix, save_prefix) for
-        filename in old_filenames]
+    for filename in filenames:
+        # Extract data
+        data_array = data_csv.load_data(filename, stack_coords=True)
 
-    for old_filename,new_filename in zip(old_filenames, new_filenames):
-        # Copy files
-        shutil.copy(old_filename, new_filename)
+        # Trim times
+        data_array = time_fractions(data_array)
+
+        # If nu_bi is float-0, replace it with int-0
+        nu_bi = data_array.attrs['nu_bi']
+        nu_bi = str(0 if nu_bi==0 else useful_functions.round_sig_figs(nu_bi,3))
+
+        # Save snapshots
+        data_csv.save_data(data_array,
+                save_prefix+'TrigVerf'+data_array.attrs['solver']+\
+                '_nu_bi'+str(nu_bi),
+                **data_array.attrs, stack_coords=True)
+
+def trim_long_verf(load_prefix, save_prefix, *args, **kwargs):
+    filename_base = 'LongVerf'
+
+    # Find filenames
+    filenames = data_csv.find_filenames(load_prefix, filename_base,
+            allow_multiple_files=True)
+
+    for filename in filenames:
+        # Extract data
+        data_array = data_csv.load_data(filename, stack_coords=True)
+
+        # Trim times
+        data_array = time_fractions(data_array)
+
+        # If nu_bi is float-0, replace it with int-0
+        nu_bi = data_array.attrs['nu_bi']
+        nu_bi = str(0 if nu_bi==0 else useful_functions.round_sig_figs(nu_bi,3))
+
+        # Save snapshots
+        data_csv.save_data(data_array,
+                save_prefix+'LongVerf'+'_nu_bi'+str(nu_bi),
+                **data_array.attrs, stack_coords=True)
+
+def process_trig_statistics(load_prefix, save_prefix, *args, **kwargs):
+    filename_base = 'TrigVerf'
+
+    # Find filenames
+    filenames = data_csv.find_filenames(load_prefix, filename_base,
+            allow_multiple_files=True)
+
+    for filename in filenames:
+        # Create shape statistics
+        statistics = generate_statistics(filename)
+
+        # If nu_bi is float-0, replace it with int-0
+        nu_bi = statistics.attrs['nu_bi']
+        nu_bi = str(0 if nu_bi==0 else useful_functions.round_sig_figs(nu_bi,3))
+
+        # Save statistics
+        data_csv.save_data(statistics, save_prefix+'TrigStatistics'+\
+                '-'+statistics.attrs['solver']+'_nu_bi'+nu_bi,
+                **statistics.attrs)
+
+def process_long_statistics(load_prefix, save_prefix, *args, **kwargs):
+    filename_base = 'LongVerf'
+
+    # Find filenames
+    filenames = data_csv.find_filenames(load_prefix, filename_base,
+            allow_multiple_files=True)
+
+    for filename in filenames:
+        # Create shape statistics
+        statistics = generate_statistics(filename)
+
+        # If nu_bi is float-0, replace it with int-0
+        nu_bi = statistics.attrs['nu_bi']
+        nu_bi = str(0 if nu_bi==0 else useful_functions.round_sig_figs(nu_bi,3))
+
+        # Save statistics
+        data_csv.save_data(statistics, save_prefix+'LongStatistics'+\
+                '_nu_bi'+nu_bi,
+                **statistics.attrs)
 
 def main():
     load_prefix = '../Data/Raw/'
@@ -876,7 +959,10 @@ def main():
     callable_functions = {
             'shape_statistics' : process_shape_statistics,
             'trim_snapshots' : trim_snapshots,
-            'move_verf' : move_verf,
+            'trim_trig_verf' : trim_trig_verf,
+            'trim_long_verf' : trim_long_verf,
+            'trig_statistics' : process_trig_statistics,
+            'long_statistics' : process_long_statistics,
             'power_spec_vs_kappa' : process_power_spec_vs_kappa,
             'power_spec_vs_time' : process_power_spec_vs_time,
             'wavenum_freq' : process_wavenumber_frequency,
