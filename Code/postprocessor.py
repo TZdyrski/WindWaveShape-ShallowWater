@@ -800,7 +800,7 @@ def process_biviscosity_variation(load_prefix, save_prefix, *args, **kwargs):
 
         # Save statistics
         data_csv.save_data(statistics,
-                save_prefix+'Biviscosity_nubi'+nu_bi,
+                save_prefix+'Biviscosity_nu_bi'+nu_bi,
                 **statistics.attrs)
 
 def process_decaying_no_nu_bi(load_prefix, save_prefix, *args, **kwargs):
