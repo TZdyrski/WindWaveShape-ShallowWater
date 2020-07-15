@@ -1065,7 +1065,7 @@ def gen_snapshots(save_prefix, eps=0.1, mu=0.8, P=0.1, psiP=3/4*np.pi,
                 continue
             for P_val in P*np.array([-1,-0.5,0,0.5,1]):
 
-                for mu_val in mu*np.array([1,2]):
+                for mu_val in mu*np.array([1,7/8]):
 
                     parameters = {
                             'eps' : eps,
@@ -1182,7 +1182,7 @@ def gen_decaying_no_nu_bi(save_prefix, eps=0.1, mu=0.8, P=0.1,
 
      for P_val in P*np.array([-1,-0.5,0]):
 
-         for mu_val in mu*np.array([1,2]):
+         for mu_val in mu*np.array([1,7/8]):
 
              parameters = {
                      'eps' : eps,

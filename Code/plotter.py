@@ -1294,7 +1294,9 @@ def plot_pos_neg_cnoidal(load_prefix, save_prefix, *args, **kwargs):
     mu = float(kwargs.get('mu'))
     P = float(kwargs.get('P'))
 
-    for indx_num, (P_val, mu_val) in enumerate(itertools.product([P,-P],[mu,2*mu])):
+    for indx_num, (P_val, mu_val) in enumerate(itertools.product([P,-P],
+        round_sig_figs([mu,7/8*mu]))):
+
         filename = data_csv.find_filenames(load_prefix, filename_base,
                 parameters={'wave_type' : 'cnoidal', **kwargs,
                     'P' : P_val, 'mu' : mu_val})
@@ -1379,7 +1381,7 @@ def plot_shape_statistics_cnoidal(load_prefix, save_prefix, *args, **kwargs):
 
     mu = float(kwargs.get('mu'))
 
-    for indx_num, mu_val in enumerate([mu,2*mu]):
+    for indx_num, mu_val in enumerate(round_sig_figs([mu,7/8*mu])):
         filenames = data_csv.find_filenames(load_prefix, filename_base,
                 parameters={'wave_type' : 'cnoidal', **kwargs,
                     'mu' : mu_val},
@@ -1745,7 +1747,7 @@ def plot_decaying_no_nu_bi(load_prefix, save_prefix, *args, **kwargs):
 
     mu = float(kwargs.get('mu'))
 
-    for indx_num, mu_val in enumerate([mu,2*mu]):
+    for indx_num, mu_val in enumerate(round_sig_figs([mu,7/8*mu])):
         filenames = data_csv.find_filenames(load_prefix, filename_base,
                 parameters={'wave_type' : 'cnoidal', **kwargs,
                     'mu' : mu_val},
@@ -1784,7 +1786,7 @@ def plot_spacetime_mesh(load_prefix, save_prefix, *args, **kwargs):
             {**kwargs, 'forcing_type':'GM', 'label':'GM'},
             {**kwargs, 'wave_type':'solitary', 'label':'solitary'},
             {**kwargs, 'P':-kwargs.get('P',0), 'label':'neg'},
-            {**kwargs, 'mu':2*kwargs.get('mu',0), 'label':'double_mu'},
+            {**kwargs, 'mu':round_sig_figs(7/8*kwargs.get('mu',0)), 'label':'double_mu'},
             ]
     for parameters in parameter_list:
 
