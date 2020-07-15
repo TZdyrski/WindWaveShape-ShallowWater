@@ -360,6 +360,7 @@ def plot_shape_statistics_template(data_arrays, ax_title=None, **kwargs):
 
     plot_biphase = 'biphase' in data_arrays[0].data_vars
     plot_peak_pos = 'x_peak/h' in data_arrays[0].data_vars
+    plot_peak_speed = 'c_peak/sqrt(g*h)' in data_arrays[0].data_vars
 
     ax_ylabel_list = ['Height', 'Skewness', 'Asymmetry']
     if plot_biphase:
@@ -368,6 +369,11 @@ def plot_shape_statistics_template(data_arrays, ax_title=None, **kwargs):
         # Insert after Height
         ax_ylabel_list.insert(1,
                 r'Peak Position $x_{{\text{{peak}}}}/h$')
+    if plot_peak_speed:
+        # Insert before Skewness
+        ax_ylabel_list.insert(2,
+                r'Peak Speed'+'\n'+r'$c_{{\text{{peak}}}}/\sqrt{{g h}}$')
+
     ax_ylabel = atleast_2d(np.array(ax_ylabel_list))
 
     if ax_title is not None:
@@ -388,6 +394,10 @@ def plot_shape_statistics_template(data_arrays, ax_title=None, **kwargs):
             # Insert after Height
             split_data_arrays.insert(1,
                     data_arrays[shape_group]['x_peak/h'])
+        if plot_peak_speed:
+            # Insert before Skewness
+            split_data_arrays.insert(2,
+                    data_arrays[shape_group]['c_peak/sqrt(g*h)' ])
 
         data_arrays_rearranged[:,shape_group] = split_data_arrays
         for iy in range(data_arrays_rearranged.shape[0]):
@@ -415,6 +425,12 @@ def plot_shape_statistics_template(data_arrays, ax_title=None, **kwargs):
         # Put horizontal line at y=0
         ax[ax_ylabel_list.index('Asymmetry'),ix].item().axhline(0,
                 color='0.75', zorder=-1)
+
+        if plot_peak_speed:
+            # Put horizontal line at y=0
+            ax[ax_ylabel_list.index(
+                r'Peak Speed'+'\n'+r'$c_{{\text{{peak}}}}/\sqrt{{g h}}$'),
+                    ix].item().axhline(0, color='0.75', zorder=-1)
 
         if plot_biphase:
             # Put horizontal line at y=0

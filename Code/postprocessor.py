@@ -129,6 +129,16 @@ def peak_location(profile):
 
     return peak_locations
 
+def peak_speed(profile):
+
+    # Find location of peaks
+    peak_locations = peak_location(profile)
+
+    # Calculate speed
+    peak_speed = np.gradient(peak_locations)/np.gradient(profile['t*eps*sqrt(g*h)*k_E'])
+
+    return peak_speed
+
 def spatial_fourier_transform(profile, repeat_times = 5):
     xLen,xNum,dx = get_var_stats(profile)
 
@@ -583,6 +593,9 @@ def generate_statistics(filename):
     # Calculate peak location
     peak_locations = peak_location(data_array)
 
+    # Calculate speed of the peak
+    peak_speeds = peak_speed(data_array)
+
     # Combine shape statistics
     statistics = xr.Dataset(data_vars = {
         'max(eta)/max(eta_0)' : ('t*eps*sqrt(g*h)*k_E' ,
@@ -594,6 +607,7 @@ def generate_statistics(filename):
         'E/E_0' : ('t*eps*sqrt(g*h)*k_E' ,
             energies_normalized),
         'x_peak/h' : ('t*eps*sqrt(g*h)*k_E' , peak_locations),
+        'c_peak/sqrt(g*h)' : ('t*eps*sqrt(g*h)*k_E' , peak_speeds),
         },
         coords = {'t*eps*sqrt(g*h)*k_E' :
             data_array['t*eps*sqrt(g*h)*k_E']},
