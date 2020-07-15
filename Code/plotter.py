@@ -804,6 +804,9 @@ def plot_xt_offset_template(data_arrays, **kargs):
         **kargs,
         })
 
+    # Put ticks on right side
+    [ax.tick_params(right=True) for ax in fig.axes]
+
     return fig
 
 def plot_spacetime_mesh_template(data_arrays, norm_by_wavelength=False,
