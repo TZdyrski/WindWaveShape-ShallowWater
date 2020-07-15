@@ -10,6 +10,7 @@ import numpy as np
 import scipy.special as spec
 import xarray as xr
 import data_csv
+import useful_functions
 
 def get_var_stats(profile, var='x/h',periodic=True):
     varNum = profile[var].size
@@ -793,9 +794,13 @@ def process_biviscosity_variation(load_prefix, save_prefix, *args, **kwargs):
         # Create shape statistics
         statistics = generate_statistics(filename)
 
+        # If nu_bi is float-0, replace it with int-0
+        nu_bi = statistics.attrs['nu_bi']
+        nu_bi = str(0 if nu_bi==0 else useful_functions.round_sig_figs(nu_bi,3))
+
         # Save statistics
         data_csv.save_data(statistics,
-                save_prefix+'Biviscosity_nubi'+str(statistics.attrs['nu_bi']),
+                save_prefix+'Biviscosity_nubi'+nu_bi,
                 **statistics.attrs)
 
 def process_decaying_no_nu_bi(load_prefix, save_prefix, *args, **kwargs):
