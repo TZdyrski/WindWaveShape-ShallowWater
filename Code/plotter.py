@@ -1710,6 +1710,10 @@ def main():
     load_prefix = '../Data/Processed/'
     save_prefix = '../Reports/Figures/'
 
+    # Remove default margins
+    mpl.rcParams['axes.xmargin'] = 0
+    mpl.rcParams['axes.ymargin'] = 0
+
     default_params = {
             'eps' : 0.1,
             'mu' : 0.8,
