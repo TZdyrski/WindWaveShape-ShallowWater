@@ -325,7 +325,7 @@ Using our definition for $P_M \exp(\im \psi_P) = (\tilde{\alpha} + \im
 \end{equation}
 Note that this also matches the $P = \order{\epsilon}$ growth rate we
 derive later for the Jeffreys case (\ie $\psi_P = \pm \pi/2$) for
-intermediate-strength wind.
+intermediate-strength wind in \cref{sec:energy_growth_rate}.
 
 According to \citet{donelan2006wave}, the wind speed and growth rate
 are related in shallow water by
@@ -490,7 +490,7 @@ waves:
 Further, we will now assume $\order{\epsilon} = \order{\mu} \ll 1$ which
 implies $\Ur = \order{1}$.
 
-Note: I was lazy and set $\mu=\epsilon$ identically for \cref{sec:weak}
+Note: we occidentally set $\mu=\epsilon$ identically for \cref{sec:weak}
 and later.
 It is possible to relax this restriction and only require
 $\order{\epsilon} = \order{\mu}$ (to show the depth dependence) as is
@@ -765,19 +765,17 @@ Thus, the left hand side vanishes:
   \pdv{f_0'}{t_1} - \frac{1}{2} \pdv{p_0}{t_0} + \frac{3}{2} f_0' f_0''
     + \frac{1}{6} \frac{\mu}{\epsilon} f_0^{(4)} = 0\,.
 \end{equation}
+Converting back to $\eta_0$ gives
+\begin{equation}
+  \pdv{\eta_0}{t_1} - \frac{1}{2} \pdv{p_0}{t_0} + \frac{3}{2} \eta_0
+  \eta_0' + \frac{1}{6} \frac{\mu}{\epsilon} \eta_0^{(3)} = 0\,.
+\end{equation}
 
 If we choose the Generalized Miles forcing type, then
 \[
-  p_0(x,t_0,t_1) = P_G \eta_0(x+\psi_P,t_0,t_1) = P_G
-  f(x-t_0+\psi_P,t_1) \,.
+  p_0(x,t_0,t_1) = P_G \eta_0(x+\psi_P,t_0,t_1)
 \]
 This gives
-\begin{equation}
-  \pdv{f_0'(x-t_0)}{t_1} + P_G \frac{1}{2} f_0''(x-t_0+\psi_P) +
-  \frac{3}{2} f_0'(x-t_0) f_0''(x-t_0) +
-  \frac{1}{6} \frac{\mu}{\epsilon} f_0^{(4)}(x-t_0) = 0 \,.
-\end{equation}
-Finally, we can replace $f_0' = \eta_0$ to yield
 \begin{equation}
   \pdv{\eta_0(x-t_0)}{t_1} + P_G \frac{1}{2} \eta_0'(x-t_0+\psi_P) +
   \frac{3}{2} \eta_0(x-t_0) \eta_0'(x-t_0) + \frac{1}{6}
@@ -813,13 +811,14 @@ The KdV-Burgers equation is not known to have any closed form solutions.
 However, if we assume the wind is slightly weaker ($\alpha < \epsilon$),
 but not weak enough be pushed the next order in the perturbation theory
 ($\alpha > \epsilon^2$), we can approximate the solution.
-Thus, we will next assume $\alpha = \epsilon^{1.5}$.
+Thus, we will next assume $\alpha = \epsilon^{1.5}$ in \cref{sec:weak}
 
+\subsection{Energy Growth Rate \label{sec:energy_growth_rate}}
 As a useful check on our earlier estimation of the magnitude of $P'$, we
 can derive the energy growth rate.
 Multiplying \cref{eq:kdv_burgers} by $\eta_0$, we find
 \begin{equation}
-  \frac{1}{2} \pdv{t_1} \eta_0^2 + \sqrt{\frac{\mu}{\epsilon}} P_J
+  \frac{1}{2} \pdv{t_1} \eta_0^2 + P_J \sqrt{\frac{\mu}{\epsilon}}
   \frac{1}{4} (\eta_0^2)'' - \frac{1}{2} P_J \sqrt{\frac{\mu}{\epsilon}}
   (\eta_0')^2 + \frac{1}{2} (\eta_0^3)' + \frac{1}{12}
   \frac{\mu}{\epsilon} (\eta_0^2)''' - \frac{1}{4} \frac{\mu}{\epsilon}
@@ -831,7 +830,7 @@ Then, integrating over a wavelength gives
   &\pdv{t_1} \int_{-L/2}^{L/2} \frac{1}{2} \eta_0^2 \dd{x} \\
   &\qquad= \int_{-L/2}^{L/2} \frac{1}{2} P_J \sqrt{\frac{\mu}{\epsilon}}
     (\eta_0')^2 \dd{x} + \int_{-L/2}^{L/2} -P_J
-    \sqrt{\frac{\mu}{\epsilon}} \frac{1}{4} (\eta_0^2)''  - \frac{1}{2}
+    \sqrt{\frac{\mu}{\epsilon}} \frac{1}{4} (\eta_0^2)'' - \frac{1}{2}
     (\eta_0^3)' - \frac{1}{12} \frac{\mu}{\epsilon} (\eta_0^2)''' +
     \frac{1}{4} \frac{\mu}{\epsilon} \bqty{\pqty{\eta_0'}^2}' \dd{x}
   \\
@@ -876,6 +875,7 @@ If, for simplicity, we consider a simple sinusoid $\eta_0 = A \cos(k x -
 \end{equation}
 where we used $\alpha = \epsilon$.
 
+\subsection{Results}
 \begin{figure}
   \centering
   \includegraphics{Forcing-Types.eps}
@@ -885,7 +885,7 @@ where we used $\alpha = \epsilon$.
   }
 \end{figure}
 
-\subsection{Jeffreys Forcing}
+\subsubsection{Jeffreys Forcing}
 \begin{figure}
   \centering
   \includegraphics{Snapshots-Positive-Negative.eps}
@@ -908,7 +908,7 @@ where we used $\alpha = \epsilon$.
   \centering
   \includegraphics{Skew-Asymm-Cnoidal.eps}
   \caption{
-    Skewness and asymmetry of cnoidal profile under onshore and offshore
+    Skewness and asymmetry of a cnoidal profile under onshore and offshore
     Jeffreys forcing.
   }
 \end{figure}
@@ -917,12 +917,12 @@ where we used $\alpha = \epsilon$.
   \centering
   \includegraphics{Skew-Asymm-Cnoidal-kh.eps}
   \caption{
-    Skewness and asymmetry of cnoidal profile under onshore forcing as a
-    function of nondimensional depth $kh$.
+    Height, skewness, asymmetry, and biphase of a cnoidal profile under
+    onshore forcing as a function of nondimensional depth $kh$.
   }
 \end{figure}
 
-\subsection{Generalized Miles Forcing}
+\subsubsection{Generalized Miles Forcing}
 
 \begin{figure}
   \centering
@@ -937,7 +937,7 @@ where we used $\alpha = \epsilon$.
   \centering
   \includegraphics{Power-Spectrum-Jeffreys.eps}
   \caption{
-    Power spectrum of cnoidal wave under Jeffreys forcing.
+    Power spectrum of a cnoidal wave under Jeffreys forcing.
   }
 \end{figure}
 
@@ -945,7 +945,7 @@ where we used $\alpha = \epsilon$.
   \centering
   \includegraphics{Power-Spectrum-GM.eps}
   \caption{
-    Power spectrum of cnoidal wave under Generalized Miles forcing.
+    Power spectrum of a cnoidal wave under Generalized Miles forcing.
   }
 \end{figure}
 
@@ -953,7 +953,7 @@ where we used $\alpha = \epsilon$.
   \centering
   \includegraphics{Power-Spectrum-vs-Time-Jeffreys.eps}
   \caption{
-    Power spectrum of cnoidal wave under Jeffreys forcing as a function
+    Power spectrum of a cnoidal wave under Jeffreys forcing as a function
     of time.
   }
 \end{figure}
@@ -962,7 +962,25 @@ where we used $\alpha = \epsilon$.
   \centering
   \includegraphics{Power-Spectrum-vs-Time-GM.eps}
   \caption{
-    Power spectrum of cnoidal wave under Generalized Miles forcing as a
+    Power spectrum of a cnoidal wave under Generalized Miles forcing as a
+    function of time.
+  }
+\end{figure}
+
+\begin{figure}
+  \centering
+  \includegraphics{Total-Energy-Jeffreys.eps}
+  \caption{
+    Total energy of a cnoidal wave under Jeffreys forcing as a function
+    of time.
+  }
+\end{figure}
+
+\begin{figure}
+  \centering
+  \includegraphics{Total-Energy-GM.eps}
+  \caption{
+    Total energy of a cnoidal wave under Generalized Miles forcing as a
     function of time.
   }
 \end{figure}
