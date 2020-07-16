@@ -245,8 +245,8 @@ class kdvSystem():
             self.xNum = xNum
         else:
             if xStep is None:
-                # Use default value of xStep = 0.1
-                xStep = 0.1
+                # Use default value of xStep = 0.05
+                xStep = 0.05
             if xLen == 'int_wave_lengths' or 'cnoidal':
                 # xNum = xLen/xStep = NumWaves*WaveLength/xStep, but to
                 # prevent rounding errors; round WaveLength/xStep, then
