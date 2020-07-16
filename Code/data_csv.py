@@ -100,6 +100,9 @@ def find_filenames(load_prefix, filename_base, required_words=[],
 
     filenames = glob.glob(load_prefix+filename_base+'*')
 
+    # Sort filenames for reproducibility
+    filenames = sorted(filenames)
+
     if len(filenames) < 1:
         raise(OSError("'"+filename_base+"' file not found in "+load_prefix))
 
