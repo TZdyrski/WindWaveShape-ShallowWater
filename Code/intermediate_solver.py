@@ -1000,7 +1000,7 @@ def gen_long_verf(save_prefix, mu=0.8, nu_bi=1e-4):
     # Generate verification data by running a solitary wave profile
     # without forcing for a long time
 
-    tLen = 30
+    tLen = 100
     snapshot_fracs = np.array([0,1/3,2/3,1])
     full_snapshot_fracs = np.arange(100)/99
 
