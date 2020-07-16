@@ -70,41 +70,6 @@ numerical simulation results.
 \end{abstract}
 
 \section{Introduction}
-Directly comparing with \citet{feddersen2005wind} may be challenging
-though; that experiment generated monochromatic, sinusoidal waves that
-were subsequently forced by the wind.
-However, since sinusoidal waves are not eigenfunctions of the KdV
-equation, they will evolve (namely, energy will be passed to higher
-harmonics even in the absence of wind).
-Indeed, such a phenomena---in the unforced case---was observed over a
-flat bottom by \citet{elgar1990recurrence,chapalain1992observed},
-where the primary and first harmonic traded energy back and forth
-periodically.
-This same setup was treated numerically by \citet{liu2016modeling}
-who also included the effects of wind.
-The growth/decay of waves by wind was superimposed on this oscillation
-amongst modes.
-
-\Citet{liu2016modeling} also claim that this harmonic-oscillation
-means that some downwind locations will measure virtually no skewness
-or asymmetry, while others will.
-They claim that this explains the observations of
-\citet{feddersen2005wind}: the flat-bottomed portion of the tank saw
-minimal effect of wind speed on skewness/asymmetry since it was located
-at a node of this harmonic oscillation.
-However, a wind-speed dependent change was observed on the sloping beach
-portion since this measurement location was not a node.
-Indeed, \citet{chapalain1992observed,liu2016modeling} observed these
-oscillations to occur over \numrange{3}{4} wavelengths, and the
-wave gauges of \citet{feddersen2005wind} were spaced \numrange{2}{3}
-wavelengths apart, so this is consistent with one gauge being at a node
-and the other at an antinode.
-Note that this argument does not apply to the (pseudo-shallow water)
-experiments by \citet{leykin1995asymmetry}: these waves were not
-mechanically generated, but rather purely wind-generated.
-Therefore, they do not necessarily begin as pure sinusoids and hence do
-not suffer from these harmonic oscillations (likely being closer to
-cnoidal waves, which do not experience such oscillations).
 
 \section{Problem Solving Technique}
 The governing equations are%
@@ -580,186 +545,7 @@ We will choose the solutions of the ordinary KdV equation as our initial
 condition: cnoidal or solitary waves (which are a special case of
 cnoidal waves).
 
-\section{Results}
-\begin{figure}
-  \centering
-  \includegraphics{Forcing-Types.eps}
-  \caption{
-    Forcing types with normalized nondimensional pressure P as a
-    function of nondimensional distance $x/\lambda$.
-  }
-\end{figure}
-
-\subsection{Jeffreys Forcing}
-\begin{figure}
-  \centering
-  \includegraphics{Snapshots-Positive-Negative.eps}
-  \caption{
-    Evolution of a solitary wave profile under onshore and offshore Jeffreys
-    forcing.
-  }
-\end{figure}
-
-\begin{figure}
-  \centering
-  \includegraphics{Snapshots-Positive-Negative-Cnoidal.eps}
-  \caption{
-    Evolution of a cnoidal profile under onshore and offshore Jeffreys
-    forcing.
-  }
-\end{figure}
-
-\begin{figure}
-  \centering
-  \includegraphics{Skew-Asymm-Cnoidal.eps}
-  \caption{
-    Skewness and asymmetry of a cnoidal profile under onshore and offshore
-    Jeffreys forcing.
-  }
-\end{figure}
-
-\begin{figure}
-  \centering
-  \includegraphics{Skew-Asymm-Cnoidal-kh.eps}
-  \caption{
-    Height, skewness, asymmetry, and biphase of a cnoidal profile under
-    onshore forcing as a function of nondimensional depth $kh$.
-  }
-\end{figure}
-
-\subsection{Generalized Miles Forcing}
-
-\begin{figure}
-  \centering
-  \includegraphics{Snapshots-Positive-Negative-Cnoidal-GM.eps}
-  \caption{
-    Evolution of a cnoidal profile under onshore and offshore Generalized
-    Miles forcing.
-  }
-\end{figure}
-
-\begin{figure}
-  \centering
-  \includegraphics{Power-Spectrum-Jeffreys.eps}
-  \caption{
-    Power spectrum of a cnoidal wave under Jeffreys forcing.
-  }
-\end{figure}
-
-\begin{figure}
-  \centering
-  \includegraphics{Power-Spectrum-GM.eps}
-  \caption{
-    Power spectrum of a cnoidal wave under Generalized Miles forcing.
-  }
-\end{figure}
-
-\begin{figure}
-  \centering
-  \includegraphics{Power-Spectrum-vs-Time-Jeffreys.eps}
-  \caption{
-    Power spectrum of a cnoidal wave under Jeffreys forcing as a function
-    of time.
-  }
-\end{figure}
-
-\begin{figure}
-  \centering
-  \includegraphics{Power-Spectrum-vs-Time-GM.eps}
-  \caption{
-    Power spectrum of a cnoidal wave under Generalized Miles forcing as a
-    function of time.
-  }
-\end{figure}
-
-\begin{figure}
-  \centering
-  \includegraphics{Total-Energy-Jeffreys.eps}
-  \caption{
-    Total energy of a cnoidal wave under Jeffreys forcing as a function
-    of time.
-  }
-\end{figure}
-
-\begin{figure}
-  \centering
-  \includegraphics{Total-Energy-GM.eps}
-  \caption{
-    Total energy of a cnoidal wave under Generalized Miles forcing as a
-    function of time.
-  }
-\end{figure}
-
-It appears to preferentially enhance the higher harmonics, which can be
-seen by looking at the power spectrum $\abs{\hat{\eta}}^2$ as a function
-of time.
-In particular, when the wind is blowing \emph{against} the wave, the
-second harmonic is \emph{enhanced}, whereas we expect all harmonics to
-be suppressed.
-Also, this seems to be more pronounced for large $\psi_P$, like $\psi_P
-= 3\pi/4$, whereas small $\psi_P \ll 1$ show the expected behaviour.
-This leads to the growth of the second harmonic large relative to the
-primary, essentially bifurcating the crest.
-Therefore, the Generalized Miles type forcing seems unrealistic.
-
-This is not surprising.
-If we temporarily include the pressure at leading order for simplicity,
-the leading order equations become
-\begin{gather}
-  \pdv{\eta_0}{t_0} + \pdv[2]{\varphi_0}{x} = 0 \,, \\
-  \eta_0 + \pdv{\varphi_0}{t_0} = -p_0 \,.
-\end{gather}
-Eliminating $\phi_0$ from this gives
-\begin{equation}
-  \pqty{\pdv[2]{t_0} - \pdv[2]{x} } \eta_0 = \pdv[2]{x} p_0 \,.
-\end{equation}
-Fourier transforming from $x$ to $m$ gives
-\begin{equation}
-  \pqty{\pdv[2]{t_0} + m^2 } \hat{\eta}_{0,m} = -m^2 \GenP
-  \hat{\eta}_{0,m} \,.
-\end{equation}
-This gives
-\begin{equation}
-  \eta_0 \propto e^{\im(m x - \omega_m t_0)}
-\end{equation}
-with
-\begin{equation}
-  \omega_m = mk \sqrt{gh \pqty{1 + k \GenP}}
-\end{equation}
-where we have redimensionalized.
-Then, the imaginary part of $\omega_m$ is
-\begin{equation}
-  \Im{\omega_m} = mk \sgn \pqty{\Im{\GenP}} \sqrt{\frac{gh}{2}} \sqrt{-1
-    - k\Re{\GenP} + \sqrt{1 + k^2 \abs{\GenP}^2 + 2 k \Re{\GenP}}} .
-\end{equation}
-Crucially, notice that $\sgn[\Im{\omega_m}] = \sgn{\Im{\GenP}}$.
-Therefore, if $\Im{\GenP}>0$, mode-$m$ grows; if $\Im{\GenP} <
-0$, mode-$m$ shrinks.
-
-First, consider the Jeffreys case, where $\GenP = \pm \im m P$.
-For the co-wind case, the $(+)$ sign is chosen and $\Im{\GenP} > 0$ for
-all modes, causing each harmonic to grow.
-For the counter-wind case, the $(-)$ sign is chosen and $\Im{\GenP} < 0$
-for all modes, causing each harmonic to shrink.
-This is the expected behavior.
-
-Consider now Generalized Miles, where $\GenP = P \exp(\im m \psi_P)$.
-The plots are made for $\psi_P = \pm 3\pi/4$ (positive for
-co-wind, negative for counter-wind).
-For the co-wind case, $\Im{\POne} = P \cos(3\pi/4) > 0$ and the primary
-grows, while $\Im{\PTwo} = P \cos(3\pi/2) = -P$ and the first harmonic
-shrinks quickly.
-Technically, the $m=6$ mode grows quicker than the primary (since
-$\Im{\hat{P}_6} = P \cos(9\pi/2) = P$), but since it is so much smaller
-than the primary, it takes a long time to become noticeable.
-
-However, for the counter-wind case $\Im{\POne} = P \cos(-3\pi/4) < 0$ and the primary
-shrinks, while $\Im{\PTwo} = P \cos(-3\pi/2) = P$ and the first harmonic
-\emph{grows} quickly.
-Thus, within a relatively short time, the first harmonic becomes
-dominant.
-Thus, GM is a poor choice.
-
+\section{Numerics}
 In the general KdV case, we have
 \begin{equation}
   \mathcal{A} \pdv{\eta_0}{t_1} + \mathcal{F} \pdv{\eta_0}{x} + \mathcal{B}
@@ -910,6 +696,136 @@ with
 \begin{equation}
   \eta'_2 = \frac{2}{m} \pqty{1 - m - \frac{E(m)}{K(m)}}
 \end{equation}
+
+\section{Results}
+Given the one free parameter $P k_E/(\rho_w g \epsilon)$ of the
+KdV-Burgers equation \cref{eq:kdv_burgers} and the one-parameter family of
+initial conditions indexed by the initial height $H_0$, we can now plot the
+results for different $H_0$ and $P k_E/(\rho_w g \epsilon)$.
+In particular, we are interested in different values of $\sgn(P)$:
+recall that $P>0$ ($P<0$) implies wind in the same (opposite) direction
+as the waves.
+
+\begin{figure}
+  \centering
+  { % Put \phantomsubcaption in their own group to prevent it from
+    % affecting the main figure's numbering
+    \phantomsubcaption
+    \label{fig:snapshots_solitary:a}
+    \phantomsubcaption
+    \label{fig:snapshots_solitary:b}
+  }
+  \includegraphics{Snapshots-Positive-Negative.eps}
+  \caption{
+    Evolution of a solitary wave profile under
+    \subref{fig:snapshots_solitary:a}
+    onshore and
+    \subref{fig:snapshots_solitary:b}
+    offshore Jeffreys forcing.
+  }
+  \label{fig:snapshots_solitary}
+\end{figure}
+
+In \cref{fig:snapshots_solitary}, we have plotted the wave profile
+$\eta/h$ as a function of distance $x/h$ at different times $t \epsilon
+\sqrt{g h} k_E$ and wind directions.
+Both cases are plotted for initial wave steepness $\epsilon = 0.1$ and
+pressure magnitude $\abs{P k_E/(\rho_w g \epsilon)} = 0.1$; the onshore
+wind \subref{fig:snapshots_solitary:a} corresponds to $P>0$ while the
+offshore wind \subref{fig:snapshots_solitary:b} has $P<0$.
+We see that the initially symmetric solitary wave evolving over time
+under the influence of \subref{fig:snapshots_solitary:a} onshore and
+\subref{fig:snapshots_solitary:b} offshore winds.
+For the onshore case \subref{fig:snapshots_solitary:a}, the wave grows,
+steepens, and pitches forward, while the wave decays, becomes less
+steep, and pitches backwards for the offshore case
+\subref{fig:snapshots_solitary:b}.
+
+\begin{figure}
+  \centering
+  { % Put \phantomsubcaption in their own group to prevent it from
+    % affecting the main figure's numbering
+    \phantomsubcaption
+    \label{fig:xt_offset_solitary:a}
+    \phantomsubcaption
+    \label{fig:xt_offset_solitary:b}
+  }
+  \includegraphics{XT-Offset.eps}
+  \caption{
+    An $x$-$t$ diagram of a solitary profile under
+    \subref{fig:xt_offset_solitary:a}
+    onshore and
+    \subref{fig:xt_offset_solitary:b}
+    offshore Jeffreys forcing.
+    The lines are offset by $0.1 \eta/h$ per unit $t \epsilon \sqrt{g h}
+    k_E$.
+  }
+  \label{fig:xt_offset_solitary}
+\end{figure}
+
+\Cref{fig:xt_offset_solitary} likewise shows the wave profile $\eta/h$
+plotted against distance $x/h$ at different times $t \epsilon \sqrt{g h}
+k_E$.
+This time, each snapshot is shifted upwards, with a vertical
+displacement of $0.1 \eta/h$ for each unit $t\epsilon \sqrt{g h} k_E$.
+Again, both panels have an initial wave steepness of $\epsilon = 0.1$
+and pressure magnitude $\abs{P k_E/(\rho_w g \epsilon)} = 0.1$, with
+\subref{fig:xt_offset_solitary:a} corresponding to $P>0$ onshore wind,
+and \subref{fig:xt_offset_solitary:b} corresponding to $P<0$ offshore
+wind.
+With both cases beginning from the exact same profile, it is clear to
+see the steepening effect in \subref{fig:xt_offset_solitary:a} compared
+to the decaying phenomenon in \subref{fig:xt_offset_solitary:b}.
+
+\begin{figure}
+  \centering
+  { % Put \phantomsubcaption in their own group to prevent it from
+    % affecting the main figure's numbering
+    \phantomsubcaption
+    \label{fig:statistics_solitary:a}
+    \phantomsubcaption
+    \label{fig:statistics_solitary:b}
+    \phantomsubcaption
+    \label{fig:statistics_solitary:c}
+  }
+  \includegraphics{Skew-Asymm-No-Peak.eps}
+  \caption{
+    Shape statistics of a solitary profile under onshore and offshore
+    Jeffreys forcing.
+    These include the
+    \subref{fig:statistics_solitary:a}
+    height,
+    \subref{fig:statistics_solitary:b}
+    skewness, and
+    \subref{fig:statistics_solitary:c}
+    asymmetry.
+  }
+  \label{fig:statistics_solitary}
+\end{figure}
+
+We have plotted various shape statistics for the solitary wave in
+\cref{fig:statistics_solitary}.
+The \subref{fig:statistics_solitary:a} wave height,
+\subref{fig:statistics_solitary:b} skewness, and
+\subref{fig:statistics_solitary:c} asymmetry all each plotted as
+functions of time $t \epsilon \sqrt{g h} k_E$.
+Additionally, each statistic is plotted for onshore wind ($P
+k_E/(\rho_w g \epsilon) = 0.05$ and $0.1$), offshore wind ($P
+k_E/(\rho_w g \epsilon) = -0.05$ and $-0.1$), and the unforced case
+($P k_E/(\rho_w g \epsilon) = 0$).
+All cases are plotted for initial steepness $\epsilon = 0.1$ for
+$3/\epsilon = 30$ wave periods.
+The height \subref{fig:statistics_solitary:a} begins at $H_0/h = 2
+\epsilon = 0.2$ and shows the onshore wind
+causing wave growth while the offshore wind causes decay, as was
+observed in \cref{fig:snapshots_solitary,fig:xt_offset_solitary}.
+The skewness of the initial profile is \num{2.19}, with onshore
+(offshore) causing the wave to become more (less) skewed over time.
+Finally, the initial profile has zero asymmetry, and the unforced case
+$P=0$ maintains zero asymmetry over time.
+However, the onshore wind causes the asymmetry to become negative
+corresponding to a tilting backwards, while the offshore wind increases
+the asymmetry causing the wave to tilt forwards.
 
 \appendix
 
