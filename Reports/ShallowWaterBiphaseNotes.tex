@@ -42,6 +42,9 @@
 
 % Define custom math symbols
 \DeclareMathOperator{\cn}{Cn}
+\DeclareMathOperator{\sn}{Sn}
+\DeclareMathOperator{\dn}{Dn}
+\DeclareMathOperator{\Heun}{H\textit{l}}
 \DeclareMathOperator{\sgn}{sgn}
 \DeclareMathOperator{\Ur}{Ur}
 \DeclareMathOperator{\Sk}{Sk}
@@ -780,59 +783,31 @@ We can solve this numerically, though we will need an initial condition.
 We will choose the solutions of the ordinary KdV equation as our initial
 condition: cnoidal or solitary waves (which are a special case of
 cnoidal waves).
-
-In the general KdV case, we have
+In other words, our initial condition will satisfy \cref{eq:kdv_burgers}
+without the pressure forcing term:
 \begin{equation}
-  \mathcal{A} \pdv{\eta_0}{t_1} + \mathcal{F} \pdv{\eta_0}{x} + \mathcal{B}
-  \eta_0 \pdv{\eta_0}{x} + \mathcal{C} \pdv[3]{\eta_0}{x} = 0 \,.
+   \pdv{\eta_0}{t_1} + \frac{3}{2} \eta_0 \eta_0' + \frac{1}{6}
+   \frac{\mu}{\epsilon} \eta_0^{(3)} = 0 \,.
 \end{equation}
-Using the solution in from \citet{dingemans1997water} (as quoted in
-\citeauthor{brun2018convective}) and rescaling variables, the cnoidal
-wave solution is
+We solve this equation in \cref{sec:kdv_solution}, with $\mathcal{A} \to
+1$, $\mathcal{F} \to 0$, $\mathcal{B} \to 3/2$, $\mathcal{C} \to \mu/(6
+\epsilon)$, $y_0 \to \eta_0$, $x \to x - t_0$, and $\tau_0 \to t_1$.
+The solution is therefore
 \begin{equation}
   \eta_0 = \eta_2 + H \cn^2\pqty{\frac{x-c_1 t}{\Delta} , m} \,,
-  \label{eq:cnoidal_sol_nondim}
 \end{equation}
 with
 \begin{gather}
   \eta_2 = \frac{H}{m} \pqty{1 - m - \frac{E(m)}{K(m)}}
   \qq{and}
-  \Delta = \sqrt{\frac{12 \mathcal{C}}{\mathcal{B}} \frac{m}{H}}
-  \label{eq:nondim_cnoidal_params}
+  \Delta = \sqrt{\frac{4 \mu}{3 \epsilon} \frac{m}{H}}
   \\
   \qq{and}
-  c_1 = \frac{\mathcal{F}}{\mathcal{A}} + \frac{2}{3} \frac{H}{m}
-  \frac{\mathcal{B}}{\mathcal{A}} \pqty{1 - \frac{1}{2} m - \frac{3}{2}
+  c_1 = \frac{H}{m} \pqty{1 - \frac{1}{2} m - \frac{3}{2}
     \frac{E(m)}{K(m)}} \,.
 \end{gather}
-Note that the (nondimensional) wavelength $\lambda$ is
-\begin{equation}
-  \lambda = 2 K(m) \Delta = K(m) \sqrt{\frac{48
-  \mathcal{C}}{\mathcal{B}} \frac{m}{H}} \,.
-  \label{eq:nondim_lambda}
-\end{equation}
-Here, $\cn$ is one of the Jacobi elliptic functions, and $K(m)$ and
-$E(m)$ are the complete elliptic integrals of the first and second kind,
-respectively, with $m \in [0,1]$ the elliptic parameter.
-
-The solitary wave solution is
-\begin{equation}
-  \eta_0 = H \sech^2\pqty{\frac{x - c_1 t_1}{\Delta}} \,,
-\end{equation}
-with
-\begin{equation}
-  \Delta = \sqrt{\frac{12 \mathcal{C}}{\mathcal{B}} \frac{1}{H}}
-  \qq{and}
-  c_1 = \frac{\mathcal{F}}{\mathcal{A}} + \frac{H \mathcal{B}}{3
-    \mathcal{A}} \,.
-\end{equation}
-Note that the solitary wave is recovered from the cnoidal wave as $m \to
-1$ (note $E(m)/K(m) \to 0$ as $m \to 1$), and the linear wave
-approximation is recovered as $m \to 0$.
-Here, $\abs{H}$ is an order-1 parameter and $\sgn(H) = \sgn(\mathcal{B}
-\mathcal{C})$.
-For our particular system, we have $\mathcal{A} = 1$, $\mathcal{B} =
-3/2$, $\mathcal{C} = \mu/(6\epsilon)$, and $\mathcal{F} = 0$.
+The solitary wave solution is recovered if $m \to 1$.
+Note that we require $H > 0$.
 
 \subsection{\label{sec:redim} Redimensionalization}
 We can now redimensionalize; for clarity, we temporarily revert back to
@@ -928,7 +903,7 @@ Finally, we can now fix $m$ as a function of $\mu$ and $\epsilon$:
   k_E = \frac{2}{\Delta} = \frac{2 k_E}{\Delta'}
   \implies \Delta' = 2 \,.
 \end{equation}
-However, using \cref{eq:nondim_cnoidal_params}, we have
+However, using \cref{eq:nondim_delta_def}, we have
 \begin{equation}
   2 = \Delta ' = \sqrt{\frac{12 \mathcal{C}}{\mathcal{B}}
     \frac{m}{H'}}
@@ -1060,56 +1035,25 @@ the KdV equation:
     \frac{\mu}{\epsilon} \eta_0^{(3)} = 0 \,.
 \end{equation}
 
-\subsubsection{Solution to KdV Equation}
-Now, we seek travelling wave solutions of the form
+We solve this equation in \cref{sec:kdv_solution}, with $\mathcal{A} =
+1$, $\mathcal{F} = 0$, $\mathcal{B} = 3/2$, and $\mathcal{C} = \mu/(6
+\epsilon)$.
+The solution is therefore
 \begin{equation}
-  \eta_0(x-t_0,t_1,t_{1.5}) = h_0(x-t_0-c_1 t_1,t_{1.5}) \,,
+  \eta_0 = \eta_2 + H \cn^2\pqty{\frac{x-t_0-c_1 t}{\Delta} , m} \,,
 \end{equation}
-with $c_1 \in \mathbb{R}$.
-This gives
-\begin{equation}
-  \mathcal{L}_0[h_0] \coloneqq
-    -c_1 h_0' + \frac{3}{2} h_0 h_0' + \frac{1}{6} \frac{\mu}{\epsilon}
-    h_0^{(3)} = 0 \,,
-  \label{eq:L0_kernel}
-\end{equation}
-with $h_0' \coloneqq \eval{\pdv*{\theta}
-h_0(\theta,t_{1.5})})_{\theta=x-t_0-c_1 t_1}$.
-Here we have defined the linear operator $\mathcal{L}_0$
-\begin{equation}
-  \mathcal{L}_0 \coloneqq -c_1 \pdv{\theta} + \frac{3}{2} h_0
-    \pdv{\theta} + \frac{1}{6} \frac{\mu}{\epsilon} \pdv[3]{\theta} \,,
-  \label{eq:L0_def}
-\end{equation}
-with $\theta \coloneqq x - t_0 - c_1 t_1$.
-Integrating once yields
-as $x \to \pm \infty$ yields
-\begin{equation}
-  -c_1 h_0 + \frac{3}{4} h_0^2 + \frac{1}{6} \frac{\mu}{\epsilon} h_0''
-    = B_1 \,.
-\end{equation}
-Multiplying by $h_0'$ and integrating again gives
-\begin{equation}
-  -c_1 h_0^2 + \frac{1}{4} h_0^3 + \frac{1}{12} \frac{\mu}{\epsilon}
-    \pqty{h_0'}^2 = B_1 h_0 + B_2 \,,
-\end{equation}
-which implies
-\begin{equation}
-  \frac{1}{3} \frac{\mu}{\epsilon} \pqty{h_0'}^2 = - h_0^3 + 4 c_1 h_0^2
-    + B_1 h_0 + B_2
-    = \pqty{H_1 - h_0} \pqty{H_2 - h_0} \pqty{H_3 - h_0}
-\end{equation}
-where we have redefined $4 B_1 \to B_1$ and $4 B_2 \to B_2$ and defined
-$H_1 < H_2 < H_3$.
-This can be solved in terms of the Jacobi elliptic
-functions~\citep[\eg][]{mei2005nonlinear}:
-\begin{equation}
-  \eta_0 = H_2 + (H_3 - H_2) \cn^2\bqty{\frac{1}{2}\sqrt{\frac{3
-      \epsilon}{\mu}} \sqrt{H_3 - H_1} \pqty{x - t_0 - c_1 t_1}} \,.
-  \label{eq:eta0_cn}
-\end{equation}
-\textbf{TODO: express $H_1$, $H_2$, and $H_3$ in terms of $B_1$, $B_2$,
-and $c_1$.}
+with
+\begin{gather}
+  \eta_2 = \frac{H}{m} \pqty{1 - m - \frac{E(m)}{K(m)}}
+  \qq{and}
+  \Delta = \sqrt{\frac{4 \mu}{3 \epsilon} \frac{m}{H}}
+  \\
+  \qq{and}
+  c_1 = \frac{H}{m} \pqty{1 - \frac{1}{2} m - \frac{3}{2}
+    \frac{E(m)}{K(m)}} \,.
+\end{gather}
+The solitary wave solution is recovered if $m \to 1$.
+Note that we require $H > 0$.
 
 \subsection{Order \texorpdfstring{$\epsilon^{1.5}$}{1.5} Equations}
 Now, retaining $\order{\epsilon^{1.5}}$ terms, we finally have the
@@ -1187,7 +1131,6 @@ $\eta_0$:
 \end{equation}
 Then, we finally obtain
 \begin{equation}
-  \mathcal{L}_{0.5} [h_{0.5}] \coloneqq
     -c_1 h_{0.5}'
     + \frac{3}{2} h_0 h_{0.5}'
     + \frac{3}{2} h_{0.5} h_0'
@@ -1195,63 +1138,34 @@ Then, we finally obtain
   =
   - \pdv{h_0}{t_{1.5}}
     + \frac{1}{2} \pdv{p_0}{t_0}
-    \,,
-  \label{eq:L0.5_def}
+    \,.
 \end{equation}
-where we have defined the linear operator $\mathcal{L}_{0.5}$
-
-Now, the right-hand side must be orthogonal to all functions $F$ in the
-kernel of $\mathcal{L}_{0.5}^{\dagger}$, \ie the adjoint of
-$\mathcal{L}_{0.5}$.
-To see this, we can simply multiply both sides by a function $F(\theta)$
-such that $\mathcal{L}_{0.5}^{\dagger}[F] = 0$ and integrate over
-$\theta = x-t_0-c_1 t_1$:
+If we now insert the Jeffreys-type forcing,
 \begin{equation}
-  \int F \mathcal{L}_{0.5} [\eta_{0.5}] \dd{\theta}
-  = \int \eta_{0.5} \mathcal{L}_{0.5}^{\dagger} [F] \dd{\theta}
-  = 0
+  p_0 = P_J \pdv*{\eta_0}{x} = P_J h_0'
+  \implies p'_0 = P'_J \sqrt{\frac{\mu}{\epsilon}} \pdv{\eta'_0}{x'}
+  \,,
+\end{equation}
+we get
+\begin{equation}
+    -c_1 h_{0.5}'
+    + \frac{3}{2} h_0 h_{0.5}'
+    + \frac{3}{2} h_{0.5} h_0'
+    - \frac{1}{6} \frac{\mu}{\epsilon} h_{0.5}^{(3)}
   =
-  \int \pqty{- \pdv{h_0}{t_{1.5}} + \frac{1}{2} \pdv{p_0}{t_0}}
-    F \dd{\theta} \,,
-\end{equation}
-where the first equality follows from the definition of an adjoint
-operator, and the second follows from the definition of $F$ being in the
-kernel of $\mathcal{L}_{0.5}^{\dagger}$.
-The last equation is the definition of two functions ($F$ and the
-right-hand side of \cref{eq:L0.5_def}) being orthogonal.
-
-However, we already know the adjoint of $\mathcal{L}_{0.5}$; it is easy
-to show that $\mathcal{L}_{0.5}^{\dagger} = -\mathcal{L}_0$, defined in
-\cref{eq:L0_def}.
-In particular, this means
-\begin{equation}
-  \int \dd{\theta} n_0 \mathcal{L}_{0.5} [n_{0.5}]
-  = -\int \dd{\theta} n_{0.5} \mathcal{L}_{0.5} [n_0]
-  \implies
-  0 = \int \dd{\theta} \pqty{n_0 \mathcal{L}_{0.5} [n_{0.5}] + n_{0.5}
-    \mathcal{L}_{0.5} [n_0] } \,.
-\end{equation}
-However, as shown in \cref{eq:L0_kernel}, our solutions $\eta_0 = h_0$
-already span the kernel of $\mathcal{L}_0 =
--\mathcal{L}_{0.5}^{\dagger}$.
-Therefore, our compatibility condition is
-\begin{equation}
-  0 = \int \pqty{- \pdv{h_0}{t_{1.5}} + \frac{1}{2} \pdv{p_0}{t_0}}
-    h_0(\theta) \dd{\theta} \,.
+  - \pdv{h_0}{t_{1.5}}
+    - \frac{1}{2} P \sqrt{\frac{\mu}{\epsilon}} h_0''
+    \,.
 \end{equation}
 
-Now, we insert our solution \cref{eq:eta0_cn}
-\begin{equation}
-  h_0(\theta) = H_2 + (H_3 - H_2) \cn^2\bqty{\frac{\sqrt{3}}{2} \sqrt{H_3 -
-    H_1} \theta } \,.
-\end{equation}
-while recalling that $H_1$, $H_2$, and $H_3$, and $c_1$ in $\theta = x -
-t_0 - c_1 t_1$ (only three of which are linearly independent) may depend
-on $t_{1.5}$.
-\textbf{TODO: finish calculation of $c_1(t_{1.5})$ dependence}
-
-Finally, we can now use \cref{eq:L0.5_def} to calculate $h_{0.5}$.
-\textbf{TODO: finish calculation of $h_{0.5}$}
+This inhomogeneous KdV equation is solved in
+\cref{eq:kdv_inhom_solution} with $\mathcal{A} \to 1$, $\mathcal{F} \to
+0$, $\mathcal{B} \to 3/2$, $\mathcal{C} \to -\mu/(6 \epsilon)$,
+$\mathcal{G} \to -P \sqrt{\mu/\epsilon}/2$, $G[y_0] = -
+\pdv[2]{h_0}{x}$, $c_1 \to c_1$, $y_0 \to h_0$, $y_1 \to h_{0.5}$, $x
+\to x-t_0$, and $\tau_1 \to t_{1.5}$.
+There, we obtain the solution
+\textbf{TODO: quote solution from appendix}
 
 \subsection{Order \texorpdfstring{$\epsilon^{2}$}{2} Equations}
 Now, retaining $\order{\epsilon^2}$ terms, we find
@@ -2913,6 +2827,655 @@ Nyquist frequency $N$) given by \citet{elgar1987relationships}:
     \Bi(m,n) + 6 \sum_{0<m \le N/2} \Bi(m,m) \Biggr]/\langle \eta^2 \rangle^{3/2}
 \]
 See \citet{elgar1985observations} for additional information.
+
+\appendix
+
+\section{Weakly Damped KdV-Burgers}
+The KdV-Burgers equation is given by
+In general, the KdV-Burgers equation is given by
+\begin{equation}
+  \mathcal{A} \pdv{y}{t_1} + \mathcal{F} \pdv{y}{x} + \mathcal{B} y
+  \pdv{y}{x} + \mathcal{C} \pdv[3]{y}{x} = \mathcal{G} G[y] \,,
+\end{equation}
+where we have included arbitrary coefficients for generality.
+Note that, if $G[y] = \pdv*[2]{y}{x}$, this is the KdV-Burgers
+equation, whereas $G[y] = \pdv*{y(x+\psi_P)}{x}$ is the nonlocal KdV
+equation.
+
+While this equation does not have any known periodic, analytic
+solutions, we can approximate it by performing another, short MMS
+expansion assuming a weak damping term $\mathcal{G}$.
+If we assume that $\mathcal{A}$, $\mathcal{B}$, $\mathcal{C}$, and
+$\mathcal{F}$ are all the same order of magnitude, and
+$\mathcal{G}/\mathcal{A} \coloneqq \delta \ll 1$, we can expand in
+$\delta$.
+We will also factor $\delta$ out of $\mathcal{G}$ to give
+$\mathcal{\tilde{G}} \coloneqq \mathcal{G}/\delta = \mathcal{A}$.
+Note that, in order for this KdVB expansion to correctly correspond with
+the Euler expansion, we also require that $\epsilon \ll \delta \ll 1$;
+for instance, we can make the same choice as the previous section and
+let $\delta = \order{\epsilon^{1/2}}$.
+
+Then, our expansion becomes
+\begin{equation}
+  y = y_0 + \delta y_1
+\end{equation}
+and
+\begin{equation}
+  \tau_0 \coloneqq t_1 \,, \tau_1 \coloneqq \delta t_1 \,, \qq{and}
+  \pdv{t_1} = \pdv{\tau_0} + \delta \pdv{\tau_1} \,.
+\end{equation}
+Then, collecting order of $\delta$ yield two equations:
+\begin{equation}
+  \mathcal{A} \pdv{y_0}{\tau_0} + \mathcal{F} \pdv{y_0}{x} + \mathcal{B}
+  y_0 \pdv{y_0}{x} + \mathcal{C} \pdv[3]{y_0}{x} = 0  \,,
+  \label{eq:kdv}
+\end{equation}
+and
+\begin{equation}
+  \mathcal{A} \pdv{y_1}{\tau_0} + \mathcal{F} \pdv{y_1}{x} + \mathcal{B}
+  \pdv{y_0 y_1}{x} + \mathcal{C} \pdv[3]{y_1}{x} = \mathcal{\tilde{G}}
+  G[y] - \mathcal{A} \pdv{y_0}{\tau_1} \,.
+  \label{eq:kdvb_expansion}
+\end{equation}
+
+\subsection{\label{sec:kdv_solution} Solution to KdV Equation}
+First, we solve the KdV equation \cref{eq:kdv},
+\begin{equation}
+  \mathcal{A} \pdv{y_0}{\tau_0} + \mathcal{F} \pdv{y_0}{x} + \mathcal{B}
+  y_0 \pdv{y_0}{x} + \mathcal{C} \pdv[3]{y_0}{x} = 0  \,.
+\end{equation}
+We expect the wave to be moving with speed $c_1$, though we will allow
+this speed to vary on the slow timescale $c_1 = c_1(\tau_1) \in
+\mathbb{R}$.
+Therefore, we define a co-moving set of coordinates
+\begin{gather}
+  \xi = x - \int c_1(\delta \tau_0) \dd{\tau_0} \,, \\
+  \tau_0' = \tau_0 \,, \\
+  \tau_1' = \tau_1 \,.
+\end{gather}
+This implies that
+\begin{gather}
+  \pdv{x} = \pdv{\xi} \,, \\
+  \pdv{\tau_0} = \pdv{\tau_0'} - c_1(\tau_1) \,, \\
+  \pdv{\tau_1} = \pdv{\tau_1'} \,.
+\end{gather}
+Notice that, since $\pdv{\tau_0}$ depends on $\tau_1$, it does not
+commute with $\pdv{\tau_0}$.
+More specifically
+\begin{equation}
+  \bqty{\pdv{\tau_0}, \pdv{\tau_1} } = \dv{c_1}{\tau_1} \neq 0 \,.
+\end{equation}
+This is a caveat that can occur when using MMS expansions: though we
+treat the multiple scales as independent, it is possible that they won't
+commute.
+Luckily, $\pdv{\tau_0}$ and $\pdv{\tau_1}$ will not occur on the same
+term at this order, so we don't need to worry about this.
+
+Since we are assuming the solution moves at speed $c_1$, the $\tau_0'$
+dependence drops out:
+\begin{equation}
+  y_0(x,\tau_0,\tau_1) = y_0(\xi, \tau_1') \,.
+\end{equation}
+We will drop the prime from $\tau_1$ for convenience.
+
+Our equation now becomes
+This gives
+\begin{equation}
+  \mathcal{L}_0[y_0] \coloneqq
+    \pqty{\mathcal{F} -c_1 \mathcal{A}} \pdv{y_0}{\xi} + \mathcal{B} y_0
+    \pdv{y_0}{\xi} + \mathcal{C} \pdv[3]{y_0}{\xi} = 0 \,.
+  \label{eq:L0_kernel}
+\end{equation}
+Here we have defined the linear operator $\mathcal{L}_0$
+\begin{equation}
+  \mathcal{L}_0 \coloneqq \pqty{\mathcal{F} - \mathcal{A} c_1} \pdv{\xi}
+    + \mathcal{B} y_0 \pdv{\xi} + \mathcal{C} \pdv[3]{\xi} \,.
+  \label{eq:L0_def}
+\end{equation}
+Integrating once yields
+as $\xi \to \pm \infty$ yields
+\begin{equation}
+  \pqty{\mathcal{F} - c_1 \mathcal{A}} y_0 + \frac{1}{2} \mathcal{B}
+    y_0^2 + \mathcal{C} \pdv[2]{y_0}{\xi} = B_1 \,.
+\end{equation}
+Multiplying by $y_0'$ and integrating again gives
+\begin{equation}
+  \pqty{\mathcal{F} - c_1 \mathcal{A}} y_0^2 + \frac{1}{6} \mathcal{B}
+    y_0^3 + \frac{1}{2} \mathcal{C} \pqty{\pdv{y_0}{\xi}}^2 = B_1 y_0 +
+    B_2 \,,
+\end{equation}
+which implies
+\begin{equation}
+  3 \frac{\mathcal{C}}{\mathcal{B}} \pqty{\pdv{y_0}{\xi}}^2 = - y_0^3
+    + 6 \pqty{c_1 \frac{\mathcal{A}}{\mathcal{B}} -
+    \frac{\mathcal{F}}{\mathcal{B}}} y_0^2 + B_1 h_0 + B_2
+    = \pqty{\xi_1 - h_0} \pqty{\xi_2 - h_0} \pqty{\xi_3 - h_0} \,,
+\end{equation}
+where we have redefined $6 B_1/\mathcal{B} \to B_1$ and $6
+B_2/\mathcal{B} \to B_2$ and defined $\xi_1 < \xi_2 < \xi_3$.
+This can be solved in terms of the Jacobi elliptic
+functions~\citep[\eg][]{mei2005nonlinear}:
+\begin{equation}
+  \eta_0 = \eta_t + H \cn^2\bqty{\frac{x - c_1 \tau_0 - x_0}{\Delta}; m} \,.
+  \label{eq:cnoidal_sol_nondim}
+\end{equation}
+Here, we have the parameter $m$
+\begin{equation}
+  m \coloneqq \frac{\xi_3 - \xi_2}{\xi_3 - \xi_1} \in [0,1] \,,
+\end{equation}
+the characteristic length $\Delta$
+\begin{equation}
+  \Delta \coloneqq \sqrt{\frac{12 \mathcal{C}}{\mathcal{B}} \frac{1}{\xi_3 - \xi_1}}
+  = \sqrt{\frac{12 \mathcal{C}}{\mathcal{B}} \frac{m}{H}} \,,
+  \label{eq:nondim_delta_def}
+\end{equation}
+the wave height $H$
+\begin{equation}
+  H \coloneqq \xi_3 - \xi_2 \,,
+\end{equation}
+the trough elevation
+\begin{equation}
+  \eta_t \coloneqq \xi_2 = \frac{H}{m} \pqty{1 - m -\frac{E(m)}{K(m)}}
+  \,,
+\end{equation}
+and the phase speed
+\begin{equation}
+  c_1 = \frac{\mathcal{F}}{\mathcal{A}} + \frac{2}{3} \frac{H}{m}
+  \frac{\mathcal{B}}{\mathcal{A}} \pqty{1 - \frac{1}{2} m - \frac{3}{2}
+     \frac{E(m)}{K(m)}} \,.
+\end{equation}
+Here, $\cn$ is one of the Jacobi elliptic functions, and $K(m)$ and
+$E(m)$ are the complete elliptic integrals of the first and second kind,
+respectively, with $m \in [0,1]$ the elliptic parameter.
+Note that the (nondimensional) wavelength $\lambda$ is
+\begin{equation}
+  \lambda = 2 K(m) \Delta = K(m) \sqrt{\frac{48
+  \mathcal{C}}{\mathcal{B}} \frac{m}{H}} \,.
+  \label{eq:nondim_lambda}
+\end{equation}
+
+The solitary wave solution is
+\begin{equation}
+  \eta_0 = H \sech^2\pqty{\frac{x - c_1 \tau_0 - x_0}{\Delta}} \,,
+\end{equation}
+with
+\begin{equation}
+  \Delta = \sqrt{\frac{12 \mathcal{C}}{\mathcal{B}} \frac{1}{H}}
+  \qq{and}
+  c_1 = \frac{\mathcal{F}}{\mathcal{A}} + \frac{H \mathcal{B}}{3
+    \mathcal{A}} \,.
+\end{equation}
+Note that the solitary wave is recovered from the cnoidal wave as $m \to
+1$ (note $E(m)/K(m) \to 0$ as $m \to 1$), and the linear wave
+approximation is recovered as $m \to 0$.
+Here, $\abs{H}$ is an order-1 parameter and $\sgn(H) = \sgn(\mathcal{B}
+\mathcal{C})$.
+
+Since this was a third-order ordinary differential equation (in $\xi$),
+we have three free parameters: $H$, $m$, and $x_0$.
+However, note that these three are allowed to depend on the slow time
+$\tau_1$.
+Nevertheless, we will make the choice that only $H = H(\tau_1)$ may
+depend on the slow timescale, with $m$ and $x_0$ constants.
+\textbf{TODO: if we relax this assumption, can we remove all the secular
+terms at the next order?}
+We will set $x_0 = 0$ without loss of generality.
+
+\subsection{\label{eq:kdv_inhom_solution} Solution to Inhomogeneous KdV
+Equation}
+Next, we solve the inhomogeneous KdV equation \cref{eq:kdvb_expansion},
+\begin{equation}
+  \mathcal{A} \pdv{y_1}{\tau_0} + \mathcal{F} \pdv{y_1}{x} + \mathcal{B}
+  \pdv{y_0 y_1}{x} + \mathcal{C} \pdv[3]{y_1}{x} = \mathcal{\tilde{G}}
+  G[y] - \mathcal{A} \pdv{y_0}{\tau_1} \,.
+\end{equation}
+
+Once again, boosting to a co-moving frame yields
+\begin{equation}
+  \mathcal{L}_{1} [y_1] \coloneqq
+    \pqty{\mathcal{F} -c_1 \mathcal{A}} \pdv{y_1}{\xi}
+    + \mathcal{B} y_0 \pdv{y_1}{\xi}
+    + \mathcal{B} \pdv{y_0}{\xi} y_1
+    + \mathcal{C} \pdv[3]{y_1}{\xi}
+  = - \mathcal{A} \pdv{y_0}{\tau_1}
+    + \mathcal{\tilde{G}} G[y_0] \,,
+  \label{eq:L1_def}
+\end{equation}
+where we have defined the linear operator $\mathcal{L}_{1}$
+
+Now, the right-hand side must be orthogonal to all functions $F$ in the
+kernel of $\mathcal{L}_1^{\dagger}$, \ie the adjoint of
+$\mathcal{L}_1$.
+To see this, we can simply multiply both sides by a function $F(\xi)$
+such that $\mathcal{L}_1^{\dagger}[F] = 0$ and integrate over $\xi$:
+\begin{equation}
+  \int F \mathcal{L}_1 [y_1] \dd{\xi}
+  = \int y_1 \mathcal{L}_1^{\dagger} [F] \dd{\xi}
+  = 0
+  =
+  \int \pqty{- \mathcal{A} \pdv{y_0}{\tau_1} + \mathcal{\tilde{G}}
+    G[y_0] } F \dd{\xi} \,,
+\end{equation}
+where the first equality follows from the definition of an adjoint
+operator, and the second follows from the definition of $F$ being in the
+kernel of $\mathcal{L}_1^{\dagger}$.
+The last equation is the definition of two functions ($F$ and the
+right-hand side of \cref{eq:L1_def}) being orthogonal.
+
+However, we already know the adjoint of $\mathcal{L}_1$; it is easy
+to show that $\mathcal{L}_1^{\dagger} = -\mathcal{L}_0$, defined in
+\cref{eq:L0_def}.
+In particular, this means
+\begin{equation}
+  \int \dd{\xi} y_0 \mathcal{L}_1 [y_1]
+  = -\int \dd{\xi} y_1 \mathcal{L}_1 [y_0]
+  \implies
+  0 = \int \dd{\xi} \pqty{y_0 \mathcal{L}_1 [y_1] + y_1
+    \mathcal{L}_1 [y_0] } \,.
+\end{equation}
+However, as shown in \cref{eq:L0_kernel}, our solutions $y_0$
+already span the kernel of $\mathcal{L}_0 = -\mathcal{L}_1^{\dagger}$.
+Therefore, our compatibility condition is
+\begin{equation}
+  0 = \int \pqty{- \mathcal{A} \pdv{y_0}{\tau_1} + \mathcal{G} G[y_0]}
+  \dd{\xi} \,.
+  \label{eq:compat_int}
+\end{equation}
+
+Now, we must make a choice of the form of the damping term $G[y_0]$.
+We will assume a Jeffreys type forcing $G[y_0] = \pdv*[2]{y_0}{\xi}$.
+Then, inserting our leading order solution \cref{eq:cnoidal_sol_nondim}
+\begin{equation}
+  y_0 = \eta_t + H \cn^2\bqty{\frac{\theta}{\Delta}; m} \,.
+\end{equation}
+and recalling that $H$ may depend on $\tau_1$, \cref{eq:compat_int} gives
+\begin{equation}
+  \begin{split}
+    \pdv{H}{\tau_1} &= -\frac{4}{45} \frac{\mathcal{\tilde{G}} \mathcal{B}
+      H^2}{\mathcal{A} \mathcal{C} m}
+      \pqty{-m^2 +3m -2 +2(m^2-m+1) \frac{E(m)}{K(m)}}
+      / \\
+    &\qquad \bqty{m^2 -m +2\frac{E(m)}{K(m)} -2\pqty{\frac{E(m)}{K(m)}}^2}
+      \,,
+  \end{split}
+\end{equation}
+which is satisfied by
+\begin{equation}
+  H(\tau_1) = \frac{H_0}{1 + \tau_1/\tau_d} \,,
+\end{equation}
+with
+\begin{equation}
+  \begin{split}
+    \tau_d &\coloneqq \frac{45}{4} \frac{\mathcal{A}
+      \mathcal{C} m}{\mathcal{\tilde{G}} \mathcal{B} H_0^2}
+      \bqty{m^2-m+2 \frac{E(m)}{K(m)}-2 \pqty{\frac{E(m)}{K(m)}}^2}
+      / \\
+    &\qquad \pqty{-m^2+3 m-2+2 (m^2-m+1) \frac{E(m)}{K(m)}}
+      \,.
+  \end{split}
+\end{equation}
+For $m=1$, this reduces to
+\begin{equation}
+  \pdv{H}{\tau_1} = -\frac{4}{45} \frac{\mathcal{\tilde{G}} \mathcal{B}
+    H^2}{\mathcal{A} \mathcal{C}}
+    \,,
+\end{equation}
+and
+\begin{equation}
+  \tau_d \coloneqq \frac{45}{4} \frac{\mathcal{A}
+    \mathcal{C}}{\mathcal{\tilde{G}} \mathcal{B} H_0^2} \,.
+\end{equation}
+
+Finally, we can now use \cref{eq:L1_def} and our leading order solutions
+for $y_0$ and $c_1$ to calculate $y_1$:
+\begin{equation}
+  \pqty{\mathcal{F} -c_1 \mathcal{A}} \pdv{y_1}{\xi}
+    + \mathcal{B} y_0 \pdv{y_1}{\xi}
+    + \mathcal{B} \pdv{y_0}{\xi} y_1
+    + \mathcal{C} \pdv[3]{y_1}{\xi}
+  = - \mathcal{A} \pdv{y_0}{\tau_1}
+    + \mathcal{\tilde{G}} G[y_0]
+  = \,.
+  \label{eq:kdv_inhom}
+\end{equation}
+
+However, it seems that, when solving for the solution $y_1$, the general
+$m \in [0,1]$ case does not reduce to the $m=1$ case properly.
+It is unclear why this is the case, as the ODE is Lipschitz continuous
+with Lipschitz constant independent of both $\xi$ and $m$, so the
+solution should be continuous in $m$.
+Nevertheless, we will solve both cases ($m=1$ and $m \neq 1$)
+separately.
+
+\subsubsection{\texorpdfstring{$m=1$}{Solitary Wave} Case}
+First, we need to find the homogeneous solutions.
+Notice that we can write the homogeneous equation as an exact
+differential:
+\begin{equation}
+  0 = \pqty{\mathcal{F} -c_1 \mathcal{A}} \pdv{y_1}{\xi}
+    + \mathcal{B} y_0 \pdv{y_1}{\xi}
+    + \mathcal{B} \pdv{y_0}{\xi} y_1
+    + \mathcal{C} \pdv[3]{y_1}{\xi}
+  = \pdv{\xi} \bqty{
+    \pqty{\mathcal{F} -c_1 \mathcal{A} + \mathcal{B} y_0} y_1
+    + \mathcal{C} \pdv[2]{y_1}{\xi}
+    }
+\end{equation}
+Therefore, integrating once, we reduce the order to give
+\begin{equation}
+    \pqty{\mathcal{F} -c_1 \mathcal{A} + \mathcal{B} y_0} y_1
+    + \mathcal{C} \pdv[2]{y_1}{\xi}
+    = C_1
+\end{equation}
+This has reduced the order while turning the homogeneous ODE into an
+inhomogeneous ODE.
+It is useful at this point to change variables from $\xi$ to $u =
+\xi/\Delta$:
+\begin{equation}
+    \pqty{\mathcal{F} -c_1 \mathcal{A} + \mathcal{B} y_0} y_1
+    + \frac{\mathcal{C}}{\Delta^2} \pdv[2]{y_1}{u}
+    = C_1
+\end{equation}
+
+Inserting our solutions for $y_0$ and $c_1$, we get
+\begin{equation}
+  \mathcal{B} H \bqty{\sech^2 (u) - \frac{1}{3}} y_1
+    + \frac{\mathcal{C}}{\Delta^2} \pdv[2]{y_1}{u} = C_1
+  \implies
+  \pdv[2]{y_1}{u} + 12 \bqty{\sech^2 (u) - \frac{1}{3}} y_1 = C_1 \,,
+\end{equation}
+where we have redefined the constant $C_1$.
+
+Now, we need two homogeneous solutions.
+We can obtain one by inspection:
+\begin{equation}
+  y^A_{\text{hom}} =
+    \sech^2(u) \tanh(u) \,.
+\end{equation}
+The second can be found by reduction of order:
+\begin{equation}
+  y^B_{\text{hom}} = v(u) y^A_{\text{hom}}(u)
+\end{equation}
+This yields
+\begin{equation}
+  v(u) = \cosh^4(u) \coth^2(u) \,,
+\end{equation}
+which in turn gives
+\begin{equation}
+  y^B_{\text{hom}} = 15 \sech^2(u) \bqty{1-u \tanh(u)}-2 \cosh^2(u)-5
+\end{equation}
+
+Now, we can solve the original inhomogeneous equation
+\cref{eq:kdv_inhom}.
+We will do so using variation of parameters:
+\begin{equation}
+  y_{\text{ihom}} =
+  -y^A_{\text{hom}} \int \frac{f(u) y^B_{\text{hom}}}{W} \dd{u}
+  +y^B_{\text{hom}} \int \frac{f(u) y^A_{\text{hom}}}{W} \dd{u} \,,
+\end{equation}
+with the Wronskian
+\begin{equation}
+  W \coloneqq
+    y^A_{\text{hom}} \dv{y^B_{\text{hom}}}{u}
+    -y^B_{\text{hom}} \dv{y^A_{\text{hom}}}{u}
+    = 8 \,,
+\end{equation}
+and $f(u)$ the inhomogeneous term divided by $\mathcal{C}$ (the
+coefficient of the highest order homogeneous derivative)
+\begin{equation}
+  f(u) \coloneqq -\frac{\mathcal{A}}{\mathcal{C}} \pdv{y_0}{\tau_1}
+    + \frac{\mathcal{\tilde{G}}}{\mathcal{C}} G[y_0] \,.
+\end{equation}
+Substituting our solution for $H(\tau_1)$ and our choice of Jeffreys
+forcing $G[y_0] = \pdv*[2]{y_0}{\xi} = \pdv*[2]{y_0}{u}/\Delta^2$, we
+get
+\begin{equation}
+  \begin{split}
+  y_{\text{ihom}} &=
+  \frac{\Delta \mathcal{\tilde{G}} H}{60 \mathcal{C}}
+  \bqty{-8\tanh(u)- 4 u^2 \tanh(u)\sech^2(u) +8 u
+  \sech^2(u)-2\tanh(u)\sech^2(u)} \\
+  &\qquad
+  +\frac{3 \mathcal{C}}{4 \mathcal{B} H}
+  \bqty{(-12u -15)\tanh(u)\sech^2(u) -4 +12\sech^2(u)} C_1 \,.
+\end{split}
+\end{equation}
+Notice that the free-constant $C_1$ introduced when integrating the exact
+differential is now our third and final homogeneous solution.
+Therefore, cleaning up our solution, we find the full solution as
+\begin{equation}
+  \begin{split}
+  y_1 &=
+  C_A \sech^2(u) \tanh(u)
+  +C_B \Bqty{-3\sech^2(u)^2 \bqty{1-u \tanh(u)}+1}
+  +C_C \cosh^2(u)^2
+  \\
+  &\qquad
+  + \frac{\Delta \mathcal{\tilde{G}} H}{15 \mathcal{C}}
+  \Bqty{\sech^2(u) u \bqty{2-u\tanh(u)}-2\tanh(u)} \,,
+  \end{split}
+\end{equation}
+with $C_A$, $C_B$, and $C_C$ arbitrary constants.
+
+\subsubsection{\texorpdfstring{$m \neq 1$}{Cnoidal Wave} Case}
+We must again find the homogeneous solutions first.
+Recall that we can write the homogeneous equation as an exact
+differential:
+\begin{equation}
+  0 = \pqty{\mathcal{F} -c_1 \mathcal{A}} \pdv{y_1}{\xi}
+    + \mathcal{B} y_0 \pdv{y_1}{\xi}
+    + \mathcal{B} \pdv{y_0}{\xi} y_1
+    + \mathcal{C} \pdv[3]{y_1}{\xi}
+  = \pdv{\xi} \bqty{
+    \pqty{\mathcal{F} -c_1 \mathcal{A} + \mathcal{B} y_0} y_1
+    + \mathcal{C} \pdv[2]{y_1}{\xi}
+    }
+\end{equation}
+Therefore, integrating once, we reduce the order to give
+\begin{equation}
+    \pqty{\mathcal{F} -c_1 \mathcal{A} + \mathcal{B} y_0} y_1
+    + \mathcal{C} \pdv[2]{y_1}{\xi}
+    = C_1
+\end{equation}
+This has reduced the order while turning the homogeneous ODE into an
+inhomogeneous ODE.
+It is useful at this point to change variables from $\xi$ to $u =
+\xi/\Delta$:
+\begin{equation}
+    \pqty{\mathcal{F} -c_1 \mathcal{A} + \mathcal{B} y_0} y_1
+    + \frac{\mathcal{C}}{\Delta^2} \pdv[2]{y_1}{u}
+    = C_1
+\end{equation}
+
+Inserting our solutions for $y_0$ and $c_1$, we get
+\begin{align}
+  &\frac{\mathcal{B}H}{m} \bqty{m \cn^2 (u;m) + \frac{1-2m}{3}} y_1
+    + \frac{\mathcal{C}}{\Delta^2} \pdv[2]{y_1}{u} = C_1
+    \\&
+  \implies
+  \pdv[2]{y_1}{u} + 12 \bqty{m\cn^2 (u;m) + \frac{1-2m}{3}} y_1 = C_1 \,,
+  \label{eq:exact_cnoidal}
+\end{align}
+Now, we need two homogeneous solutions.
+We can obtain one by inspection:
+\begin{equation}
+  y^{A}_{\text{hom}} = \cn(u; m) \sn(u; m) \dn(u; m) \,.
+\end{equation}
+The second can be found by reduction of order:
+\begin{equation}
+  y^B_{\text{hom}} = v(u) y^A_{\text{hom}}(u)
+\end{equation}
+This yields
+\begin{equation}
+  v(u) = \frac{1}{\bqty{\cn(u; m) \sn(u; m) \dn(u; m)}^2} \,,
+\end{equation}
+which in turn gives
+\begin{equation}
+  \begin{split}
+    y^B_{\text{hom}}
+    &= \frac{8}{{1-m}^2} \Bigl[
+      2(m^2 -m +1) \cn(u;m) \sn(u;m) \dn(u;m) E(\sn(u;m);m)
+      \\
+    &\qquad
+      + 2m(m^2-m+1) \sn^4(u;m) + (-2m^3+m^2+m-2) \sn^2(u;m) \\
+    &\qquad
+      - u(m-1)(m-2) \cn(u;m) \sn(u;m) \dn(u;m) + (m-1)^2 \Bigr] \,,
+  \end{split}
+\end{equation}
+with $E(z;m)$ the incomplete elliptic integral of the second kind.
+
+Note: it is also possible to solve the homogeneous equation of
+\cref{eq:exact_cnoidal} by making the change of variables $z =
+\cn^2(u;m)$ which yields a Heun's Differential Equation.
+The two solutions of this (Heun functions) are special functions.
+This is the method used, for instance, by Maple.
+Of course, since this is a second-order ODE, these two solutions must be
+linearly dependent on the two solutions $y^A_{\text{hom}}$ and
+$y^B_{\text{hom}}$ we found.
+However, this is only true in the region $u \in [0, K(m)]$ because the
+substitution $z = \cn^2(u;m)$ is only bijective in this region.
+However, the Heun function solutions can be multiplied by a different,
+arbitrary constant (since the ODE is linear) in each of the different
+regions $[(n-1),n] K(m)$ for $n \in \mathbb{Z}$.
+However, only our solution satisfies the ODE at the border of these
+different regions.
+
+For reference, the two Heun function solutions are
+\begin{equation}
+  \begin{split}
+  y^A_{\text{Heun}} &= \Heun\pqty{\frac{m-1}{m}, \frac{3(1-m)}{4m};
+    -\frac{1}{2}, 3, \frac{3}{2}, \frac{1}{2}; \cn^2(u;m)}
+    \abs{\dn(u;m)} \cn(u;m) \\
+    &= \cn(u;m) \dn(u;m) \abs{\sn(u;m)} \,,
+  \end{split}
+\end{equation}
+and
+\begin{equation}
+  \begin{split}
+  y^B_{\text{Heun}} &= \Heun\pqty{\frac{m-1}{m}, \frac{4-7m}{4m};
+    -1, \frac{5}{2}, \frac{1}{2}, \frac{1}{2}; \cn^2(u;m)}
+    \abs{\dn(u;m)} \\
+    &= \frac{1}{\sqrt{1-m}} \Bigl[
+      2(m^2 -m +1) \abs{\cn(u;m) \sn(u;m) \dn(u;m) E(\sn(u;m);m)}
+      \\
+    &\qquad
+      + 2m(m^2-m+1) \sn^4(u;m) + (-2m^3+m^2+m-2) \sn^2(u;m) \\
+    &\qquad
+      - u(m-1)(m-2) \cn(u;m) \sn(u;m) \dn(u;m) + (m-1)^2 \Bigr] \\
+    &\qquad
+      -\frac{m}{\sqrt{1-m}} f(m) \cn(u;m) \dn(u;m) \abs{\sn(u;m)} \,,
+  \end{split}
+\end{equation}
+with $\Heun$ the local Heun function and $f(m)$ some function (I haven't been
+able to determine) of $m$.
+It is clear to see that, for $u \in [0, K(m)]$ (the quarter period),
+these reduce to
+\begin{gather}
+  y^A_{\text{Heun}} = y^A_{\text{hom}} \,, \\
+  y^B_{\text{Heun}} = - \frac{\sqrt{1-m}^3}{8} y^B_{\text{hom}}
+    -\frac{m}{\sqrt{1-m}} f(m) y^A_{\text{hom}} \,.
+\end{gather}
+However, they generally differ for $u \not\in [0, K(m)]$ owing to the
+absolute value signs.
+
+Now, we can solve the original inhomogeneous equation
+\cref{eq:kdv_inhom}.
+We will do so using variation of parameters:
+\begin{equation}
+  y_{\text{ihom}} =
+  -y^A_{\text{hom}} \int \frac{f(u) y^B_{\text{hom}}}{W} \dd{u}
+  +y^B_{\text{hom}} \int \frac{f(u) y^A_{\text{hom}}}{W} \dd{u} \,,
+\end{equation}
+with the Wronskian
+\begin{equation}
+  W \coloneqq
+    y^A_{\text{hom}} \dv{y^B_{\text{hom}}}{u}
+    -y^B_{\text{hom}} \dv{y^A_{\text{hom}}}{u}
+    = 8 \,,
+\end{equation}
+and $f(u)$ the inhomogeneous term divided by $\mathcal{C}$ (the
+coefficient of the highest order homogeneous derivative)
+\begin{equation}
+  f(u) \coloneqq -\frac{\mathcal{A}}{\mathcal{C}} \pdv{y_0}{\tau_1}
+    + \frac{\mathcal{\tilde{G}}}{\mathcal{C}} G[y_0] \,.
+\end{equation}
+Substituting our solution for $H(\tau_1)$ and our choice of Jeffreys
+forcing $G[y_0] = \pdv*[2]{y_0}{\xi} = \pdv*[2]{y_0}{u}/\Delta^2$, we
+get
+\begin{equation}
+  \begin{split}
+  y_{\text{ihom}} &=
+-\frac{6\Delta H m \mathcal{\tilde{G}}}{135\mathcal{C}}
+(-2 (2 \cn(u;m) \dn(u;m) \sn(u;m) (m^2-m+1) E(\sn(u;m);m)+2 m (m^2-m+1) \sn(u;m)^4-(1+m) (2 m^2-3 m+2) \sn(u;m)^2
+-\cn(u;m) \dn(u;m) u (m-1) (m-2) \sn(u;m)+(m-1)^2) K(m) m (\cn(u;m)^2)^(1/2) (\dn(u;m)^2)^(1/2) ((m-1) (m-2) K(m)-2 E(m) (m^2-m+1)) \sn(
+u;m)-3 \dn(u;m) \cn(u;m) \sn(u;m) ((m-1)^2 (2 m^4-4 m^3+11 m^2-6 m+4) K(m)^2+2 (m-1) (2 m^2-3 m+4) (m^2-m+1) E(m) K(m)+4
+ E(m)^2 (m^2-m+1)^2) E(\sn(u;m);m)^2+2 (2 (1-m) \dn(u;m) K(m) \cn(u;m) ((m-1) (m-2) K(m)-2 E(m) (m^2-m+1)) (m^2-m+1) \sn(u;m) EllipticF(
+\sn(u;m),k)+2 K(m) m^2 ((m-1) (m-2) K(m)-2 E(m) (m^2-m+1)) (m^2-m+1) \sn(u;m)^6-m ((6 m^6-22 m^5+57 m^4-92 m^3+83 m^2-48 m+16) K(m)^2+2 (m-2) (m^2-
+m+1) (4 m^2-7 m+7) E(m) K(m)+12 E(m)^2 (m^2-m+1)^2) \sn(u;m)^4+((29 m^2-32 m+6 m^7-21 m^6+47 m^5-56 m^4+15 m^3+12) K(m)^2+2 (6 m^6-20 m^5+34 m^4-24 m^3-\
+11 m^2+25 m-12) E(m) K(m)+6 E(m)^2 (2 m^2-3 m+2) (m+1) (m^2-m+1)) \sn(u;m)^2+u (m-1) \dn(u;m) \cn(u;m) (m-2) ((3 m^4-7 m^3+11 m^2-11 m+4)
+K(m)^2+2 E(m) (m^3-3 m^2+9 m-5) K(m)+6 E(m)^2 (m^2-m+1)) \sn(u;m)-3 (m-1)^2 ((m^4-3 m^3+6 m^2-6 m+2) K(m)^2+2 E(m) (m^3-2 m^2+4 m-2)
+K(m)+2 E(m)^2 (m^2-m+1))) E(\sn(u;m);m)+2 (m-1) K(m) ((m-1) (m-2) K(m)-2 E(m) (m^2-m+1)) (-m (2 m^2-2 m+2) \sn(u;m)^4+(2 m^3-m^2-m+2)
+ \sn(u;m)^2+\cn(u;m) \dn(u;m) u (m-1) (m-2) \sn(u;m)-(m-1)^2) EllipticF(\sn(u;m),k)-2 u (m-1) K(m) m^2 ((m^2-3 m+2) K(m)-2 E(m) (m^2-m+1))
+ (m-2) \sn(u;m)^6+4 \dn(u;m) K(m) m^2 \cn(u;m) ((m-1) (m-2) K(m)-2 E(m) (m^2-m+1)) (m^2-m+1) \sn(u;m)^5+6 u (m-1) ((m^2+2) (m-1)^2 K(m)^2
+-2 (m-1) (m-2) E(m) K(m)+2 E(m)^2 (m^2-m+1)) m (m-2) \sn(u;m)^4-\dn(u;m) m \cn(u;m) ((6 m^6-20 m^5+49 m^4-84 m^3+87 m^2-58 m+20) K(m)^2+
+2 (2 m^3-13 m^2+23 m-16) (m^2-m+1) E(m) K(m)+12 E(m)^2 (m^2-m+1)^2) \sn(u;m)^3-u (m-1) ((6 m^6-23 m^5+30 m^4-13 m^3-20 m^2+36 m-16) K(m)^2+2 (2 m^4-4
+m^3+3 m^2+11 m-10) (m-2) E(m) K(m)+6 (2 m^4+m^3-5 m^2+4 m-4) E(m)^2) \sn(u;m)^2-1/4 \dn(u;m) ((m-1) (3 (2 u^2-9) m^5+(-40 u^2+49) m^4+2 (51 u^2-20) m^3+2 (-\
+62 u^2+28) m^2+2 (36 u^2-28) m-16 u^2+36) K(m)^2+2 (6 m^6+4 (u^2-4) m^5+(-38 u^2+27) m^4+(124 u^2-37) m^3+2 (-91 u^2+42) m^2+2 (62 u^2-35) m-32 u^2+24) E(m) K(m)+6 (
+7 (2 u^2+1) m^4-9 (4 u^2+1) m^3+2 (19 u^2-2) m^2+2 (-12 u^2+5) m+8 u^2-2) E(m)^2) \cn(u;m) \sn(u;m)+u (m-1)^2 ((3 m^4-13 m^3+22 m^2-20 m+8) K(m)^2+2
+E(m) (m^3-8 m^2+14 m-10) K(m)+6 (3 m^2-m+2) E(m)^2))/(m-1)^2/m^3/(m (m-1) K(m)^2+2 E(m) K(m)-2 E(m)^2)
+  +C_1 \sn(u;m) (-2 \sn(u;m) \abs{\cn(u;m)^2} \abs{\dn(u;m)} \cn(u;m)
+  \dn(u;m) m (m^2-m+1)-2 \cn(u;m) \dn(u;m) (m-1) (m^2-m+1)
+  EllipticF(\sn(u;m),k) +3 m \cn(u;m) \dn(u;m) (m+1) E(\sn(u;m);m)+2 m^2
+  (m^2-m+1) \sn(u;m)^5-m (1+m) (2-m) (1-2 m) \sn(u;m)^3-m (m+1)^2
+  \sn(u;m)+u (m-1) \cn(u;m) \dn(u;m) (2 m^2+m+2))
+\end{split}
+\end{equation}
+Notice that the free-constant $C_1$ introduced when integrating the exact
+differential is now our third and final homogeneous solution.
+Therefore, we find the full solution as
+\begin{equation}
+  \begin{split}
+  y_1 =
+  &
+  C_A \cn(u; m) \sn(u; m) \dn(u; m)
+  \\ &
+  +C_B
+    \frac{8}{{1-m}^2} \Bigl[
+      2(m^2 -m +1) \cn(u;m) \sn(u;m) \dn(u;m) E(\sn(u;m);m)
+      \\
+    &\qquad
+      + 2m(m^2-m+1) \sn^4(u;m) + (-2m^3+m^2+m-2) \sn^2(u;m) \\
+    &\qquad
+      - u(m-1)(m-2) \cn(u;m) \sn(u;m) \dn(u;m) + (m-1)^2 \Bigr]
+  \\ &
+  +C_C \sn(u;m) (-2 \sn(u;m) \abs{\cn(u;m)^2} \abs{\dn(u;m)} \cn(u;m)
+  \dn(u;m) m (m^2-m+1)-2 \cn(u;m) \dn(u;m) (m-1) (m^2-m+1)
+  EllipticF(\sn(u;m),k) +3 m \cn(u;m) \dn(u;m) (m+1) E(\sn(u;m);m)+2 m^2
+  (m^2-m+1) \sn(u;m)^5-m (1+m) (2-m) (1-2 m) \sn(u;m)^3-m (m+1)^2
+  \sn(u;m)+u (m-1) \cn(u;m) \dn(u;m) (2 m^2+m+2))
+  \\ &
+-\frac{6\Delta H m \mathcal{\tilde{G}}}{135\mathcal{C}}
+(-2 (2 \cn(u;m) \dn(u;m) \sn(u;m) (m^2-m+1) E(\sn(u;m);m)+2 m (m^2-m+1) \sn(u;m)^4-(1+m) (2 m^2-3 m+2) \sn(u;m)^2
+-\cn(u;m) \dn(u;m) u (m-1) (m-2) \sn(u;m)+(m-1)^2) K(m) m (\cn(u;m)^2)^(1/2) (\dn(u;m)^2)^(1/2) ((m-1) (m-2) K(m)-2 E(m) (m^2-m+1)) \sn(
+u;m)-3 \dn(u;m) \cn(u;m) \sn(u;m) ((m-1)^2 (2 m^4-4 m^3+11 m^2-6 m+4) K(m)^2+2 (m-1) (2 m^2-3 m+4) (m^2-m+1) E(m) K(m)+4
+ E(m)^2 (m^2-m+1)^2) E(\sn(u;m);m)^2+2 (2 (1-m) \dn(u;m) K(m) \cn(u;m) ((m-1) (m-2) K(m)-2 E(m) (m^2-m+1)) (m^2-m+1) \sn(u;m) EllipticF(
+\sn(u;m),k)+2 K(m) m^2 ((m-1) (m-2) K(m)-2 E(m) (m^2-m+1)) (m^2-m+1) \sn(u;m)^6-m ((6 m^6-22 m^5+57 m^4-92 m^3+83 m^2-48 m+16) K(m)^2+2 (m-2) (m^2-
+m+1) (4 m^2-7 m+7) E(m) K(m)+12 E(m)^2 (m^2-m+1)^2) \sn(u;m)^4+((29 m^2-32 m+6 m^7-21 m^6+47 m^5-56 m^4+15 m^3+12) K(m)^2+2 (6 m^6-20 m^5+34 m^4-24 m^3-\
+11 m^2+25 m-12) E(m) K(m)+6 E(m)^2 (2 m^2-3 m+2) (m+1) (m^2-m+1)) \sn(u;m)^2+u (m-1) \dn(u;m) \cn(u;m) (m-2) ((3 m^4-7 m^3+11 m^2-11 m+4)
+K(m)^2+2 E(m) (m^3-3 m^2+9 m-5) K(m)+6 E(m)^2 (m^2-m+1)) \sn(u;m)-3 (m-1)^2 ((m^4-3 m^3+6 m^2-6 m+2) K(m)^2+2 E(m) (m^3-2 m^2+4 m-2)
+K(m)+2 E(m)^2 (m^2-m+1))) E(\sn(u;m);m)+2 (m-1) K(m) ((m-1) (m-2) K(m)-2 E(m) (m^2-m+1)) (-m (2 m^2-2 m+2) \sn(u;m)^4+(2 m^3-m^2-m+2)
+ \sn(u;m)^2+\cn(u;m) \dn(u;m) u (m-1) (m-2) \sn(u;m)-(m-1)^2) EllipticF(\sn(u;m),k)-2 u (m-1) K(m) m^2 ((m^2-3 m+2) K(m)-2 E(m) (m^2-m+1))
+ (m-2) \sn(u;m)^6+4 \dn(u;m) K(m) m^2 \cn(u;m) ((m-1) (m-2) K(m)-2 E(m) (m^2-m+1)) (m^2-m+1) \sn(u;m)^5+6 u (m-1) ((m^2+2) (m-1)^2 K(m)^2
+-2 (m-1) (m-2) E(m) K(m)+2 E(m)^2 (m^2-m+1)) m (m-2) \sn(u;m)^4-\dn(u;m) m \cn(u;m) ((6 m^6-20 m^5+49 m^4-84 m^3+87 m^2-58 m+20) K(m)^2+
+2 (2 m^3-13 m^2+23 m-16) (m^2-m+1) E(m) K(m)+12 E(m)^2 (m^2-m+1)^2) \sn(u;m)^3-u (m-1) ((6 m^6-23 m^5+30 m^4-13 m^3-20 m^2+36 m-16) K(m)^2+2 (2 m^4-4
+m^3+3 m^2+11 m-10) (m-2) E(m) K(m)+6 (2 m^4+m^3-5 m^2+4 m-4) E(m)^2) \sn(u;m)^2-1/4 \dn(u;m) ((m-1) (3 (2 u^2-9) m^5+(-40 u^2+49) m^4+2 (51 u^2-20) m^3+2 (-\
+62 u^2+28) m^2+2 (36 u^2-28) m-16 u^2+36) K(m)^2+2 (6 m^6+4 (u^2-4) m^5+(-38 u^2+27) m^4+(124 u^2-37) m^3+2 (-91 u^2+42) m^2+2 (62 u^2-35) m-32 u^2+24) E(m) K(m)+6 (
+7 (2 u^2+1) m^4-9 (4 u^2+1) m^3+2 (19 u^2-2) m^2+2 (-12 u^2+5) m+8 u^2-2) E(m)^2) \cn(u;m) \sn(u;m)+u (m-1)^2 ((3 m^4-13 m^3+22 m^2-20 m+8) K(m)^2+2
+E(m) (m^3-8 m^2+14 m-10) K(m)+6 (3 m^2-m+2) E(m)^2))/(m-1)^2/m^3/(m (m-1) K(m)^2+2 E(m) K(m)-2 E(m)^2)
+  \end{split}
+\end{equation}
+with $C_A$, $C_B$, and $C_C$ arbitrary constants.
 
 % Bibliography
 \bibliographystyle{jfm}
