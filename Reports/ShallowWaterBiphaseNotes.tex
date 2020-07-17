@@ -9,6 +9,14 @@
 % Import custom style file containing common packages and options
 \setlength{\paperheight}{\pdfpageheight} % JFM class removes paperheight definition and hyperref raises a warning
 
+% Make 'paragraph' work like 'subsubsubsection'
+\usepackage{titlesec}
+\setcounter{secnumdepth}{4}
+\titleformat{\paragraph}
+{\normalfont\normalsize}{\theparagraph}{1em}{}
+\titlespacing*{\paragraph}
+{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
+
 \usepackage[section]{placeins} % force floats to appear in their subsection
 \let\Oldsection\section
 \renewcommand{\section}{\FloatBarrier\Oldsection}
@@ -490,11 +498,11 @@ waves:
 Further, we will now assume $\order{\epsilon} = \order{\mu} \ll 1$ which
 implies $\Ur = \order{1}$.
 
-Note: we occidentally set $\mu=\epsilon$ identically for \cref{sec:weak}
-and later.
+Note: we occidentally set $\mu=\epsilon$ identically for
+\cref{sec:strong_discrete_multiple} and later.
 It is possible to relax this restriction and only require
 $\order{\epsilon} = \order{\mu}$ (to show the depth dependence) as is
-done in the sections prior to \cref{sec:weak}.
+done in the sections prior to \cref{sec:strong_discrete_multiple}.
 
 \section{Perturbation Expansion}
 \label{sec:shallow_water}
@@ -511,187 +519,6 @@ Then, we expand our variables in an asymptotic series of $\mu$
   p(x,t) &= \sum_{k=0}^{\infty} \epsilon^k p_{k+1}(x,t_0,t_1,\ldots)
     \,.
 \end{align}
-
-\section{\texorpdfstring{Strong Wind: $\alpha = 1$}{Strong Wind}}
-Here, we assume $\alpha \coloneqq P k/(\rho_w g) = 1$.
-
-\subsection{Zeroth Order Equations}
-Collecting order-one terms $\order{\epsilon^0}$ from
-\cref{eq:kinematic_bc_varphi,eq:dynamic_bc_varphi} gives
-\begin{gather}
-  \pdv{\eta_0}{t_0} + \pdv[2]{\varphi_0}{x} = 0 \,,
-  \label{eq:zero_order_kin} \\
-  p_0 + \eta_0 + \pdv{\varphi_0}{t_0} = 0 \,.
-  \label{eq:zero_order_dyn}
-\end{gather}
-Fourier transforming from $x$ to $m$ gives
-\begin{gather}
-  \pdv{\hat{\eta}_0}{t_0} - m^2  \hat{\varphi}_0 = 0 \,, \\
-  \hat{p}_0 + \hat{\eta}_0 + \pdv{\hat{\varphi}_0}{t_0} = 0 \,.
-\end{gather}
-Using the fact that $\hat{p} = \GenP \hat{\eta}$ and eliminating
-$\hat{\eta}$, we find
-\begin{equation}
-  \bqty{\pdv[2]{t_0} + m^2 \pqty{1+\GenP}} \hat{\varphi}_0 = 0 \,.
-\end{equation}
-This is the standard one-dimensional wave equation and has solutions
-\begin{equation}
-  \hat{\varphi}_0 = A_m e^{-\im \omega_0 t_0} + B_m e^{\im \omega_0 t_0}
-    \,,
-\end{equation}
-with
-\begin{equation}
-  \omega_0 = \pm m \sqrt{1 + \GenP} \,.
-\end{equation}
-Notice that, while the unforced case has a nondispersive phase speed
-\[
-  c_{m, P=0} = \frac{\omega_0}{m} = \pm 1 \,,
-\]
-the forced case is now dispersive (since $\GenP$ varies between Fourier
-modes)
-\[
-  c_m = \frac{\omega_0}{m} = \pm \sqrt{1 + \GenP} \,.
-\]
-We will restrict to right-moving waves and take $B_m = 0$.
-Additionally, we choose only a single primary frequency, so $A_m = 0$
-for $m\neq 1$, giving
-\begin{equation}
-  \hat{\varphi}_0 = -\im \omega_0  A_1 e^{-\im \omega_0 t_0}
-    \qq{with} \omega_0 = \pm \sqrt{1+\POne} \,.
-\end{equation}
-Likewise, we find
-\begin{equation}
-  \hat{\eta}_0 = - \frac{1}{1+\POne} \pdv{\hat{\varphi}_0}{t_0} = A_1
-    e^{-\im \omega_0 t_0} \,.
-\end{equation}
-Fourier transforming back to $x$-space yields
-\begin{align}
-  \eta_0 &= \Re{A_1 e^{\im(x-\omega_0 t_0)}} \,, \\
-  \varphi_0 &= \Re{- \im \omega_0 A_1 e^{\im(x-\omega_0 t_0)}} \,.
-\end{align}
-
-\subsection{First Order Equations}
-Considering now terms of order $\order{\epsilon}$ and inserting the
-$\order{\epsilon^0}$ solutions, \cref{eq:phi0_sol,eq:eta0_sol}, we find
-\begin{gather}
-  \begin{aligned}
-    \pdv{\eta_1}{t_0} + \pdv[2]{\varphi_{1}}{x} &=
-      -\pdv{\eta_0}{t_1} - \pdv{x} \pqty{\eta_0 \pdv{\varphi_0}{x}} +
-      \frac{1}{6} \frac{\mu}{\epsilon} \pdv[4]{\varphi_0}{x} \\
-    &= -\Re{\pqty{\pdv{t_1} A_1 + \frac{1}{6} \frac{\mu}{\epsilon} \im \omega_0 A_1}
-      e^{\im(x-\omega_0 t_0)}
-      + \im \omega_0 A_1^2 e^{2\im(x-\omega_0 t_0)}
-      }
-    \,,
-  \end{aligned}
-  \\
-  \begin{aligned}
-    p_1 + \eta_1 + \pdv{\varphi_1}{t_0} &= - \pdv{\varphi_0}{t_1}
-      + \frac{1}{2} \frac{\mu}{\epsilon} \frac{\partial^3 \varphi_0}{\partial t_0 \partial^2 x}
-      - \frac{1}{2} \pqty{ \pdv{\varphi_0}{x} }^2 \\
-    &= \Re \Biggl\{\im \omega_0 \pqty{\pdv{t_1} A_1 - \frac{1}{2} \frac{\mu}{\epsilon}
-      \im \omega_0 A_1} e^{\im(x-\omega_0 t_0)}
-      - \frac{1}{2} \omega_0^2 A_1^2 e^{2\im(x-\omega_0 t_0)}
-    \\
-    &\qquad
-      - \frac{1}{2} \abs{\omega_0}^2 \abs{A_1}^2 e^{2\Im{\omega_0} t_0}
-      \Biggr\}
-    \,.
-  \end{aligned}
-\end{gather}
-Taking a Fourier transform, we find
-\begin{gather}
-  \shortintertext{$m=1$ Fourier Component:}
-    \pdv{\hat{\eta}_{1,1}}{t_0} - \hat{\varphi}_{1,1} =
-    -\pqty{\pdv{A_1}{t_1} + \frac{1}{6} \frac{\mu}{\epsilon} \im
-    \omega_0 A_1 } e^{-\im \omega_0 t_0} \,, \\
-  \pdv{\hat{\varphi}_{1,1}}{t_0} + (1+\POne)\hat{\eta}_{1,1} =
-    \im \omega_0 \pqty{\pdv{A_1}{t_1} - \frac{1}{2} \frac{\mu}{\epsilon}
-    \im \omega_0 A_1} e^{-\im \omega_0 t_0} \,.
-\shortintertext{$m=2$ Fourier Component:}
-  \pdv{\hat{\eta}_{1,2}}{t_0} - 4 \hat{\varphi}_{1,2} =
-    -\im \omega_0 A_1^2 e^{-2\im \omega_0 t_0} \,, \\
-  \pdv{\hat{\varphi}_{1,2}}{t_0} + (1+\PTwo)\hat{\eta}_{1,2} =
-    -\frac{1}{2} \omega_0^2 A_1^2 e^{-2 \im \omega_0 t_0}  \,.
-\shortintertext{$m=0$ Fourier Component:}
-  \pdv{\hat{\eta}_{1,0}}{t_0} = 0 \,, \\
-  \pdv{\hat{\varphi}_{1,0}}{t_0} + \hat{\eta}_{1,0} =
-    - \frac{1}{2} \abs{\omega_0}^2 \abs{A_1}^2 e^{2\Im{\omega_0} t_0}
-    \,.
-\end{gather}
-Eliminating $\hat{\varphi}_{2,m}$ yields
-\begin{gather}
-  \shortintertext{$m=1$ Fourier Component:}
-  \pqty{\pdv[2]{t_0} + 1 + \POne} \hat{\eta}_{1,1} =
-    \im \omega_0 \pqty{2 \pdv{A_1}{t_1} - \frac{1}{3}
-    \frac{\mu}{\epsilon} \im \omega_0 A_1} e^{-\im \omega_0 t_0} \,.
-\shortintertext{$m=2$ Fourier Component:}
-  \pqty{\pdv[2]{t_0} + 4\pqty{1 + \PTwo}} \hat{\eta}_{1,2} =
-    -4 \omega_0^2 A_1^2 e^{-2\im \omega_0 t_0} \,.
-\shortintertext{$m=0$ Fourier Component:}
-  \pdv[2]{\hat{\varphi}_{1,0}}{t_0} = -\abs{\omega_0^2} \Im{\omega_0}
-    \abs{A_1}^2 e^{2\Im{\omega_0} t_0} \,.
-\end{gather}
-
-Preventing secular terms yields the compatibility condition
-\begin{equation}
-  \pdv{A_1}{t_1} = \frac{1}{6} \frac{\mu}{\epsilon} \im \omega_0 A_1
-  \implies A_1 = e^{-\im \omega_0 (-t_1/6) \mu/\epsilon} \,.
-\end{equation}
-Thus, we find a total frequency
-\begin{equation}
-  \omega = \omega_0 \pqty{1 - \frac{1}{6} \mu} \,.
-\end{equation}
-For $P=0$, $\omega_0=1$ and this matches the standard, unforced result
-\begin{equation}
-  \omega_{P=0} = \sqrt{1 + \frac{1}{3} (kh)^2}
-    \approx 1 + \frac{1}{6} \mu \,.
-\end{equation}
-
-We see that the $m=2$ equation yields
-\begin{equation}
-  \hat{\eta}_{1,2} = -\frac{1 + \POne}{\PTwo - \POne} A_1^2 e^{-2\im
-  \omega_0 t_0} \,.
-\end{equation}
-Hence, we find the expression
-\begin{equation}
-  \frac{\hat{\eta}_{m=2}}{\hat{\eta}_{m=1}^2} = -\frac{1+\POne}{\PTwo -
-    \POne} \,.
-\end{equation}
-The harmonic phase $\beta$ is the complex angle of this:
-\begin{equation}
-  \beta = -\tan[-1](\frac{\Im{(\PTwo-\POne)(1 + \POne^*)}}
-    {\Re{(\PTwo - \POne)(1+\POne^*)}}) \,.
-\end{equation}
-For instance, the Jeffreys forcing profile ($\POne = \pm \im P$, $\PTwo
-= \pm 2 \im P$) yields
-\begin{equation}
-  \beta_J = \mp \tan[-1](\frac{1}{P}) \,,
-\end{equation}
-and Generalized Miles profile ($\POne = P \exp(\im \psi_P)$, $\PTwo = P
-\exp(2 \im \psi_P)$) gives
-\begin{equation}
-  \beta_G = -\tan[-1](\frac{\sin(\psi_P) \pqty{P + 2 \cos(\psi_P) -1}}
-    {P(\cos(\psi_P) -1) + 2 \cos[2](\psi_P) - \cos(\psi_P) -1}) \,.
-\end{equation}
-
-Likewise, the magnitude of $\hat{\eta}_{m=2}/\hat{\eta}_{m=1}^2$ is
-denoted by $a_2/(a_1^2 k)$:
-\begin{equation}
-  \frac{a_2}{a_1^2 k} = \abs{\frac{1 + \POne}{\PTwo - \POne}} \,.
-\end{equation}
-For the Jeffreys profile, we have
-\begin{equation}
-  \pqty{\frac{a_2}{a_1^2 k}}_J = \frac{\sqrt{P^2-1}}{P} \,,
-\end{equation}
-while the Generalized Miles profile yields
-\begin{equation}
-  \pqty{\frac{a_2}{a_1^2 k}}_J = \frac{\sqrt{1 + P^2 + 2 P
-    \cos(\psi_P)}}{P \sqrt{2(1-\cos(\psi_P)}} \,.
-\end{equation}
-
-The Miles pressure profile ($\POne = \PTwo = P \exp(\im \psi_P)$) causes
-the second harmonic to blow-up.
 
 \section{\label{sec:intermediate} \texorpdfstring{Intermediate Wind:
 $\alpha = \epsilon$}{Intermediate Wind}}
@@ -1423,16 +1250,21 @@ Finally, we can now use \cref{eq:L0.5_def} to calculate $h_{0.5}$.
 Now, retaining $\order{\epsilon^2}$ terms, we find
 \textbf{TODO: finish}
 
-\section{\texorpdfstring{Strong Wind: $\alpha = 1$}{Strong Wind};
-Discrete Sum}
+\section{\texorpdfstring{Strong Wind: $\alpha = 1$}{Strong Wind}}
 Here, we assume $\alpha \coloneqq P k/(\rho_w g) = 1$.
+We will first tackle this using a discrete spectrum; after that, we will
+instead use a continuous spectrum
 
-\subsection{Zeroth Order Equations}
+\subsection{Discrete Spectrum}
+
+\subsubsection{Zeroth Order Equations}
 Collecting order-one terms $\order{\epsilon^0}$ from
 \cref{eq:kinematic_bc_varphi,eq:dynamic_bc_varphi} gives
 \begin{gather}
-  \pdv{\eta_0}{t_0} + \pdv[2]{\varphi_0}{x} = 0 \,, \\
+  \pdv{\eta_0}{t_0} + \pdv[2]{\varphi_0}{x} = 0 \,,
+  \label{eq:zero_order_kin} \\
   p_0 + \eta_0 + \pdv{\varphi_0}{t_0} = 0 \,.
+  \label{eq:zero_order_dyn}
 \end{gather}
 Fourier transforming from $x$ to $m$ gives
 \begin{gather}
@@ -1446,22 +1278,168 @@ $\hat{\eta}$, we find
 \end{equation}
 This is the standard one-dimensional wave equation and has solutions
 \begin{equation}
-  \hat{\varphi}_0 = A_m e^{-\im \omega_{0,m} t_0} + B_m e^{\im
-    \omega_{0,m} t_0} \,,
+  \hat{\varphi}_0 = A_m e^{-\im \omega_0 t_0} + B_m e^{\im \omega_0 t_0}
+    \,,
 \end{equation}
 with
 \begin{equation}
-  \omega_{0,m} = \pm m \sqrt{1 + \GenP} \,.
+  \omega_0 = \pm m \sqrt{1 + \GenP} \,.
 \end{equation}
 Notice that, while the unforced case has a nondispersive phase speed
 \[
-  c_{m, P=0} = \frac{\omega_{0,m}}{m} = \pm 1 \,,
+  c_{m, P=0} = \frac{\omega_0}{m} = \pm 1 \,,
 \]
 the forced case is now dispersive (since $\GenP$ varies between Fourier
 modes)
 \[
-  c_m = \frac{\omega_{0,m}}{m} = \pm \sqrt{1 + \GenP} \,.
+  c_m = \frac{\omega_0}{m} = \pm \sqrt{1 + \GenP} \,.
 \]
+
+Now, we can choose how to restrict the solutions.
+
+\subsubsection{Single, Discrete Harmonic}
+We will restrict to right-moving waves and take $B_m = 0$.
+Additionally, we choose only a single primary frequency, so $A_m = 0$
+for $m\neq 1$, giving
+\begin{equation}
+  \hat{\varphi}_0 = -\im \omega_0  A_1 e^{-\im \omega_0 t_0}
+    \qq{with} \omega_0 = \pm \sqrt{1+\POne} \,.
+\end{equation}
+Likewise, we find
+\begin{equation}
+  \hat{\eta}_0 = - \frac{1}{1+\POne} \pdv{\hat{\varphi}_0}{t_0} = A_1
+    e^{-\im \omega_0 t_0} \,.
+\end{equation}
+Fourier transforming back to $x$-space yields
+\begin{align}
+  \eta_0 &= \Re{A_1 e^{\im(x-\omega_0 t_0)}} \,, \\
+  \varphi_0 &= \Re{- \im \omega_0 A_1 e^{\im(x-\omega_0 t_0)}} \,.
+\end{align}
+
+\paragraph{First Order Equations}
+Considering now terms of order $\order{\epsilon}$ and inserting the
+$\order{\epsilon^0}$ solutions, \cref{eq:phi0_sol,eq:eta0_sol}, we find
+\begin{gather}
+  \begin{aligned}
+    \pdv{\eta_1}{t_0} + \pdv[2]{\varphi_{1}}{x} &=
+      -\pdv{\eta_0}{t_1} - \pdv{x} \pqty{\eta_0 \pdv{\varphi_0}{x}} +
+      \frac{1}{6} \frac{\mu}{\epsilon} \pdv[4]{\varphi_0}{x} \\
+    &= -\Re{\pqty{\pdv{t_1} A_1 + \frac{1}{6} \frac{\mu}{\epsilon} \im \omega_0 A_1}
+      e^{\im(x-\omega_0 t_0)}
+      + \im \omega_0 A_1^2 e^{2\im(x-\omega_0 t_0)}
+      }
+    \,,
+  \end{aligned}
+  \\
+  \begin{aligned}
+    p_1 + \eta_1 + \pdv{\varphi_1}{t_0} &= - \pdv{\varphi_0}{t_1}
+      + \frac{1}{2} \frac{\mu}{\epsilon} \frac{\partial^3 \varphi_0}{\partial t_0 \partial^2 x}
+      - \frac{1}{2} \pqty{ \pdv{\varphi_0}{x} }^2 \\
+    &= \Re \Biggl\{\im \omega_0 \pqty{\pdv{t_1} A_1 - \frac{1}{2} \frac{\mu}{\epsilon}
+      \im \omega_0 A_1} e^{\im(x-\omega_0 t_0)}
+      - \frac{1}{2} \omega_0^2 A_1^2 e^{2\im(x-\omega_0 t_0)}
+    \\
+    &\qquad
+      - \frac{1}{2} \abs{\omega_0}^2 \abs{A_1}^2 e^{2\Im{\omega_0} t_0}
+      \Biggr\}
+    \,.
+  \end{aligned}
+\end{gather}
+Taking a Fourier transform, we find
+\begin{gather}
+  \shortintertext{$m=1$ Fourier Component:}
+    \pdv{\hat{\eta}_{1,1}}{t_0} - \hat{\varphi}_{1,1} =
+    -\pqty{\pdv{A_1}{t_1} + \frac{1}{6} \frac{\mu}{\epsilon} \im
+    \omega_0 A_1 } e^{-\im \omega_0 t_0} \,, \\
+  \pdv{\hat{\varphi}_{1,1}}{t_0} + (1+\POne)\hat{\eta}_{1,1} =
+    \im \omega_0 \pqty{\pdv{A_1}{t_1} - \frac{1}{2} \frac{\mu}{\epsilon}
+    \im \omega_0 A_1} e^{-\im \omega_0 t_0} \,.
+\shortintertext{$m=2$ Fourier Component:}
+  \pdv{\hat{\eta}_{1,2}}{t_0} - 4 \hat{\varphi}_{1,2} =
+    -\im \omega_0 A_1^2 e^{-2\im \omega_0 t_0} \,, \\
+  \pdv{\hat{\varphi}_{1,2}}{t_0} + (1+\PTwo)\hat{\eta}_{1,2} =
+    -\frac{1}{2} \omega_0^2 A_1^2 e^{-2 \im \omega_0 t_0}  \,.
+\shortintertext{$m=0$ Fourier Component:}
+  \pdv{\hat{\eta}_{1,0}}{t_0} = 0 \,, \\
+  \pdv{\hat{\varphi}_{1,0}}{t_0} + \hat{\eta}_{1,0} =
+    - \frac{1}{2} \abs{\omega_0}^2 \abs{A_1}^2 e^{2\Im{\omega_0} t_0}
+    \,.
+\end{gather}
+Eliminating $\hat{\varphi}_{2,m}$ yields
+\begin{gather}
+  \shortintertext{$m=1$ Fourier Component:}
+  \pqty{\pdv[2]{t_0} + 1 + \POne} \hat{\eta}_{1,1} =
+    \im \omega_0 \pqty{2 \pdv{A_1}{t_1} - \frac{1}{3}
+    \frac{\mu}{\epsilon} \im \omega_0 A_1} e^{-\im \omega_0 t_0} \,.
+\shortintertext{$m=2$ Fourier Component:}
+  \pqty{\pdv[2]{t_0} + 4\pqty{1 + \PTwo}} \hat{\eta}_{1,2} =
+    -4 \omega_0^2 A_1^2 e^{-2\im \omega_0 t_0} \,.
+\shortintertext{$m=0$ Fourier Component:}
+  \pdv[2]{\hat{\varphi}_{1,0}}{t_0} = -\abs{\omega_0^2} \Im{\omega_0}
+    \abs{A_1}^2 e^{2\Im{\omega_0} t_0} \,.
+\end{gather}
+
+Preventing secular terms yields the compatibility condition
+\begin{equation}
+  \pdv{A_1}{t_1} = \frac{1}{6} \frac{\mu}{\epsilon} \im \omega_0 A_1
+  \implies A_1 = e^{-\im \omega_0 (-t_1/6) \mu/\epsilon} \,.
+\end{equation}
+Thus, we find a total frequency
+\begin{equation}
+  \omega = \omega_0 \pqty{1 - \frac{1}{6} \mu} \,.
+\end{equation}
+For $P=0$, $\omega_0=1$ and this matches the standard, unforced result
+\begin{equation}
+  \omega_{P=0} = \sqrt{1 + \frac{1}{3} (kh)^2}
+    \approx 1 + \frac{1}{6} \mu \,.
+\end{equation}
+
+We see that the $m=2$ equation yields
+\begin{equation}
+  \hat{\eta}_{1,2} = -\frac{1 + \POne}{\PTwo - \POne} A_1^2 e^{-2\im
+  \omega_0 t_0} \,.
+\end{equation}
+Hence, we find the expression
+\begin{equation}
+  \frac{\hat{\eta}_{m=2}}{\hat{\eta}_{m=1}^2} = -\frac{1+\POne}{\PTwo -
+    \POne} \,.
+\end{equation}
+The harmonic phase $\beta$ is the complex angle of this:
+\begin{equation}
+  \beta = -\tan[-1](\frac{\Im{(\PTwo-\POne)(1 + \POne^*)}}
+    {\Re{(\PTwo - \POne)(1+\POne^*)}}) \,.
+\end{equation}
+For instance, the Jeffreys forcing profile ($\POne = \pm \im P$, $\PTwo
+= \pm 2 \im P$) yields
+\begin{equation}
+  \beta_J = \mp \tan[-1](\frac{1}{P}) \,,
+\end{equation}
+and Generalized Miles profile ($\POne = P \exp(\im \psi_P)$, $\PTwo = P
+\exp(2 \im \psi_P)$) gives
+\begin{equation}
+  \beta_G = -\tan[-1](\frac{\sin(\psi_P) \pqty{P + 2 \cos(\psi_P) -1}}
+    {P(\cos(\psi_P) -1) + 2 \cos[2](\psi_P) - \cos(\psi_P) -1}) \,.
+\end{equation}
+
+Likewise, the magnitude of $\hat{\eta}_{m=2}/\hat{\eta}_{m=1}^2$ is
+denoted by $a_2/(a_1^2 k)$:
+\begin{equation}
+  \frac{a_2}{a_1^2 k} = \abs{\frac{1 + \POne}{\PTwo - \POne}} \,.
+\end{equation}
+For the Jeffreys profile, we have
+\begin{equation}
+  \pqty{\frac{a_2}{a_1^2 k}}_J = \frac{\sqrt{P^2-1}}{P} \,,
+\end{equation}
+while the Generalized Miles profile yields
+\begin{equation}
+  \pqty{\frac{a_2}{a_1^2 k}}_J = \frac{\sqrt{1 + P^2 + 2 P
+    \cos(\psi_P)}}{P \sqrt{2(1-\cos(\psi_P)}} \,.
+\end{equation}
+
+The Miles pressure profile ($\POne = \PTwo = P \exp(\im \psi_P)$) causes
+the second harmonic to blow-up.
+
+\subsubsection{\label{sec:strong_discrete_multiple} Multiple, Discrete Harmonics}
 We will restrict to unidirectional waves by taking $B_m = 0$, and we
 redefine $A_m$ to give
 \begin{equation}
@@ -1487,7 +1465,7 @@ Fourier transforming back to $x$-space yields
     e^{\im (m x-\omega_{0,m} t_0)} \,.
 \end{align}
 
-\subsection{First Order Equations}
+\paragraph{First Order Equations}
 Considering now terms of order $\order{\epsilon}$ and inserting the
 $\order{\epsilon^0}$ solutions, \cref{eq:phi0_sol,eq:eta0_sol}, we find
 \begin{gather}
@@ -1562,9 +1540,8 @@ $\hat{\varphi}_{1,m}$ yields
   \end{aligned}
 \end{gather}
 
-\section{\texorpdfstring{Strong Wind: $\alpha = 1$}{Strong Wind}:
-Integral}
-Here, we assume $\alpha \coloneqq P k/(\rho_w g) = 1$.
+\subsection{Continuous Spectrum}
+Now, we instead approach this problem by assuming a continuous spectrum.
 The continuous Fourier transform from $x$ to $\kappa$
 will be $\hat{f}(\kappa) = \int_{-\infty}^{\infty} \dd{x} f(x) \exp(\im \kappa
 x)$.
@@ -1581,7 +1558,7 @@ $\psi_P = \pm \thalf \pi$ for Jeffreys, $\GenPk = P_M \exp[\im
 \psi_P \sgn(\kappa/k)]$ for Miles, and $\GenPk = P_G \exp(\im \psi_P
 \kappa/k)$ for Generalized.
 
-\subsection{Zeroth Order Equations}
+\subsubsection{Zeroth Order Equations}
 Collecting order-one terms $\order{\epsilon^0}$ from
 \cref{eq:kinematic_bc_varphi,eq:dynamic_bc_varphi} gives
 \begin{gather}
@@ -1614,6 +1591,17 @@ $A(-\kappa) = A^*(\kappa)$, $B(-\kappa) = B^*(\kappa)$, and
 \begin{equation}
   \omega_{0,\kappa} = \pm \kappa \sqrt{1 + \GenPk} \,.
 \end{equation}
+For instance, $\omega_{0,\kappa}$ takes the particular values
+\[
+  \omega_{0,\kappa} = \begin{cases}
+    \kappa \sqrt{1 + \kappa P \exp(\im \psi_P)} & \text{Jeffreys, } \psi_P
+      = \pm \thalf \pi \\
+    \kappa \sqrt{1 + P \exp(\im \psi_P \sgn{\kappa})} & \text{Miles} \\
+    \kappa \sqrt{1 + P \exp(\im \psi_P \kappa)} & \text{Generalized}
+  \end{cases}
+  \,.
+\]
+
 Notice that, while the unforced case has a nondispersive phase speed
 \[
   c_{\kappa, P=0} = \frac{\omega_{0,\kappa}}{\kappa} = \pm 1 \,,
@@ -1652,7 +1640,7 @@ Fourier transforming back to $x$-space yields
 \end{align}
 with $A(-\kappa) = A^*(\kappa)$.
 
-\subsection{First Order Equations}
+\subsubsection{First Order Equations}
 Considering now terms of order $\order{\epsilon}$, we find
 \begin{gather}
     \pdv{\eta_1}{t_0} + \pdv[2]{\varphi_{1}}{x} =
@@ -1714,6 +1702,15 @@ Inserting the zeroth order solutions,
   \label{eq:strong_first_order_int2}
 \end{equation}
 
+Now, we can use the freedom granted by our multiple-scales expansion to
+set some terms to zero.
+First, we will naively set the coefficient of $\exp(-\im
+\omega_{0,\kappa} t_0)$ to zero.
+Later, we will instead add and subtract a term proportion to $\exp(-\im
+\omega_{0,\kappa} t_0)$, ensure the compatibility condition reduces to
+the unforced case correctly.
+
+\subsubsection{Naive Attempt}
 Now, to eliminate secular terms, we set the term inside parentheses
 equal to zero,
 \begin{equation}
@@ -1794,169 +1791,9 @@ time-dependence, \cref{eq:A_strong_sol2}, we choose $c_1 = -2
   \,.
 \end{equation}
 
-
-\section{\texorpdfstring{Strong Wind: $\alpha = 1$}{Strong Wind}:
-Integral Again}
-Here, we assume $\alpha \coloneqq P k/(\rho_w g) = 1$.
-The continuous Fourier transform from $x$ to $\kappa$
-will be $\hat{f}(\kappa) = \int_{-\infty}^{\infty} \dd{x} f(x) \exp(\im \kappa
-x)$.
-Further, since we are using integrals now, we will need the continuous
-Fourier transform of the pressure:
-\[
-  p(x,t) = f(x) \star \eta(x,t) \implies \hat{p}(\kappa) = k \GenPk
-    \hat{\eta}(\kappa) \,,
-\]
-with $\GenPk$ are arbitrary function of $\kappa$ that is linear in the
-magnitude of the pressure forcing, $P$.
-In particular, it takes the values $\GenPk = (\kappa/k) P_J \exp(\im \psi_P)$ with
-$\psi_P = \pm \thalf \pi$ for Jeffreys, $\GenPk = P_M \exp[\im
-\psi_P \sgn(\kappa/k)]$ for Miles, and $\GenPk = P_G \exp(\im \psi_P
-\kappa/k)$ for Generalized.
-
-\subsection{Zeroth Order Equations}
-Collecting order-one terms $\order{\epsilon^0}$ from
-\cref{eq:kinematic_bc_varphi,eq:dynamic_bc_varphi} gives
-\begin{gather}
-  \pdv{\eta_0}{t_0} + \pdv[2]{\varphi_0}{x} = 0 \,, \\
-  p_0 + \eta_0 + \pdv{\varphi_0}{t_0} = 0 \,.
-\end{gather}
-Taking the continuous Fourier transform from $x$ to $\kappa$
-($\hat{f}(\kappa) = \int_{-\infty}^{\infty} \dd{x} f(x) \exp(\im \kappa
-x)$) gives
-\begin{gather}
-  \pdv{\hat{\eta}_0}{t_0} - \kappa^2  \hat{\varphi}_0 = 0 \,, \\
-  \hat{p}_0 + \hat{\eta}_0 + \pdv{\hat{\varphi}_0}{t_0} = 0 \,.
-\end{gather}
-Using the fact that $\hat{p} = \GenPk \hat{\eta}$ and eliminating
-$\hat{\eta}$, we find
-\begin{equation}
-  \bqty{\pdv[2]{t_0} + \kappa^2 \pqty{1+\GenPk}} \hat{\varphi}_0 = 0 \,.
-\end{equation}
-This is the standard one-dimensional wave equation and has solutions
-\begin{equation}
-  \hat{\varphi}_0(\kappa,t_0,t_1) =
-  \begin{cases}
-    A(\kappa,t_1) e^{-\im \omega_{0,\kappa} t_0} + B(\kappa,t_1)
-      e^{\im \omega_{0,\kappa} t_0} & \kappa \neq 0 \\
-    C_0(t_1) t_0 & \kappa = 0
-  \end{cases} \,,
-\end{equation}
-with
-$A(-\kappa) = A^*(\kappa)$, $B(-\kappa) = B^*(\kappa)$, and
-\begin{equation}
-  \omega_{0,\kappa} = \pm \kappa \sqrt{1 + \GenPk} \,.
-\end{equation}
-For instance, $\omega_{0,\kappa}$ takes the particular values
-\[
-  \omega_{0,\kappa} = \begin{cases}
-    \kappa \sqrt{1 + \kappa P \exp(\im \psi_P)} & \text{Jeffreys, } \psi_P
-      = \pm \thalf \pi \\
-    \kappa \sqrt{1 + P \exp(\im \psi_P \sgn{\kappa})} & \text{Miles} \\
-    \kappa \sqrt{1 + P \exp(\im \psi_P \kappa)} & \text{Generalized}
-  \end{cases}
-  \,.
-\]
-Notice that, while the unforced case has a nondispersive phase speed
-\[
-  c_{\kappa, P=0} = \frac{\omega_{0,\kappa}}{\kappa} = \pm 1 \,,
-\]
-the forced case is now dispersive (since $\GenPk$ varies between Fourier
-modes)
-\[
-  c_{\kappa} = \frac{\omega_{0,\kappa}}{\kappa} = \pm \sqrt{1 + \GenPk}
-  \,.
-\]
-We will restrict to unidirectional waves by taking $B(\kappa) = 0$, and
-we redefine $A(\kappa)$ to give
-\begin{equation}
-  \hat{\varphi}_0 = C_0 t_0 + \int_{\kappa \neq 0} \im
-    \frac{1}{2} \frac{\omega_{0,\kappa}}{\kappa^2} A(\kappa) e^{-\im
-    \omega_{0,\kappa} t_0} \dd{\kappa}
-  \qq{with} \omega_{0,\kappa} = \pm \sqrt{1+\GenPk} \,.
-\end{equation}
-Additionally, we find
-\begin{equation}
-  \hat{\eta}_0 = - \frac{1}{1+\GenPk} \pdv{\hat{\varphi}_0}{t_0} =
-    -\frac{C_0}{1+\GenPk} +
-    \int_{\kappa \neq 0} \frac{1}{2} A(\kappa) e^{-\im \omega_{0,\kappa}
-    t_0} \dd{\kappa}
-    \,.
-\end{equation}
-Here, we use the fact that our datum is at the MWL to set $C_0 = 0$.
-Fourier transforming back to $x$-space yields
-\begin{align}
-  \eta_0 &= \frac{1}{2} \int_{-\infty,\kappa \neq 0}^{\infty} A(\kappa)
-    e^{\im (\kappa x-\omega_{0,\kappa} t_0)} \,, \label{eq:eta0_sol_int}
-    \\
-  \varphi_0 &= -\frac{1}{2} \int_{-\infty,\kappa \neq 0}^{\infty} \im
-    \frac{\omega_{0,\kappa}}{\kappa^2} A(\kappa)
-    e^{\im (\kappa x-\omega_{0,\kappa} t_0)} \label{eq:phi0_sol_int} \,,
-\end{align}
-with $A(-\kappa) = A^*(\kappa)$.
-
-\subsection{First Order Equations}
-Considering now terms of order $\order{\epsilon}$, we find
-\begin{gather}
-    \pdv{\eta_1}{t_0} + \pdv[2]{\varphi_{1}}{x} =
-      -\pdv{\eta_0}{t_1} - \pdv{x} \pqty{\eta_0 \pdv{\varphi_0}{x}} +
-      \frac{1}{6} \pdv[4]{\varphi_0}{x} \,, \\
-    p_1 + \eta_1 + \pdv{\varphi_1}{t_0} = - \pdv{\varphi_0}{t_1}
-      + \frac{1}{2} \frac{\partial^3 \varphi_0}{\partial t_0 \partial^2 x}
-      - \frac{1}{2} \pqty{ \pdv{\varphi_0}{x} }^2     \,.
-\end{gather}
-Eliminating $\varphi_1$ gives
-\begin{equation}
-    \pdv[2]{x} \pqty{p_1 + \eta_1} - \pdv[2]{\eta_1}{t_0} =
-      \pdv{t_1} \pqty{ \pdv{\eta_0}{t_0} - \pdv[2]{\varphi_0}{x} }
-      + \frac{1}{3} \frac{\partial^5 \varphi_0}{\partial t_0 \partial^4
-      x}
-      + \pdv{x} \pqty{ -\pdv{\varphi_0}{x} \pdv[2]{\varphi_0}{x} +
-      \pdv{\eta_0}{t_0} \pdv{\varphi_0}{x} + \eta_0
-      \pdv{\varphi_0}{t_0}{x} } \,.
-\end{equation}
-Using $\pdv*[2]{\varphi_0}{x} = -\pdv*{\eta_0}{t_0}$, we find
-\begin{equation}
-  \pdv[2]{x} \pqty{p_1 + \eta_1} - \pdv[2]{\eta_1}{t_0} =
-    2 \pdv{\eta_0}{t_1}{t_0}
-    - \frac{1}{3} \frac{\partial^4 \eta_0}{\partial^2 t_0 \partial^2 x}
-    + \pdv{x} \bqty{2 \pdv{\eta_0}{t_0} \pdv{\varphi_0}{x}
-    + \eta_0 \pdv{\varphi_0}{t_0}{x}} \,.
-\end{equation}
-Taking an $x$-$\kappa$ Fourier transform gives
-\begin{equation}
-  -\kappa^2 \pqty{1 + \GenPk} \hat{\eta}_1 - \pdv[2]{\hat{\eta}_1}{t_0}
-  = 2 \pdv{\hat{\eta}_0}{t_1}{t_0}
-    + \frac{1}{3} \kappa^2 \pdv[2]{\hat{\eta}_0}{t_0}
-    + \im \kappa \bqty{\int_{-\infty}^{\infty}
-      \frac{\dd{\kappa'}}{2 \pi}
-    \pqty{
-      2 \im (\kappa-\kappa') \hat{\varphi}_0(\kappa-\kappa')
-      \pdv{\hat{\eta}_0(\kappa')}{t_0}
-      + \im \kappa' \pdv{\hat{\varphi}_0(\kappa')}{t_0}
-      \hat{\eta}_0(\kappa-\kappa') \
-    } } \,.
-\end{equation}
-Inserting the zeroth order solutions,
-\cref{eq:eta0_sol_int,eq:phi0_sol_int}, yields
-\begin{equation}
-  \begin{split}
-  &-\kappa^2 \pqty{1 + \GenPk} \hat{\eta}_1 - \pdv[2]{\hat{\eta}_1}{t_0}
-    = \pqty{ -\im \omega_{0,\kappa} \pdv{A}{t_1}
-    - \frac{1}{6} \kappa^2 \omega_{0,\kappa}^2 A }
-    e^{-\im \omega_{0,\kappa} t_0} \\
-    &\qquad
-    + \kappa \bqty{\frac{1}{2} \int_{-\infty}^{\infty}
-      \frac{\dd{\kappa'}}{2 \pi}
-    \pqty{
-      \frac{\omega_{0,\kappa-\kappa'}}{\kappa-\kappa'}
-      + \frac{1}{2} \frac{\omega_{0,\kappa'}}{\kappa'}
-    } \omega_{0,\kappa'} A(\kappa') A(\kappa-\kappa')
-    e^{-\im t_0 (\omega_{0,\kappa'} + \omega_{0,\kappa-\kappa'})} } \,.
-  \end{split}
-\end{equation}
-
-We are now able to use our $\pdv*{A}{t_1}$ freedom to remove the
+\subsubsection{Clever Attempt Ensuring Correct \texorpdfstring{$P \to
+0$}{Unforced} Behavior}
+We will again use our $\pdv*{A}{t_1}$ freedom to remove the
 secular terms (proportional to $\exp(-\im \omega_{0,\kappa} t_0)$) from
 the right-hand side.
 Before we do that, we know we want this solution to reduce to the
