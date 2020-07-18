@@ -1386,6 +1386,47 @@ def plot_shape_statistics_solitary(load_prefix, save_prefix, *args, **kwargs):
 
     texplot.savefig(fig,save_prefix+'Skew-Asymm')
 
+def plot_shape_statistics_solitary_no_peak(load_prefix, save_prefix, *args, **kwargs):
+    filename_base = 'Shape-Statistics'
+
+    # Remove 'P' parameter
+    kwargs.pop('P', None)
+
+    filenames = data_csv.find_filenames(load_prefix, filename_base,
+            parameters={'wave_type' : 'solitary', **kwargs},
+            allow_multiple_files=True)
+
+    data_array_list = []
+    P_val_list = []
+    for filename in filenames:
+        # Extract data
+        data_array = data_csv.load_data(filename, stack_coords=False)
+
+        P_val = float(data_array.attrs['P'])
+
+        P_val_list.append(P_val)
+
+        # Remove peak position
+        data_array = data_array.drop('x_peak/h')
+
+        # Remove peak speed
+        data_array = data_array.drop('c_peak/sqrt(g*h)')
+
+        data_array_list.append(data_array)
+
+    # Arrange data and parameters into 1d array for plotting
+    data_arrays = np.empty((1),dtype=object)
+    data_arrays[0] = xr.concat(data_array_list, dim=xr.DataArray(P_val_list,
+        name='P', dims='P'))
+    # Transpose to put P coordinate at end; this makes plotting easier
+    data_arrays[0] = data_arrays[0].transpose()
+    # Remove P parameter attribute
+    data_arrays[0].attrs.pop('P', None)
+
+    fig = plot_shape_statistics_vs_time_template(data_arrays)
+
+    texplot.savefig(fig,save_prefix+'Skew-Asymm-No-Peak')
+
 def plot_shape_statistics_cnoidal(load_prefix, save_prefix, *args, **kwargs):
     filename_base = 'Shape-Statistics'
 
@@ -1907,6 +1948,7 @@ def main():
             'pos_neg_cnoidal' : plot_pos_neg_cnoidal,
             'pos_neg_cnoidal_GM' : plot_pos_neg_cnoidal_GM,
             'shape_statistics_solitary' : plot_shape_statistics_solitary,
+            'shape_statistics_solitary_no_peak' : plot_shape_statistics_solitary_no_peak,
             'shape_statistics_cnoidal' : plot_shape_statistics_cnoidal,
             'shape_statistics_vs_depth' : plot_shape_statistics_vs_depth,
             'energy' : plot_energy,
