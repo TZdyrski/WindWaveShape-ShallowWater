@@ -8,6 +8,7 @@ import scipy.integrate
 import scipy.signal
 import numpy as np
 import scipy.special as spec
+import xrscipy.signal as dsp
 import xarray as xr
 import data_csv
 import useful_functions
@@ -552,16 +553,14 @@ def time_fractions(signal):
 
     return signal
 
-def time_downsample(signal, downsample_factor=1):
+def time_downsample(signal, downsample_factor=1, keep_last=True):
+
     # Down sample the time component to save space since we don't need
     # the higher frequencies
-    signal_downsampled = sp.signal.decimate(signal, downsample_factor)
-    tResampled = sp.signal.decimate(signal['t*eps*sqrt(g*h)*k_E'],
-            downsample_factor)
+    signal_downsampled = dsp.decimate(signal, downsample_factor, dim='t*eps*sqrt(g*h)*k_E')
 
-    signal_downsampled = xr.DataArray(signal_downsampled,
-            dims=signal.dims, coords={**signal.coords,
-                't*eps*sqrt(g*h)*k_E' : tResampled}, attrs=signal.attrs)
+    # Copy over attributes
+    signal_downsampled.attrs = signal.attrs
 
     return signal_downsampled
 
@@ -795,7 +794,8 @@ def process_xt_offset(load_prefix, save_prefix, *args, **kwargs):
         num_lines = 20
         downsample_factor = int(round(
                 data_array['t*eps*sqrt(g*h)*k_E'].size/num_lines))
-        data_array = time_downsample(data_array,downsample_factor)
+        data_array = time_downsample(data_array,downsample_factor,
+                keep_last=False)
 
         with xr.set_options(keep_attrs=True):
             # Speed in vertical offset per unit time
