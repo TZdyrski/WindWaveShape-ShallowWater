@@ -570,8 +570,6 @@ def generate_statistics(filename):
 
     # Calculate max height
     maximums = maximum(data_array)
-    # Normalize by initial maximum
-    maximums_normalized = maximums/maximums[{'t*eps*sqrt(g*h)*k_E':0}]
 
     # Calculate skewness
     skewnesses = skewness(data_array)
@@ -597,8 +595,7 @@ def generate_statistics(filename):
 
     # Combine shape statistics
     statistics = xr.Dataset(data_vars = {
-        'max(eta)/max(eta_0)' : ('t*eps*sqrt(g*h)*k_E' ,
-            maximums_normalized),
+        'max(eta)/h' : ('t*eps*sqrt(g*h)*k_E' , maximums),
         'skewness' : ('t*eps*sqrt(g*h)*k_E' , skewnesses),
         'asymmetry' : ('t*eps*sqrt(g*h)*k_E' , asymmetries),
         **({'biphase' : ('t*eps*sqrt(g*h)*k_E' , biphases)} if

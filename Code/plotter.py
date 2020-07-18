@@ -362,7 +362,7 @@ def plot_shape_statistics_template(data_arrays, ax_title=None, **kwargs):
     plot_peak_pos = 'x_peak/h' in data_arrays[0].data_vars
     plot_peak_speed = 'c_peak/sqrt(g*h)' in data_arrays[0].data_vars
 
-    ax_ylabel_list = ['Height', 'Skewness', 'Asymmetry']
+    ax_ylabel_list = ['Height $H/h$', 'Skewness', 'Asymmetry']
     if plot_biphase:
         ax_ylabel_list.append('Biphase')
     if plot_peak_pos:
@@ -384,7 +384,7 @@ def plot_shape_statistics_template(data_arrays, ax_title=None, **kwargs):
 
     for shape_group in range(data_arrays_rearranged.shape[1]):
         split_data_arrays = [
-                data_arrays[shape_group]['max(eta)/max(eta_0)'],
+                data_arrays[shape_group]['max(eta)/h'],
                 data_arrays[shape_group]['skewness'],
                 data_arrays[shape_group]['asymmetry'],
                 ]
@@ -418,8 +418,9 @@ def plot_shape_statistics_template(data_arrays, ax_title=None, **kwargs):
     ax = atleast_2d(fig.axes).reshape((len(ax_ylabel_list),
         data_arrays.size))
     for ix in np.ndindex(ax.shape[1]):
-        # Put horizontal line at y=1
-        ax[ax_ylabel_list.index('Height'),ix].item().axhline(1,
+        # Put horizontal line at y=2*eps = H_0
+        ax[ax_ylabel_list.index('Height $H/h$'),ix].item().axhline(
+                2*data_arrays[0].attrs['eps'],
                 color='0.75', zorder=-1)
 
         # Put horizontal line at y=0
