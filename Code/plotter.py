@@ -871,7 +871,8 @@ def plot_spacetime_mesh_template(data_arrays, norm_by_wavelength=False,
                 data_array[x_coord],
                 )
 
-        cs = axis.pcolormesh(t_mesh, x_mesh, data_array, rasterized=True)
+        cs = axis.pcolormesh(t_mesh, x_mesh, data_array,
+                rasterized=True, shading='nearest')
 
         # Add colorbars
         axis.figure.colorbar(cs ,ax=axis)
