@@ -147,12 +147,11 @@ We are seeking a quasi-periodic progressive wave of permanent form:
   \label{eq:periodicity_condition}
 \end{gather}
 with similar conditions on $\vec{u} \coloneqq \grad{\phi}$.
-We are parameterizing our wave by four quantities: the depth, mean
-Eulerian current, wave height, and wavelength.
-We will use Stokes' first definition of wave celerity by taking the mean
-current to be zero:
+We are parameterizing our wave by four quantities: the depth, bottom
+horizontal velocity, wave height, and wavelength.
+We will choose the bottom horizontal velocity to vanish:
 \begin{equation}
-  \bar{u} = 0. \label{eq:celerity_definition}
+  \vec{u}\cross \vu{z} = 0 \label{eq:bot_bc_horz} \,.
 \end{equation}
 Additionally, we will choose our $z$-datum at the mean water level so that
 $\overline{\eta}$ vanishes.
@@ -544,6 +543,10 @@ This implies
   \varphi_0 = f_0(x-t_0,t_1) + g_0(x+t_0,t_1) \,.
   \label{eq:phi0_sol}
 \end{equation}
+Here, we have neglected the term linear in $t_0$ since we already set
+our gauge condition $\varphi = f(t_0)$, and we neglected the term linear
+in $x$ since we have chosen \cref{eq:bot_bc_horz} that $u =
+\pdv*{\varphi}_x = 0$ at the bottom.
 We will restrict to right-moving waves and take $g_0 = 0$.
 This also gives
 \begin{equation}
