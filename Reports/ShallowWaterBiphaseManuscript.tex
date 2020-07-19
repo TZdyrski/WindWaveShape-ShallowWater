@@ -103,22 +103,11 @@ We will choose the bottom horizontal velocity to vanish:
 \end{equation}
 Additionally, we will choose our $z$-datum at the mean water level so that
 $\overline{\eta}$ vanishes.
-Finally, we assume the surface pressure $p(x,t)$ can be expressed as a
-convolution of some (time-independent) function with $\eta(x,t)$:
+Finally, we assume the surface pressure $p(x,t)$ is given by a
+Jeffreys-type forcing \citep{jeffreys1925formation}:
 \begin{equation}
-  p(x,t) = \mathcal{P}(x) \star \eta(x,t) \implies \hat{p}_m = k \GenP
-    \hat{\eta}_m \,,
+  p(x,t) \propto \pdv{\eta(x,t)}{x} \,.
 \end{equation}
-with $\hat{g}_m$ the Fourier transform of a function $g(x,t) =
-\Re{\sum_{m=0}^{\infty} \hat{g}_m \exp(\im m x)}$.
-Here, $\GenP \in \mathbb{C}$ is an arbitrary coefficient; some select
-values are
-$\GenP = m P_J e^{\im \psi_P}$ and $\psi_P = \pm \thalf \pi$
-for Jeffreys, $\GenP = P_M \exp(\im \sgn{m} \psi_P)$ for Miles, and
-$\GenP = P_G \exp(\im m \psi_P)$ for Generalized Miles surface pressure
-profiles.
-Note, the wind phase $\psi_P$ is a free parameter for the Miles and
-Generalized Miles profiles.
 
 \section{Normalization}
 We will normalize by identifying characteristic scales.
