@@ -94,12 +94,9 @@ Then, the governing equations are%
   \frac{1}{2} \bqty{\phi_{x}^2 + \phi_{y}^2 + \phi_{z}^2} &&\qq{on} z=
   \eta \,. \label{eq:dynamic_bc}
 \end{alignat}
-We are seeking a quasi-periodic progressive wave of permanent form:
+We are seeking a spatially-periodic progressive wave:
 \begin{gather}
-  \eta(\vec{x},t) = \eta(\theta, t) \qq{with} \theta \coloneqq
-  \vec{x}\vdot\vec{k} - \omega t \,, \\
-  \eta(\theta + 2\pi,t) = \eta(\theta,t) \,,
-  \label{eq:periodicity_condition}
+  \eta(\vec{x},t) = \eta(x + \lambda, t) \,,
 \end{gather}
 with similar conditions on $\vec{u} \coloneqq \grad{\phi}$.
 We are parameterizing our wave by four quantities: the depth, bottom
