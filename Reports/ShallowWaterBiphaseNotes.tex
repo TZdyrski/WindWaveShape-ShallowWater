@@ -124,7 +124,14 @@ not suffer from these harmonic oscillations (likely being closer to
 cnoidal waves, which do not experience such oscillations).
 
 \section{Problem Solving Technique}
-The governing equations are%
+We will treat the flow as irrotational and inviscid throughout the
+fluid and neglect surface tension by restricting to wavelengths $\lambda
+\gg \SI{2}{\centi\meter}$.
+Furthermore, we restrict to planar wave propagation in the $+x$
+direction and assume no mean Eulerian current $\overline{u} = 0$.
+Finally, we choose a coordinate system with $z=0$ at the mean water level and
+a horizontal, flat bottom located at $z=-h$.
+Then, the governing equations are%
 \footnote{
   We used the gauge freedom to absorb the Bernoulli ``constant'' $C(t)$
   in the dynamic boundary condition into the definition of $\phi$.
@@ -153,10 +160,8 @@ We will choose the bottom horizontal velocity to vanish:
 \begin{equation}
   \vec{u}\cross \vu{z} = 0 \label{eq:bot_bc_horz} \,.
 \end{equation}
-Additionally, we will choose our $z$-datum at the mean water level so that
-$\overline{\eta}$ vanishes.
-Finally, we assume the surface pressure $p(x,t)$ can be expressed as a
-convolution of some (time-independent) function with $\eta(x,t)$:
+Additionally, we assume the surface pressure $p(x,t)$ can be expressed
+as a convolution of some (time-independent) function with $\eta(x,t)$:
 \begin{equation}
   p(x,t) = \mathcal{P}(x) \star \eta(x,t) \implies \hat{p}_m = k \GenP
     \hat{\eta}_m \,,
