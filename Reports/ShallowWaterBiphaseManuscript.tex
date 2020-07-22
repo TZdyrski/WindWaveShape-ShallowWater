@@ -85,17 +85,17 @@ Then, the governing equations are%
   in the dynamic boundary condition into the definition of $\phi$.
 }
 \begin{alignat}{2}
-  0 &= \phi_{xx} + \phi_{yy} + \phi_{zz} &&\qq{on}
+  0 &= \phi_{xx} + \phi_{zz} &&\qq{on}
   -h < z < \eta \,, \label{eq:laplace}\\
   0 &= \phi_{z} &&\qq{on} z=-h \,, \label{eq:bottom_bc}\\
-  \phi_{z} &= \eta_{t} + \phi_{x} \eta_{x} +
-  \phi_{y} \eta_{y} &&\qq{on} z = \eta \,, \label{eq:kinematic_bc}\\
+  \phi_{z} &= \eta_{t} + \phi_{x} \eta_{x} &&\qq{on} z = \eta \,,
+  \label{eq:kinematic_bc}\\
   \qq*{and} 0 &= \frac{p}{\rho_w} + g\eta + \phi_{t} +
-  \frac{1}{2} \bqty{\phi_{x}^2 + \phi_{y}^2 + \phi_{z}^2} &&\qq{on} z=
+  \frac{1}{2} \bqty{\phi_{x}^2 + \phi_{z}^2} &&\qq{on} z=
   \eta \,. \label{eq:dynamic_bc}
 \end{alignat}
-Here, $\eta(x,y,t)$ is the wave profile, $\phi(x,y,z,t)$ is the velocity
-potential $\vec{u} = \grad{\phi}$, $p(x,y,t)$ is the surface pressure,
+Here, $\eta(x,t)$ is the wave profile, $\phi(x,z,t)$ is the velocity
+potential $\vec{u} = \grad{\phi}$, $p(x,t)$ is the surface pressure,
 $g$ is the acceleration due to gravity, and $\rho_w$ is the water
 density.
 We are seeking a spatially-periodic progressive wave:
@@ -108,7 +108,7 @@ bottom horizontal velocity, wave height, and wavelength.
 We will choose a coordinate system where the bottom horizontal velocity
 vanishes:
 \begin{equation}
-  \vec{u}\cross \vu{z} = 0 \qq{on} z=-h \,. \label{eq:bot_bc_horz}
+  \pdv{\phi}{x} = 0 \qq{on} z=-h \,. \label{eq:bot_bc_horz}
 \end{equation}
 Additionally, we assume the surface pressure $p(x,t)$ is given by a
 Jeffreys-type forcing \citep{jeffreys1925formation}:
@@ -142,7 +142,6 @@ Denoting nondimensional variables with an accent, we have
 \begin{equation*}
   \begin{aligned}
   x &= \frac{x'}{k_E} = h \frac{x'}{\sqrt{\mu}}\,, \\
-  y &= \frac{y'}{k_E} = h \frac{y'}{\sqrt{\mu}}\,, \\
   z &= h z' \,,
   \end{aligned}
   \qquad
@@ -171,16 +170,16 @@ Finally, note that $\order{p/\rho_w g h} = (\epsilon/\sqrt{\mu})
 
 Using these definitions, our equations take the form
 \begin{alignat}{2}
-  0 &= \mu \pqty{\phi'_{x'x'} + \phi'_{y'y'}} + \phi'_{z'z'} &&\qq{on}
+  0 &= \mu \phi'_{x'x'} + \phi'_{z'z'} &&\qq{on}
     -1 < z' < \epsilon \eta' \,, \label{eq:laplace_nondim} \\
   0 &= \phi'_{z'} &&\qq{on} z'=-1 \,, \label{eq:bottom_bc_nondim} \\
   \phi'_{z'} &= \mu \eta'_{t'} +
-    \epsilon \mu \bqty{\phi'_{x'} \eta'_{x'} + \phi'_{y'} \eta'_{y'}}
-    &&\qq{on} z' = \epsilon \eta' \,, \label{eq:kinematic_bc_nondim} \\
+    \epsilon \mu \phi'_{x'} \eta'_{x'} &&\qq{on} z' = \epsilon \eta' \,,
+    \label{eq:kinematic_bc_nondim} \\
   0 &= \alpha p' +  \eta' + \phi'_{t'} + \frac{1}{2}
-    \bqty{\epsilon \pqty{\phi_{x'}^{\prime \, 2} + \phi_{y'}^{\prime \,
-    2}} +  \frac{\epsilon}{\mu} \phi_{z'}^{\prime \, 2}} &&\qq{on} z'=
-    \epsilon \eta' \,.  \label{eq:dynamic_bc_nondim}
+    \pqty{\epsilon \phi_{x'}^{\prime \, 2} + \frac{\epsilon}{\mu}
+    \phi_{z'}^{\prime \, 2}} &&\qq{on} z'= \epsilon \eta' \,.
+    \label{eq:dynamic_bc_nondim}
 \end{alignat}
 Note that this is equivalent to choosing a set of units wherein $h = g =
 \rho_w = 1$.
@@ -322,17 +321,15 @@ Derivatives in the $\vu{z}$ direction give
   \pdv[2]{\phi}{z} = \sum_{n=2}^{\infty} (n-1)(n)(z+1)^{n-2}\phi_n =
   \sum_{n=0}^{\infty} (n+1)(n+2)(z+1)^n\phi_{n+2} \,.
 \end{equation}
-Denoting the horizontal gradient as $\grad_X \coloneqq
-(\pdv{x},\pdv{y})$,
 Laplace's equation, \cref{eq:laplace_nondim}, gives
 \begin{equation}
-  \mu \laplacian_X{\phi} + \pdv[2]{\phi}{z} = \sum_{n=0}^\infty
-  (z+1)^n\pqty{\mu \laplacian_X \phi_n + (n+1)(n+2)\phi_{n+2}} = 0 \,.
+  \mu \pdv[2]{\phi}{x} + \pdv[2]{\phi}{z} = \sum_{n=0}^\infty
+  (z+1)^n\pqty{\mu \partial^2_x \phi_n + (n+1)(n+2)\phi_{n+2}} = 0 \,.
 \end{equation}
 Since this holds for arbitrary $z \in [-1,\epsilon \eta]$, each
 term in the series must vanish, giving a recursion relation:
 \begin{equation}
-  \phi_{n+2} = \frac{-\mu \laplacian_X{\phi_n}}{(n+1)(n+2)} \,.
+  \phi_{n+2} = \frac{-\mu \partial^2_x \phi_n}{(n+1)(n+2)} \,.
 \end{equation}
 
 We assumed previously that we were dealing with a horizontal
@@ -345,14 +342,14 @@ Then, our bottom-boundary condition, \cref{eq:bottom_bc_nondim}, implies
 Therefore, the recursion relation shows that $\phi_n=0$ for all odd $n$.
 Hence, we've found a partial expansion of $\phi$ in terms of $\mu$:
 \begin{equation}
-  \phi(x,y,z,t) = \sum_{n=0}^{\infty} (-\mu)^n \frac{(z+1)^{2n}}{(2n)!}
-  \grad_{X}^{2n} \phi_0(x,y,t; \mu, \epsilon) \,.
+  \phi(x,z,t) = \sum_{n=0}^{\infty} (-\mu)^n \frac{(z+1)^{2n}}{(2n)!}
+  \partial_x^{2n} \phi_0(x,t; \mu, \epsilon) \,.
   \label{eq:phi_expansion}
 \end{equation}
 If we assume $\mu \ll 1$, we have,
 \begin{equation}
-  \phi = \phi_0 - \frac{1}{2}\mu (z+1)^2\laplacian_X\phi_0 +
-  \frac{\mu^2}{24}(z+1)^4\laplacian_X\laplacian_X\phi_0 +
+  \phi = \phi_0 - \frac{1}{2}\mu (z+1)^2\partial^2_x\phi_0 +
+  \frac{\mu^2}{24}(z+1)^4\partial^4_x\phi_0 +
   \order{\mu^3} \,.
 \end{equation}
 
@@ -373,37 +370,26 @@ remaining boundary equations,
 \cref{eq:kinematic_bc_nondim,eq:dynamic_bc_nondim}, we have reduced our
 system of equations to
 \begin{gather}
-  \eta_t + \grad_X{H}\vdot\pqty{\grad_X\varphi
-    -\frac{1}{2}\mu H^2\laplacian_X\grad_X\varphi} =
-    -H\laplacian_X\varphi
-  +\frac{1}{6}\mu H^3\laplacian_X\laplacian_X\varphi +
+  \eta_t + \partial_x{H}\pqty{\partial_x\varphi
+    -\frac{1}{2}\mu H^2\partial^2_x\partial_x\varphi} =
+    -H\partial^2_x\varphi
+  +\frac{1}{6}\mu H^3\partial^2_x\partial^2_x\varphi +
     \order{\mu^2}, \\
-  p + \eta + \varphi_{t} - \frac{1}{2}\mu H^2\laplacian_X\varphi_{t} +
-    \frac{1}{2}\epsilon \pqty{\grad_X\varphi}^2 = \order{\mu^2}
+  p + \eta + \varphi_{t} - \frac{1}{2}\mu H^2\partial^2_x\varphi_{t} +
+    \frac{1}{2}\epsilon \pqty{\partial_x\varphi}^2 = \order{\mu^2}
     \,.
 \end{gather}
 Note that we have used the total depth $H\coloneqq 1+\epsilon\eta$.
 These equations can be simplified slightly to give
 \begin{gather}
-  \eta_t + \grad_X(H\grad_X\varphi)
-    -\frac{1}{6}\mu \grad_X\vdot(H^3\laplacian_X\grad_X\varphi) =
-    \order{\mu^2} \,, \\
-  p + \eta + \varphi_{t} - \frac{1}{2}\mu H^2\laplacian_X\varphi_{t} +
-    \frac{1}{2}\epsilon\pqty{\grad_X\varphi}^2 = \order{\mu^2}
-    \,.
-\end{gather}
-
-\subsection{Restrictions}
-At this point, we will again restrict our attention to one-dimensional
-waves:
-\begin{gather}
   \eta_t + \pqty{H\varphi_x}_x
     -\frac{1}{6}\mu \pqty{H^3\varphi_{xxx}}_x =
     \order{\mu^2}, \label{eq:kinematic_bc_varphi} \,, \\
   p + \eta + \varphi_t - \frac{1}{2}\mu H^2\varphi_{txx} +
-    \frac{1}{2}\epsilon\pqty{\varphi_x}^2 = \order{\mu^2} \,.
+    \frac{1}{2}\epsilon\pqty{\varphi_x}^2 = \order{\mu^2} \,,
   \label{eq:dynamic_bc_varphi}
 \end{gather}
+where subscripts denote partial derivatives.
 Further, we will now assume $\order{\epsilon} = \order{\mu} \ll 1$ which
 implies $\Ur = \order{1}$.
 
