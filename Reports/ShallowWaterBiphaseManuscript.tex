@@ -94,11 +94,15 @@ Then, the governing equations are%
   \frac{1}{2} \bqty{\phi_{x}^2 + \phi_{y}^2 + \phi_{z}^2} &&\qq{on} z=
   \eta \,. \label{eq:dynamic_bc}
 \end{alignat}
+Here, $\eta(x,y,t)$ is the wave profile, $\phi(x,y,z,t)$ is the velocity
+potential $\vec{u} = \grad{\phi}$, $p(x,y,t)$ is the surface pressure,
+$g$ is the acceleration due to gravity, and $\rho_w$ is the water
+density.
 We are seeking a spatially-periodic progressive wave:
 \begin{gather}
   \eta(\vec{x},t) = \eta(x + \lambda, t) \,,
 \end{gather}
-with similar conditions on $\vec{u} \coloneqq \grad{\phi}$.
+with similar conditions on $\vec{u}$.
 We are parameterizing our initial wave by four quantities: the depth,
 bottom horizontal velocity, wave height, and wavelength.
 We will choose a coordinate system where the bottom horizontal velocity
