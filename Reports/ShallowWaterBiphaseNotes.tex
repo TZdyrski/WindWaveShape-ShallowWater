@@ -51,6 +51,8 @@
 \DeclareMathOperator{\As}{As}
 %\DeclareMathOperator{\Bi}{Bi}
 
+\newcommand{\hilbert}{\mathcal{H}}
+
 % Define custom math functions
 \DeclarePairedDelimiter{\round}\lfloor\rceil
 
@@ -1021,6 +1023,26 @@ $\mathcal{H}$,
 \end{equation}
 with $\mathcal{H} = \nu_{\text{bi}} \sqrt{\mu/\epsilon}^3$ and the
 numerical biviscosity $\nu_{\text{bi}} = \num{1e-4}$.
+
+\section{Shape Statistics}
+Wave shape can be quantified by the third-order moments, skewness and
+asymmetry.
+The skewness is defined as
+\begin{equation}
+  \Sk \coloneqq \frac{\langle \eta^3 \rangle}{\langle \eta^2
+  \rangle^{3/2}} \,,
+\end{equation}
+with
+\begin{equation}
+  \langle f \rangle \coloneqq \frac{1}{L} \int_{-L/2}^{L/2} f
+  \dd{x} \,.
+\end{equation}
+Likewise, the asymmetry is defined as
+\begin{equation}
+  \As \coloneqq \frac{\langle \hilbert \Bqty{\eta^3} \rangle}{\langle
+    \eta^2 \rangle^{3/2}} \,,
+\end{equation}
+with $\hilbert$ the Hilbert transform.
 
 \section{\texorpdfstring{Weak Wind: $\alpha = \epsilon^{1.5}$}{Weak
 Wind} \label{sec:weak}}

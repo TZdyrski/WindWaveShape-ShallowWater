@@ -32,6 +32,8 @@
 \DeclareMathOperator{\As}{As}
 %\DeclareMathOperator{\Bi}{Bi}
 
+\newcommand{\hilbert}{\mathcal{H}}
+
 % Define custom math functions
 \DeclarePairedDelimiter{\round}\lfloor\rceil
 
@@ -718,6 +720,26 @@ $\mathcal{H}$,
 with $\mathcal{H} = \nu_{\text{bi}} \sqrt{\mu/\epsilon}^3$ and the
 numerical biviscosity $\nu_{\text{bi}} = \num{1e-4}$.
 
+\section{Shape Statistics}
+Wave shape can be quantified by the third-order moments, skewness and
+asymmetry.
+The skewness is defined as
+\begin{equation}
+  \Sk \coloneqq \frac{\langle \eta^3 \rangle}{\langle \eta^2
+  \rangle^{3/2}} \,,
+\end{equation}
+with
+\begin{equation}
+  \langle f \rangle \coloneqq \frac{1}{L} \int_{-L/2}^{L/2} f
+  \dd{x} \,.
+\end{equation}
+Likewise, the asymmetry is defined as
+\begin{equation}
+  \As \coloneqq \frac{\langle \hilbert \Bqty{\eta^3} \rangle}{\langle
+    \eta^2 \rangle^{3/2}} \,,
+\end{equation}
+with $\hilbert$ the Hilbert transform.
+
 \section{Results}
 Given the one free parameter $P k_E/(\rho_w g \epsilon)$ of the
 KdV-Burgers equation \cref{eq:kdv_burgers} and the one-parameter family of
@@ -830,6 +852,8 @@ The \subref{fig:statistics_solitary:a} wave height,
 \subref{fig:statistics_solitary:b} skewness, and
 \subref{fig:statistics_solitary:c} asymmetry all each plotted as
 functions of time $t \epsilon \sqrt{g h} k_E$.
+Note that the skewness and asymmetry are calculating using the length $L
+= \lambda_{\text{trunc}}$ when integrating.
 Additionally, each statistic is plotted for onshore wind ($P
 k_E/(\rho_w g \epsilon) = 0.05$ and $0.1$), offshore wind ($P
 k_E/(\rho_w g \epsilon) = -0.05$ and $-0.1$), and the unforced case
