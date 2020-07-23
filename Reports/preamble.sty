@@ -105,12 +105,12 @@
 \usepackage{cleveref} % improve references (load laster than hyperref)
 %\crefname{subsubsection}{subsection}{subsections} % redefine subsubsection to print as just subsection, which is less ugly
 %\Crefname{subsubsection}{Subsection}{Subsections}
-%
-%\crefname{equation}{Eq.}{Eqs.} % redefine equation to always be capitalized
-%\Crefname{equation}{Equation}{Equations}
-%
-%\crefname{equations}{Eqs.}{Eqs.} % define plural equations
-%\Crefname{equations}{Equations}{Equations}
+
+\crefname{equation}{}{} % redefine equation to not show word "eq."
+\Crefname{equation}{Equation}{Equations}
+
+\crefname{equations}{}{} % define plural equations
+\Crefname{equations}{Equations}{Equations}
 
 %% Glossaries
 %\usepackage[acronym, xindy, nonumberlist, nopostdot, nomain]{glossaries} % add glossaries and nomenclature lists (load laster than hyperref)
