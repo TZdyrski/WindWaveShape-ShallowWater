@@ -309,38 +309,16 @@ For instance, $U_{0.3} = \SI{8}{\meter\per\second}$ gives
 $P'_M \alpha = \num{6.4e-3} \approx \epsilon^3$.
 
 \section{Depth Dependence of \texorpdfstring{$\phi$}{Velocity Potential}}
-First, we will determine the depth dependence of $\phi$ implied by
-Laplace's equation.
+The depth dependence of $\phi$ can be determined from Laplace's equation
+\cref{eq:laplace_nondim} and the bottom boundary condition
+\cref{eq:bottom_bc_nondim}.
 We will do this be expanding $\phi$ in a Taylor series about the bottom
 $z=-1$:
 \begin{equation}
   \phi(x,y,z,t) = \sum_{n=0}^\infty (z+1)^n\phi_n(x,y,t) \,.
 \end{equation}
-Derivatives in the $\vu{z}$ direction give
-\begin{equation}
-  \pdv[2]{\phi}{z} = \sum_{n=2}^{\infty} (n-1)(n)(z+1)^{n-2}\phi_n =
-  \sum_{n=0}^{\infty} (n+1)(n+2)(z+1)^n\phi_{n+2} \,.
-\end{equation}
-Laplace's equation, \cref{eq:laplace_nondim}, gives
-\begin{equation}
-  \mu \pdv[2]{\phi}{x} + \pdv[2]{\phi}{z} = \sum_{n=0}^\infty
-  (z+1)^n\pqty{\mu \partial^2_x \phi_n + (n+1)(n+2)\phi_{n+2}} = 0 \,.
-\end{equation}
-Since this holds for arbitrary $z \in [-1,\epsilon \eta]$, each
-term in the series must vanish, giving a recursion relation:
-\begin{equation}
-  \phi_{n+2} = \frac{-\mu \partial^2_x \phi_n}{(n+1)(n+2)} \,.
-\end{equation}
-
-We assumed previously that we were dealing with a horizontal
-bottom-boundary.
-Then, our bottom-boundary condition, \cref{eq:bottom_bc_nondim}, implies
-\begin{equation}
-  \pdv{\phi}{z}\eval_{z=-1} = \pqty{\sum_{n=1}^\infty
-  n(z+1)^{n-1}\phi_n}\eval_{z=-1} = \phi_1 = 0 \,.
-\end{equation}
-Therefore, the recursion relation shows that $\phi_n=0$ for all odd $n$.
-Hence, we've found a partial expansion of $\phi$ in terms of $\mu$:
+A standard calculation \citep[\eg][]{mei2005nonlinear} yields $\phi$
+as a partial expansion of $\phi$ in terms of $\mu$:
 \begin{equation}
   \phi(x,z,t) = \sum_{n=0}^{\infty} (-\mu)^n \frac{(z+1)^{2n}}{(2n)!}
   \partial_x^{2n} \phi_0(x,t; \mu, \epsilon) \,.
@@ -357,10 +335,7 @@ Laplace's equation is only satisfied approximately.
 This is in contrast to the intermediate-depth water case, where we were
 able to satisfy Laplace's equation identically at each order.
 
-Using \cref{eq:laplace_nondim,eq:bottom_bc_nondim}, we have determined
-the depth dependence of $\phi$.
-Therefore, our remaining goal is to determine the form of $\eta$ and
-$\phi_0$.
+Now, our goal is to determine the form of $\eta$ and $\phi_0$.
 For convenience, we will define $\varphi \coloneqq \phi_0$, as we will
 need to append more subscripts shortly.
 
@@ -370,18 +345,6 @@ remaining boundary equations,
 they are evaluated at $z=\epsilon \eta$, we have reduced our system of
 equations to
 \begin{gather}
-  \eta_t + \partial_x{H}\pqty{\partial_x\varphi
-    -\frac{1}{2}\mu H^2\partial^2_x\partial_x\varphi} =
-    -H\partial^2_x\varphi
-  +\frac{1}{6}\mu H^3\partial^2_x\partial^2_x\varphi +
-    \order{\mu^2}, \\
-  p + \eta + \varphi_{t} - \frac{1}{2}\mu H^2\partial^2_x\varphi_{t} +
-    \frac{1}{2}\epsilon \pqty{\partial_x\varphi}^2 = \order{\mu^2}
-    \,.
-\end{gather}
-Note that we have used the total depth $H\coloneqq 1+\epsilon\eta$.
-These equations can be simplified slightly to give
-\begin{gather}
   \eta_t + \pqty{H\varphi_x}_x
     -\frac{1}{6}\mu \pqty{H^3\varphi_{xxx}}_x =
     \order{\mu^2} \label{eq:kinematic_bc_varphi} \,, \\
@@ -390,6 +353,7 @@ These equations can be simplified slightly to give
   \label{eq:dynamic_bc_varphi}
 \end{gather}
 where subscripts denote partial derivatives.
+Note that we have used the total depth $H\coloneqq 1+\epsilon\eta$.
 Further, we will now assume $\order{\epsilon} = \order{\mu} \ll 1$ which
 implies $\Ur = \order{1}$.
 
