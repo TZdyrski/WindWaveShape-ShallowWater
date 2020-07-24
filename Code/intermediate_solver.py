@@ -58,6 +58,7 @@ class kdvSystem():
         nu_bi : float or None
             Sets the strength of the biviscosity. If None,
             determine nu_bi from nu_bi=eps**2/mu**2*H, where H is the
+            higher-order damping. Default is 0.
         psiP : float or None
             The wind phase, or the shift of the pressure relative to the
             surface height p(x,t) = eta(x+psiP,t). This is used for
