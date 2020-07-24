@@ -1922,8 +1922,8 @@ def main():
     default_params = {
             'eps' : 0.1,
             'mu' : 0.8,
-            'P' : 0.1,
-            'nu_bi' : 1e-4,
+            'P' : 0.25,
+            'nu_bi' : 2e-3,
             'psi_P' : 3/4*np.pi,
             'forcing_type' : 'Jeffreys',
             }

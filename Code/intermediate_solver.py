@@ -44,21 +44,21 @@ class kdvSystem():
             Sets the background current strength. Default is 0.
         G : float or None
             Sets the strength of the damping. If None, determine G from
-            G=-1/2*P*sqrt(mu/eps), where P is the pressure forcing
-            strength. Default is 0.
+            G=-1/2*P, where P is the pressure forcing strength. Default
+            is 0.
         H : float or None
             Sets the strength of the higher-order damping. Positive H is
             needed for stability when solving the KdV-Burgers equation
-            with negative G. If None, determine H from H =
-            (mu/eps)**(3/2)*nu_bi. Default is 0.
+            with negative G. If None, determine H from H = nu_bi.
+            Default is 0.
         P : float or None
             Sets the strength of the pressure forcing. If None,
-            determine P from P=-2*G*sqrt(eps/mu), where G is the
-            strength of the damping. Default is 0.
+            determine P from P=-2*G, where G is the strength of the
+            damping. Default is 0.
         nu_bi : float or None
-            Sets the strength of the biviscosity. If None,
-            determine nu_bi from nu_bi=(eps/mu)**(3/2)*H, where H is the
-            higher-order damping. Default is 0.
+            Sets the strength of the biviscosity. If None, determine
+            nu_bi from nu_bi=H, where H is the higher-order damping.
+            Default is 0.
         psiP : float or None
             The wind phase, or the shift of the pressure relative to the
             surface height p(x,t) = eta(x+psiP,t). This is used for
@@ -102,10 +102,10 @@ class kdvSystem():
             raise ValueError('Cannot provide both G and P to kdvSystem constructor.')
         elif P is not None:
             self.P = P
-            self.G = -1/2*P*np.sqrt(mu/eps)
+            self.G = -1/2*P
         elif G is not None:
             self.G = G
-            self.P = -2*G*np.sqrt(eps/mu)
+            self.P = -2*G
         else:
             self.G = 0
             self.P = 0
@@ -114,10 +114,10 @@ class kdvSystem():
             raise ValueError('Cannot provide both H and nu_bi to kdvSystem constructor.')
         elif nu_bi is not None:
             self.nu_bi = nu_bi
-            self.H = (mu/eps)**(3/2)*nu_bi
+            self.H = nu_bi
         elif H is not None:
             self.H = H
-            self.nu_bi = (eps/mu)**(3/2)*H
+            self.nu_bi = H
         else:
             self.H = 0
             self.nu_bi = 0
@@ -957,7 +957,7 @@ def default_solver(y0_func=None, solver='RK3', *args, **kwargs):
 
     return data, solverSystem
 
-def gen_trig_verf(save_prefix, nu_bi=1e-4):
+def gen_trig_verf(save_prefix, nu_bi=2e-3):
     # Generate verification data by using sinusoidal initial conditions
     # with the Burgers equation
     NumWaves = 1
@@ -997,7 +997,7 @@ def gen_trig_verf(save_prefix, nu_bi=1e-4):
                     save_prefix+'TrigVerf-'+solver+'_nu_bi'+str(nu_bi_val),
                     **parameters, solver=solver, stack_coords = True)
 
-def gen_long_verf(save_prefix, mu=0.8, nu_bi=1e-4):
+def gen_long_verf(save_prefix, mu=0.8, nu_bi=2e-3):
     # Generate verification data by running a solitary wave profile
     # without forcing for a long time
 
@@ -1033,8 +1033,8 @@ def gen_long_verf(save_prefix, mu=0.8, nu_bi=1e-4):
                     stack_coords = True, eps=dataClass.eps,
                     **parameters)
 
-def gen_snapshots(save_prefix, eps=0.1, mu=0.8, P=0.1, psiP=3/4*np.pi,
-        nu_bi=1e-4):
+def gen_snapshots(save_prefix, eps=0.1, mu=0.8, P=0.25, psiP=3/4*np.pi,
+        nu_bi=2e-3):
     """ Generate snapshots for range of parameters. Save the results to
     the directory given by 'save_prefix'.
 
@@ -1055,7 +1055,7 @@ def gen_snapshots(save_prefix, eps=0.1, mu=0.8, P=0.1, psiP=3/4*np.pi,
         to actually use P~1, so decrease it for stability
     nu_bi : float
         Nondimensional biviscosity needed for numerical stability.
-        Default is 1e-3.
+        Default is 2e-3.
     """
 
     for forcing_type in ['Jeffreys', 'GM']:
@@ -1104,8 +1104,8 @@ def gen_snapshots(save_prefix, eps=0.1, mu=0.8, P=0.1, psiP=3/4*np.pi,
                         # affect the output)
                         break
 
-def gen_depth_varying(save_prefix, eps=0.1, mu=0.6, P=0.1, psiP=3/4*np.pi,
-        nu_bi=1e-4, forcing_type='Jeffreys'):
+def gen_depth_varying(save_prefix, eps=0.1, mu=0.6, P=0.25, psiP=3/4*np.pi,
+        nu_bi=2e-3, forcing_type='Jeffreys'):
 
     # Linearly space khs
     kh_vals = np.sqrt(mu)*np.linspace(1,np.sqrt(2),num=30)
@@ -1138,7 +1138,7 @@ def gen_depth_varying(save_prefix, eps=0.1, mu=0.6, P=0.1, psiP=3/4*np.pi,
                 **parameters, stack_coords=True)
 
 def gen_biviscosity_variation(save_prefix, eps=0.1, mu=0.8, P=0, psiP=3/4*np.pi,
-        nu_bi=1e-4, forcing_type='Jeffreys', wave_type='cnoidal'):
+        nu_bi=2e-3, forcing_type='Jeffreys', wave_type='cnoidal'):
 
     nu_bi_vals = np.vectorize(round_sig_figs)(nu_bi*np.logspace(-2,1,4),3)
     # Also include nu_bi=0
@@ -1177,7 +1177,7 @@ def gen_biviscosity_variation(save_prefix, eps=0.1, mu=0.8, P=0, psiP=3/4*np.pi,
                wave_length=dataClass.WaveLength,
                **parameters, stack_coords=True)
 
-def gen_decaying_no_nu_bi(save_prefix, eps=0.1, mu=0.8, P=0.1,
+def gen_decaying_no_nu_bi(save_prefix, eps=0.1, mu=0.8, P=0.25,
         psiP=3/4*np.pi, nu_bi=0, forcing_type='Jeffreys',
         wave_type='cnoidal'):
 

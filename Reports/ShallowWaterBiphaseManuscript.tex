@@ -476,21 +476,17 @@ This is a rare, difficult-to-solve equation.
 
 Alternatively, we now specialize to the Jeffreys forcing type,
 \begin{equation}
-  p_0 = P_J \pdv*{\eta_0}{x} = P_J f_0''
-  \implies p'_0 = P'_J \sqrt{\frac{\mu}{\epsilon}} \pdv{\eta'_0}{x'}
-  \,.
+  p_0 = P_J \pdv*{\eta_0}{x} = P_J f_0'' \,.
 \end{equation}
 This gives
 \begin{equation}
-   \pdv{f_0'}{t_1} + P_J \sqrt{\frac{\mu}{\epsilon}} \frac{1}{2} f_0'''
-   + \frac{3}{2} f_0' f_0'' + \frac{1}{6} \frac{\mu}{\epsilon} f_0^{(4)}
-   = 0 \,.
+   \pdv{f_0'}{t_1} + P_J \frac{1}{2} f_0''' + \frac{3}{2} f_0' f_0'' +
+   \frac{1}{6} \frac{\mu}{\epsilon} f_0^{(4)} = 0 \,.
 \end{equation}
 Finally, we can replace $f_0' = \eta_0$ to yield
 \begin{equation}
-   \pdv{\eta_0}{t_1} + P_J \sqrt{\frac{\mu}{\epsilon}} \frac{1}{2}
-   \eta_0'' + \frac{3}{2} \eta_0 \eta_0' + \frac{1}{6}
-   \frac{\mu}{\epsilon} \eta_0^{(3)} = 0 \,.
+   \pdv{\eta_0}{t_1} + P_J \frac{1}{2} \eta_0'' + \frac{3}{2} \eta_0
+   \eta_0' + \frac{1}{6} \frac{\mu}{\epsilon} \eta_0^{(3)} = 0 \,.
   \label{eq:kdv_burgers}
 \end{equation}
 This is the Korteweg-de Vries (KdV)-Burgers equation, though the
@@ -649,8 +645,7 @@ Therefore, the nondimensional equation we are solving is
   \label{eq:kdvb_nondim}
 \end{equation}
 with $\mathcal{A} = 1$, $\mathcal{B} = 3/2$, $\mathcal{C} =
-\mu/(6\epsilon)$, and $\mathcal{G} = -\frac{P_J'}{2}
-\sqrt{\frac{\mu}{\epsilon}}$.
+\mu/(6\epsilon)$, and $\mathcal{G} = -\frac{P_J'}{2}$.
 We wish for the unforced case to be stationary in this frame of
 reference, so we include an $\mathcal{F}$ term such that the unforced
 phase speed $\eval{c_1}_{P=0} = 0$:
@@ -717,8 +712,7 @@ $\mathcal{H}$,
   \mathcal{G} \pdv[2]{\eta'_0}{{x'}} + \mathcal{H}
   \pdv[4]{\eta'_0}{{x'}} \,,
 \end{equation}
-with $\mathcal{H} = \nu_{\text{bi}} \sqrt{\mu/\epsilon}^3$ and the
-numerical biviscosity $\nu_{\text{bi}} = \num{1e-4}$.
+with $\mathcal{H} = \num{2e-3}$.
 
 \section{Shape Statistics}
 Wave shape can be quantified by the third-order moments, skewness and
@@ -773,7 +767,7 @@ In \cref{fig:snapshots_solitary}, we have plotted the wave profile
 $\eta/h$ as a function of distance $x/h$ at different times $t \epsilon
 \sqrt{g h} k_E$ and wind directions.
 Both cases are plotted for initial wave steepness $\epsilon = 0.1$ and
-pressure magnitude $\abs{P k_E/(\rho_w g \epsilon)} = 0.1$; the onshore
+pressure magnitude $\abs{P k_E/(\rho_w g \epsilon)} = 0.25$; the onshore
 wind \subref{fig:snapshots_solitary:a} corresponds to $P>0$ while the
 offshore wind \subref{fig:snapshots_solitary:b} has $P<0$.
 We see that the initially symmetric solitary wave evolving over time
@@ -812,7 +806,7 @@ k_E$.
 This time, each snapshot is shifted upwards, with a vertical
 displacement of $0.1 \eta/h$ for each unit $t\epsilon \sqrt{g h} k_E$.
 Again, both panels have an initial wave steepness of $\epsilon = 0.1$
-and pressure magnitude $\abs{P k_E/(\rho_w g \epsilon)} = 0.1$, with
+and pressure magnitude $\abs{P k_E/(\rho_w g \epsilon)} = 0.25$, with
 \subref{fig:xt_offset_solitary:a} corresponding to $P>0$ onshore wind,
 and \subref{fig:xt_offset_solitary:b} corresponding to $P<0$ offshore
 wind.
@@ -855,8 +849,8 @@ functions of time $t \epsilon \sqrt{g h} k_E$.
 Note that the skewness and asymmetry are calculating using the length $L
 = \lambda_{\text{trunc}}$ when integrating.
 Additionally, each statistic is plotted for onshore wind ($P
-k_E/(\rho_w g \epsilon) = 0.05$ and $0.1$), offshore wind ($P
-k_E/(\rho_w g \epsilon) = -0.05$ and $-0.1$), and the unforced case
+k_E/(\rho_w g \epsilon) = 0.125$ and $0.25$), offshore wind ($P
+k_E/(\rho_w g \epsilon) = -0.125$ and $-0.25$), and the unforced case
 ($P k_E/(\rho_w g \epsilon) = 0$).
 All cases are plotted for initial steepness $\epsilon = 0.1$ for
 $3/\epsilon = 30$ wave periods.
@@ -879,8 +873,8 @@ As a useful check on our earlier estimation of the magnitude of $P'$, we
 can derive the energy growth rate.
 Multiplying \cref{eq:kdv_burgers} by $\eta_0$, we find
 \begin{equation}
-  \frac{1}{2} \pdv{t_1} \eta_0^2 + P_J \sqrt{\frac{\mu}{\epsilon}}
-  \frac{1}{4} (\eta_0^2)'' - \frac{1}{2} P_J \sqrt{\frac{\mu}{\epsilon}}
+  \frac{1}{2} \pdv{t_1} \eta_0^2 + P_J
+  \frac{1}{4} (\eta_0^2)'' - \frac{1}{2} P_J
   (\eta_0')^2 + \frac{1}{2} (\eta_0^3)' + \frac{1}{12}
   \frac{\mu}{\epsilon} (\eta_0^2)''' - \frac{1}{4} \frac{\mu}{\epsilon}
   \bqty{\pqty{\eta_0'}^2}' = 0 \,.
@@ -889,37 +883,35 @@ Then, integrating over a wavelength gives
 \begin{equation}
   \begin{split}
   &\pdv{t_1} \int_{-L/2}^{L/2} \frac{1}{2} \eta_0^2 \dd{x} \\
-  &\qquad= \int_{-L/2}^{L/2} \frac{1}{2} P_J \sqrt{\frac{\mu}{\epsilon}}
+  &\qquad= \int_{-L/2}^{L/2} \frac{1}{2} P_J
     (\eta_0')^2 \dd{x} + \int_{-L/2}^{L/2} -P_J
-    \sqrt{\frac{\mu}{\epsilon}} \frac{1}{4} (\eta_0^2)'' - \frac{1}{2}
+    \frac{1}{4} (\eta_0^2)'' - \frac{1}{2}
     (\eta_0^3)' - \frac{1}{12} \frac{\mu}{\epsilon} (\eta_0^2)''' +
     \frac{1}{4} \frac{\mu}{\epsilon} \bqty{\pqty{\eta_0'}^2}' \dd{x}
   \\
   &\qquad=
-  \int_{-L/2}^{L/2} \frac{1}{2} P_J \sqrt{\frac{\mu}{\epsilon}}
-  (\eta_0')^2 \dd{x} + \eval{\bqty{-P_J \sqrt{\frac{\mu}{\epsilon}}
+  \int_{-L/2}^{L/2} \frac{1}{2} P_J
+  (\eta_0')^2 \dd{x} + \eval{\bqty{-P_J
       \frac{1}{4} (\eta_0^2)'  - \frac{1}{2} (\eta_0^3) - \frac{1}{12}
       \frac{\mu}{\epsilon} (\eta_0^2)'' + \frac{1}{4}
       \frac{\mu}{\epsilon} \pqty{\eta_0'}^2}}_{-L/2}^{L/2}
   \\
   &\qquad=
-  \int_{-L/2}^{L/2} \frac{1}{2} P_J \sqrt{\frac{\mu}{\epsilon}}
-  (\eta_0')^2 \dd{x} \,.
+  \int_{-L/2}^{L/2} \frac{1}{2} P_J (\eta_0')^2 \dd{x} \,.
   \end{split}
 \end{equation}
 Redimensionalizing, we find
 \begin{equation}
   \frac{k}{\rho_w a^2} \frac{1}{\omega_0 \epsilon} \pdv{t} \int_{-L/2}^{L/2}
   \rho_w \eta^2 \dd{x} = \frac{1}{k a^2} \int_{-L/2}^{L/2} P_J'
-  \sqrt{\frac{\mu}{\epsilon}} (\partial_x \eta)^2 \dd{x}
+  (\partial_x \eta)^2 \dd{x}
 \end{equation}
 or
 \begin{equation}
   \frac{1}{\omega_0 E} \pdv{t} E =
   \epsilon
   \frac{
-    \int_{-L/2}^{L/2} P_J' \sqrt{\frac{\mu}{\epsilon}} (\partial_x
-    \eta)^2 \dd{x}
+    \int_{-L/2}^{L/2} P_J' (\partial_x \eta)^2 \dd{x}
   }
   {
     \int_{-L/2}^{L/2} k^2 \eta^2 \dd{x}
@@ -931,8 +923,7 @@ The left-hand side is simply $\gamma/\omega_0$.
 If, for simplicity, we consider a simple sinusoid $\eta_0 = A \cos(k x -
 \omega_0 t)$, we find
 \begin{equation}
-  \frac{\gamma}{\omega_0} = \epsilon P_J' \sqrt{\frac{\mu}{\epsilon}} =
-  \frac{P_J k}{\rho_w g} \sqrt{\frac{\mu}{\epsilon}} \,,
+  \frac{\gamma}{\omega_0} = \epsilon P_J' = \frac{P_J k}{\rho_w g} \,,
 \end{equation}
 where we used $\alpha = \epsilon$.
 

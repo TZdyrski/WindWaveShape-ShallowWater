@@ -638,21 +638,17 @@ This is a rare, difficult-to-solve equation.
 
 Alternatively, we now specialize to the Jeffreys forcing type,
 \begin{equation}
-  p_0 = P_J \pdv*{\eta_0}{x} = P_J f_0''
-  \implies p'_0 = P'_J \sqrt{\frac{\mu}{\epsilon}} \pdv{\eta'_0}{x'}
-  \,.
+  p_0 = P_J \pdv*{\eta_0}{x} = P_J f_0'' \,.
 \end{equation}
 This gives
 \begin{equation}
-   \pdv{f_0'}{t_1} + P_J \sqrt{\frac{\mu}{\epsilon}} \frac{1}{2} f_0'''
-   + \frac{3}{2} f_0' f_0'' + \frac{1}{6} \frac{\mu}{\epsilon} f_0^{(4)}
-   = 0 \,.
+   \pdv{f_0'}{t_1} + P_J \frac{1}{2} f_0''' + \frac{3}{2} f_0' f_0'' +
+   \frac{1}{6} \frac{\mu}{\epsilon} f_0^{(4)} = 0 \,.
 \end{equation}
 Finally, we can replace $f_0' = \eta_0$ to yield
 \begin{equation}
-   \pdv{\eta_0}{t_1} + P_J \sqrt{\frac{\mu}{\epsilon}} \frac{1}{2}
-   \eta_0'' + \frac{3}{2} \eta_0 \eta_0' + \frac{1}{6}
-   \frac{\mu}{\epsilon} \eta_0^{(3)} = 0 \,.
+   \pdv{\eta_0}{t_1} + P_J \frac{1}{2} \eta_0'' + \frac{3}{2} \eta_0
+   \eta_0' + \frac{1}{6} \frac{\mu}{\epsilon} \eta_0^{(3)} = 0 \,.
   \label{eq:kdv_burgers}
 \end{equation}
 This is the Korteweg-de Vries (KdV)-Burgers equation, though the
@@ -669,8 +665,8 @@ As a useful check on our earlier estimation of the magnitude of $P'$, we
 can derive the energy growth rate.
 Multiplying \cref{eq:kdv_burgers} by $\eta_0$, we find
 \begin{equation}
-  \frac{1}{2} \pdv{t_1} \eta_0^2 + P_J \sqrt{\frac{\mu}{\epsilon}}
-  \frac{1}{4} (\eta_0^2)'' - \frac{1}{2} P_J \sqrt{\frac{\mu}{\epsilon}}
+  \frac{1}{2} \pdv{t_1} \eta_0^2 + P_J
+  \frac{1}{4} (\eta_0^2)'' - \frac{1}{2} P_J
   (\eta_0')^2 + \frac{1}{2} (\eta_0^3)' + \frac{1}{12}
   \frac{\mu}{\epsilon} (\eta_0^2)''' - \frac{1}{4} \frac{\mu}{\epsilon}
   \bqty{\pqty{\eta_0'}^2}' = 0 \,.
@@ -679,21 +675,21 @@ Then, integrating over a wavelength gives
 \begin{equation}
   \begin{split}
   &\pdv{t_1} \int_{-L/2}^{L/2} \frac{1}{2} \eta_0^2 \dd{x} \\
-  &\qquad= \int_{-L/2}^{L/2} \frac{1}{2} P_J \sqrt{\frac{\mu}{\epsilon}}
+  &\qquad= \int_{-L/2}^{L/2} \frac{1}{2} P_J
     (\eta_0')^2 \dd{x} + \int_{-L/2}^{L/2} -P_J
-    \sqrt{\frac{\mu}{\epsilon}} \frac{1}{4} (\eta_0^2)'' - \frac{1}{2}
+    \frac{1}{4} (\eta_0^2)'' - \frac{1}{2}
     (\eta_0^3)' - \frac{1}{12} \frac{\mu}{\epsilon} (\eta_0^2)''' +
     \frac{1}{4} \frac{\mu}{\epsilon} \bqty{\pqty{\eta_0'}^2}' \dd{x}
   \\
   &\qquad=
-  \int_{-L/2}^{L/2} \frac{1}{2} P_J \sqrt{\frac{\mu}{\epsilon}}
-  (\eta_0')^2 \dd{x} + \eval{\bqty{-P_J \sqrt{\frac{\mu}{\epsilon}}
+  \int_{-L/2}^{L/2} \frac{1}{2} P_J
+  (\eta_0')^2 \dd{x} + \eval{\bqty{-P_J
       \frac{1}{4} (\eta_0^2)' - \frac{1}{2} (\eta_0^3) - \frac{1}{12}
       \frac{\mu}{\epsilon} (\eta_0^2)'' + \frac{1}{4}
       \frac{\mu}{\epsilon} \pqty{\eta_0'}^2}}_{-L/2}^{L/2}
   \\
   &\qquad=
-  \int_{-L/2}^{L/2} \frac{1}{2} P_J \sqrt{\frac{\mu}{\epsilon}}
+  \int_{-L/2}^{L/2} \frac{1}{2} P_J
   (\eta_0')^2 \dd{x} \,.
   \end{split}
 \end{equation}
@@ -701,15 +697,14 @@ Redimensionalizing, we find
 \begin{equation}
   \frac{k}{\rho_w a^2} \frac{1}{\omega_0 \epsilon} \pdv{t} \int_{-L/2}^{L/2}
   \rho_w \eta^2 \dd{x} = \frac{1}{k a^2} \int_{-L/2}^{L/2} P_J'
-  \sqrt{\frac{\mu}{\epsilon}} (\partial_x \eta)^2 \dd{x}
+  (\partial_x \eta)^2 \dd{x}
 \end{equation}
 or
 \begin{equation}
   \frac{1}{\omega_0 E} \pdv{t} E =
   \epsilon
   \frac{
-    \int_{-L/2}^{L/2} P_J' \sqrt{\frac{\mu}{\epsilon}} (\partial_x
-    \eta)^2 \dd{x}
+    \int_{-L/2}^{L/2} P_J' (\partial_x \eta)^2 \dd{x}
   }
   {
     \int_{-L/2}^{L/2} k^2 \eta^2 \dd{x}
@@ -721,8 +716,7 @@ The left-hand side is simply $\gamma/\omega_0$.
 If, for simplicity, we consider a simple sinusoid $\eta_0 = A \cos(k x -
 \omega_0 t)$, we find
 \begin{equation}
-  \frac{\gamma}{\omega_0} = \epsilon P_J' \sqrt{\frac{\mu}{\epsilon}} =
-  \frac{P_J k}{\rho_w g} \sqrt{\frac{\mu}{\epsilon}} \,,
+  \frac{\gamma}{\omega_0} = \epsilon P_J' = \frac{P_J k}{\rho_w g} \,,
 \end{equation}
 where we used $\alpha = \epsilon$.
 
@@ -953,8 +947,7 @@ Therefore, the nondimensional equation we are solving is
   \label{eq:kdvb_nondim}
 \end{equation}
 with $\mathcal{A} = 1$, $\mathcal{B} = 3/2$, $\mathcal{C} =
-\mu/(6\epsilon)$, and $\mathcal{G} = -\frac{P_J'}{2}
-\sqrt{\frac{\mu}{\epsilon}}$.
+\mu/(6\epsilon)$, and $\mathcal{G} = -\frac{P_J'}{2}$.
 We wish for the unforced case to be stationary in this frame of
 reference, so we include an $\mathcal{F}$ term such that the unforced
 phase speed $\eval{c_1}_{P=0} = 0$:
@@ -1021,8 +1014,7 @@ $\mathcal{H}$,
   \mathcal{G} \pdv[2]{\eta'_0}{{x'}} + \mathcal{H}
   \pdv[4]{\eta'_0}{{x'}} \,,
 \end{equation}
-with $\mathcal{H} = \nu_{\text{bi}} \sqrt{\mu/\epsilon}^3$ and the
-numerical biviscosity $\nu_{\text{bi}} = \num{1e-4}$.
+with $\mathcal{H} = \num{2e-3}$.
 
 \section{Shape Statistics}
 Wave shape can be quantified by the third-order moments, skewness and
@@ -1246,9 +1238,8 @@ Then, we finally obtain
 \end{equation}
 If we now insert the Jeffreys-type forcing,
 \begin{equation}
-  p_0 = P_J \pdv*{\eta_0}{x} = P_J h_0'
-  \implies p'_0 = P'_J \sqrt{\frac{\mu}{\epsilon}} \pdv{\eta'_0}{x'}
-  \,,
+  p_0 = P_J \pdv*{\eta_0}{x} = P_J h_0' \implies p'_0 = P'_J
+  \pdv{\eta'_0}{x'} \,,
 \end{equation}
 we get
 \begin{equation}
@@ -1257,15 +1248,13 @@ we get
     + \frac{3}{2} h_{0.5} h_0'
     - \frac{1}{6} \frac{\mu}{\epsilon} h_{0.5}^{(3)}
   =
-  - \pdv{h_0}{t_{1.5}}
-    - \frac{1}{2} P \sqrt{\frac{\mu}{\epsilon}} h_0''
-    \,.
+  - \pdv{h_0}{t_{1.5}} - \frac{1}{2} P h_0'' \,.
 \end{equation}
 
 This inhomogeneous KdV equation is solved in
 \cref{eq:kdv_inhom_solution} with $\mathcal{A} \to 1$, $\mathcal{F} \to
 0$, $\mathcal{B} \to 3/2$, $\mathcal{C} \to -\mu/(6 \epsilon)$,
-$\mathcal{G} \to -P \sqrt{\mu/\epsilon}/2$, $G[y_0] = -
+$\mathcal{G} \to -P/2$, $G[y_0] = -
 \pdv[2]{h_0}{x}$, $c_1 \to c_1$, $y_0 \to h_0$, $y_1 \to h_{0.5}$, $x
 \to x-t_0$, and $\tau_1 \to t_{1.5}$.
 There, we obtain the solution
