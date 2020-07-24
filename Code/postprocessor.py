@@ -1,5 +1,12 @@
 #!/usr/bin/env python3
 # postproccesor.py
+
+# Note: this package requires xrscipy
+# This package is not packaged by pypi and must be installed from
+# source:
+#   git clone https://github.com/fujiisoup/xr-scipy
+#   cd xr-scipy
+#   python setup.py install
 import sys
 import shutil
 import glob
