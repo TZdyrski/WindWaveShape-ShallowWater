@@ -112,6 +112,18 @@
 \crefname{equations}{}{} % define plural equations
 \Crefname{equations}{Equations}{Equations}
 
+% Define macro giving cref's representation of figure
+\newcommand{\figname}{\cref@figure@name}
+\newcommand{\Figname}{\Cref@figure@name}
+\newcommand{\figsname}{\cref@figures@name}
+\newcommand{\Figssname}{\Cref@figures@name}
+
+% Define macro giving cref's representation of equation
+\newcommand{\eqname}{\cref@equation@name}
+\newcommand{\Eqname}{\Cref@equation@name}
+\newcommand{\eqsname}{\cref@equations@name}
+\newcommand{\Eqsname}{\Cref@equations@name}
+
 %% Glossaries
 %\usepackage[acronym, xindy, nonumberlist, nopostdot, nomain]{glossaries} % add glossaries and nomenclature lists (load laster than hyperref)
 %\newglossary[slg]{symbols}{symb}{sbl}{List of Symbols} % define new glossary for symbols
