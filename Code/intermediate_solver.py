@@ -50,14 +50,14 @@ class kdvSystem():
             Sets the strength of the higher-order damping. Positive H is
             needed for stability when solving the KdV-Burgers equation
             with negative G. If None, determine H from H =
-            mu**2/eps**2*nu_bi. Default is 0.
+            (mu/eps)**(3/2)*nu_bi. Default is 0.
         P : float or None
             Sets the strength of the pressure forcing. If None,
             determine P from P=-2*G*sqrt(eps/mu), where G is the
             strength of the damping. Default is 0.
         nu_bi : float or None
             Sets the strength of the biviscosity. If None,
-            determine nu_bi from nu_bi=eps**2/mu**2*H, where H is the
+            determine nu_bi from nu_bi=(eps/mu)**(3/2)*H, where H is the
             higher-order damping. Default is 0.
         psiP : float or None
             The wind phase, or the shift of the pressure relative to the
