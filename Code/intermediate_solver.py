@@ -117,7 +117,7 @@ class kdvSystem():
             self.H = (mu/eps)**(3/2)*nu_bi
         elif H is not None:
             self.H = H
-            self.H = (eps/mu)**(3/2)*H
+            self.nu_bi = (eps/mu)**(3/2)*H
         else:
             self.H = 0
             self.nu_bi = 0
