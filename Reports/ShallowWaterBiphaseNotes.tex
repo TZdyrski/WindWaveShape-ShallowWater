@@ -811,34 +811,34 @@ We solve this equation in \cref{sec:kdv_solution}, with $\mathcal{A} \to
 \epsilon)$, $y_0 \to \eta_0$, $x \to x - t_0$, and $\tau_0 \to t_1$.
 The solution is therefore
 \begin{equation}
-  \eta_0 = \eta_2 + H \cn^2\pqty{\frac{x-c_1 t}{\Delta}; m} \,,
+  \eta_0 = \eta_2 + H_0 \cn^2\pqty{\frac{x-c_1 t}{\Delta}; m} \,,
 \end{equation}
 with
 \begin{gather}
-  \eta_2 = \frac{H}{m} \pqty{1 - m - \frac{E(m)}{K(m)}}
+  \eta_2 = \frac{H_0}{m} \pqty{1 - m - \frac{E(m)}{K(m)}}
   \qq{and}
-  \Delta = \sqrt{\frac{4 \mu}{3 \epsilon} \frac{m}{H}}
+  \Delta = \sqrt{\frac{4 \mu}{3 \epsilon} \frac{m}{H_0}}
   \\
   \qq{and}
-  c_1 = \frac{H}{m} \pqty{1 - \frac{1}{2} m - \frac{3}{2}
+  c_1 = \frac{H_0}{m} \pqty{1 - \frac{1}{2} m - \frac{3}{2}
     \frac{E(m)}{K(m)}} \,.
 \end{gather}
 The solitary wave solution is recovered if $m \to 1$.
-Note that we require $H > 0$.
+Note that we require $H_0 > 0$.
 
 \subsection{\label{sec:redim} Redimensionalization}
 We can now redimensionalize; for clarity, we temporarily revert back to
 dimensional variables (with primes denoting dimensionless).
 It is important to recall that the various new parameters we have
-defined ($\mathcal{A}$, $\mathcal{B}$, $\Delta$, $H$, \etc) are all
+defined ($\mathcal{A}$, $\mathcal{B}$, $\Delta$, $H_0$, \etc) are all
 dimensionless and order unity.
 We have some freedom in choosing how to redimensionalized these (if we
 choose to at all).
 The KdVB coefficients will be left as-is: since they only appear as
 parameters with no intrinsic meaning, it would only clutter the formulas
 if we redimensionalize.
-However, the other new parameters ($\Delta$, $H$, $c_1$, \etc) should be
-redimensionalized so that the resulting, dimensional equations and
+However, the other new parameters ($\Delta$, $H_0$, $c_1$, \etc) should
+be redimensionalized so that the resulting, dimensional equations and
 definitions look similar the nondimensional equations.
 For instance, if we were interested in plotting the Fourier transform of
 $\eta$ as a function of $\kappa$ (conjugate to $x$), we would like the
@@ -860,46 +860,47 @@ Now, beginning with our solution \cref{eq:cnoidal_sol_nondim}, we
 redimensionalize as
 \begin{equation}
   \begin{split}
-  \frac{\eta_0}{\epsilon h} &= \eta_2' + H' \cn^2\pqty{\frac{k_E x - k_E
-    \sqrt{gh} c_1' \epsilon t}{\Delta'}; m}
+  \frac{\eta_0}{\epsilon h} &= \eta_2' + H'_0 \cn^2\pqty{\frac{k_E x -
+  k_E \sqrt{gh} c_1' \epsilon t}{\Delta'}; m}
   \\
   \implies
-  \eta_0 &= \epsilon h \eta_2' + \epsilon h H'
+  \eta_0 &= \epsilon h \eta_2' + \epsilon h H'_0
   \cn^2\pqty{\frac{k_E}{\Delta'} \bqty{x - \epsilon \sqrt{gh} c_1' t}; m}
   \\
-  &\coloneqq \eta_2 + H \cn^2\pqty{\frac{x - c_1 t}{\Delta}; m} \,.
+  &\coloneqq \eta_2 + H_0 \cn^2\pqty{\frac{x - c_1 t}{\Delta}; m} \,.
   \end{split}
 \end{equation}
-Here, we have defined the dimensional quantities $H$, $\eta_2$,
+Here, we have defined the dimensional quantities $H_0$, $\eta_2$,
 $\Delta$, and $c_1$:
 \begin{gather}
-  H = \epsilon h H'
+  H_0 = \epsilon h H'_0
   \qq{and}
-  \eta_2 = \epsilon h \eta_2' = \frac{H}{m} \pqty{1 - m - \frac{E(m)}{K(m)}}
+  \eta_2 = \epsilon h \eta_2' = \frac{H_0}{m} \pqty{1 - m -
+    \frac{E(m)}{K(m)}}
   \qq{and}
   \Delta = \frac{\Delta'}{k_E}
   \\
   \qq{and}
   c_1 = \epsilon \sqrt{gh} c_1' = \epsilon \sqrt{gh} \pqty{
-    \frac{\mathcal{F}}{\mathcal{A}} + \frac{2}{3} \frac{H}{m}
+    \frac{\mathcal{F}}{\mathcal{A}} + \frac{2}{3} \frac{H_0}{m}
     \frac{\mathcal{B}}{\mathcal{A}} \pqty{1 - \frac{1}{2} m - \frac{3}{2}
     \frac{E(m)}{K(m)}} }
 \end{gather}
 
 \subsection{Value of Nondimensional Parameters}
-Given the conventional definition that $H = 2 a$, we have
+Given the conventional definition that $H_0 = 2 a_0$, we have
 \begin{equation}
-  2 a = \epsilon h H' = a H' \implies H' = 2 \,.
+  2 a_0 = \epsilon h H'_0 = a H'_0 \implies H'_0 = 2 \,.
 \end{equation}
 As $m \to 0$, we have $\cn \to \cos$, $K(m) \to \pi/2$ and $E(m) \to
 \pi/2$, and we keep $H/m$ fixed.
 This gives
 \begin{equation}
-  \eta_0 \to H \cos^2 \pqty{\frac{x-c_1 t}{\Delta}}^2
-  = \frac{H}{2} \cos \pqty{\frac{2}{\Delta} \bqty{x-c_1 t}}
+  \eta_0 \to H_0 \cos^2 \pqty{\frac{x-c_1 t}{\Delta}}^2
+  = \frac{H_0}{2} \cos \pqty{\frac{2}{\Delta} \bqty{x-c_1 t}}
   \qq{as} m \to 0 \,.
 \end{equation}
-Since we want this to reduce to the usual $(H/2) \cos(k[x-c_1 t])$, we
+Since we want this to reduce to the usual $(H_0/2) \cos(k[x-c_1 t])$, we
 define (for all $m$)
 \begin{equation}
   k_E \coloneqq \frac{2}{\Delta}
@@ -923,7 +924,7 @@ Finally, we can now fix $m$ as a function of $\mu$ and $\epsilon$:
 However, using \cref{eq:nondim_delta_def}, we have
 \begin{equation}
   2 = \Delta ' = \sqrt{\frac{12 \mathcal{C}}{\mathcal{B}}
-    \frac{m}{H'}}
+    \frac{m}{H'_0}}
   = \sqrt{\frac{12 \mathcal{C}}{\mathcal{B}} \frac{m}{2}}
   \implies m = \frac{2 \mathcal{B}}{3 \mathcal{C}} \,.
 \end{equation}

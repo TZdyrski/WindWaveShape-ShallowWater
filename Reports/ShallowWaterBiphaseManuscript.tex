@@ -385,17 +385,17 @@ Using the solution in from \citet{dingemans1997water} (as quoted in
 \citeauthor{brun2018convective}) and rescaling variables, the solitary
 wave solution is
 \begin{equation}
-  \eta_0 = H \sech^2\pqty{\frac{x - c_1 t_1}{\Delta}} \,,
+  \eta_0 = H_0 \sech^2\pqty{\frac{x - c_1 t_1}{\Delta}} \,,
 \end{equation}
 with
 \begin{equation}
-  \Delta = \sqrt{\frac{12 \mathcal{C}}{\mathcal{B}} \frac{1}{H}}
+  \Delta = \sqrt{\frac{12 \mathcal{C}}{\mathcal{B}} \frac{1}{H_0}}
   \qq{and}
-  c_1 = \frac{\mathcal{F}}{\mathcal{A}} + \frac{H \mathcal{B}}{3
+  c_1 = \frac{\mathcal{F}}{\mathcal{A}} + \frac{H_0 \mathcal{B}}{3
     \mathcal{A}} \,.
 \end{equation}
-Here, $\abs{H}$ is an order-1 parameter and $\sgn(H) = \sgn(\mathcal{B}
-\mathcal{C})$.
+Here, $\abs{H_0}$ is an order-1 parameter and $\sgn(H_0) =
+\sgn(\mathcal{B} \mathcal{C})$.
 For our particular system, we have $\mathcal{A} = 1$, $\mathcal{B} =
 3/2$, $\mathcal{C} = \mu/(6\epsilon)$, and $\mathcal{F} = 0$.
 
@@ -404,19 +404,19 @@ If we temporarily revert back to dimensional variables (with primes
 denoting dimensionless), we have
 \begin{equation}
   \begin{split}
-  \frac{\eta_0}{\epsilon h} &= H' \sech^2\pqty{\frac{k_E x - k_E
+  \frac{\eta_0}{\epsilon h} &= H'_0 \sech^2\pqty{\frac{k_E x - k_E
     \sqrt{gh} c_1' \epsilon t}{\Delta'}}
   \\
   \implies
-  \eta_0 &= \epsilon h H'
+  \eta_0 &= \epsilon h H'_0
   \sech^2\pqty{\frac{k_E}{\Delta'} \bqty{x - \epsilon \sqrt{gh} c_1' t}}
   \\
-  &\coloneqq H \sech^2\pqty{\frac{x - c_1 t}{\Delta}} \,.
+  &\coloneqq H_0 \sech^2\pqty{\frac{x - c_1 t}{\Delta}} \,.
   \end{split}
 \end{equation}
-Here, we have defined the dimensional quantities $H$, $\Delta$, and $c_1$:
+Here, we have defined the dimensional quantities $H_0$, $\Delta$, and $c_1$:
 \begin{gather}
-  H = \epsilon h H'
+  H_0 = \epsilon h H'_0
   \qq{and}
   \Delta = \frac{\Delta'}{k_E}
   \label{eq:nondim_solitary_params}
@@ -424,11 +424,11 @@ Here, we have defined the dimensional quantities $H$, $\Delta$, and $c_1$:
   \qq{and}
   c_1 = \epsilon \sqrt{gh} c_1' = \epsilon \sqrt{gh} \pqty{
     \frac{\mathcal{F}}{\mathcal{A}} +
-    \frac{\mathcal{B} H}{3 \mathcal{A}} }
+    \frac{\mathcal{B} H_0}{3 \mathcal{A}} }
 \end{gather}
-Given the conventional definition that $H = 2 a$, we have
+Given the conventional definition that $H_0 = 2 a_0$, we have
 \begin{equation}
-  2 a = \epsilon h H' = a H' \implies H' = 2 \,.
+  2 a_0 = \epsilon h H'_0 = a H'_0 \implies H'_0 = 2 \,.
 \end{equation}
 We choose
 \begin{equation}
@@ -443,7 +443,7 @@ Finally, we can now fix $\mu$ as a function of $\epsilon$:
 However, using \cref{eq:nondim_solitary_params}, we have
 \begin{equation}
   2 = \Delta ' = \sqrt{\frac{12 \mathcal{C}}{\mathcal{B}}
-    \frac{1}{H'}}
+    \frac{1}{H'_0}}
   = \sqrt{\frac{12 \mathcal{C}}{\mathcal{B}} \frac{1}{2}}
   \implies 1 = \frac{2 \mathcal{B}}{3 \mathcal{C}} \,.
 \end{equation}
