@@ -128,7 +128,7 @@ k/(\rho_w g)}$.
 \section{Normalization}
 We will normalize by identifying characteristic scales.
 The parameters we know \apriori are the wavenumber $k$, the (initial)
-wave amplitude $a_0$, the depth $h$, the gravitational acceleration $g$,
+wave height $H_0$, the depth $h$, the gravitational acceleration $g$,
 and the wind speed $U$ expressed as a pressure magnitude $P \propto
 \rho_a U^2$.
 However, instead of using the conventional wavenumber $k \coloneqq 2 \pi
@@ -162,12 +162,12 @@ Denoting nondimensional variables with an accent, we have
   p &= \alpha p' \rho_w g a_0
     = \alpha \epsilon p' \rho_w g h \,, \\
   P &= \alpha P' \frac{\rho_w g}{k_E}
-    = \frac{\alpha}{\sqrt{\mu}} P' \rho_w g h \,.
+    = \frac{\alpha}{\sqrt{\mu}} P' \rho_w g h \,,
   \end{aligned}
 \end{equation*}
-Here, we have defined the parameters $\epsilon \coloneqq a_0/h$, $\mu
-\coloneqq (kh)^2$, and $\alpha \coloneqq \order{P k_E/(\rho_w g
-)}$.
+with $a_0 \coloneqq H_0/2$ the initial wave amplitude.
+Here, we have defined the parameters $\epsilon \coloneqq H_0/(2h)$, $\mu
+\coloneqq (kh)^2$, and $\alpha \coloneqq \order{P k_E/(\rho_w g)}$.
 Furthermore, we see that $\epsilon/\mu$ is proportional to the Ursell
 number, $\Ur = H \lambda^2/h^3 = 8 \pi^2 \epsilon/\mu$.
 Finally, note that $\order{p/\rho_w g h} = (\epsilon/\sqrt{\mu})
@@ -301,7 +301,7 @@ For instance, $U_{10} = \SI{50}{\meter\per\second}$ gives
 $P'_M \alpha = \num{6.5e-3} \approx \epsilon^2$.
 
 If we instead consider laboratory conditions with $h=\SI{0.37}{\meter}$,
-$kh = 1.2$, and $a_0/h = 0.14$ as in \citet{feddersen2005wind}, we
+$kh = 1.2$, and $H_0/(2h) = 0.14$ as in \citet{feddersen2005wind}, we
 instead get
 \[
   y = \num{0.17} \pqty{U_{10} \SI{0.73}{\second\per\meter} - 1}^2
