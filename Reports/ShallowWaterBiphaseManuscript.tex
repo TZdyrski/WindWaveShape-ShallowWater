@@ -368,7 +368,7 @@ Thus, the left hand side vanishes:
 \end{equation}
 Converting back to $\eta_0$ gives
 \begin{equation}
-  \pdv{\eta_0}{t_1} + P_J \frac{1}{2} \pdv[2]{\eta_0}{x} + \frac{3}{2}
+  \pdv{\eta_0}{t_1} + P \frac{1}{2} \pdv[2]{\eta_0}{x} + \frac{3}{2}
     \eta_0 \pdv{\eta_0}{x} + \frac{1}{6} \frac{\mu}{\epsilon}
     \pdv[3]{\eta_0}{x} = 0 \,.
   \label{eq:kdv_burgers}
@@ -475,7 +475,7 @@ Therefore, the nondimensional equation we are solving is
   \label{eq:kdvb_nondim}
 \end{equation}
 with $\mathcal{A} = 1$, $\mathcal{B} = 3/2$, $\mathcal{C} =
-\mu/(6\epsilon)$, and $\mathcal{G} = -P_J'/2$.
+\mu/(6\epsilon)$, and $\mathcal{G} = -P'/2$.
 We wish for the unforced case to be stationary in this frame of
 reference, so we include an $\mathcal{F}$ term such that the unforced
 phase speed $\eval{c_1}_{P=0} = 0$:
@@ -742,6 +742,8 @@ eq.\ 3.55 of][]{zdyrski2019wind}.
 
 \subsection{Shoaling vs Wind}
 
+\section{Conclusion}
+
 \appendix
 
 \section{Energy Growth Rate \label{sec:energy_growth_rate}}
@@ -749,8 +751,8 @@ As a useful check on our earlier estimation of the magnitude of $P'$, we
 can derive the energy growth rate.
 Multiplying \cref{eq:kdv_burgers} by $\eta_0$, we find
 \begin{equation}
-  \frac{1}{2} \pdv{t_1} \eta_0^2 + P_J
-  \frac{1}{4} (\eta_0^2)'' - \frac{1}{2} P_J
+  \frac{1}{2} \pdv{t_1} \eta_0^2 + P
+  \frac{1}{4} (\eta_0^2)'' - \frac{1}{2} P
   (\eta_0')^2 + \frac{1}{2} (\eta_0^3)' + \frac{1}{12}
   \frac{\mu}{\epsilon} (\eta_0^2)''' - \frac{1}{4} \frac{\mu}{\epsilon}
   \bqty{\pqty{\eta_0'}^2}' = 0 \,.
@@ -759,27 +761,27 @@ Then, integrating over a wavelength gives
 \begin{equation}
   \begin{split}
   &\pdv{t_1} \int_{-L/2}^{L/2} \frac{1}{2} \eta_0^2 \dd{x} \\
-  &\qquad= \int_{-L/2}^{L/2} \frac{1}{2} P_J
-    (\eta_0')^2 \dd{x} + \int_{-L/2}^{L/2} -P_J
+  &\qquad= \int_{-L/2}^{L/2} \frac{1}{2} P
+    (\eta_0')^2 \dd{x} + \int_{-L/2}^{L/2} -P
     \frac{1}{4} (\eta_0^2)'' - \frac{1}{2}
     (\eta_0^3)' - \frac{1}{12} \frac{\mu}{\epsilon} (\eta_0^2)''' +
     \frac{1}{4} \frac{\mu}{\epsilon} \bqty{\pqty{\eta_0'}^2}' \dd{x}
   \\
   &\qquad=
-  \int_{-L/2}^{L/2} \frac{1}{2} P_J
-  (\eta_0')^2 \dd{x} + \eval{\bqty{-P_J
+  \int_{-L/2}^{L/2} \frac{1}{2} P
+  (\eta_0')^2 \dd{x} + \eval{\bqty{-P
       \frac{1}{4} (\eta_0^2)'  - \frac{1}{2} (\eta_0^3) - \frac{1}{12}
       \frac{\mu}{\epsilon} (\eta_0^2)'' + \frac{1}{4}
       \frac{\mu}{\epsilon} \pqty{\eta_0'}^2}}_{-L/2}^{L/2}
   \\
   &\qquad=
-  \int_{-L/2}^{L/2} \frac{1}{2} P_J (\eta_0')^2 \dd{x} \,.
+  \int_{-L/2}^{L/2} \frac{1}{2} P (\eta_0')^2 \dd{x} \,.
   \end{split}
 \end{equation}
 Redimensionalizing, we find
 \begin{equation}
   \frac{k}{\rho_w a^2} \frac{1}{\omega_0 \epsilon} \pdv{t} \int_{-L/2}^{L/2}
-  \rho_w \eta^2 \dd{x} = \frac{1}{k a^2} \int_{-L/2}^{L/2} P_J'
+  \rho_w \eta^2 \dd{x} = \frac{1}{k a^2} \int_{-L/2}^{L/2} P'
   (\partial_x \eta)^2 \dd{x}
 \end{equation}
 or
@@ -787,7 +789,7 @@ or
   \frac{1}{\omega_0 E} \pdv{t} E =
   \epsilon
   \frac{
-    \int_{-L/2}^{L/2} P_J' (\partial_x \eta)^2 \dd{x}
+    \int_{-L/2}^{L/2} P' (\partial_x \eta)^2 \dd{x}
   }
   {
     \int_{-L/2}^{L/2} k^2 \eta^2 \dd{x}
@@ -799,7 +801,7 @@ The left-hand side is simply $\gamma/\omega_0$.
 If, for simplicity, we consider a simple sinusoid $\eta_0 = A \cos(k x -
 \omega_0 t)$, we find
 \begin{equation}
-  \frac{\gamma}{\omega_0} = \epsilon P_J' = \frac{P_J k}{\rho_w g} \,,
+  \frac{\gamma}{\omega_0} = \epsilon P' = \frac{P k}{\rho_w g} \,,
 \end{equation}
 where we used $\alpha = \epsilon$.
 
