@@ -595,34 +595,12 @@ For our initial condition, we use
 \section{Numerics}
 To solve \cref{eq:kdvb_nondim} subject to the initial condition
 \cref{eq:initial_cond_nondim}, we will use numerical methods.
-The simulation is run for from $t'= 0$ to $L'_t = 3$, inclusive.
-The spatial domain has periodic boundary conditions and is chosen to be
-\begin{equation}
-  x' \in \biggl[-\frac{L'_x}{2}, \frac{L'_x}{2} \biggr)
-  \qq{with}
-  L'_x \coloneqq \min \bqty{\lambda'=4K(m) , 20} \,.
-\end{equation}
-We want a spatial step size of approximately \num{0.05}, but we also
-want an integer number of steps to fit within $L'_x$.
-Therefore, we will use a spatial grid of size
-\begin{equation}
-  N_x = \round{L'_x/0.05} \,,
-\end{equation}
-with $\round{\vdot}$ the rounding function.
-This yields a step size
-\begin{equation}
-  \Delta x' = \frac{L'_x}{\round{L'_x/0.05}} \,,
-\end{equation}
-with $x' = 0, 1, \ldots L'_x - \Delta x'$.
-We use $N_t$ temporal points:
-\begin{equation}
-  N_t =  \round*{\frac{L'_t}{\pqty{\Delta x'}^4}} \,,
-\end{equation}
-giving a temporal step size
-\begin{equation}
-  \Delta t' = \frac{L'_t}{N_t -1} \,.
-\end{equation}
-For $m=1$, this corresponds to $\Delta x' = \num{0.05}$ and $\Delta t'
+The spatial domain has periodic boundary conditions and $N_x = 100$
+points spread over a domain of length $L'_x = 20$.
+This yields a spacing $\Delta x' = 0.05$, with $x' = 0, 1, \ldots L'_x -
+\Delta x'$.
+The simulation is run for from $t'= 0$ to $L'_t = 3$, inclusive, with
+$N_t = \num{4.8e5}$ points, yielding a spacing $\Delta t' = L'_t/(N_t-1)
 \approx \num{6.25e-6}$.
 
 The PDE \cref{eq:kdvb_nondim} is discretized in space using a
