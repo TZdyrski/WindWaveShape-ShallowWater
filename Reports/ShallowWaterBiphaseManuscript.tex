@@ -460,13 +460,15 @@ This gives
 \end{equation}
 Finally, we can replace $f_0' = \eta_0$ to yield
 \begin{equation}
-   \pdv{\eta_0}{t_1} + P_J \frac{1}{2} \eta_0'' + \frac{3}{2} \eta_0
-   \eta_0' + \frac{1}{6} \frac{\mu}{\epsilon} \eta_0^{(3)} = 0 \,.
+  \pdv{\eta_0}{t_1} + P_J \frac{1}{2} \pdv[2]{\eta_0}{x} + \frac{3}{2}
+    \eta_0 \pdv{\eta_0}{x} + \frac{1}{6} \frac{\mu}{\epsilon}
+    \pdv[3]{\eta_0}{x} = 0 \,.
   \label{eq:kdv_burgers}
 \end{equation}
 This is the Korteweg-de Vries (KdV)-Burgers equation, though the
-``damping term'', $\eta_0''$ has a ``negative viscosity'' (which is
-expected, since the wind should cause growth rather than decay).
+``damping term'', $\partial^2_x \eta_0$ has a ``negative viscosity''
+(which is expected, since the wind should cause growth rather than
+decay).
 The KdV-Burgers equation is not known to have any closed form solutions.
 
 For the Jeffreys case, we get the KdV-Burgers equation.
