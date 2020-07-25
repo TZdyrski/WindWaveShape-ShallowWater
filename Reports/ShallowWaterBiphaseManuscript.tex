@@ -469,16 +469,14 @@ This is the Korteweg-de Vries (KdV)-Burgers equation, though the
 ``damping term'', $\partial^2_x \eta_0$ has a ``negative viscosity''
 (which is expected, since the wind should cause growth rather than
 decay).
-The KdV-Burgers equation is not known to have any closed form solutions.
-
-For the Jeffreys case, we get the KdV-Burgers equation.
-We can solve this numerically, though we will need an initial condition.
-We will choose the solutions of the ordinary KdV equation as our initial
-condition: cnoidal or solitary waves (which are a special case of
-cnoidal waves).
+The KdV-Burgers equation is not known to have any closed form solutions,
+so we will instead solve this numerically.
 
 \section{Initial Conditions}
-In the general KdV case, we have
+For an initial condition, we will choose the solutions of the ordinary
+KdV equation: cnoidal or solitary waves (which are a special case of
+cnoidal waves).
+The general case of the KdV equation, with arbitrary coefficients, is
 \begin{equation}
   \mathcal{A} \pdv{\eta_0}{t_1} + \mathcal{F} \pdv{\eta_0}{x} + \mathcal{B}
   \eta_0 \pdv{\eta_0}{x} + \mathcal{C} \pdv[3]{\eta_0}{x} = 0 \,.
