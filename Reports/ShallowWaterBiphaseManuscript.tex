@@ -195,16 +195,14 @@ Denoting nondimensional variables with an accent, we have
   \begin{aligned}
   t &= \frac{t'}{k_E\sqrt{g h}}
     = \frac{t'}{\sqrt{\mu}} \sqrt{\frac{h}{g}} \,, \\
-  \eta &= a_0 \eta' = h \epsilon \eta' \,, \\
-  \phi &= \phi'\frac{a_0}{k_E}\sqrt{\frac{g}{h}}
-    = \frac{\phi'\epsilon}{\sqrt{\mu}}\sqrt{g h^3} \,,
+  P &= \alpha P' \frac{\rho_w g}{k_E}
+    = \frac{\alpha}{\sqrt{\mu}} P' \rho_w g h \,,
   \end{aligned}
   \qquad
   \begin{aligned}
-  p &= \alpha p' \rho_w g a_0
-    = \alpha \epsilon p' \rho_w g h \,, \\
-  P &= \alpha P' \frac{\rho_w g}{k_E}
-    = \frac{\alpha}{\sqrt{\mu}} P' \rho_w g h \,,
+  \eta &= a_0 \eta' = h \epsilon \eta' \,, \\
+  \phi &= \phi'\frac{a_0}{k_E}\sqrt{\frac{g}{h}}
+    = \frac{\phi'\epsilon}{\sqrt{\mu}}\sqrt{g h^3} \,,
   \end{aligned}
 \end{equation*}
 with $a_0 \coloneqq H_0/2$ the initial wave amplitude.
@@ -212,8 +210,6 @@ Here, we have defined the parameters $\epsilon \coloneqq H_0/(2h)$, $\mu
 \coloneqq (kh)^2$, and $\alpha \coloneqq \order{P k_E/(\rho_w g)}$.
 Furthermore, we see that $\epsilon/\mu$ is proportional to the Ursell
 number, $\Ur = H \lambda^2/h^3 = 8 \pi^2 \epsilon/\mu$.
-Finally, note that $\order{p/\rho_w g h} = (\epsilon/\sqrt{\mu})
-\order{P/\rho_w g h}$.
 
 Using these definitions, our equations take the form
 \begin{alignat}{2}
@@ -223,7 +219,7 @@ Using these definitions, our equations take the form
   \phi'_{z'} &= \mu \eta'_{t'} +
     \epsilon \mu \phi'_{x'} \eta'_{x'} &&\qq{on} z' = \epsilon \eta' \,,
     \label{eq:kinematic_bc_nondim} \\
-  0 &= \alpha p' +  \eta' + \phi'_{t'} + \frac{1}{2}
+  0 &= \alpha P' \eta'_{x'} +  \eta' + \phi'_{t'} + \frac{1}{2}
     \pqty{\epsilon \phi_{x'}^{\prime \, 2} + \frac{\epsilon}{\mu}
     \phi_{z'}^{\prime \, 2}} &&\qq{on} z'= \epsilon \eta' \,.
     \label{eq:dynamic_bc_nondim}
@@ -272,7 +268,7 @@ equations to
   \eta_t + \pqty{H\varphi_x}_x
     -\frac{1}{6}\mu \pqty{H^3\varphi_{xxx}}_x =
     \order{\mu^2} \label{eq:kinematic_bc_varphi} \,, \\
-  \alpha p + \eta + \varphi_t - \frac{1}{2}\mu H^2\varphi_{txx} +
+  \alpha P \eta_x + \eta + \varphi_t - \frac{1}{2}\mu H^2\varphi_{txx} +
     \frac{1}{2}\epsilon\pqty{\varphi_x}^2 = \order{\mu^2} \,,
   \label{eq:dynamic_bc_varphi}
 \end{gather}
@@ -293,9 +289,7 @@ Then, we expand our variables in an asymptotic series of $\mu$
   \eta(x,t) &= \sum_{k=0}^{\infty} \epsilon^k
     \eta_{k+1}(x,t_0,t_1,\ldots) \,, \\
   \varphi(x,t) &= \sum_{k=0}^{\infty} \epsilon^k
-    \varphi_{k+1}(x,t_0,t_1,\ldots) \,, \\
-  p(x,t) &= \sum_{k=0}^{\infty} \epsilon^k p_{k+1}(x,t_0,t_1,\ldots)
-    \,.
+    \varphi_{k+1}(x,t_0,t_1,\ldots) \,.
 \end{align}
 
 \section{Derivation of KdV-Burgers Equation}
@@ -344,11 +338,11 @@ Inserting our previous solutions, \cref{eq:phi0_sol,eq:eta0_sol} yields
   \end{aligned}
   \\
   \begin{aligned}
-    \eta_1 + \pdv{\varphi_1}{t_0} &= -p_0 -\pdv{\varphi_0}{t_1}
+    \eta_1 + \pdv{\varphi_1}{t_0} &= -P \pdv{\eta_0}{x} -\pdv{\varphi_0}{t_1}
       + \frac{1}{2} \frac{\mu}{\epsilon} \frac{\partial^3 \varphi_0}
         {\partial t_0 \partial^2 x}
       - \frac{1}{2} \pqty{ \pdv{\varphi_0}{x} }^2 \\
-    &= -\pdv{f_0}{t_1} - p_0 - \frac{1}{2} \frac{\mu}{\epsilon}
+    &= -\pdv{f_0}{t_1} - P \pdv{\eta_0}{x} - \frac{1}{2} \frac{\mu}{\epsilon}
       f_0^{(3)} - \frac{1}{2} \pqty{f_0'}^2 \,,
   \end{aligned}
 \end{gather}
@@ -358,7 +352,7 @@ f_0(\theta,t_1)}_{\theta=x-t_0}$ the $n$-th derivative of $f_0$.
 We can eliminate $\eta_1$ from these equations to give
 \begin{equation}
   \pqty{\pdv[2]{x} - \pdv[2]{t_0}} \varphi_1 = -2 \pdv{f_0'}{t_1} +
-    \pdv{p_0}{t_0} - 3 f_0' f_0'' - \frac{1}{3} \frac{\mu}{\epsilon}
+    P\pdv{\eta_0}{t_0}{x} - 3 f_0' f_0'' - \frac{1}{3} \frac{\mu}{\epsilon}
     f_0^{(4)} \,.
 \end{equation}
 However, we assume all order $\varphi_{n}$ travel at the same speed; in
@@ -369,25 +363,10 @@ particular, this means we will choose
 \end{align}
 Thus, the left hand side vanishes:
 \begin{equation}
-  \pdv{f_0'}{t_1} - \frac{1}{2} \pdv{p_0}{t_0} + \frac{3}{2} f_0' f_0''
+  \pdv{f_0'}{t_1} + \frac{1}{2} P f^{(3)} + \frac{3}{2} f_0' f_0''
     + \frac{1}{6} \frac{\mu}{\epsilon} f_0^{(4)} = 0\,.
 \end{equation}
 Converting back to $\eta_0$ gives
-\begin{equation}
-  \pdv{\eta_0}{t_1} - \frac{1}{2} \pdv{p_0}{t_0} + \frac{3}{2} \eta_0
-  \eta_0' + \frac{1}{6} \frac{\mu}{\epsilon} \eta_0^{(3)} = 0\,.
-\end{equation}
-
-We now insert the Jeffreys forcing,
-\begin{equation}
-  p_0 = P_J \pdv*{\eta_0}{x} = P_J f_0'' \,.
-\end{equation}
-This gives
-\begin{equation}
-   \pdv{f_0'}{t_1} + P_J \frac{1}{2} f_0''' + \frac{3}{2} f_0' f_0'' +
-   \frac{1}{6} \frac{\mu}{\epsilon} f_0^{(4)} = 0 \,.
-\end{equation}
-Finally, we can replace $f_0' = \eta_0$ to yield
 \begin{equation}
   \pdv{\eta_0}{t_1} + P_J \frac{1}{2} \pdv[2]{\eta_0}{x} + \frac{3}{2}
     \eta_0 \pdv{\eta_0}{x} + \frac{1}{6} \frac{\mu}{\epsilon}
