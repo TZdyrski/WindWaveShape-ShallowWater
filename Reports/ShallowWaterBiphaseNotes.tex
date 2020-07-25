@@ -249,66 +249,66 @@ intermediate-strength wind in \cref{sec:energy_growth_rate}.
 
 According to \citet{donelan2006wave}, the wind speed and growth rate
 are related in shallow water by
-\[
+\begin{equation}
   \frac{\gamma}{\omega_0} = \frac{\rho_a}{\rho_w} (ak)
   \pqty{\frac{U_{\lambda/2}}{c_0} - 1}^2
   G \bqty{(ak)
   \pqty{\frac{U_{\lambda/2}}{c_0} - 1}^2}
-\]
+\end{equation}
 with $G[x] = b - q \mathcal{H}(x - 1)$ with $b = 4.91$, $q = 3.98$, and
 $\mathcal{H}$ the Heaviside unit step function.
 Finally, in the logarithmic boundary layer, we have
-\[
+\begin{equation}
   \frac{U_z}{\ln(z/z_0)} = \text{const}
   \implies U_{z} = U_{\lambda/2} \frac{\ln(z/z_0)}{\ln[\lambda/(2 z_0)]}
-\]
+\end{equation}
 with \citep{taylor2001dependence}
-\[
+\begin{equation}
   \frac{z_0}{H} = 1200 \pqty{\frac{H}{\lambda}}^{4.5}
-\]
+\end{equation}
 where $H$ is the wave height.
 Combining this, we find
-\[
+\begin{equation}
   P'_M \alpha = \frac{\rho_a}{\rho_w} \csc(\psi_P)
   y \Bqty{b-qH[y - 1]}
-\]
+\end{equation}
 with
-\[
+\begin{equation}
   y \coloneqq
   \epsilon \sqrt{\mu}
   \pqty{\frac{U_{z}}{c_0} \frac{\ln(2400)+5.5\ln(\epsilon \sqrt{\mu}/\pi)}
     {\ln(1200) + 4.5 \ln(\epsilon \sqrt{\mu}/\pi) + \ln(H/z)} - 1}^2
-\]
+\end{equation}
 with $T$ the wave period.
 If we take $\psi_P = 3\pi/4$ and $\rho_a/\rho_w = \num{1.225e3}$, we get
-\[
+\begin{equation}
   P'_M \alpha = \num{1.7e-3} y \Bqty{b-q \mathcal{H}[y - 1]}
-\]
+\end{equation}
 with $y$ given above.
 
 If we take $\mu = \epsilon = 0.1$, $\rho_a/\rho_w = 10^{-3}$, $T =
 \SI{10}{\second}$, $h = \SI{10}{\meter}$, and $z = \SI{10}{\meter}$, we
 find
-\[
+\begin{equation}
   y = \num{3.2e-2} \pqty{U_{10} \SI{0.12}{\second\per\meter} - 1}^2
-\]
+\end{equation}
 For $U_{10} < \SI{56}{\meter\per\second}$, we have
-\[
+\begin{equation}
   P'_M \alpha = \SI{3.8e-6}{\second\squared\per\meter\squared} U_{10}^2
-\]
+\end{equation}
 For instance, $U_{10} = \SI{50}{\meter\per\second}$ gives
 $P'_M \alpha = \num{6.5e-3} \approx \epsilon^2$.
 
 If we instead consider laboratory conditions with $h=\SI{0.37}{\meter}$,
 $kh = 1.2$, and $H_0/(2h) = 0.14$ as in \citet{feddersen2005wind}, we
 instead get
-\[
+\begin{equation}
   y = \num{0.17} \pqty{U_{10} \SI{0.73}{\second\per\meter} - 1}^2
-\]
+\end{equation}
 For $U_{10} > \SI{4.7}{\meter\per\second}$, we have
-\[
+\begin{equation}
   P'_M \alpha = \SI{1.5e-4}{\second\squared\per\meter\squared} U_{10}^2
-\]
+\end{equation}
 For instance, $U_{0.3} = \SI{8}{\meter\per\second}$ gives
 $P'_M \alpha = \num{6.4e-3} \approx \epsilon^3$.
 
