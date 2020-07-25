@@ -189,114 +189,6 @@ three small, nondimensional parameters: $\epsilon \coloneqq H_0 k/2$,
 $\mu = (k_E h)^2$, and $P k/(\rho_w g)$. We will later require that
 $\order{\epsilon} = \order{\mu} = \order{P k/(\rho_w g)}$.
 
-\section{Nondimensionalization}
-Nondimensionalization is the process of removing units from our
-variables and parameters.
-It is important to make a distinction between two types of
-nondimensionalization.
-The first is commonly encountered in fundamental physics disciplines and
-might be more accurately described as ``choosing a system of units''.
-Here, we choose a representative scale for each dimension and setting it
-equal to unity (\eg, choosing $h = 1$ so all lengths are measured in
-units of $h$).
-This can be considered a type of (rescaling) gauge symmetry.
-This has the benefit of removing these scales from the equations (\ie
-parameters like $h$ disappear).
-All original quantities, as well as any newly derived quantities
-produced in the solution of the problem, can easily be converted back to
-dimensional form by introducing the appropriate combination of
-representative scales based on the dimensions of the quantity under
-consideration (\eg, if the nondimensional wavelength $\lambda'$ is
-introduced in the solution, we know it is measured in units of $h$ and
-can be redimensionalized by $\lambda' \to \lambda/h$).
-However, this does not help reveal the relative size of terms; even
-though all quantities are dimensionless and are able to be directly
-compared, this technique doesn't make it apparent if any particular
-quantity is large or small (in this particular unit system).
-
-Instead, we could choose to define new, nondimensional versions of each
-quantity using (potentially different) characteristic scales.
-For instance, we might nondimensional the vertical coordinate $z$ by the
-depth $h$, but the horizontal coordinate $x$ by the wavenumber $k$.
-Then, the equations are simply nondimensionalized by dividing
-through all equations by a particular subset of these characteristic
-scales.
-This has the benefit that all nondimensional quantities are now order
-unity, which is far more useful for perturbative/asymptotic analyses.
-However, the drawback is that new quantities introduced while solving
-the system are not clearly expressed in dimensional notation.
-Using the previous example, if a nondimensional wavelength $\lambda'$ is
-introduced in the process of solving the system, it is unclear if it
-should be redimensionalized as $\lambda' = \lambda/h$ or $\lambda' =
-\lambda k$.
-We use this version here, and discuss this process of
-redimensionalization more in \cref{sec:redim}.
-
-We will normalize by identifying characteristic scales.
-The parameters we know \apriori are the wavenumber $k$, the (initial)
-wave height $H_0$, the depth $h$, the gravitational acceleration $g$,
-and the wind speed $U$ expressed as a pressure magnitude $P \propto
-\rho_a U^2$.
-However, instead of using the conventional wavenumber $k \coloneqq 2 \pi
-/ \lambda$, we will instead use an effective wavenumber $k_E \coloneqq 2
-\pi/ L$ with $L$ a characteristic length over which $\eta$ changes
-rapidly.
-We want our analysis to apply to both periodic waves (for which
-$\lambda$ is finite) and solitary waves (for which $\lambda$ is
-infinite).
-For reference, we will later find that $L \to \lambda$ for infinitesimal
-waves, but $L$ corresponds to the full width at half maximum times $\pi/2$ for solitary
-waves.
-However, we will not make any such assumptions yet.
-
-Denoting nondimensional variables with an accent, we have
-\begin{equation*}
-  \begin{aligned}
-  x &= \frac{x'}{k_E} = h \frac{x'}{\sqrt{\mu}}\,, \\
-  y &= \frac{y'}{k_E} = h \frac{y'}{\sqrt{\mu}}\,, \\
-  z &= h z' \,,
-  \end{aligned}
-  \qquad
-  \begin{aligned}
-  t &= \frac{t'}{k_E\sqrt{g h}}
-    = \frac{t'}{\sqrt{\mu}} \sqrt{\frac{h}{g}} \,, \\
-  \eta &= a_0 \eta' = h \epsilon \eta' \,, \\
-  \phi &= \phi'\frac{a_0}{k_E}\sqrt{\frac{g}{h}}
-    = \frac{\phi'\epsilon}{\sqrt{\mu}}\sqrt{g h^3} \,,
-  \end{aligned}
-  \qquad
-  \begin{aligned}
-  p &= \alpha p' \rho_w g a_0
-    = \alpha \epsilon p' \rho_w g h \,, \\
-  P &= \alpha P' \frac{\rho_w g}{k_E}
-    = \frac{\alpha}{\sqrt{\mu}} P' \rho_w g h \,,
-  \end{aligned}
-\end{equation*}
-with $a_0 \coloneqq H_0/2$ the initial wave amplitude.
-Here, we have defined the parameters $\epsilon \coloneqq H_0/(2h)$, $\mu
-\coloneqq (kh)^2$, and $\alpha \coloneqq \order{P k_E/(\rho_w g)}$.
-Furthermore, we see that $\epsilon/\mu$ is proportional to the Ursell
-number, $\Ur = H \lambda^2/h^3 = 8 \pi^2 \epsilon/\mu$.
-Finally, note that $\order{p/\rho_w g h} = (\epsilon/\sqrt{\mu})
-\order{P/\rho_w g h}$.
-
-Using these definitions, our equations take the form
-\begin{alignat}{2}
-  0 &= \mu \pqty{\phi'_{x'x'} + \phi'_{y'y'}} + \phi'_{z'z'} &&\qq{on}
-    -1 < z' < \epsilon \eta' \,, \label{eq:laplace_nondim} \\
-  0 &= \phi'_{z'} &&\qq{on} z'=-1 \,, \label{eq:bottom_bc_nondim} \\
-  \phi'_{z'} &= \mu \eta'_{t'} +
-    \epsilon \mu \bqty{\phi'_{x'} \eta'_{x'} + \phi'_{y'} \eta'_{y'}}
-    &&\qq{on} z' = \epsilon \eta' \,, \label{eq:kinematic_bc_nondim} \\
-  0 &= \alpha p' +  \eta' + \phi'_{t'} + \frac{1}{2}
-    \bqty{\epsilon \pqty{\phi_{x'}^{\prime \, 2} + \phi_{y'}^{\prime \,
-    2}} +  \frac{\epsilon}{\mu} \phi_{z'}^{\prime \, 2}} &&\qq{on} z'=
-    \epsilon \eta' \,.  \label{eq:dynamic_bc_nondim}
-\end{alignat}
-Note that this is equivalent to choosing a set of units wherein $h = g =
-\rho_w = 1$.
-The primes will be dropped henceforth for readability.
-
 \section{Pressure Magnitude Estimation}
 Now, we will estimate the wind speeds associated with different pressure
 magnitudes $P$ over a simple sinusoidal wave.
@@ -419,6 +311,114 @@ For $U_{10} > \SI{4.7}{\meter\per\second}$, we have
 \]
 For instance, $U_{0.3} = \SI{8}{\meter\per\second}$ gives
 $P'_M \alpha = \num{6.4e-3} \approx \epsilon^3$.
+
+\section{Nondimensionalization}
+Nondimensionalization is the process of removing units from our
+variables and parameters.
+It is important to make a distinction between two types of
+nondimensionalization.
+The first is commonly encountered in fundamental physics disciplines and
+might be more accurately described as ``choosing a system of units''.
+Here, we choose a representative scale for each dimension and setting it
+equal to unity (\eg, choosing $h = 1$ so all lengths are measured in
+units of $h$).
+This can be considered a type of (rescaling) gauge symmetry.
+This has the benefit of removing these scales from the equations (\ie
+parameters like $h$ disappear).
+All original quantities, as well as any newly derived quantities
+produced in the solution of the problem, can easily be converted back to
+dimensional form by introducing the appropriate combination of
+representative scales based on the dimensions of the quantity under
+consideration (\eg, if the nondimensional wavelength $\lambda'$ is
+introduced in the solution, we know it is measured in units of $h$ and
+can be redimensionalized by $\lambda' \to \lambda/h$).
+However, this does not help reveal the relative size of terms; even
+though all quantities are dimensionless and are able to be directly
+compared, this technique doesn't make it apparent if any particular
+quantity is large or small (in this particular unit system).
+
+Instead, we could choose to define new, nondimensional versions of each
+quantity using (potentially different) characteristic scales.
+For instance, we might nondimensional the vertical coordinate $z$ by the
+depth $h$, but the horizontal coordinate $x$ by the wavenumber $k$.
+Then, the equations are simply nondimensionalized by dividing
+through all equations by a particular subset of these characteristic
+scales.
+This has the benefit that all nondimensional quantities are now order
+unity, which is far more useful for perturbative/asymptotic analyses.
+However, the drawback is that new quantities introduced while solving
+the system are not clearly expressed in dimensional notation.
+Using the previous example, if a nondimensional wavelength $\lambda'$ is
+introduced in the process of solving the system, it is unclear if it
+should be redimensionalized as $\lambda' = \lambda/h$ or $\lambda' =
+\lambda k$.
+We use this version here, and discuss this process of
+redimensionalization more in \cref{sec:redim}.
+
+We will normalize by identifying characteristic scales.
+The parameters we know \apriori are the wavenumber $k$, the (initial)
+wave height $H_0$, the depth $h$, the gravitational acceleration $g$,
+and the wind speed $U$ expressed as a pressure magnitude $P \propto
+\rho_a U^2$.
+However, instead of using the conventional wavenumber $k \coloneqq 2 \pi
+/ \lambda$, we will instead use an effective wavenumber $k_E \coloneqq 2
+\pi/ L$ with $L$ a characteristic length over which $\eta$ changes
+rapidly.
+We want our analysis to apply to both periodic waves (for which
+$\lambda$ is finite) and solitary waves (for which $\lambda$ is
+infinite).
+For reference, we will later find that $L \to \lambda$ for infinitesimal
+waves, but $L$ corresponds to the full width at half maximum times $\pi/2$ for solitary
+waves.
+However, we will not make any such assumptions yet.
+
+Denoting nondimensional variables with an accent, we have
+\begin{equation*}
+  \begin{aligned}
+  x &= \frac{x'}{k_E} = h \frac{x'}{\sqrt{\mu}}\,, \\
+  y &= \frac{y'}{k_E} = h \frac{y'}{\sqrt{\mu}}\,, \\
+  z &= h z' \,,
+  \end{aligned}
+  \qquad
+  \begin{aligned}
+  t &= \frac{t'}{k_E\sqrt{g h}}
+    = \frac{t'}{\sqrt{\mu}} \sqrt{\frac{h}{g}} \,, \\
+  \eta &= a_0 \eta' = h \epsilon \eta' \,, \\
+  \phi &= \phi'\frac{a_0}{k_E}\sqrt{\frac{g}{h}}
+    = \frac{\phi'\epsilon}{\sqrt{\mu}}\sqrt{g h^3} \,,
+  \end{aligned}
+  \qquad
+  \begin{aligned}
+  p &= \alpha p' \rho_w g a_0
+    = \alpha \epsilon p' \rho_w g h \,, \\
+  P &= \alpha P' \frac{\rho_w g}{k_E}
+    = \frac{\alpha}{\sqrt{\mu}} P' \rho_w g h \,,
+  \end{aligned}
+\end{equation*}
+with $a_0 \coloneqq H_0/2$ the initial wave amplitude.
+Here, we have defined the parameters $\epsilon \coloneqq H_0/(2h)$, $\mu
+\coloneqq (kh)^2$, and $\alpha \coloneqq \order{P k_E/(\rho_w g)}$.
+Furthermore, we see that $\epsilon/\mu$ is proportional to the Ursell
+number, $\Ur = H \lambda^2/h^3 = 8 \pi^2 \epsilon/\mu$.
+Finally, note that $\order{p/\rho_w g h} = (\epsilon/\sqrt{\mu})
+\order{P/\rho_w g h}$.
+
+Using these definitions, our equations take the form
+\begin{alignat}{2}
+  0 &= \mu \pqty{\phi'_{x'x'} + \phi'_{y'y'}} + \phi'_{z'z'} &&\qq{on}
+    -1 < z' < \epsilon \eta' \,, \label{eq:laplace_nondim} \\
+  0 &= \phi'_{z'} &&\qq{on} z'=-1 \,, \label{eq:bottom_bc_nondim} \\
+  \phi'_{z'} &= \mu \eta'_{t'} +
+    \epsilon \mu \bqty{\phi'_{x'} \eta'_{x'} + \phi'_{y'} \eta'_{y'}}
+    &&\qq{on} z' = \epsilon \eta' \,, \label{eq:kinematic_bc_nondim} \\
+  0 &= \alpha p' +  \eta' + \phi'_{t'} + \frac{1}{2}
+    \bqty{\epsilon \pqty{\phi_{x'}^{\prime \, 2} + \phi_{y'}^{\prime \,
+    2}} +  \frac{\epsilon}{\mu} \phi_{z'}^{\prime \, 2}} &&\qq{on} z'=
+    \epsilon \eta' \,.  \label{eq:dynamic_bc_nondim}
+\end{alignat}
+Note that this is equivalent to choosing a set of units wherein $h = g =
+\rho_w = 1$.
+The primes will be dropped henceforth for readability.
 
 \section{Depth Dependence of \texorpdfstring{$\phi$}{Velocity Potential}}
 First, we will determine the depth dependence of $\phi$ implied by

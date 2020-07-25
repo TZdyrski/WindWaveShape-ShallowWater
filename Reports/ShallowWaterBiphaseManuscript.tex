@@ -125,61 +125,6 @@ $\epsilon \coloneqq H_0 k/2$, $\mu = (k_E h)^2$, and $P k/(\rho_w g)$.
 We will later require that $\order{\epsilon} = \order{\mu} = \order{P
 k/(\rho_w g)}$.
 
-\section{Normalization}
-We will normalize by identifying characteristic scales.
-The parameters we know \apriori are the characteristic horizontal length
-scale $L$ over which $\eta$ changes rapidly, the (initial) wave height
-$H_0$, the depth $h$, the gravitational acceleration $g$, and the wind
-speed $U$ expressed as a pressure magnitude $P \propto \rho_a U^2$.
-However, instead of using $L$, we will instead use an effective
-wavenumber $k_E \coloneqq 2 \pi/ L$.
-Denoting nondimensional variables with an accent, we have
-\begin{equation*}
-  \begin{aligned}
-  x &= \frac{x'}{k_E} = h \frac{x'}{\sqrt{\mu}}\,, \\
-  z &= h z' \,,
-  \end{aligned}
-  \qquad
-  \begin{aligned}
-  t &= \frac{t'}{k_E\sqrt{g h}}
-    = \frac{t'}{\sqrt{\mu}} \sqrt{\frac{h}{g}} \,, \\
-  \eta &= a_0 \eta' = h \epsilon \eta' \,, \\
-  \phi &= \phi'\frac{a_0}{k_E}\sqrt{\frac{g}{h}}
-    = \frac{\phi'\epsilon}{\sqrt{\mu}}\sqrt{g h^3} \,,
-  \end{aligned}
-  \qquad
-  \begin{aligned}
-  p &= \alpha p' \rho_w g a_0
-    = \alpha \epsilon p' \rho_w g h \,, \\
-  P &= \alpha P' \frac{\rho_w g}{k_E}
-    = \frac{\alpha}{\sqrt{\mu}} P' \rho_w g h \,,
-  \end{aligned}
-\end{equation*}
-with $a_0 \coloneqq H_0/2$ the initial wave amplitude.
-Here, we have defined the parameters $\epsilon \coloneqq H_0/(2h)$, $\mu
-\coloneqq (kh)^2$, and $\alpha \coloneqq \order{P k_E/(\rho_w g)}$.
-Furthermore, we see that $\epsilon/\mu$ is proportional to the Ursell
-number, $\Ur = H \lambda^2/h^3 = 8 \pi^2 \epsilon/\mu$.
-Finally, note that $\order{p/\rho_w g h} = (\epsilon/\sqrt{\mu})
-\order{P/\rho_w g h}$.
-
-Using these definitions, our equations take the form
-\begin{alignat}{2}
-  0 &= \mu \phi'_{x'x'} + \phi'_{z'z'} &&\qq{on}
-    -1 < z' < \epsilon \eta' \,, \label{eq:laplace_nondim} \\
-  0 &= \phi'_{z'} &&\qq{on} z'=-1 \,, \label{eq:bottom_bc_nondim} \\
-  \phi'_{z'} &= \mu \eta'_{t'} +
-    \epsilon \mu \phi'_{x'} \eta'_{x'} &&\qq{on} z' = \epsilon \eta' \,,
-    \label{eq:kinematic_bc_nondim} \\
-  0 &= \alpha p' +  \eta' + \phi'_{t'} + \frac{1}{2}
-    \pqty{\epsilon \phi_{x'}^{\prime \, 2} + \frac{\epsilon}{\mu}
-    \phi_{z'}^{\prime \, 2}} &&\qq{on} z'= \epsilon \eta' \,.
-    \label{eq:dynamic_bc_nondim}
-\end{alignat}
-Note that this is equivalent to choosing a set of units wherein $h = g =
-\rho_w = 1$.
-The primes will be dropped henceforth for readability.
-
 \section{Pressure Magnitude Estimation}
 Now, we will estimate the wind speeds associated with different pressure
 magnitudes $P$ over a simple sinusoidal wave.
@@ -302,6 +247,61 @@ For $U_{10} > \SI{4.7}{\meter\per\second}$, we have
 \]
 For instance, $U_{0.3} = \SI{8}{\meter\per\second}$ gives
 $P'_M \alpha = \num{6.4e-3} \approx \epsilon^3$.
+
+\section{Normalization}
+We will normalize by identifying characteristic scales.
+The parameters we know \apriori are the characteristic horizontal length
+scale $L$ over which $\eta$ changes rapidly, the (initial) wave height
+$H_0$, the depth $h$, the gravitational acceleration $g$, and the wind
+speed $U$ expressed as a pressure magnitude $P \propto \rho_a U^2$.
+However, instead of using $L$, we will instead use an effective
+wavenumber $k_E \coloneqq 2 \pi/ L$.
+Denoting nondimensional variables with an accent, we have
+\begin{equation*}
+  \begin{aligned}
+  x &= \frac{x'}{k_E} = h \frac{x'}{\sqrt{\mu}}\,, \\
+  z &= h z' \,,
+  \end{aligned}
+  \qquad
+  \begin{aligned}
+  t &= \frac{t'}{k_E\sqrt{g h}}
+    = \frac{t'}{\sqrt{\mu}} \sqrt{\frac{h}{g}} \,, \\
+  \eta &= a_0 \eta' = h \epsilon \eta' \,, \\
+  \phi &= \phi'\frac{a_0}{k_E}\sqrt{\frac{g}{h}}
+    = \frac{\phi'\epsilon}{\sqrt{\mu}}\sqrt{g h^3} \,,
+  \end{aligned}
+  \qquad
+  \begin{aligned}
+  p &= \alpha p' \rho_w g a_0
+    = \alpha \epsilon p' \rho_w g h \,, \\
+  P &= \alpha P' \frac{\rho_w g}{k_E}
+    = \frac{\alpha}{\sqrt{\mu}} P' \rho_w g h \,,
+  \end{aligned}
+\end{equation*}
+with $a_0 \coloneqq H_0/2$ the initial wave amplitude.
+Here, we have defined the parameters $\epsilon \coloneqq H_0/(2h)$, $\mu
+\coloneqq (kh)^2$, and $\alpha \coloneqq \order{P k_E/(\rho_w g)}$.
+Furthermore, we see that $\epsilon/\mu$ is proportional to the Ursell
+number, $\Ur = H \lambda^2/h^3 = 8 \pi^2 \epsilon/\mu$.
+Finally, note that $\order{p/\rho_w g h} = (\epsilon/\sqrt{\mu})
+\order{P/\rho_w g h}$.
+
+Using these definitions, our equations take the form
+\begin{alignat}{2}
+  0 &= \mu \phi'_{x'x'} + \phi'_{z'z'} &&\qq{on}
+    -1 < z' < \epsilon \eta' \,, \label{eq:laplace_nondim} \\
+  0 &= \phi'_{z'} &&\qq{on} z'=-1 \,, \label{eq:bottom_bc_nondim} \\
+  \phi'_{z'} &= \mu \eta'_{t'} +
+    \epsilon \mu \phi'_{x'} \eta'_{x'} &&\qq{on} z' = \epsilon \eta' \,,
+    \label{eq:kinematic_bc_nondim} \\
+  0 &= \alpha p' +  \eta' + \phi'_{t'} + \frac{1}{2}
+    \pqty{\epsilon \phi_{x'}^{\prime \, 2} + \frac{\epsilon}{\mu}
+    \phi_{z'}^{\prime \, 2}} &&\qq{on} z'= \epsilon \eta' \,.
+    \label{eq:dynamic_bc_nondim}
+\end{alignat}
+Note that this is equivalent to choosing a set of units wherein $h = g =
+\rho_w = 1$.
+The primes will be dropped henceforth for readability.
 
 \section{Depth Dependence of \texorpdfstring{$\phi$}{Velocity Potential}}
 The depth dependence of $\phi$ can be determined from Laplace's equation
