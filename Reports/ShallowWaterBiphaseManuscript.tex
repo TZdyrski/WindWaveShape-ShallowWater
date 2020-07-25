@@ -506,34 +506,8 @@ In the general KdV case, we have
   \eta_0 \pdv{\eta_0}{x} + \mathcal{C} \pdv[3]{\eta_0}{x} = 0 \,.
 \end{equation}
 Using the solution in from \citet{dingemans1997water} (as quoted in
-\citeauthor{brun2018convective}) and rescaling variables, the cnoidal
+\citeauthor{brun2018convective}) and rescaling variables, the solitary
 wave solution is
-\begin{equation}
-  \eta_0 = \eta_2 + H \cn^2\pqty{\frac{x-c_1 t}{\Delta}; m} \,,
-\end{equation}
-with
-\begin{gather}
-  \eta_2 = \frac{H}{m} \pqty{1 - m - \frac{E(m)}{K(m)}}
-  \qq{and}
-  \Delta = \sqrt{\frac{12 \mathcal{C}}{\mathcal{B}} \frac{m}{H}}
-  \label{eq:nondim_cnoidal_params}
-  \\
-  \qq{and}
-  c_1 = \frac{\mathcal{F}}{\mathcal{A}} + \frac{2}{3} \frac{H}{m}
-  \frac{\mathcal{B}}{\mathcal{A}} \pqty{1 - \frac{1}{2} m - \frac{3}{2}
-    \frac{E(m)}{K(m)}} \,.
-\end{gather}
-Note that the (nondimensional) wavelength $\lambda$ is
-\begin{equation}
-  \lambda = 2 K(m) \Delta = K(m) \sqrt{\frac{48
-  \mathcal{C}}{\mathcal{B}} \frac{m}{H}} \,.
-  \label{eq:nondim_lambda}
-\end{equation}
-Here, $\cn$ is one of the Jacobi elliptic functions, and $K(m)$ and
-$E(m)$ are the complete elliptic integrals of the first and second kind,
-respectively, with $m \in [0,1]$ the elliptic parameter.
-
-The solitary wave solution is
 \begin{equation}
   \eta_0 = H \sech^2\pqty{\frac{x - c_1 t_1}{\Delta}} \,,
 \end{equation}
@@ -544,9 +518,6 @@ with
   c_1 = \frac{\mathcal{F}}{\mathcal{A}} + \frac{H \mathcal{B}}{3
     \mathcal{A}} \,.
 \end{equation}
-Note that the solitary wave is recovered from the cnoidal wave as $m \to
-1$ (note $E(m)/K(m) \to 0$ as $m \to 1$), and the linear wave
-approximation is recovered as $m \to 0$.
 Here, $\abs{H}$ is an order-1 parameter and $\sgn(H) = \sgn(\mathcal{B}
 \mathcal{C})$.
 For our particular system, we have $\mathcal{A} = 1$, $\mathcal{B} =
@@ -557,79 +528,55 @@ If we temporarily revert back to dimensional variables (with primes
 denoting dimensionless), we have
 \begin{equation}
   \begin{split}
-  \frac{\eta_0}{\epsilon h} &= \eta_2' + H' \cn^2\pqty{\frac{k_E x - k_E
-    \sqrt{gh} c_1' \epsilon t}{\Delta'}; m}
+  \frac{\eta_0}{\epsilon h} &= H' \sech^2\pqty{\frac{k_E x - k_E
+    \sqrt{gh} c_1' \epsilon t}{\Delta'}}
   \\
   \implies
-  \eta_0 &= \epsilon h \eta_2' + \epsilon h H'
-  \cn^2\pqty{\frac{k_E}{\Delta'} \bqty{x - \epsilon \sqrt{gh} c_1' t}; m}
+  \eta_0 &= \epsilon h H'
+  \sech^2\pqty{\frac{k_E}{\Delta'} \bqty{x - \epsilon \sqrt{gh} c_1' t}}
   \\
-  &\coloneqq \eta_2 + H \cn^2\pqty{\frac{x - c_1 t}{\Delta}; m} \,.
+  &\coloneqq H \sech^2\pqty{\frac{x - c_1 t}{\Delta}} \,.
   \end{split}
 \end{equation}
-Here, we have defined the dimensional quantities $H$, $\eta_2$,
-$\Delta$, and $c_1$:
+Here, we have defined the dimensional quantities $H$, $\Delta$, and $c_1$:
 \begin{gather}
   H = \epsilon h H'
   \qq{and}
-  \eta_2 = \epsilon h \eta_2' = \frac{H}{m} \pqty{1 - m - \frac{E(m)}{K(m)}}
-  \qq{and}
   \Delta = \frac{\Delta'}{k_E}
+  \label{eq:nondim_solitary_params}
   \\
   \qq{and}
   c_1 = \epsilon \sqrt{gh} c_1' = \epsilon \sqrt{gh} \pqty{
-    \frac{\mathcal{F}}{\mathcal{A}} + \frac{2}{3} \frac{H}{m}
-    \frac{\mathcal{B}}{\mathcal{A}} \pqty{1 - \frac{1}{2} m - \frac{3}{2}
-    \frac{E(m)}{K(m)}} }
+    \frac{\mathcal{F}}{\mathcal{A}} +
+    \frac{\mathcal{B} H}{3 \mathcal{A}} }
 \end{gather}
 Given the conventional definition that $H = 2 a$, we have
 \begin{equation}
   2 a = \epsilon h H' = a H' \implies H' = 2 \,.
 \end{equation}
-As $m \to 0$, we have $\cn \to \cos$, $K(m) \to \pi/2$ and $E(m) \to
-\pi/2$, and we keep $H/m$ fixed.
-This gives
-\begin{equation}
-  \eta_0 \to H \cos^2 \pqty{\frac{x-c_1 t}{\Delta}}^2
-  = \frac{H}{2} \cos \pqty{\frac{2}{\Delta} \bqty{x-c_1 t}}
-  \qq{as} m \to 0 \,.
-\end{equation}
-Since we want this to reduce to the usual $(H/2) \cos(k[x-c_1 t])$, we
-define (for all $m$)
+We choose
 \begin{equation}
   k_E \coloneqq \frac{2}{\Delta}
 \end{equation}
-Note that \cref{eq:nondim_lambda} also means
-\begin{equation}
-  \lambda' = 2 K(m) \Delta' = 2 K(m) \Delta k_E = 4 K(m) \,.
-\end{equation}
-Note that, in particular, this means
-\begin{equation}
-  k = \frac{2 \pi}{\lambda} = \frac{2 \pi}{\lambda'} k_E
-  = \frac{\pi}{2 K(m)} k_E \,.
-\end{equation}
-So, as $m \to 0$, $k \to k_E$, while $m \to 1$ yields $k \to 0$.
 
-Finally, we can now fix $m$ as a function of $\mu$ and $\epsilon$:
+Finally, we can now fix $\mu$ as a function of $\epsilon$:
 \begin{equation}
   k_E = \frac{2}{\Delta} = \frac{2 k_E}{\Delta'}
   \implies \Delta' = 2 \,.
 \end{equation}
-However, using \cref{eq:nondim_cnoidal_params}, we have
+However, using \cref{eq:nondim_solitary_params}, we have
 \begin{equation}
   2 = \Delta ' = \sqrt{\frac{12 \mathcal{C}}{\mathcal{B}}
-    \frac{m}{H'}}
-  = \sqrt{\frac{12 \mathcal{C}}{\mathcal{B}} \frac{m}{2}}
-  \implies m = \frac{2 \mathcal{B}}{3 \mathcal{C}} \,.
+    \frac{1}{H'}}
+  = \sqrt{\frac{12 \mathcal{C}}{\mathcal{B}} \frac{1}{2}}
+  \implies 1 = \frac{2 \mathcal{B}}{3 \mathcal{C}} \,.
 \end{equation}
 For our particular values of $\mathcal{B} = 3/2$ and $\mathcal{C} =
 \mu/(6 \epsilon)$, we have
 \begin{equation}
-  m = 6 \frac{\epsilon}{\mu} \,.
+  1 = 6 \frac{\epsilon}{\mu} \,.
 \end{equation}
-Since $m \in [0,1]$, this implies $0 \le \epsilon \le \mu/6$.
-Finally, note that since $m = 1$ gives the solitary wave solution, this
-means that we have the requirement that
+This means that we have the requirement that
 \begin{equation}
   \mu = 6 \epsilon
 \end{equation}
@@ -649,19 +596,14 @@ We wish for the unforced case to be stationary in this frame of
 reference, so we include an $\mathcal{F}$ term such that the unforced
 phase speed $\eval{c_1}_{P=0} = 0$:
 \begin{equation}
-  \mathcal{F} = -\frac{4}{3} \frac{1}{m} \mathcal{B}
-    \pqty{1 - \frac{1}{2} m - \frac{3}{2} \frac{E(m)}{K(m)}} \,.
+  \mathcal{F} = -\frac{4}{3} \mathcal{B} \,.
 \end{equation}
 Note that this is equivalent to boosting to a frame moving with the
 unforced phase speed.
 For our initial condition, we use
 \begin{equation}
-  \eta'_0(x) = \eta'_2 + 2 \cn^2\pqty{\frac{x'}{2}; m} \,,
+  \eta'_0(x) = 2 \sech^2\pqty{\frac{x'}{2}} \,.
   \label{eq:initial_cond_nondim}
-\end{equation}
-with
-\begin{equation}
-  \eta'_2 = \frac{2}{m} \pqty{1 - m - \frac{E(m)}{K(m)}}
 \end{equation}
 
 \section{Numerics}
