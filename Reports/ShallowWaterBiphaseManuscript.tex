@@ -672,24 +672,22 @@ The simulation is run for from $t'= 0$ to $L'_t = 3$, inclusive.
 The spatial domain has periodic boundary conditions and is chosen to be
 one
 \begin{equation}
-  x' \in \biggl[-\frac{\lambda_{\text{trunc}}'}{2},
-    \frac{\lambda'_{\text{trunc}}}{2} \biggr)
+  x' \in \biggl[-\frac{L'_x}{2}, \frac{L'_x}{2} \biggr)
   \qq{with}
-  \lambda_{\text{trunc}} \coloneqq \min \bqty{\lambda'=4K(m) , 20} \,.
+  L'_x \coloneqq \min \bqty{\lambda'=4K(m) , 20} \,.
 \end{equation}
 We want a spatial step size of approximately \num{0.05}, but we also
-want an integer number of steps to fit within $\lambda_{\text{trunc}}$.
+want an integer number of steps to fit within $L'_x$.
 Therefore, we will use a spatial grid of size
 \begin{equation}
-  N_x = \round{\lambda_{\text{trunc}}/0.05} \,,
+  N_x = \round{L'_x/0.05} \,,
 \end{equation}
 with $\round{\vdot}$ the rounding function.
 This yields a step size
 \begin{equation}
-  \Delta x' = \frac{\lambda'_{\text{trunc}}}
-    {\round{\lambda'_{\text{trunc}}/0.05}} \,,
+  \Delta x' = \frac{L'_x}{\round{L'_x/0.05}} \,,
 \end{equation}
-with $x' = 0, 1, \ldots \lambda'_{\text{trunc}} - \Delta x'$.
+with $x' = 0, 1, \ldots L'_x - \Delta x'$.
 We use $N_t$ temporal points:
 \begin{equation}
   N_t =  \round*{\frac{L'_t}{\pqty{\Delta x'}^4}} \,,
@@ -847,7 +845,7 @@ The \subref{fig:statistics_solitary:a} wave height,
 \subref{fig:statistics_solitary:c} asymmetry all each plotted as
 functions of time $t \epsilon \sqrt{g h} k_E$.
 Note that the skewness and asymmetry are calculating using the length $L
-= \lambda_{\text{trunc}}$ when integrating.
+= L'_x$ when integrating.
 Additionally, each statistic is plotted for onshore wind ($P
 k_E/(\rho_w g \epsilon) = 0.125$ and $0.25$), offshore wind ($P
 k_E/(\rho_w g \epsilon) = -0.125$ and $-0.25$), and the unforced case
