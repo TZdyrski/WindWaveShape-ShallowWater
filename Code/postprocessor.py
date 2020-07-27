@@ -537,7 +537,7 @@ def annotate_peak_locations(signal, mode_num=1):
 
 def time_fractions(signal):
     # Trim snapshots
-    snapshot_fracs = np.array([0,1/3,2/3,3/3])
+    snapshot_fracs = np.array([0,1/2,3/3])
 
     tLen = float(signal['t*eps*sqrt(g*h)*k_E'][-1])
     tNum = signal['t*eps*sqrt(g*h)*k_E'].size
