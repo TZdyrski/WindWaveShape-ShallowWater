@@ -49,6 +49,7 @@
 \DeclareMathOperator{\Ur}{Ur}
 \DeclareMathOperator{\Sk}{Sk}
 \DeclareMathOperator{\As}{As}
+\DeclareMathOperator{\Reyn}{Re}
 %\DeclareMathOperator{\Bi}{Bi}
 
 \newcommand{\hilbert}{\mathcal{H}}
@@ -1023,6 +1024,16 @@ $\mathcal{H}$,
   \pdv[4]{\eta'_0}{{x'}} \,,
 \end{equation}
 with $\mathcal{H} = \num{2e-3}$.
+This results in a grid biharmonic Reynolds number
+\begin{equation}
+  \Reyn_{\nu_bi} \coloneqq \frac{\max{\eta} \pqty{\Delta
+  x}^3}{\mathcal{H}} = \num{6.25e-3} \,.
+\end{equation}
+This appears to be the smallest permissible $\Reyn_{\nu_bi}$, since
+decreasing $\mathcal{H}$ by a factor of 2 causes small frequency
+oscillations to develop by $t'_1=2.5$.
+However, increasing $\Delta x \to 0.1$ and decreasing $\mathcal{H} \to
+\num{1e-3}$ gives valid solutions.
 
 \section{Shape Statistics}
 Wave shape can be quantified by the third-order moments, skewness and
