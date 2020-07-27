@@ -577,42 +577,6 @@ steep, and pitches backwards for the offshore case
   { % Put \phantomsubcaption in their own group to prevent it from
     % affecting the main figure's numbering
     \phantomsubcaption
-    \label{fig:xt_offset_solitary:a}
-    \phantomsubcaption
-    \label{fig:xt_offset_solitary:b}
-  }
-  \includegraphics{XT-Offset.eps}
-  \caption{
-    An $x$-$t$ diagram of a solitary profile under
-    \subref{fig:xt_offset_solitary:a}
-    onshore and
-    \subref{fig:xt_offset_solitary:b}
-    offshore Jeffreys forcing.
-    The lines are offset by $0.1 \eta/h$ per unit $t \epsilon \sqrt{g h}
-    k_E$.
-  }
-  \label{fig:xt_offset_solitary}
-\end{figure}
-
-\Cref{fig:xt_offset_solitary} likewise shows the wave profile $\eta/h$
-plotted against distance $x/h$ at different times $t \epsilon \sqrt{g h}
-k_E$.
-This time, each snapshot is shifted upwards, with a vertical
-displacement of $0.1 \eta/h$ for each unit $t\epsilon \sqrt{g h} k_E$.
-Again, both panels have an initial wave steepness of $\epsilon = 0.1$
-and pressure magnitude $\abs{P k_E/(\rho_w g \epsilon)} = 0.25$, with
-\subref{fig:xt_offset_solitary:a} corresponding to $P>0$ onshore wind,
-and \subref{fig:xt_offset_solitary:b} corresponding to $P<0$ offshore
-wind.
-With both cases beginning from the exact same profile, it is clear to
-see the steepening effect in \subref{fig:xt_offset_solitary:a} compared
-to the decaying phenomenon in \subref{fig:xt_offset_solitary:b}.
-
-\begin{figure}
-  \centering
-  { % Put \phantomsubcaption in their own group to prevent it from
-    % affecting the main figure's numbering
-    \phantomsubcaption
     \label{fig:statistics_solitary:a}
     \phantomsubcaption
     \label{fig:statistics_solitary:b}
@@ -649,7 +613,7 @@ $3/\epsilon = 30$ wave periods.
 The height \subref{fig:statistics_solitary:a} begins at $H_0/h = 2
 \epsilon = 0.2$ and shows the onshore wind
 causing wave growth while the offshore wind causes decay, as was
-observed in \cref{fig:snapshots_solitary,fig:xt_offset_solitary}.
+observed in \cref{fig:snapshots_solitary}.
 The skewness of the initial profile is \num{2.19}, with onshore
 (offshore) causing the wave to become more (less) skewed over time.
 Finally, the initial profile has zero asymmetry, and the unforced case
