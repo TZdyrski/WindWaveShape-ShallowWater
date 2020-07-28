@@ -50,6 +50,7 @@
 \DeclareMathOperator{\Sk}{Sk}
 \DeclareMathOperator{\As}{As}
 \DeclareMathOperator{\Reyn}{Re}
+\DeclareMathOperator{\Stab}{S}
 %\DeclareMathOperator{\Bi}{Bi}
 
 \newcommand{\hilbert}{\mathcal{H}}
@@ -1029,11 +1030,67 @@ This results in a grid biharmonic Reynolds number
   \Reyn_{\nu_bi} \coloneqq \frac{\max{\eta} \pqty{\Delta
   x}^3}{\mathcal{H}} = \num{6.25e-3} \,.
 \end{equation}
-This appears to be the smallest permissible $\Reyn_{\nu_bi}$, since
-decreasing $\mathcal{H}$ by a factor of 2 causes small frequency
-oscillations to develop by $t'_1=2.5$.
-However, increasing $\Delta x \to 0.1$ and decreasing $\mathcal{H} \to
-\num{1e-3}$ gives valid solutions.
+Likewise, we can determine a biharmonic stability number
+\begin{equation}
+  \Stab_{\nu_bi} \coloneqq \frac{\mathcal{H} \Delta t}{\pqty{\Delta
+    x}^4} = \num{2e-3} \,.
+\end{equation}
+Note: using instead $\Delta x = 0.1$, $\Delta t \approx \num{1e-4}$, and
+$\mathcal{H} = 1e-3$ also works, showing $\Reyn_{\nu_bi} = 0.2$ and
+$\Stab_{\nu_bi} = \num{1e-3}$ are also acceptable.
+
+Nevertheless, our solution still develops middle-frequency instabilities
+for the strongest forcing $P=0.25$.
+For instance decreasing $\mathcal{H} \to \num{1e-3}$ causes small
+oscillations with wavelength $\lambda \approx 0.9$ to develop an
+amplitude of \num{0.1} by $t'_1=3$ and reaching amplitude \num{2} by
+$t'_1 = 4$.
+Similarly, keeping $\mathcal{H} = \num{2e-3}$ causes instabilities with
+wavelength $\lambda \approx 1.2$ and amplitude \num{5e-3} to develop by
+$t'_1=4$.
+This is instead a feature of our negative viscosity term $-\mathcal{G} =
+P/2$.
+As a simplified model, we can neglect the nonlinear and dispersive
+terms,
+\begin{equation}
+  \mathcal{A} \pdv{\eta}{t_1} = \mathcal{G} \pdv[2]{\eta}{x} -
+  \mathcal{H} \pdv[4]{\eta}{x} \,.
+\end{equation}
+Fourier transforming gives
+\begin{equation}
+  \mathcal{A} \pdv{\hat{\eta}}{t_1} = -\mathcal{G} k^2 \hat{\eta} -
+  \mathcal{H} ^4 \hat{\eta} \,.
+\end{equation}
+The right hand side forcing term has a maximum at
+\begin{equation}
+  0 = \eval{\pdv{k} \pqty{-\mathcal{G} k^2 - \mathcal{H} ^4}}_{k^*}
+  \implies k^* = \sqrt{\frac{-\mathcal{G}}{2\mathcal{H}}}
+  = \sqrt{\frac{-\mathcal{G}}{2\mathcal{H}}}
+\end{equation}
+where we assumed $\partial_k \hat{\eta} \ll 1$.
+This most-unstable mode then has a grows according to
+\begin{equation}
+  \eta_{\text{unstable}} \propto \exp(t'_1/t_{\text{instab}})
+  \qq{with}
+  t_{\text{intab}} \coloneqq \mathcal{G} (k^*)^2 - \mathcal{H} (k^*)^4
+  = \frac{3\mathcal{G}^2}{4 \mathcal{H}} \,.
+\end{equation}
+For instance with $\mathcal{G} = -P/2 = -(0.25)/2$ and $\mathcal{H} =
+\num{2e-3}$, this yields a most-unstable mode number of $k^* =
+\num{5.6}$, or $\lambda^* = \num{1.1}$, and a $t_{\text{instab}} = 5.9$.
+For an instability of amplitude \num{5e-3} at $t'_1 = 4$, the
+instability must have had an amplitude of \num{5.6e-13} at $t'_1 = 0$,
+which is near NumPy's machine numerical error of \num{1e-20}.
+
+It is important to note that this likely not a numerical artifact, but
+an inherent aspect of the problem.
+When the pressure $P$ is positive, we have a negative viscosity, giving
+rise to an ill-posed problem (\eg like the backward heat equation).
+While the biviscosity $\mathcal{H}$ is a passable regularizer, there
+will still be some frequencies which grow faster than expected.
+For our particular problem, we can partially remedy this by increasing
+the biviscosity $\mathcal{H}$, which increases the wavelength of the
+unstable mode, but causes it to grow more slowly.
 
 \section{Shape Statistics}
 Wave shape can be quantified by the third-order moments, skewness and
