@@ -981,7 +981,7 @@ with
 \subsection{Numerics}
 To solve \cref{eq:kdvb_nondim} subject to the initial condition
 \cref{eq:initial_cond_nondim}, we will use numerical methods.
-The simulation is run for from $t'= 0$ to $L'_t = 3$, inclusive.
+The simulation is run for from $t'= 0$ to $L'_t = 4$, inclusive.
 The spatial domain has periodic boundary conditions and is chosen to be
 \begin{equation}
   x' \in \biggl[-\frac{L'_x}{2},
@@ -1024,23 +1024,29 @@ $\mathcal{H}$,
   \mathcal{G} \pdv[2]{\eta'_0}{{x'}} - \mathcal{H}
   \pdv[4]{\eta'_0}{{x'}} \,,
 \end{equation}
-with $\mathcal{H} = \num{2e-3}$.
+with $\mathcal{H} = \num{3e-3}$.
 This results in a grid biharmonic Reynolds number
 \begin{equation}
   \Reyn_{\nu_bi} \coloneqq \frac{\max{\eta} \pqty{\Delta
-  x}^3}{\mathcal{H}} = \num{1.25e-2} \,.
+  x}^3}{\mathcal{H}} = \num{8.3e-3} \,.
 \end{equation}
 Likewise, we can determine a biharmonic stability number
 \begin{equation}
   \Stab_{\nu_bi} \coloneqq \frac{\mathcal{H} \Delta t}{\pqty{\Delta
-    x}^4} = \num{2e-3} \,.
+    x}^4} = \num{3e-3} \,.
 \end{equation}
-Note: using instead $\Delta x = 0.1$, $\Delta t \approx \num{1e-4}$, and
-$\mathcal{H} = 1e-3$ also works, showing $\Reyn_{\nu_bi} = 0.2$ and
-$\Stab_{\nu_bi} = \num{1e-3}$ are also acceptable.
+Note: we appear to be in an acceptable range for $\Reyn_{\nu_bi}$ and
+$\Stab_{\nu_ni}$.
+In addition to these values, we have also found that $\Delta x = 0.1$,
+$\Delta t \approx \num{1e-4}$, and $\mathcal{H} = 1e-3$ works
+($\Reyn_{\nu_bi} = 0.2$ and $\Stab_{\nu_bi} = \num{1e-3}$), as well as
+$\Delta x = 0.05$, $\Delta t \approx \num{6.25e-6}$, and $\mathcal{H} =
+2e-3$ works ($\Reyn_{\nu_bi} = \num{1.25e-3}$ and $\Stab_{\nu_bi} =
+\num{3e-3}$).
 
-Nevertheless, our solution still develops middle-frequency instabilities
-for the strongest forcing $P=0.25$.
+Note that, for values of $\mathcal{H}$ too small, our solution can
+develop middle-frequency instabilities for the strongest forcing
+$P=0.25$.
 For instance decreasing $\mathcal{H} \to \num{1e-3}$ causes small
 oscillations with wavelength $\lambda \approx 0.9$ to develop an
 amplitude of \num{0.1} by $t'_1=3$ and reaching amplitude \num{2} by
@@ -1091,6 +1097,7 @@ will still be some frequencies which grow faster than expected.
 For our particular problem, we can partially remedy this by increasing
 the biviscosity $\mathcal{H}$, which increases the wavelength of the
 unstable mode, but causes it to grow more slowly.
+Hence, why we have chosen a somewhat large $\mathcal{H} = \num{3e-3}$.
 
 \section{Shape Statistics}
 Wave shape can be quantified by the third-order moments, skewness and

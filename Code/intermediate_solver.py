@@ -276,7 +276,7 @@ class kdvSystem():
                 endpoint=False
                 )
 
-    def set_temporal_grid(self, tLen=3, tNum='density', *args, **kwargs):
+    def set_temporal_grid(self, tLen=4, tNum='density', *args, **kwargs):
         """Set the t-coordinate grid.
 
         Parameters
@@ -957,7 +957,7 @@ def default_solver(y0_func=None, solver='RK3', *args, **kwargs):
 
     return data, solverSystem
 
-def gen_trig_verf(save_prefix, nu_bi=2e-3):
+def gen_trig_verf(save_prefix, nu_bi=3e-3):
     # Generate verification data by using sinusoidal initial conditions
     # with the Burgers equation
     NumWaves = 1
@@ -997,7 +997,7 @@ def gen_trig_verf(save_prefix, nu_bi=2e-3):
                     save_prefix+'TrigVerf-'+solver+'_nu_bi'+str(nu_bi_val),
                     **parameters, solver=solver, stack_coords = True)
 
-def gen_long_verf(save_prefix, mu=0.8, nu_bi=2e-3):
+def gen_long_verf(save_prefix, mu=0.8, nu_bi=3e-3):
     # Generate verification data by running a solitary wave profile
     # without forcing for a long time
 
@@ -1034,7 +1034,7 @@ def gen_long_verf(save_prefix, mu=0.8, nu_bi=2e-3):
                     **parameters)
 
 def gen_snapshots(save_prefix, eps=0.1, mu=0.8, P=0.25, psiP=3/4*np.pi,
-        nu_bi=2e-3):
+        nu_bi=3e-3):
     """ Generate snapshots for range of parameters. Save the results to
     the directory given by 'save_prefix'.
 
@@ -1055,7 +1055,7 @@ def gen_snapshots(save_prefix, eps=0.1, mu=0.8, P=0.25, psiP=3/4*np.pi,
         to actually use P~1, so decrease it for stability
     nu_bi : float
         Nondimensional biviscosity needed for numerical stability.
-        Default is 2e-3.
+        Default is 3e-3.
     """
 
     for forcing_type in ['Jeffreys', 'GM']:
@@ -1105,7 +1105,7 @@ def gen_snapshots(save_prefix, eps=0.1, mu=0.8, P=0.25, psiP=3/4*np.pi,
                         break
 
 def gen_depth_varying(save_prefix, eps=0.1, mu=0.6, P=0.25, psiP=3/4*np.pi,
-        nu_bi=2e-3, forcing_type='Jeffreys'):
+        nu_bi=3e-3, forcing_type='Jeffreys'):
 
     # Linearly space khs
     kh_vals = np.sqrt(mu)*np.linspace(1,np.sqrt(2),num=30)
@@ -1138,7 +1138,7 @@ def gen_depth_varying(save_prefix, eps=0.1, mu=0.6, P=0.25, psiP=3/4*np.pi,
                 **parameters, stack_coords=True)
 
 def gen_biviscosity_variation(save_prefix, eps=0.1, mu=0.8, P=0, psiP=3/4*np.pi,
-        nu_bi=2e-3, forcing_type='Jeffreys', wave_type='cnoidal'):
+        nu_bi=3e-3, forcing_type='Jeffreys', wave_type='cnoidal'):
 
     nu_bi_vals = np.vectorize(round_sig_figs)(nu_bi*np.logspace(-2,1,4),3)
     # Also include nu_bi=0
