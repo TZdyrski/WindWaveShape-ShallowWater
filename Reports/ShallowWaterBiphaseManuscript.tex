@@ -465,26 +465,6 @@ $\mathcal{H}$,
 \end{equation}
 with $\mathcal{H} = \num{3e-3}$.
 
-\section{Shape Statistics}
-Wave shape can be quantified by the third-order moments, skewness and
-asymmetry.
-The skewness is defined as
-\begin{equation}
-  \Sk \coloneqq \frac{\langle \eta^3 \rangle}{\langle \eta^2
-  \rangle^{3/2}} \,,
-\end{equation}
-with
-\begin{equation}
-  \langle f \rangle \coloneqq \frac{1}{L'_x} \int_{-L'_x/2}^{L'_x/2} f
-  \dd{x} \,.
-\end{equation}
-Likewise, the asymmetry is defined as
-\begin{equation}
-  \As \coloneqq \frac{\langle \hilbert \Bqty{\eta^3} \rangle}{\langle
-    \eta^2 \rangle^{3/2}} \,,
-\end{equation}
-with $\hilbert$ the Hilbert transform.
-
 \section{Results}
 Given the one free parameter $P k_E/(\rho_w g \epsilon)$ of the
 KdV-Burgers equation \cref{eq:kdvb_nondim}, we can now plot the results
@@ -556,6 +536,24 @@ steep, and pitches backwards for the offshore case
 
 We have plotted various shape statistics for the solitary wave in
 \cref{fig:statistics_solitary}.
+Wave shape can be quantified by the third-order moments, skewness and
+asymmetry.
+The skewness is defined as
+\begin{equation}
+  \Sk \coloneqq \frac{\langle \eta^3 \rangle}{\langle \eta^2
+  \rangle^{3/2}} \,,
+\end{equation}
+with
+\begin{equation}
+  \langle f \rangle \coloneqq \frac{1}{L'_x} \int_{-L'_x/2}^{L'_x/2} f
+  \dd{x} \,.
+\end{equation}
+Likewise, the asymmetry is defined as
+\begin{equation}
+  \As \coloneqq \frac{\langle \hilbert \Bqty{\eta^3} \rangle}{\langle
+    \eta^2 \rangle^{3/2}} \,,
+\end{equation}
+with $\hilbert$ the Hilbert transform.
 The \subref{fig:statistics_solitary:a} wave height,
 \subref{fig:statistics_solitary:b} skewness, and
 \subref{fig:statistics_solitary:c} asymmetry all each plotted as
