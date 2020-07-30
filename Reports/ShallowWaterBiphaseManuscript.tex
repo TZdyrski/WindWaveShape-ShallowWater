@@ -128,50 +128,6 @@ Jeffreys-type forcing \citep{jeffreys1925formation}:
 Here, $P$ is a constant of proportionality, and $P>0$ corresponds to
 wind in the same direction as the wave.
 
-\section{Pressure Magnitude Estimation}
-Now, we will estimate the wind speeds associated with different pressure
-magnitudes $P$ over a simple sinusoidal wave.
-In \cref{sec:energy_growth_rate}, we show that Jeffreys forcing yields
-an energy growth rate
-\begin{equation}
-  \frac{\gamma}{\omega_0} = \frac{P k}{\rho_w g} \,,
-  \label{eq:growth_rate_P}
-\end{equation}
-with $\omega_0$ the unforced angular frequency.
-According to \citet{donelan2006wave}, the wind speed and growth rate
-are related in shallow water by
-\begin{equation}
-  \frac{\gamma}{\omega_0} = \frac{\rho_a}{\rho_w} (ak)
-  \pqty{\frac{U_{\lambda/2}}{c_0} - 1}^2
-  G \bqty{(ak)
-  \pqty{\frac{U_{\lambda/2}}{c_0} - 1}^2}
-  \label{eq:growth_rate_U}
-\end{equation}
-with $G[x] = b - q \mathcal{H}(x - 1)$ with $b = 4.91$, $q = 3.98$, and
-$\mathcal{H}$ the Heaviside unit step function.
-Furthermore, in the logarithmic boundary layer, we have
-\begin{equation}
-  \frac{U_z}{\ln(z/z_0)} = \text{const}
-  \implies U_{z} = U_{\lambda/2} \frac{\ln(z/z_0)}{\ln[\lambda/(2 z_0)]}
-  \label{eq:log_boundary_layer}
-\end{equation}
-with \citep{taylor2001dependence}
-\begin{equation}
-  \frac{z_0}{H} = 1200 \pqty{\frac{H}{\lambda}}^{4.5}
-\end{equation}
-where $H$ is the wave height.
-Using \cref{eq:growth_rate_P,eq:growth_rate_U,eq:log_boundary_layer}, we
-can calculate the pressure magnitude $P$ from the wind speed $U$ at an
-arbitrary height.
-If we take $\rho_a/\rho_w = \num{1.225e-3}$, $\mu = \epsilon = 0.1$, $T
-= \SI{10}{\second}$, $h = \SI{10}{\meter}$, and $U_{10} =
-\SI{50}{\meter\per\second}$ gives $P'_M \alpha = \num{4.6e-3} \approx
-\epsilon^2$.
-If we instead consider laboratory conditions with $h=\SI{0.37}{\meter}$,
-$\mu = 1.4$, $\epsilon = 0.14$, and $U_{0.3} = \SI{8}{\meter\per\second}$
-as in \citet{feddersen2005wind}, we instead get $P'_M \alpha =
-\num{4.5e-3} \approx \epsilon^3$.
-
 \section{Nondimensionalization}
 We will normalize by identifying characteristic scales.
 The parameters we know \apriori are the characteristic horizontal length
@@ -623,6 +579,50 @@ corresponding to a tilting backwards, while the offshore wind increases
 the asymmetry causing the wave to tilt forwards.
 
 \section{Discussion}
+
+\subsection{Pressure Magnitude Estimation}
+Now, we will estimate the wind speeds associated with different pressure
+magnitudes $P$ over a simple sinusoidal wave.
+In \cref{sec:energy_growth_rate}, we show that Jeffreys forcing yields
+an energy growth rate
+\begin{equation}
+  \frac{\gamma}{\omega_0} = \frac{P k}{\rho_w g} \,,
+  \label{eq:growth_rate_P}
+\end{equation}
+with $\omega_0$ the unforced angular frequency.
+According to \citet{donelan2006wave}, the wind speed and growth rate
+are related in shallow water by
+\begin{equation}
+  \frac{\gamma}{\omega_0} = \frac{\rho_a}{\rho_w} (ak)
+  \pqty{\frac{U_{\lambda/2}}{c_0} - 1}^2
+  G \bqty{(ak)
+  \pqty{\frac{U_{\lambda/2}}{c_0} - 1}^2}
+  \label{eq:growth_rate_U}
+\end{equation}
+with $G[x] = b - q \mathcal{H}(x - 1)$ with $b = 4.91$, $q = 3.98$, and
+$\mathcal{H}$ the Heaviside unit step function.
+Furthermore, in the logarithmic boundary layer, we have
+\begin{equation}
+  \frac{U_z}{\ln(z/z_0)} = \text{const}
+  \implies U_{z} = U_{\lambda/2} \frac{\ln(z/z_0)}{\ln[\lambda/(2 z_0)]}
+  \label{eq:log_boundary_layer}
+\end{equation}
+with \citep{taylor2001dependence}
+\begin{equation}
+  \frac{z_0}{H} = 1200 \pqty{\frac{H}{\lambda}}^{4.5}
+\end{equation}
+where $H$ is the wave height.
+Using \cref{eq:growth_rate_P,eq:growth_rate_U,eq:log_boundary_layer}, we
+can calculate the pressure magnitude $P$ from the wind speed $U$ at an
+arbitrary height.
+If we take $\rho_a/\rho_w = \num{1.225e-3}$, $\mu = \epsilon = 0.1$, $T
+= \SI{10}{\second}$, $h = \SI{10}{\meter}$, and $U_{10} =
+\SI{50}{\meter\per\second}$ gives $P'_M \alpha = \num{4.6e-3} \approx
+\epsilon^2$.
+If we instead consider laboratory conditions with $h=\SI{0.37}{\meter}$,
+$\mu = 1.4$, $\epsilon = 0.14$, and $U_{0.3} = \SI{8}{\meter\per\second}$
+as in \citet{feddersen2005wind}, we instead get $P'_M \alpha =
+\num{4.5e-3} \approx \epsilon^3$.
 
 \subsection{Nondimensional Parameters}
 The two dependent variables $\eta'$ and $\varphi'$ of our system
