@@ -81,7 +81,8 @@ intermediate and deep water.
 
 \section{Introduction}
 
-\section{Problem Solving Technique}
+\section{Setup}
+\subsection{Governing Equations}
 We will treat the flow as irrotational and inviscid throughout the
 fluid and neglect surface tension by restricting to wavelengths $\lambda
 \gg \SI{2}{\centi\meter}$.
@@ -128,7 +129,7 @@ Jeffreys-type forcing \citep{jeffreys1925formation}:
 Here, $P$ is a constant of proportionality, and $P>0$ corresponds to
 wind in the same direction as the wave.
 
-\section{Nondimensionalization}
+\subsection{Nondimensionalization}
 We will normalize by identifying characteristic scales.
 The parameters we know \apriori are the characteristic horizontal length
 scale $L$ over which $\eta$ changes rapidly, the (initial) wave height
@@ -181,7 +182,7 @@ Note that this is equivalent to choosing a set of units wherein $h = g =
 \rho_w = 1$.
 The primes will be dropped henceforth for readability.
 
-\section{Depth Dependence of \texorpdfstring{$\phi$}{Velocity Potential}}
+\subsection{Depth Dependence of \texorpdfstring{$\phi$}{Velocity Potential}}
 The depth dependence of $\phi$ can be determined from Laplace's equation
 \cref{eq:laplace_nondim} and the bottom boundary condition
 \cref{eq:bottom_bc_nondim}.
@@ -228,7 +229,7 @@ Further, we will now assume $\order{\epsilon} = \order{\mu} \ll 1$ which
 implies $\Ur = \order{1}$.
 Finally, we will choose $\alpha = \epsilon$ identically.
 
-\section{Perturbation Expansion}
+\subsection{Perturbation Expansion}
 \label{sec:shallow_water}
 We expand our timescale in terms of multiple timescales $t_n =
 \epsilon^n t$ for $n= 0,1,2,\ldots$.
