@@ -75,9 +75,9 @@ def annotate_arrow(ax, windLeft=True, wave_type='solitary'):
         arrowRight = np.array([0.25,0.4])
         spacing = np.array([0.6,0])
     elif wave_type == 'cnoidal':
-        arrowLeft = np.array([0.175,0.4])
-        arrowRight = np.array([0.375,0.4])
-        spacing = np.array([0.45,0])
+        arrowLeft = np.array([0.025,0.4])
+        arrowRight = np.array([0.225,0.4])
+        spacing = np.array([0.75,0])
     else:
         raise(ValueError("'wave_type' must be either 'solitary' "+\
                 "or 'cnoidal' but "+wave_type+" was given"))
