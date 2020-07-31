@@ -18,7 +18,7 @@ import scipy.special as spec
 import xrscipy.signal as dsp
 import xarray as xr
 import data_csv
-import useful_functions
+from useful_functions import round_sig_figs, derivative
 
 def get_var_stats(profile, var='x/h',periodic=True):
     varNum = profile[var].size
@@ -129,6 +129,25 @@ def energy(profile):
     energy = np.sum(energy_density,axis=0)
 
     return energy
+
+def slope(profile):
+    _,_,dx = get_var_stats(profile)
+
+    mu = profile.attrs['mu']
+
+    # Calculate slope
+    # Convert from
+    # \partial eta'/\partial x' = \partial eta/(\partial x*h*k_E)
+    # to
+    # sqrt(mu) \partial eta'/\partial x' = \partial eta/(\partial x)
+    # (Primes denote the nondim variables used throughout this solver)
+    slope = derivative(profile, dx=dx,
+            deriv_type='periodic_fd')*np.sqrt(mu)
+
+    slope = xr.DataArray(slope, dims=profile.dims,
+            coords=profile.coords, attrs=profile.attrs)
+
+    return slope
 
 def peak_location(profile):
 
@@ -865,7 +884,7 @@ def process_biviscosity_variation(load_prefix, save_prefix, *args, **kwargs):
 
         # If nu_bi is float-0, replace it with int-0
         nu_bi = statistics.attrs['nu_bi']
-        nu_bi = str(0 if nu_bi==0 else useful_functions.round_sig_figs(nu_bi,3))
+        nu_bi = str(0 if nu_bi==0 else round_sig_figs(nu_bi,3))
 
         # Save statistics
         data_csv.save_data(statistics,
@@ -939,7 +958,7 @@ def trim_trig_verf(load_prefix, save_prefix, *args, **kwargs):
 
         # If nu_bi is float-0, replace it with int-0
         nu_bi = data_array.attrs['nu_bi']
-        nu_bi = str(0 if nu_bi==0 else useful_functions.round_sig_figs(nu_bi,3))
+        nu_bi = str(0 if nu_bi==0 else round_sig_figs(nu_bi,3))
 
         # Save snapshots
         data_csv.save_data(data_array,
@@ -963,7 +982,7 @@ def trim_long_verf(load_prefix, save_prefix, *args, **kwargs):
 
         # If nu_bi is float-0, replace it with int-0
         nu_bi = data_array.attrs['nu_bi']
-        nu_bi = str(0 if nu_bi==0 else useful_functions.round_sig_figs(nu_bi,3))
+        nu_bi = str(0 if nu_bi==0 else round_sig_figs(nu_bi,3))
 
         # Save snapshots
         data_csv.save_data(data_array,
@@ -983,7 +1002,7 @@ def process_trig_statistics(load_prefix, save_prefix, *args, **kwargs):
 
         # If nu_bi is float-0, replace it with int-0
         nu_bi = statistics.attrs['nu_bi']
-        nu_bi = str(0 if nu_bi==0 else useful_functions.round_sig_figs(nu_bi,3))
+        nu_bi = str(0 if nu_bi==0 else round_sig_figs(nu_bi,3))
 
         # Save statistics
         data_csv.save_data(statistics, save_prefix+'TrigStatistics'+\
@@ -1003,12 +1022,33 @@ def process_long_statistics(load_prefix, save_prefix, *args, **kwargs):
 
         # If nu_bi is float-0, replace it with int-0
         nu_bi = statistics.attrs['nu_bi']
-        nu_bi = str(0 if nu_bi==0 else useful_functions.round_sig_figs(nu_bi,3))
+        nu_bi = str(0 if nu_bi==0 else round_sig_figs(nu_bi,3))
 
         # Save statistics
         data_csv.save_data(statistics, save_prefix+'LongStatistics'+\
                 '_nu_bi'+nu_bi,
                 **statistics.attrs)
+
+def process_snapshot_slopes(load_prefix, save_prefix, *args, **kwargs):
+    filename_base = 'Snapshots'
+
+    # Find filenames
+    filenames = data_csv.find_filenames(load_prefix, filename_base,
+            allow_multiple_files=True)
+
+    for filename in filenames:
+        # Extract data
+        data_array = data_csv.load_data(filename, stack_coords=True)
+
+        # Calculate slopes
+        data_array = slope(data_array)
+
+        # Trim times
+        data_array = time_fractions(data_array)
+
+        # Save snapshots
+        data_csv.save_data(data_array, save_prefix+'Slopes',
+                **data_array.attrs, stack_coords=True)
 
 def main():
     load_prefix = '../Data/Raw/'
@@ -1021,6 +1061,7 @@ def main():
             'trim_long_verf' : trim_long_verf,
             'trig_statistics' : process_trig_statistics,
             'long_statistics' : process_long_statistics,
+            'snapshot_slopes' : process_snapshot_slopes,
             'power_spec_vs_kappa' : process_power_spec_vs_kappa,
             'power_spec_vs_time' : process_power_spec_vs_time,
             'wavenum_freq' : process_wavenumber_frequency,

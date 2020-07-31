@@ -1364,6 +1364,83 @@ def plot_pos_neg_cnoidal_GM(load_prefix, save_prefix, *args, **kwargs):
 
     texplot.savefig(fig,save_prefix+'Snapshots-Positive-Negative-Cnoidal-GM')
 
+def plot_pos_neg_slope_solitary(load_prefix, save_prefix, *args, **kwargs):
+    filename_base = 'Slopes'
+
+    # Arrange data and parameters into 2d array for plotting
+    data_arrays = np.empty((2,1),dtype=object)
+
+    P = float(kwargs.get('P'))
+
+    for indx_num, P_val in enumerate([P,-P]):
+        filename = data_csv.find_filenames(load_prefix, filename_base,
+            parameters={'wave_type' : 'solitary', **kwargs,
+                'P' : P_val})
+
+        # Extract data
+        data_array = data_csv.load_data(filename, stack_coords=True)
+
+        indx = np.unravel_index(indx_num,data_arrays.shape)
+        data_arrays[indx] = data_array
+
+    fig = plot_snapshots_template(data_arrays, norm_by_wavelength=False,
+            ax_ylabel=r'Wave Slope $\partial \eta/ \partial x$')
+
+    texplot.savefig(fig,save_prefix+'Slopes-Positive-Negative')
+
+def plot_pos_neg_slope_cnoidal(load_prefix, save_prefix, *args, **kwargs):
+    filename_base = 'Slopes'
+
+    # Arrange data and parameters into 2d array for plotting
+    data_arrays = np.empty((2,2),dtype=object)
+
+    mu = float(kwargs.get('mu'))
+    P = float(kwargs.get('P'))
+
+    for indx_num, (P_val, mu_val) in enumerate(itertools.product([P,-P],
+        round_sig_figs([mu,7/8*mu]))):
+
+        filename = data_csv.find_filenames(load_prefix, filename_base,
+                parameters={'wave_type' : 'cnoidal', **kwargs,
+                    'P' : P_val, 'mu' : mu_val})
+
+        # Extract data
+        data_array = data_csv.load_data(filename, stack_coords=True)
+
+        indx = np.unravel_index(indx_num,data_arrays.shape)
+        data_arrays[indx] = data_array
+
+    fig = plot_snapshots_template(data_arrays,
+            ax_ylabel=r'Wave Slope $\partial \eta/ \partial x$')
+
+    texplot.savefig(fig,save_prefix+'Slopes-Positive-Negative-Cnoidal')
+
+def plot_pos_neg_slope_cnoidal_GM(load_prefix, save_prefix, *args, **kwargs):
+    filename_base = 'Slopes'
+
+    kwargs['forcing_type'] = 'GM'
+
+    # Arrange data and parameters into 2d array for plotting
+    data_arrays = np.empty((2,1),dtype=object)
+
+    P = float(kwargs.get('P'))
+
+    for indx_num, P_val in enumerate([P,-P]):
+        filename = data_csv.find_filenames(load_prefix, filename_base,
+                parameters={'wave_type' : 'cnoidal', **kwargs,
+                    'P' : P_val})
+
+        # Extract data
+        data_array = data_csv.load_data(filename, stack_coords=True)
+
+        indx = np.unravel_index(indx_num,data_arrays.shape)
+        data_arrays[indx] = data_array
+
+    fig = plot_snapshots_template(data_arrays,
+            ax_ylabel=r'Wave Slope $\partial \eta/ \partial x$')
+
+    texplot.savefig(fig,save_prefix+'Slopes-Positive-Negative-Cnoidal-GM')
+
 def plot_shape_statistics_solitary(load_prefix, save_prefix, *args, **kwargs):
     filename_base = 'Shape-Statistics'
 
@@ -2002,6 +2079,9 @@ def main():
             'neg_cnoidal' : plot_neg_cnoidal,
             'pos_neg_cnoidal' : plot_pos_neg_cnoidal,
             'pos_neg_cnoidal_GM' : plot_pos_neg_cnoidal_GM,
+            'pos_neg_slope_solitary' : plot_pos_neg_slope_solitary,
+            'pos_neg_slope_cnoidal' : plot_pos_neg_slope_cnoidal,
+            'pos_neg_slope_cnoidal_GM' : plot_pos_neg_slope_cnoidal_GM,
             'shape_statistics_solitary' : plot_shape_statistics_solitary,
             'shape_statistics_solitary_no_peak' : plot_shape_statistics_solitary_no_peak,
             'shape_statistics_cnoidal' : plot_shape_statistics_cnoidal,
