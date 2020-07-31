@@ -1381,10 +1381,11 @@ def plot_pos_neg_slope_solitary(load_prefix, save_prefix, *args, **kwargs):
         data_array = data_csv.load_data(filename, stack_coords=True)
 
         indx = np.unravel_index(indx_num,data_arrays.shape)
-        data_arrays[indx] = data_array
+        data_arrays[indx] = np.abs(data_array)
+        data_arrays[indx].attrs = data_array.attrs
 
     fig = plot_snapshots_template(data_arrays, norm_by_wavelength=False,
-            ax_ylabel=r'Wave Slope $\partial \eta/ \partial x$')
+            ax_ylabel=r'Wave Slope $\abs{{\partial \eta/ \partial x}}$')
 
     texplot.savefig(fig,save_prefix+'Slopes-Positive-Negative')
 
@@ -1408,10 +1409,11 @@ def plot_pos_neg_slope_cnoidal(load_prefix, save_prefix, *args, **kwargs):
         data_array = data_csv.load_data(filename, stack_coords=True)
 
         indx = np.unravel_index(indx_num,data_arrays.shape)
-        data_arrays[indx] = data_array
+        data_arrays[indx] = np.abs(data_array)
+        data_arrays[indx].attrs = data_array.attrs
 
     fig = plot_snapshots_template(data_arrays,
-            ax_ylabel=r'Wave Slope $\partial \eta/ \partial x$')
+            ax_ylabel=r'Wave Slope $\abs{{\partial \eta/ \partial x}}$')
 
     texplot.savefig(fig,save_prefix+'Slopes-Positive-Negative-Cnoidal')
 
@@ -1434,10 +1436,11 @@ def plot_pos_neg_slope_cnoidal_GM(load_prefix, save_prefix, *args, **kwargs):
         data_array = data_csv.load_data(filename, stack_coords=True)
 
         indx = np.unravel_index(indx_num,data_arrays.shape)
-        data_arrays[indx] = data_array
+        data_arrays[indx] = np.abs(data_array)
+        data_arrays[indx].attrs = data_array.attrs
 
     fig = plot_snapshots_template(data_arrays,
-            ax_ylabel=r'Wave Slope $\partial \eta/ \partial x$')
+            ax_ylabel=r'Wave Slope $\abs{{\partial \eta/ \partial x}}$')
 
     texplot.savefig(fig,save_prefix+'Slopes-Positive-Negative-Cnoidal-GM')
 
