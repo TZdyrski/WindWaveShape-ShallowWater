@@ -20,3 +20,67 @@ def round_sig_figs(number, num_sig_figs=3):
         result = result.item()
 
     return result
+
+def derivative(u, dx=1, period=2*np.pi, axis=0, order=1,
+        deriv_type='gradient', *args, **kwargs):
+    """Calculate the derivative of order 'order'.
+
+    Parameters
+    ----------
+    u : ndarray
+        Data of which to take the derivative.
+    dx : float
+        Spacing between points in u. Default is 1.
+    period : float
+        Period of u used for 'FFT' type calculation. Default is 2*np.pi.
+    axis : integer
+        Axis along which to take the derivative. Default is 0.
+    order : integer
+        Order of derivative. Default is 1.
+    deriv_type : 'gradient', 'FFT', or 'periodic_fd'
+        The type of derivative to take. 'gradient' yields a
+        non-periodic, finite-difference derivative. 'FFT' yields a
+        periodic derivative using the FFT. 'periodic_fd" yields a
+        periodic, finite-difference derivative. Default is 'gradient'.
+
+    """
+    if deriv_type == 'gradient':
+        # Compute the x derivatives using the finite-difference method
+        derivative = u
+        for n in range(order):
+            # Apply derivative 'order' times
+            derivative = np.gradient(derivative, dx, axis=axis,
+                    edge_order=2)
+    elif deriv_type == 'FFT':
+        # Compute the x derivatives using the pseudo-spectral method
+        derivative = psdiff(u, period=period, order=order)
+    elif deriv_type == 'periodic_fd':
+        # Center difference with periodic boundary conditions
+        if order == 1:
+            u_padded_once = np.concatenate((u[[-1]], u, u[[0]]))
+            derivative = (u_padded_once[2:]-u_padded_once[0:-2])/\
+                    (2*dx)
+        elif order == 2:
+            u_padded_once = np.concatenate((u[[-1]], u, u[[0]]))
+            derivative = (u_padded_once[2:] - 2*u_padded_once[1:-1]
+                    + u_padded_once[0:-2])/(dx**2)
+        elif order == 3:
+            u_padded_twice = np.concatenate((u[-2:], u, u[0:2]))
+            derivative = (u_padded_twice[4:] -
+                    2*u_padded_twice[3:-1] + 2*u_padded_twice[1:-3]
+                    - u_padded_twice[0:-4])/(2*dx**3)
+        elif order == 4:
+            u_padded_twice = np.concatenate((u[-2:], u, u[0:2]))
+            derivative = (u_padded_twice[4:] -
+                    4*u_padded_twice[3:-1] + 6*u_padded_twice[2:-2]
+                    - 4*u_padded_twice[1:-3] +
+                    u_padded_twice[0:-4])/(dx**4)
+        else:
+            raise(ValueError("Derivatives of type 'periodic_fd'"+\
+                    "are only supported up to order 4, but "+\
+                    str(order)+" was given"))
+    else:
+        raise(ValueError("'deriv_type' must be either 'gradient',"+\
+        "'FFT', or 'periodic_fd', but "+deriv_type+" was given"))
+
+    return derivative
