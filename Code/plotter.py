@@ -1549,6 +1549,25 @@ def plot_shape_statistics_solitary(load_prefix, save_prefix, *args, **kwargs):
 
     fig = plot_shape_statistics_vs_time_template(data_arrays)
 
+    # Plot best fit exponential
+    ax = fig.axes[0]
+    t = data_arrays[0]['t*eps*sqrt(g*h)*k_E']
+    Ps = data_arrays[0]['P']
+    # Replace 0 with 1 so we can divide by Ps
+    Ps = Ps.where(Ps != 0.0, 1)
+    initial_H = 2*data_arrays[0].attrs['eps']
+    # Get height
+    height = data_arrays[0]['max(eta)/h']
+    # Take logarithm
+    ln_height = np.log(height)/Ps
+    # Fit with linear line
+    fit = np.polyfit(t,ln_height,deg=1)[0]
+    fit = np.nan_to_num(fit)
+    # Calculate height using best fit
+    height_fit = initial_H*np.exp(np.outer(t,Ps*fit))
+    # Plot
+    ax.plot(t, height_fit, color='y', zorder=-1)
+
     texplot.savefig(fig,save_prefix+'Skew-Asymm')
 
 def plot_shape_statistics_solitary_no_peak(load_prefix, save_prefix, *args, **kwargs):
@@ -1628,6 +1647,31 @@ def plot_shape_statistics_cnoidal(load_prefix, save_prefix, *args, **kwargs):
         data_arrays[indx_num].attrs.pop('P', None)
 
     fig = plot_shape_statistics_vs_time_template(data_arrays)
+
+    ax = fig.axes[0]
+    t = data_arrays[0]['t*eps*sqrt(g*h)*k_E']
+    initial_H = 2*data_arrays[0].attrs['eps']
+    energy = initial_H*np.exp(np.outer(t,P_val_list)*0.3)
+    ax.plot(t, energy, color='y', zorder=-1)
+
+    # Plot best fit exponential
+    ax = fig.axes[0]
+    t = data_arrays[0]['t*eps*sqrt(g*h)*k_E']
+    Ps = data_arrays[0]['P']
+    # Replace 0 with 1 so we can divide by Ps
+    Ps = Ps.where(Ps != 0.0, 1)
+    initial_H = 2*data_arrays[0].attrs['eps']
+    # Get height
+    height = data_arrays[0]['max(eta)/h']
+    # Take logarithm
+    ln_height = np.log(height)/Ps
+    # Fit with linear line
+    fit = np.polyfit(t,ln_height,deg=1)[0]
+    fit = np.nan_to_num(fit)
+    # Calculate height using best fit
+    height_fit = initial_H*np.exp(np.outer(t,Ps*fit))
+    # Plot
+    ax.plot(t, height_fit, color='y', zorder=-1)
 
     texplot.savefig(fig,save_prefix+'Skew-Asymm-Cnoidal')
 
@@ -1727,6 +1771,22 @@ def plot_energy(load_prefix, save_prefix, *args, **kwargs):
 
     fig = plot_energy_template(data_arrays)
 
+    # Plot best fit exponential
+    ax = fig.axes[0]
+    t = data_arrays[0]['t*eps*sqrt(g*h)*k_E']
+    Ps = data_arrays[0]['P']
+    # Get E
+    energy = data_arrays[0]['E/E_0']
+    # Take logarithm
+    ln_energy = np.log(energy)/Ps
+    # Fit with linear line
+    fit = np.polyfit(t,ln_energy,deg=1)[0]
+    fit = np.nan_to_num(fit)
+    # Calculate energy using best fit
+    energy_fit = np.exp(np.outer(t,Ps*fit))
+    # Plot
+    ax.plot(t, energy_fit, color='y', zorder=-1)
+
     texplot.savefig(fig,save_prefix+'Total-Energy-Jeffreys')
 
 def plot_energy_GM(load_prefix, save_prefix, *args, **kwargs):
@@ -1762,6 +1822,22 @@ def plot_energy_GM(load_prefix, save_prefix, *args, **kwargs):
     data_arrays[0].attrs.pop('P', None)
 
     fig = plot_energy_template(data_arrays)
+
+    # Plot best fit exponential
+    ax = fig.axes[0]
+    t = data_arrays[0]['t*eps*sqrt(g*h)*k_E']
+    Ps = data_arrays[0]['P']
+    # Get E
+    energy = data_arrays[0]['E/E_0']
+    # Take logarithm
+    ln_energy = np.log(energy)/Ps
+    # Fit with linear line
+    fit = np.polyfit(t,ln_energy,deg=1)[0]
+    fit = np.nan_to_num(fit)
+    # Calculate energy using best fit
+    energy_fit = np.exp(np.outer(t,Ps*fit))
+    # Plot
+    ax.plot(t, energy_fit, color='y', zorder=-1)
 
     texplot.savefig(fig,save_prefix+'Total-Energy-GM')
 
