@@ -1073,6 +1073,40 @@ def gen_depth_varying(save_prefix, eps=0.1, mu=0.6, P=0.25, psiP=3/4*np.pi,
                 wave_length=dataClass.WaveLength,
                 **parameters, stack_coords=True)
 
+def gen_press_varying(save_prefix, eps=0.1, mu=0.8, P=0.25, psiP=3/4*np.pi,
+        nu_bi=3e-3, forcing_type='Jeffreys'):
+
+    # Linearly space Ps
+    P_vals = P*np.linspace(-1,1,num=30)
+
+    for P_val in P_vals:
+        for wave_type in ['solitary','cnoidal']:
+            parameters = {
+                    'eps' : eps,
+                    'mu' : mu,
+                    'wave_type' : wave_type,
+                    'forcing_type' : forcing_type,
+                    'P' : P_val,
+                    'psiP' : psiP,
+                    'nu_bi' : nu_bi,
+                    }
+
+            # Jeffreys does not just psiP
+            if forcing_type == 'Jeffreys':
+                parameters.pop('psiP')
+
+            # Use default mu for solitary waves
+            if wave_type == 'solitary':
+                parameters.pop('mu')
+
+            # Run model
+            data, dataClass = default_solver(**parameters, tLen=3)
+
+            # Save data
+            data_csv.save_data(data, save_prefix+'PressVarying',
+                    wave_length=dataClass.WaveLength,
+                    **parameters, stack_coords=True)
+
 def gen_biviscosity_variation(save_prefix, eps=0.1, mu=0.8, P=0, psiP=3/4*np.pi,
         nu_bi=3e-3, forcing_type='Jeffreys', wave_type='cnoidal'):
 
@@ -1165,6 +1199,7 @@ def main():
             'long_verf' : gen_long_verf,
             'snapshots' : gen_snapshots,
             'depth_varying' : gen_depth_varying,
+            'press_varying' : gen_press_varying,
             'biviscosity' : gen_biviscosity_variation,
             'decaying_no_nu_bi' : gen_decaying_no_nu_bi,
             }

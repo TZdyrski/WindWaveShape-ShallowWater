@@ -783,6 +783,46 @@ def process_depth_varying(load_prefix, save_prefix, *args, **kwargs):
             save_prefix+'Shape-vs-Depth',
             **statistics_datasets.attrs)
 
+def process_press_varying(load_prefix, save_prefix, *args, **kwargs):
+    filename_base = 'PressVarying'
+
+    for wave_type in ['solitary', 'cnoidal']:
+        # Find filenames
+        filenames = data_csv.find_filenames(load_prefix, filename_base,
+                allow_multiple_files=True,
+                parameters={'wave_type' : wave_type})
+
+        statistics_list = []
+        P_val_list = []
+        for filename in filenames:
+            # Create shape statistics
+            statistics = generate_statistics(filename)
+
+            # Append statistics to list
+            P_val_list.append(float(statistics.attrs['P']))
+            statistics_list.append(statistics)
+
+        # Combine statistics Datasets
+        statistics_datasets = xr.concat(statistics_list,
+                dim=xr.DataArray(P_val_list, name='P', dims='P'))
+
+        # Remove P parameter attribute
+        statistics_datasets.attrs.pop('P',None)
+
+        # Sort by P
+        statistics_datasets = statistics_datasets.sortby('P')
+
+        # Choose final time
+        statistics_datasets.attrs['t*eps*sqrt(g*h)*k_E'] = \
+                statistics_datasets['t*eps*sqrt(g*h)*k_E'][-1].item()
+        statistics_datasets = statistics_datasets[{'t*eps*sqrt(g*h)*k_E':-1}
+                ].reset_coords(names='t*eps*sqrt(g*h)*k_E', drop=True)
+
+        # Save statistics
+        data_csv.save_data(statistics_datasets,
+                save_prefix+'Shape-vs-Press',
+                **statistics_datasets.attrs)
+
 def process_xt_offset(load_prefix, save_prefix, *args, **kwargs):
     filename_base = 'Snapshots'
 
@@ -985,6 +1025,7 @@ def main():
             'power_spec_vs_time' : process_power_spec_vs_time,
             'wavenum_freq' : process_wavenumber_frequency,
             'depth_varying' : process_depth_varying,
+            'press_varying' : process_press_varying,
             'xt_offset' : process_xt_offset,
             'biviscosity' : process_biviscosity_variation,
             'spacetime_mesh' : process_spacetime_mesh,

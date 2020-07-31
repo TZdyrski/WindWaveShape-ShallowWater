@@ -1498,6 +1498,50 @@ def plot_shape_statistics_vs_depth(load_prefix, save_prefix, *args, **kwargs):
 
     texplot.savefig(fig,save_prefix+'Skew-Asymm-Cnoidal-kh')
 
+def plot_shape_statistics_vs_press_solitary(load_prefix, save_prefix, *args, **kwargs):
+    filename_base = 'Shape-vs-Press'
+
+    # Remove 'mu' parameter
+    kwargs.pop('P', None)
+
+    filename = data_csv.find_filenames(load_prefix, filename_base,
+            parameters={'wave_type' : 'solitary', **kwargs})
+
+    # Extract data
+    data_array = data_csv.load_data(filename, stack_coords=False)
+
+    # Arrange data and parameters into 1d array for plotting
+    data_arrays = np.empty((1),dtype=object)
+    data_arrays[0] = data_array
+
+    fig = plot_shape_statistics_vs_depth_template(data_arrays,
+            x_coordinate = 'P',
+            ax_xlabel = r'Pressure $P k/(\rho_w g \epsilon)$')
+
+    texplot.savefig(fig,save_prefix+'Skew-Asymm-P')
+
+def plot_shape_statistics_vs_press_cnoidal(load_prefix, save_prefix, *args, **kwargs):
+    filename_base = 'Shape-vs-Press'
+
+    # Remove 'mu' parameter
+    kwargs.pop('P', None)
+
+    filename = data_csv.find_filenames(load_prefix, filename_base,
+            parameters={'wave_type' : 'cnoidal', **kwargs})
+
+    # Extract data
+    data_array = data_csv.load_data(filename, stack_coords=False)
+
+    # Arrange data and parameters into 1d array for plotting
+    data_arrays = np.empty((1),dtype=object)
+    data_arrays[0] = data_array
+
+    fig = plot_shape_statistics_vs_depth_template(data_arrays,
+            x_coordinate = 'P',
+            ax_xlabel = r'Pressure $P k/(\rho_w g \epsilon)$')
+
+    texplot.savefig(fig,save_prefix+'Skew-Asymm-Cnoidal-P')
+
 def plot_energy(load_prefix, save_prefix, *args, **kwargs):
     filename_base = 'Shape-Statistics'
 
@@ -1962,6 +2006,8 @@ def main():
             'shape_statistics_solitary_no_peak' : plot_shape_statistics_solitary_no_peak,
             'shape_statistics_cnoidal' : plot_shape_statistics_cnoidal,
             'shape_statistics_vs_depth' : plot_shape_statistics_vs_depth,
+            'shape_statistics_vs_press_solitary' : plot_shape_statistics_vs_press_solitary,
+            'shape_statistics_vs_press_cnoidal' : plot_shape_statistics_vs_press_cnoidal,
             'energy' : plot_energy,
             'energy_GM' : plot_energy_GM,
             'power_spec_vs_kappa' : plot_power_spec_vs_kappa,
