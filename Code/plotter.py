@@ -1444,6 +1444,79 @@ def plot_pos_neg_slope_cnoidal_GM(load_prefix, save_prefix, *args, **kwargs):
 
     texplot.savefig(fig,save_prefix+'Slopes-Positive-Negative-Cnoidal-GM')
 
+def plot_slope_statistics_solitary(load_prefix, save_prefix, *args, **kwargs):
+    filename_base = 'Slope-Statistics'
+
+    # Remove 'P' parameter
+    kwargs.pop('P', None)
+
+    filenames = data_csv.find_filenames(load_prefix, filename_base,
+            parameters={'wave_type' : 'solitary', **kwargs},
+            allow_multiple_files=True)
+
+    data_array_list = []
+    P_val_list = []
+    for filename in filenames:
+        # Extract data
+        data_array = data_csv.load_data(filename, stack_coords=False)
+
+        P_val = float(data_array.attrs['P'])
+
+        P_val_list.append(P_val)
+        data_array_list.append(data_array)
+
+    # Arrange data and parameters into 1d array for plotting
+    data_arrays = np.empty((1),dtype=object)
+    data_arrays[0] = xr.concat(data_array_list, dim=xr.DataArray(P_val_list,
+        name='P', dims='P'))
+    # Transpose to put P coordinate at end; this makes plotting easier
+    data_arrays[0] = data_arrays[0].transpose()
+    # Remove P parameter attribute
+    data_arrays[0].attrs.pop('P', None)
+
+    fig = plot_shape_statistics_vs_time_template(data_arrays)
+
+    texplot.savefig(fig,save_prefix+'Slope-Skew-Asymm')
+
+def plot_slope_statistics_cnoidal(load_prefix, save_prefix, *args, **kwargs):
+    filename_base = 'Slope-Statistics'
+
+    # Remove 'P' parameter
+    kwargs.pop('P', None)
+
+    # Arrange data and parameters into 1d array for plotting
+    data_arrays = np.empty((2),dtype=object)
+
+    mu = float(kwargs.get('mu'))
+
+    for indx_num, mu_val in enumerate(round_sig_figs([mu,7/8*mu])):
+        filenames = data_csv.find_filenames(load_prefix, filename_base,
+                parameters={'wave_type' : 'cnoidal', **kwargs,
+                    'mu' : mu_val},
+                allow_multiple_files=True)
+
+        data_array_list = []
+        P_val_list = []
+        for filename in filenames:
+            # Extract data
+            data_array = data_csv.load_data(filename, stack_coords=False)
+
+            P_val = float(data_array.attrs['P'])
+
+            P_val_list.append(P_val)
+            data_array_list.append(data_array)
+
+        data_arrays[indx_num] = xr.concat(data_array_list,
+                dim=xr.DataArray(P_val_list, name='P', dims='P'))
+        # Transpose to put P coordinate at end; this makes plotting easier
+        data_arrays[indx_num] = data_arrays[indx_num].transpose()
+        # Remove P parameter attribute
+        data_arrays[indx_num].attrs.pop('P', None)
+
+    fig = plot_shape_statistics_vs_time_template(data_arrays)
+
+    texplot.savefig(fig,save_prefix+'Slope-Skew-Asymm-Cnoidal')
+
 def plot_shape_statistics_solitary(load_prefix, save_prefix, *args, **kwargs):
     filename_base = 'Shape-Statistics'
 
@@ -2085,6 +2158,8 @@ def main():
             'pos_neg_slope_solitary' : plot_pos_neg_slope_solitary,
             'pos_neg_slope_cnoidal' : plot_pos_neg_slope_cnoidal,
             'pos_neg_slope_cnoidal_GM' : plot_pos_neg_slope_cnoidal_GM,
+            'slope_statistics_solitary' : plot_slope_statistics_solitary,
+            'slope_statistics_cnoidal' : plot_slope_statistics_cnoidal,
             'shape_statistics_solitary' : plot_shape_statistics_solitary,
             'shape_statistics_solitary_no_peak' : plot_shape_statistics_solitary_no_peak,
             'shape_statistics_cnoidal' : plot_shape_statistics_cnoidal,

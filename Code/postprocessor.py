@@ -590,9 +590,12 @@ def time_downsample(signal, downsample_factor=1, keep_last=True):
 
     return signal_downsampled
 
-def generate_statistics(filename):
-    # Extract data
-    data_array = data_csv.load_data(filename)
+def generate_statistics(filename=None, data_array=None):
+    if filename is not None:
+        # Extract data
+        data_array = data_csv.load_data(filename)
+    elif data_array is None:
+        raise(ValueError('Must pass either filename or data_array to generate_statistics'))
 
     # Calculate max height
     maximums = maximum(data_array)
@@ -1050,6 +1053,27 @@ def process_snapshot_slopes(load_prefix, save_prefix, *args, **kwargs):
         data_csv.save_data(data_array, save_prefix+'Slopes',
                 **data_array.attrs, stack_coords=True)
 
+def process_slope_statistics(load_prefix, save_prefix, *args, **kwargs):
+    filename_base = 'Snapshots'
+
+    # Find filenames
+    filenames = data_csv.find_filenames(load_prefix, filename_base,
+            allow_multiple_files=True)
+
+    for filename in filenames:
+        # Extract data
+        data_array = data_csv.load_data(filename, stack_coords=True)
+
+        # Calculate slopes
+        slopes = slope(data_array)
+
+        # Create shape statistics
+        statistics = generate_statistics(data_array=slopes)
+
+        # Save statistics
+        data_csv.save_data(statistics, save_prefix+'Slope-Statistics',
+                **statistics.attrs)
+
 def main():
     load_prefix = '../Data/Raw/'
     save_prefix = '../Data/Processed/'
@@ -1062,6 +1086,7 @@ def main():
             'trig_statistics' : process_trig_statistics,
             'long_statistics' : process_long_statistics,
             'snapshot_slopes' : process_snapshot_slopes,
+            'slope_statistics' : process_slope_statistics,
             'power_spec_vs_kappa' : process_power_spec_vs_kappa,
             'power_spec_vs_time' : process_power_spec_vs_time,
             'wavenum_freq' : process_wavenumber_frequency,
