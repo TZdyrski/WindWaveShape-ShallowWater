@@ -129,15 +129,16 @@ Jeffreys-type forcing \citep{jeffreys1925formation}:
 \begin{equation}
   p(x,t) = P \pdv{\eta(x,t)}{x} \,.
 \end{equation}
-Here, $P$ is a constant of proportionality, and $P>0$ corresponds to
-wind in the same direction as the wave.
+Here, $P$ is proportional to $(U-c)^2$, with $U$ the wind speed and $c$
+the wave speed (\cf \cref{sec:press_mag}), and $P>0$ corresponding to wind in
+the same direction as the wave.
 
 \subsection{Nondimensionalization}
 We will normalize by identifying characteristic scales.
 The parameters we know \apriori are the characteristic horizontal length
 scale $L$ over which $\eta$ changes rapidly, the (initial) wave height
 $H_0$, the depth $h$, the gravitational acceleration $g$, and the wind
-speed $U$ expressed as a pressure magnitude $P \propto \rho_a U^2$.
+speed $U$ expressed as a pressure magnitude $P \propto \rho_a (U-c)^2$.
 However, instead of using $L$, we will instead use an effective
 wavenumber $k_E \coloneqq 2 \pi/ L$.
 Denoting nondimensional variables with an prime, we have
@@ -600,7 +601,7 @@ the asymmetry causing the wave to tilt forwards.
 
 \section{Discussion}
 
-\subsection{Pressure Magnitude Estimation}
+\subsection{\label{sec:press_mag} Pressure Magnitude Estimation}
 Now, we will estimate the wind speeds associated with different pressure
 magnitudes $P$ over a simple sinusoidal wave.
 In \cref{sec:energy_growth_rate}, we show that Jeffreys forcing yields
