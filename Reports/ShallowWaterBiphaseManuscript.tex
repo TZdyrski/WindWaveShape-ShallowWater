@@ -151,8 +151,8 @@ Denoting nondimensional variables with an prime, we have
   \begin{aligned}
   t &= \frac{t'}{k_E\sqrt{g h}}
     = \frac{t'}{\sqrt{\mu}} \sqrt{\frac{h}{g}} \,, \\
-  P &= \alpha P' \frac{\rho_w g}{k_E}
-    = \frac{\alpha}{\sqrt{\mu}} P' \rho_w g h \,,
+  P &= \epsilon P' \frac{\rho_w g}{k_E}
+    = \frac{\epsilon}{\sqrt{\mu}} P' \rho_w g h \,,
   \end{aligned}
   \qquad
   \begin{aligned}
@@ -162,11 +162,12 @@ Denoting nondimensional variables with an prime, we have
   \end{aligned}
 \end{equation*}
 with $a_0 \coloneqq H_0/2$ the initial wave amplitude.
-Here, we have defined the parameters $\epsilon \coloneqq H_0/(2h)$, $\mu
-\coloneqq (kh)^2$, and $\alpha \coloneqq \order{P k_E/(\rho_w g)}$.
+Here, we have defined the parameters $\epsilon \coloneqq H_0/(2h)$ and $\mu
+\coloneqq (kh)^2$, while choosing $\order{P k_E/(\rho_w g)} =
+\order{\epsilon}$.
 Our problem is defined by these three small, nondimensional parameters.
 We will later require that $\order{\epsilon} = \order{\mu} =
-\order{\alpha}$.
+\order{P k_E/(\rho_w g)}$.
 Furthermore, we see that $\epsilon/\mu$ is proportional to the Ursell
 number, $\Ur = H \lambda^2/h^3 = 8 \pi^2 \epsilon/\mu$.
 Using these definitions, our equations take the form
@@ -177,7 +178,7 @@ Using these definitions, our equations take the form
   \phi'_{z'} &= \mu \eta'_{t'} +
     \epsilon \mu \phi'_{x'} \eta'_{x'} &&\qq{on} z' = \epsilon \eta' \,,
     \label{eq:kinematic_bc_nondim} \\
-  0 &= \alpha P' \eta'_{x'} +  \eta' + \phi'_{t'} + \frac{1}{2}
+  0 &= \epsilon P' \eta'_{x'} +  \eta' + \phi'_{t'} + \frac{1}{2}
     \pqty{\epsilon \phi_{x'}^{\prime \, 2} + \frac{\epsilon}{\mu}
     \phi_{z'}^{\prime \, 2}} &&\qq{on} z'= \epsilon \eta' \,.
     \label{eq:dynamic_bc_nondim}
@@ -223,7 +224,7 @@ equations to
   \eta_t + \pqty{H\varphi_x}_x
     -\frac{1}{6}\mu \pqty{H^3\varphi_{xxx}}_x =
     \order{\mu^2} \label{eq:kinematic_bc_varphi} \,, \\
-  \alpha P \eta_x + \eta + \varphi_t - \frac{1}{2}\mu H^2\varphi_{txx} +
+  \epsilon P \eta_x + \eta + \varphi_t - \frac{1}{2}\mu H^2\varphi_{txx} +
     \frac{1}{2}\epsilon\pqty{\varphi_x}^2 = \order{\mu^2} \,,
   \label{eq:dynamic_bc_varphi}
 \end{gather}
@@ -231,7 +232,6 @@ where subscripts denote partial derivatives.
 Note that we have used the total depth $H\coloneqq 1+\epsilon\eta$.
 Further, we will now assume $\order{\epsilon} = \order{\mu} \ll 1$ which
 implies $\Ur = \order{1}$.
-Finally, we will choose $\alpha = \epsilon$ identically.
 
 \subsection{Perturbation Expansion}
 \label{sec:shallow_water}
@@ -638,11 +638,11 @@ can calculate the pressure magnitude $P$ from the wind speed $U$ at an
 arbitrary height.
 If we take $\rho_a/\rho_w = \num{1.225e-3}$, $\mu = \epsilon = 0.1$, $T
 = \SI{10}{\second}$, $h = \SI{10}{\meter}$, and $U_{10} =
-\SI{50}{\meter\per\second}$ gives $P' \alpha = \num{4.6e-3} \approx
+\SI{50}{\meter\per\second}$ gives $P k_E/(\rho_w g) = \num{4.6e-3} \approx
 \epsilon^2$.
 If we instead consider laboratory conditions with $h=\SI{0.37}{\meter}$,
 $\mu = 1.4$, $\epsilon = 0.14$, and $U_{0.3} = \SI{8}{\meter\per\second}$
-as in \citet{feddersen2005wind}, we instead get $P' \alpha =
+as in \citet{feddersen2005wind}, we instead get $P k_E/(\rho_w g) =
 \num{4.5e-3} \approx \epsilon^3$.
 
 \subsection{Nondimensional Parameters}
@@ -692,12 +692,12 @@ Converting back to dimensional variables, we have
 \begin{equation}
   \begin{split}
     \eta &= H f\bqty{(x - \sqrt{gh} t) \sqrt{\mu}/h, t \epsilon \sqrt{g
-      \mu/h}, P \sqrt{\mu}/(\alpha \rho_w g h)} \\
+      \mu/h}, P \sqrt{\mu}/(\epsilon \rho_w g h)} \\
     &= H f\bqty{(x - \sqrt{gh}t) \sqrt{H/h^3}, t \sqrt{g H^3/h^4}, P /(\rho_w
       g \sqrt{H h})} \,,
   \end{split}
 \end{equation}
-where we used the fact that $\alpha \propto \mu \propto \epsilon$.
+where we used the fact that $\mu \propto \epsilon$.
 This is interesting because it implies a number of invariant scalings.
 For instance, scaling the pressure by $P \to \lambda P$ while also
 scaling the gravity by $g \to \lambda g$ (for instance, in
@@ -807,9 +807,8 @@ The left-hand side is simply $\gamma/\omega_0$.
 If, for simplicity, we consider a simple sinusoid $\eta_0 = A \cos(k x -
 \omega_0 t)$, we find
 \begin{equation}
-  \frac{\gamma}{\omega_0} = \epsilon P' = \frac{P k}{\rho_w g} \,,
+  \frac{\gamma}{\omega_0} = \epsilon P' = \frac{P k}{\rho_w g} \,.
 \end{equation}
-where we used $\alpha = \epsilon$.
 
 % Bibliography
 \bibliographystyle{jfm}
