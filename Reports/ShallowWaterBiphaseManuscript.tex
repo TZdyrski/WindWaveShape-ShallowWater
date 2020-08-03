@@ -116,11 +116,13 @@ We are seeking a spatially-periodic progressive wave:
 with similar conditions on $\vec{u}$.
 We are parameterizing our initial wave by four dimensional quantities:
 the mean depth, bottom horizontal velocity, wave height, and wavelength.
-We will choose a coordinate system where the bottom horizontal velocity
-vanishes:
+We will choose a coordinate system where the average bottom horizontal
+velocity vanishes:
 \begin{equation}
-  \pdv{\phi}{x} = 0 \qq{on} z=-h \,. \label{eq:bot_bc_horz}
+  \overline{ \pdv{\phi}{x} } = 0 \qq{on} z=-h \,,
+  \label{eq:bot_bc_horz}
 \end{equation}
+with the overline an average over a wavelength.
 Additionally, we assume the surface pressure $p(x,t)$ is given by a
 Jeffreys-type forcing \citep{jeffreys1925formation}:
 \begin{equation}

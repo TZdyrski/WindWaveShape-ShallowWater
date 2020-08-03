@@ -169,11 +169,18 @@ We are seeking a spatially-periodic progressive wave:
 with similar conditions on $\vec{u}$.
 We are parameterizing our initial wave by four dimensional quantities:
 the mean depth, bottom horizontal velocity, wave height, and wavelength.
-We will choose a coordinate system where the bottom horizontal velocity
-vanishes:
+We will choose a coordinate system where the average bottom horizontal
+velocity vanishes:
 \begin{equation}
-  \vec{u}\cross \vu{z} = 0 \qq{on} z=-h \,. \label{eq:bot_bc_horz}
+  \overline{\vec{u}} \cross \vu{z} = 0 \qq{on} z=-h \,,
+  \label{eq:bot_bc_horz}
 \end{equation}
+with the overline an average over a wavelength.%
+\footnote{
+  When deriving the depth dependence of $\phi$, we will see that there
+  is no oscillatory velocity component at $z=-h$, so the averaging is
+  not strictly necessary.
+}
 Additionally, we assume the surface pressure $p(x,t)$ can be expressed
 as a convolution of some (time-independent) function with $\eta(x,t)$:
 \begin{equation}
