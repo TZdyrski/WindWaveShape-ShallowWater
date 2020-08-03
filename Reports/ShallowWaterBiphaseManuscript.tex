@@ -534,14 +534,21 @@ steep, and pitches backwards for the offshore case
   \includegraphics{Skew-Asymm-No-Peak.eps}
   \caption{
     Shape statistics of a solitary profile under onshore and offshore
-    Jeffreys forcing.
-    These include the
+    Jeffreys forcing are shown for nondimensional slow time $t \epsilon
+    \sqrt{gh} k_E \numrange{0}{4}$.
+    The
     \subref{fig:statistics_solitary:a}
     height,
     \subref{fig:statistics_solitary:b}
     skewness, and
     \subref{fig:statistics_solitary:c}
-    asymmetry.
+    asymmetry are defined in
+    \cref{eq:height_def,eq:skew_def,eq:asym_def}.
+    Results are shown for $\epsilon=0.1$, $\mu_E = 0.6$, and $P
+    k_E/(\rho_w g \epsilon) = 0$, $\pm 0.125$, and $\pm 0.25$, as
+    indicated in the legend.
+    The solid black line corresponds to the unforced case, $P = 0$, and
+    shows no growth or asymmetry and a constant, positive skewness.
   }
   \label{fig:statistics_solitary}
 \end{figure}
@@ -549,28 +556,30 @@ steep, and pitches backwards for the offshore case
 We have plotted various shape statistics for the solitary wave in
 \cref{fig:statistics_solitary} as functions of the nondimensional slow
 time $t \epsilon \sqrt{g h} k_E$.
+The \subref{fig:statistics_solitary:a} wave height is calculated as
+\begin{equation}
+  H(t) = \max{\eta} - \min{\eta} \,.
+  \label{eq:height_def}
+\end{equation}
 Wave shape can be quantified by the third-order moments, skewness and
 asymmetry.
-The skewness is defined as
+The \subref{fig:statistics_solitary:b} skewness is defined as
 \begin{equation}
   \Sk \coloneqq \frac{\langle \eta^3 \rangle}{\langle \eta^2
   \rangle^{3/2}} \,,
+  \label{eq:skew_def}
 \end{equation}
-with
+and the \subref{fig:statistics_solitary:c} asymmetry is defined as
+\begin{equation}
+  \As \coloneqq \frac{\langle \hilbert \Bqty{\eta^3} \rangle}{\langle
+    \eta^2 \rangle^{3/2}} \,,
+  \label{eq:asym_def}
+\end{equation}
+with $\hilbert$ the Hilbert transform and
 \begin{equation}
   \langle f \rangle \coloneqq \frac{1}{L'_x} \int_{-L'_x/2}^{L'_x/2} f
   \dd{x} \,.
 \end{equation}
-Likewise, the asymmetry is defined as
-\begin{equation}
-  \As \coloneqq \frac{\langle \hilbert \Bqty{\eta^3} \rangle}{\langle
-    \eta^2 \rangle^{3/2}} \,,
-\end{equation}
-with $\hilbert$ the Hilbert transform.
-The \subref{fig:statistics_solitary:a} wave height,
-\subref{fig:statistics_solitary:b} skewness, and
-\subref{fig:statistics_solitary:c} asymmetry all each plotted as
-functions of time $t \epsilon \sqrt{g h} k_E$.
 Additionally, each statistic is plotted for onshore wind ($P
 k_E/(\rho_w g \epsilon) = 0.125$ and $0.25$), offshore wind ($P
 k_E/(\rho_w g \epsilon) = -0.125$ and $-0.25$), and the unforced case
