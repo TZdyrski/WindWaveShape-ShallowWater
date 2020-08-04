@@ -133,7 +133,7 @@ Here, $P$ is proportional to $(U-c)^2$, with $U$ the wind speed and $c$
 the wave speed (\cf \cref{sec:press_mag}), and $P>0$ corresponding to wind in
 the same direction as the wave.
 
-\subsection{Nondimensionalization}
+\subsection{\label{sec:nondim} Nondimensionalization}
 We will normalize by identifying characteristic scales.
 The parameters we know \apriori are the characteristic horizontal length
 scale $L$ over which $\eta$ changes rapidly, the (initial) wave height
@@ -607,8 +607,12 @@ the asymmetry causing the wave to tilt forwards, as seen in
 \section{Discussion}
 
 \subsection{\label{sec:press_mag} Pressure Magnitude Estimation}
-Now, we will estimate the wind speeds associated with different pressure
-magnitudes $P$ over a simple sinusoidal wave.
+In \cref{sec:nondim}, we chose to nondimensionalize the pressure as
+$P k_E/(\rho_w g) = \order{\epsilon}$, which corresponds to the
+intermediate strength wind analyzed in \citet{zdyrski2020wind}.
+Now, we will estimate the wind speed associated with such a pressure
+magnitude over a simple sinusoidal wave to show that such a choice is
+reasonable.
 In \cref{sec:energy_growth_rate}, we show that Jeffreys forcing yields
 an energy growth rate
 \begin{equation}
@@ -649,9 +653,6 @@ If we instead consider laboratory conditions with $h=\SI{0.37}{\meter}$,
 $\mu_E = 1.4$, $\epsilon = 0.14$, and $U_{0.3} = \SI{8}{\meter\per\second}$
 as in \citet{feddersen2005wind}, we instead get $P k_E/(\rho_w g) =
 \num{4.5e-3} = \order{\epsilon^3}$.
-For simplicity, we will instead consider $P k_E/(\rho_w g) =
-\order{\epsilon}$, which corresponds to the intermediate strength wind
-analyzed in \citet{zdyrski2020wind}.
 
 \subsection{Nondimensional Parameters}
 The two dependent variables $\eta'$ and $\varphi'$ of our system
