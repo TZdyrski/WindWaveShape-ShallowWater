@@ -173,6 +173,7 @@ def plot_multiplot_template(data_arrays, x_coordinate,
         ax_xlabel=None, ax_ylabel=None, color_class=None,
         show_legend=False, legend_title=None, plotter=default_plotter,
         subplot_adjust_params={}, label_sig_figs=3, legend_sig_figs=2,
+        trim_times=3,
         pi_parameters=[]):
     """
     Parameters
@@ -251,6 +252,11 @@ def plot_multiplot_template(data_arrays, x_coordinate,
 
         # Plot snapshots
         plotter(data_array_sorted, x_name, ax[iy,ix])
+
+        # Trim xlim if x_coordinate == 't*eps*sqrt(g*h)*k_E' to
+        # trim_times
+        if x_coordinate == 't*eps*sqrt(g*h)*k_E':
+            ax[iy,ix].set_xlim(right=trim_times)
 
     if suptitle is not None:
         if format_title:
