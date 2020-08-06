@@ -3214,6 +3214,14 @@ Next, we solve the inhomogeneous KdV equation \cref{eq:kdvb_expansion},
   \pdv{y_0 y_1}{x} + \mathcal{C} \pdv[3]{y_1}{x} = \mathcal{\tilde{G}}
   G[y] - \mathcal{A} \pdv{y_0}{\tau_1} \,.
 \end{equation}
+Note: we will now use our $\tau_1$ freedom to prevent ``secular'' terms.
+Secular is a bit misleading here though; take for instance the $m=1$
+solitary wave case.
+There, the right hand side would be proportional to $\tanh(x)
+\sech(x)^2$, and the inhomogenous solution would have a term like
+$\tanh(x) \cosh(x)^2$, which blows up for $x \to \pm \infty$.
+By using this $\tau_1$ freedom, we can keep the solution finite (though,
+not zero) as $x \to \pm \infty$.
 
 Once again, boosting to a co-moving frame yields
 \begin{equation}
