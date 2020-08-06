@@ -759,11 +759,9 @@ class kdvSystem():
         sol = np.array(self.sol, dtype=np.float64)
 
         # Calculate the hilbert transform
-        # Confusingly, sp.signal.hilbert gives the analytic signal, x <- x + i*H(x)
-        solHilbert = (sp.signal.hilbert(sol,axis=0) - sol)/1j
-
-        # Throw out imaginary part since it should be zero (to within rounding error)
-        solHilbert = np.real(solHilbert)
+        # Confusingly, sp.signal.hilbert gives the analytic signal, x -> x + i*H(x)
+        # so take the imaginary part
+        solHilbert = np.imag(sp.signal.hilbert(sol,axis=0))
 
         averageHilbertCubed = sp.integrate.trapz(
                 solHilbert**3,

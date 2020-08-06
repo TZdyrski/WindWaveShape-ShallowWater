@@ -80,11 +80,9 @@ def asymmetry(profile):
     profile = np.array(profile, dtype=np.float64)
 
     # Calculate the hilbert transform
-    # Confusingly, sp.signal.hilbert gives the analytic signal, x <- x + i*H(x)
-    profile_hilbert = (sp.signal.hilbert(profile,axis=0) - profile)/1j
-
-    # Throw out imaginary part since it should be zero (to within rounding error)
-    profile_hilbert = np.real(profile_hilbert)
+    # Confusingly, sp.signal.hilbert gives the analytic signal, x -> x + i*H(x)
+    # so take the imaginary part
+    profile_hilbert = np.imag(sp.signal.hilbert(profile,axis=0))
 
     average_hilbert_cubed = sp.integrate.trapz(
             profile_hilbert**3,
