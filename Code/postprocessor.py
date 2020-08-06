@@ -312,6 +312,10 @@ def biphase(profile):
     firstHarmonicIndex = power_spec_peak_indices[1]
 
     # Calculate bispectra
+    # Note: this is the opposite sign convention to our
+    # DeepWaterBiphaseManuscript; however, it matches the standard sign
+    # convention, as well as that of Leykin et al 1995 and Feddersen and
+    # Veron 2005
     bispectra = fourier[primaryIndex,:]**2*\
             np.conjugate(fourier[firstHarmonicIndex])
 
