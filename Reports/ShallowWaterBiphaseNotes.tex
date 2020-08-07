@@ -320,6 +320,26 @@ For $U_{10} > \SI{4.7}{\meter\per\second}$, we have
 For instance, $U_{0.3} = \SI{8}{\meter\per\second}$ gives
 $P'_M \alpha = \num{4.5e-3} \approx \epsilon^3$.
 
+\section{Shape Statistics}
+Wave shape can be quantified by the third-order moments, skewness and
+asymmetry.
+The skewness is defined as
+\begin{equation}
+  \Sk \coloneqq \frac{\langle \eta^3 \rangle}{\langle \eta^2
+  \rangle^{3/2}} \,,
+\end{equation}
+with
+\begin{equation}
+  \langle f \rangle \coloneqq \frac{1}{L'_x} \int_{-L'_x/2}^{L'_x/2} f
+  \dd{x} \,.
+\end{equation}
+Likewise, the asymmetry is defined as
+\begin{equation}
+  \As \coloneqq \frac{\langle \hilbert \Bqty{\eta^3} \rangle}{\langle
+    \eta^2 \rangle^{3/2}} \,,
+\end{equation}
+with $\hilbert$ the Hilbert transform.
+
 \section{Nondimensionalization}
 Nondimensionalization is the process of removing units from our
 variables and parameters.
@@ -1106,26 +1126,6 @@ For our particular problem, we can partially remedy this by increasing
 the biviscosity $\mathcal{H}$, which increases the wavelength of the
 unstable mode, but causes it to grow more slowly.
 Hence, why we have chosen a somewhat large $\mathcal{H} = \num{3e-3}$.
-
-\section{Shape Statistics}
-Wave shape can be quantified by the third-order moments, skewness and
-asymmetry.
-The skewness is defined as
-\begin{equation}
-  \Sk \coloneqq \frac{\langle \eta^3 \rangle}{\langle \eta^2
-  \rangle^{3/2}} \,,
-\end{equation}
-with
-\begin{equation}
-  \langle f \rangle \coloneqq \frac{1}{L'_x} \int_{-L'_x/2}^{L'_x/2} f
-  \dd{x} \,.
-\end{equation}
-Likewise, the asymmetry is defined as
-\begin{equation}
-  \As \coloneqq \frac{\langle \hilbert \Bqty{\eta^3} \rangle}{\langle
-    \eta^2 \rangle^{3/2}} \,,
-\end{equation}
-with $\hilbert$ the Hilbert transform.
 
 \section{\texorpdfstring{Weak Wind: $\alpha = \epsilon^{1.5}$}{Weak
 Wind} \label{sec:weak}}
