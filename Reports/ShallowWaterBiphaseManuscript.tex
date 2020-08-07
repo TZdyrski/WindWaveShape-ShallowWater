@@ -563,20 +563,47 @@ We are particularly interested in the differences between onshore wind
   \label{fig:snapshots_solitary}
 \end{figure}
 
-In \cref{fig:snapshots_solitary}, we have plotted the wave profile
-$\eta/h$ as a function of distance $x/h$ at different nondimensional
-slow times $t \epsilon \sqrt{g h} k_E$ and wind directions.
-Both cases are plotted for initial wave steepness $\epsilon = 0.1$ and
-pressure magnitude $\abs{P k_E/(\rho_w g \epsilon)} = 0.25$; the onshore
-wind \subref{fig:snapshots_solitary:a} corresponds to $P>0$ while the
-offshore wind \subref{fig:snapshots_solitary:b} has $P<0$.
-We see that the initially symmetric solitary wave evolving over time
-under the influence of \subref{fig:snapshots_solitary:a} onshore and
-\subref{fig:snapshots_solitary:b} offshore winds.
-For the onshore case \subref{fig:snapshots_solitary:a}, the wave grows,
-steepens, and pitches forward, while the wave decays, becomes less
-steep, and pitches backwards for the offshore case
-\subref{fig:snapshots_solitary:b}.
+The snapshots of the wave profile $\eta/h$ in
+\cref{fig:snapshots_solitary} qualitatively show how the wave shape
+evolves over nondimensional time $t \epsilon \sqrt{g h} k_E$ when
+plotted against the nondimensional distance $x/h$.
+Both the onshore wind \subref{fig:snapshots_solitary:a} and offshore
+wind \subref{fig:snapshots_solitary:b} begin from an identical,
+symmetrical solitary wave profile at $t=0$ which would satisfy the
+unforced KdV equation.
+The onshore case \subref{fig:snapshots_solitary:a} demonstrates
+marked, accelerating wave growth while the offshore wind
+\subref{fig:snapshots_solitary:b} causes decay which slows over time.
+This is to be expected, as \cref{sec:energy_growth_rate} suggests the
+wave's energy $E \propto \int \eta^2 \dd{x}$ is exponential in time, so
+growth will be faster than decay.
+Furthermore, the wind induces a horizontal asymmetry in the wave shape.
+In both cases, the windward side of the wave becomes steeper (up to
+\SI{8}{\percent} steeper for the time period shown) than the leeward
+side.
+
+Finally, while the front face of the wave shows only a moderate change in
+slope, the rear face of the wave shows a qualitative difference between
+the two wind directions.
+Namely, the offshore wind raises the rear base of the wave relative to
+its initial profile while an onshore wind depresses it, even forming a
+small depression below the still water level.
+This can be understood by considering the fluid velocity, which is
+largely right-to-left in this co-moving frame.
+When the water approaches the solitary wave from $x = +\infty$, it is
+virtually unaffected by the pressure, since $p \propto \partial_x \eta$
+is negligible far away from the wave.
+Hence, the front face of the wave (the right side) is largely unaffected
+by the pressure forcing.
+For the onshore wind case, the water rising on the right side of the
+wave encounters low air pressure, and the water descending on the left
+hand side encounters high air pressure, both of which increase the
+water's energy.
+This additional kinetic energy causes the water flow to overshoot $z=0$
+at the rear base of the wave, leading to the overshoot observed.
+The opposite holds for the onshore wind, where kinetic energy is removed
+from the flow, so that the flow does not immediately return to the still
+water level.
 
 \begin{figure}
   \centering

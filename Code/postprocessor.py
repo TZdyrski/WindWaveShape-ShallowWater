@@ -1076,6 +1076,42 @@ def process_slope_statistics(load_prefix, save_prefix, *args, **kwargs):
         data_csv.save_data(statistics, save_prefix+'Slope-Statistics',
                 **statistics.attrs)
 
+def print_slope_ratios(load_prefix, save_prefix, *args, **kwargs):
+    """
+    Print ratio of (abs) highest slope peak to (abs) second-highest
+    slope peak.
+    """
+
+    filename_base = 'Snapshots'
+
+    # Find filenames
+    filenames = data_csv.find_filenames(load_prefix, filename_base,
+            allow_multiple_files=True)
+
+    for filename in filenames:
+
+        # Extract data
+        data_array = data_csv.load_data(filename, stack_coords=True)
+
+        if data_array.attrs['forcing_type'] == 'Jeffreys' and \
+                data_array.attrs['mu'] == 0.6:
+
+            # Calculate slopes
+            data_array = slope(data_array)
+
+            ## Print ratio of highest slope peak to second-highest
+            peak_coords = find_peak_coords(np.abs(data_array), dim_to_search='x/h', num_peaks=2,
+                    only_nonneg_coords=False)
+
+            peaks = data_array.loc[{'x/h':peak_coords}]
+
+            peak_ratios = np.abs(peaks[{'peak_mag_high_to_low':0}] / \
+                    peaks[{'peak_mag_high_to_low':1}])
+
+            print('Jeffreys forcing, solitary wave, P='+\
+                    str(data_array.attrs['P']))
+            print('Steepness ratio: '+str(peak_ratios.max().values))
+
 def main():
     load_prefix = '../Data/Raw/'
     save_prefix = '../Data/Processed/'
@@ -1098,11 +1134,14 @@ def main():
             'biviscosity' : process_biviscosity_variation,
             'spacetime_mesh' : process_spacetime_mesh,
             'decaying_no_nu_bi' : process_decaying_no_nu_bi,
+            'print_slope_ratios' : print_slope_ratios,
             }
 
     if len(sys.argv) == 1:
-        # No option provided; run all plots
+        # No option provided; run all plots except print functions
         for function in callable_functions.values():
+            if function == print_slope_ratios:
+                        continue
             function(load_prefix, save_prefix)
 
     else:
