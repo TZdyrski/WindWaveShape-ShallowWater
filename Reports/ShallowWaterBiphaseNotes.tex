@@ -1127,6 +1127,65 @@ the biviscosity $\mathcal{H}$, which increases the wavelength of the
 unstable mode, but causes it to grow more slowly.
 Hence, why we have chosen a somewhat large $\mathcal{H} = \num{3e-3}$.
 
+\subsection{Nondimensional Parameters}
+The two dependent variables $\eta'$ and $\varphi'$ of our system
+\cref{eq:kinematic_bc_varphi,eq:dynamic_bc_varphi} are controlled by a
+number of nondimensional variables and parameters: $x'$, $t'_0$, $t'_1$,
+$\epsilon$, $\mu_E$, and $P'$.
+The Buckingham Pi theorem implies that $\eta'$ has the following
+dependence
+\begin{equation}
+  \eta' = f(x', t'_0, t'_1, \epsilon, \mu_E, P') \,.
+\end{equation}
+A similar result holds for $\varphi'$, but we are mainly interested in
+$\eta'$.
+Seeking right-propagating waves at leading order gives
+\begin{equation}
+  \eta' = f(x'-t'_0, t'_1, \epsilon, \mu_E, P') \,.
+\end{equation}
+However, \cref{eq:kdv_burgers} shows $\epsilon$ and $\mu_E$ only enter as
+the quotient $\mu_E/\epsilon \propto \Ur^{-1}$:
+\begin{equation}
+  \eta' = f(x'-t'_0, t'_1, \Ur, P') \,.
+  \label{eq:kdvb_sol_buckingham}
+\end{equation}
+By choosing solitary waves as our initial condition, we fixed $\Ur
+4\pi^2/3$.
+
+For the unforced KdV equation, $P'=0$, so
+\begin{equation}
+  \eval{\eta'}_{P'=0} = f('x - t'_0, t'_1) \,.
+\end{equation}
+In fact, since the KdV equation supports traveling waves, we can
+restrict even more to
+\begin{equation}
+  \eval{\eta'}_{P'=0} = f(x'-c' t') \,,
+\end{equation}
+with $c' = 1 + \epsilon c_1'$.
+This simply expressed the well-known fact that, though solitary KdV
+waves are controlled by a single factor parameter $H \propto \epsilon$,
+this parameter only appears in the scaling of other variables, \ie not
+as a separate parameter.
+
+Return to the KdV-Burgers equation, we cannot combine $t'_0$ and $t'_1$
+in \cref{eq:kdvb_sol_buckingham} since the wave is growing as well as
+propagating.
+Converting back to dimensional variables, we have
+\begin{equation}
+  \begin{split}
+    \eta &= H f\bqty{(x - \sqrt{gh} t) \sqrt{\mu_E}/h, t \epsilon \sqrt{g
+      \mu_E/h}, P \sqrt{\mu_E}/(\epsilon \rho_w g h)} \\
+    &= H f\bqty{(x - \sqrt{gh}t) \sqrt{H/h^3}, t \sqrt{g H^3/h^4}, P /(\rho_w
+      g \sqrt{H h})} \,,
+  \end{split}
+\end{equation}
+where we used the fact that $\mu_E \propto \epsilon$.
+This is interesting because it implies a number of invariant scalings.
+For instance, scaling the pressure by $P \to \lambda P$ while also
+scaling the gravity by $g \to \lambda g$ (for instance, in
+reduced-gravity situations at the interface of two fluids) and time by
+$t \to t/\lambda^2$ would result in an identical wave.
+
 \section{\texorpdfstring{Weak Wind: $\alpha = \epsilon^{1.5}$}{Weak
 Wind} \label{sec:weak}}
 Here, we assume $\alpha \coloneqq P k/(\rho_w g) = \epsilon^{1.5}$.
