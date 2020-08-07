@@ -63,7 +63,7 @@ def skewness(profile):
 
     return skewness
 
-def asymmetry(profile):
+def asymmetry(profile, asym_half=None):
     """Get the asymmetry of the solution calculated with
     solve_system.
 
@@ -75,6 +75,14 @@ def asymmetry(profile):
 
     xLen,xNum,dx = get_var_stats(profile)
 
+    # Create coordinate masks
+    if asym_half == 'left':
+        x_mask = (profile.coords['x/h']<0).values
+    elif asym_half == 'right':
+        x_mask = (profile.coords['x/h']>=0).values
+    else:
+        x_mask = np.ones(profile.coords['x/h'].size)
+
     # Cast to type double (float64) since fft (used in Hilbert for
     # asymmetry) is unable to hand long double (float128)
     profile = np.array(profile, dtype=np.float64)
@@ -83,6 +91,10 @@ def asymmetry(profile):
     # Confusingly, sp.signal.hilbert gives the analytic signal, x -> x + i*H(x)
     # so take the imaginary part
     profile_hilbert = np.imag(sp.signal.hilbert(profile,axis=0))
+
+    # Apply the coordinate mask (note: do this after Hilbert since
+    # multiplying by a mask does not commute with the Hilbert transform)
+    profile_hilbert = (profile_hilbert.T*x_mask).T
 
     average_hilbert_cubed = sp.integrate.trapz(
             profile_hilbert**3,
@@ -592,7 +604,7 @@ def time_downsample(signal, downsample_factor=1, keep_last=True):
 
     return signal_downsampled
 
-def generate_statistics(filename=None, data_array=None):
+def generate_statistics(filename=None, data_array=None, asymmetry_partitions=None):
     if filename is not None:
         # Extract data
         data_array = data_csv.load_data(filename)
@@ -607,6 +619,9 @@ def generate_statistics(filename=None, data_array=None):
 
     # Calculate asymmetry
     asymmetries = asymmetry(data_array)
+    if asymmetry_partitions:
+        asymmetries_left = asymmetry(data_array, asym_half='left')
+        asymmetries_right = asymmetry(data_array, asym_half='right')
 
     save_biphase = data_array.attrs.get('wave_type',None) == 'cnoidal'
     if save_biphase:
@@ -629,6 +644,9 @@ def generate_statistics(filename=None, data_array=None):
         'max(eta)/h' : ('t*eps*sqrt(g*h)*k_E' , maximums),
         'skewness' : ('t*eps*sqrt(g*h)*k_E' , skewnesses),
         'asymmetry' : ('t*eps*sqrt(g*h)*k_E' , asymmetries),
+        **({'asymmetry_left' : ('t*eps*sqrt(g*h)*k_E' ,asymmetries_left),
+            'asymmetry_right' : ('t*eps*sqrt(g*h)*k_E' ,asymmetries_right),
+            } if asymmetry_partitions else {}),
         **({'biphase' : ('t*eps*sqrt(g*h)*k_E' , biphases)} if
             save_biphase else {}),
         'E/E_0' : ('t*eps*sqrt(g*h)*k_E' ,
@@ -1112,6 +1130,105 @@ def print_slope_ratios(load_prefix, save_prefix, *args, **kwargs):
                     str(data_array.attrs['P']))
             print('Steepness ratio: '+str(peak_ratios.max().values))
 
+def print_asym_variance(load_prefix, save_prefix, integrate_time=False,
+        plot_variance=True, *args, **kwargs):
+    """
+    Determine what percent of the variance between
+    abs(AsymPpos - AsymPzero) and abs(AsymPneg - AsymPzero) comes
+    from the portion of the profile x > 0 compared to x < 0
+
+    Parameters
+    ----------
+    integrate_time : boolean
+        If True, integrate variance over time. If False, only take final
+        time. Default is False.
+    """
+
+    filename_base = 'Snapshots'
+
+    # Find filenames
+    filenames = data_csv.find_filenames(load_prefix, filename_base,
+            allow_multiple_files=True)
+
+    statistics_list = []
+    attrs_list = []
+    for filename in filenames:
+        # Create shape statistics
+        statistics = generate_statistics(filename,
+                asymmetry_partitions=True)
+
+        if statistics.attrs['wave_type'] != 'solitary' or \
+                statistics.attrs['forcing_type'] != 'Jeffreys':
+                    continue
+
+        # Append statistics to list
+        statistics = statistics.assign_coords(statistics.attrs)
+        statistics = statistics.expand_dims(list(statistics.attrs.keys()))
+        statistics_list.append(statistics)
+
+    # Combine statistics Datasets
+    statistics_datasets = xr.combine_by_coords(statistics_list,
+            combine_attrs='drop')
+    statistics_datasets = statistics_datasets.squeeze(drop=True)
+
+    # Loop through unique Ps, disregarding sign, and not including 0
+    for P_abs_val in \
+        set(np.abs(statistics_datasets.coords['P'].values)).difference([0]):
+
+        variances = {}
+        full_variances = {}
+
+        for asym in ['asymmetry', 'asymmetry_left', 'asymmetry_right']:
+
+            normalized_error = \
+                    (np.abs( \
+                        statistics_datasets[asym].loc[{'P':P_abs_val}] \
+                        - statistics_datasets[asym].loc[{'P':0.0}]) \
+                    - np.abs( \
+                        statistics_datasets[asym].loc[{'P':-P_abs_val}] \
+                        - statistics_datasets[asym].loc[{'P':0.0}]))
+
+            # Take absolute value
+            normalized_error = np.abs(normalized_error)
+            if integrate_time:
+                # At t=0, the denominator is zero, so normalized_error in inf;
+                # replace with zero
+                normalized_error[np.abs(normalized_error) == np.inf] = 0
+                normalized_error = np.nan_to_num(normalized_error)
+
+                tLen, tNum, dt = get_var_stats(statistics_datasets, var='t*eps*sqrt(g*h)*k_E',
+                    periodic=False)
+                integrated_variance = sp.integrate.trapz(normalized_error, dx=dt,
+                        axis=0)/(tLen)
+
+                variances[asym] = integrated_variance
+            else:
+                variances[asym] = normalized_error[{'t*eps*sqrt(g*h)*k_E':-1}].values
+            full_variances[asym] = normalized_error
+
+        print('abs(P) = '+str(P_abs_val))
+        print('Left proportion of variance: '+\
+                str(variances['asymmetry_left']/variances['asymmetry']))
+
+        if plot_variance:
+            import matplotlib.pyplot as plt
+            time = statistics_datasets.coords['t*eps*sqrt(g*h)*k_E']
+            variance_ratio = (full_variances['asymmetry_left'] \
+                    /full_variances['asymmetry'])
+
+            # Only show after t=1, since the early time has 'asymmetry',
+            # 'asymmetry_left', and 'asymmetry_right' all approximately
+            # zero, and the numerical precision causes issues
+            time = time.where(time>1)
+            variance_ratio = variance_ratio.where(time>1)
+
+            plt.plot(time, variance_ratio)
+            plt.title('Left proportion of variance: abs(P) = '+str(P_abs_val))
+            plt.xlabel('t*eps*sqrt(g*h)*k_E')
+
+            plt.show()
+
+
 def main():
     load_prefix = '../Data/Raw/'
     save_prefix = '../Data/Processed/'
@@ -1135,12 +1252,14 @@ def main():
             'spacetime_mesh' : process_spacetime_mesh,
             'decaying_no_nu_bi' : process_decaying_no_nu_bi,
             'print_slope_ratios' : print_slope_ratios,
+            'print_asym_variance' : print_asym_variance,
             }
 
     if len(sys.argv) == 1:
         # No option provided; run all plots except print functions
         for function in callable_functions.values():
-            if function == print_slope_ratios:
+            if function == print_slope_ratios or \
+                    function == print_asym_variance:
                         continue
             function(load_prefix, save_prefix)
 

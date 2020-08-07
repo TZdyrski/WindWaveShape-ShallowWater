@@ -638,14 +638,28 @@ water level.
   \label{fig:statistics_solitary}
 \end{figure}
 
-We have plotted various shape statistics for the solitary wave in
-\cref{fig:statistics_solitary} as functions of the nondimensional slow
-time $t \epsilon \sqrt{g h} k_E$.
+In order to quantify the effect of wind on wave shape,
+\cref{fig:statistics_solitary} shows various shape statistics as
+functions of the nondimensional slow time $t \epsilon \sqrt{g h} k_E$
+for onshore wind ($P k_E/(\rho_w g \epsilon) = 0.125$ and $0.25$),
+offshore wind ($P k_E/(\rho_w g \epsilon) = -0.125$ and $-0.25$), and
+the unforced case ($P k_E/(\rho_w g \epsilon) = 0$).
+All cases are plotted for initial steepness $\epsilon = 0.1$ up to slow
+time $t'_1 = 4$, corresponding to $4/\epsilon = 40$ wave periods.
 The \subref{fig:statistics_solitary:a} wave height is calculated as
 \begin{equation}
   H(t) = \max{\eta} - \min{\eta} \,.
   \label{eq:height_def}
 \end{equation}
+The height \subref{fig:statistics_solitary:a} begins at $H_0/h = 2
+\epsilon = 0.2$ and shows the onshore wind
+causing wave growth while the offshore wind causes decay, as was
+observed in \cref{fig:snapshots_solitary}.
+Again, the onshore wind causes faster growth than the offshore wind
+causes decay.
+As stated in the previous paragraph, this is consistent with an
+exponential energy growth or decay.
+
 Wave shape can be quantified by the third-order moments, skewness and
 asymmetry.
 The \subref{fig:statistics_solitary:b} skewness is defined as
@@ -654,35 +668,38 @@ The \subref{fig:statistics_solitary:b} skewness is defined as
   \rangle^{3/2}} \,,
   \label{eq:skew_def}
 \end{equation}
-and the \subref{fig:statistics_solitary:c} asymmetry is defined as
+ and
+\begin{equation}
+  \langle f \rangle \coloneqq \frac{1}{L'_x} \int_{-L'_x/2}^{L'_x/2} f
+  \dd{x} \,.
+\end{equation}
+Since this definition caries a factor of the
+domain size $\sqrt{L'_x}$, we normalize by the initial skewness.
+The onshore (offshore) causes the wave to become more (less) skewed over
+time.
+The skewness is largely symmetric with respect $\pm P$ about one.
+Similarly, the \subref{fig:statistics_solitary:c} asymmetry is defined as
 \begin{equation}
   \As \coloneqq \frac{\langle \hilbert \Bqty{\eta^3} \rangle}{\langle
     \eta^2 \rangle^{3/2}} \,,
   \label{eq:asym_def}
 \end{equation}
-with $\hilbert$ the Hilbert transform and
-\begin{equation}
-  \langle f \rangle \coloneqq \frac{1}{L'_x} \int_{-L'_x/2}^{L'_x/2} f
-  \dd{x} \,.
-\end{equation}
-Additionally, each statistic is plotted for onshore wind ($P
-k_E/(\rho_w g \epsilon) = 0.125$ and $0.25$), offshore wind ($P
-k_E/(\rho_w g \epsilon) = -0.125$ and $-0.25$), and the unforced case
-($P k_E/(\rho_w g \epsilon) = 0$).
-All cases are plotted for initial steepness $\epsilon = 0.1$ up to slow
-time $t'_1 = 4$, corresponding to $4/\epsilon = 40$ wave periods.
-The height \subref{fig:statistics_solitary:a} begins at $H_0/h = 2
-\epsilon = 0.2$ and shows the onshore wind
-causing wave growth while the offshore wind causes decay, as was
-observed in \cref{fig:snapshots_solitary}.
-The skewness of the initial profile is \num{2.19}, with onshore
-(offshore) causing the wave to become more (less) skewed over time.
-Finally, the initial profile has zero asymmetry, and the unforced case
+with $\hilbert$ the Hilbert transform.
+The initial profile has zero asymmetry, and the unforced case
 $P=0$ maintains zero asymmetry over time.
 However, the onshore wind causes the asymmetry to become negative
 corresponding to a tilting backwards, while the offshore wind increases
 the asymmetry causing the wave to tilt forwards, as seen in
 \cref{fig:snapshots_solitary}.
+Notice that $\abs{\As}$ is larger for onshore winds than offshore winds.
+The definitions of the skewness and asymmetry are insensitive to scaling
+of the waveform $\eta \to \lambda \eta$, so this effect is not simply
+caused by the wave's growth under an onshore wind.
+Instead, over \SI{80}{\percent} of the discrepancy between $P>0$
+and $P<0$ asymmetries arises from the left half of the wave.
+This is consistent with the observation from
+\cref{fig:snapshots_solitary} that the left side has a much more
+apparent shape change, owing to greater influence of the wind.
 
 \section{Discussion}
 
