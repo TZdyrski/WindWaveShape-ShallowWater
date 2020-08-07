@@ -58,7 +58,7 @@
 
 \begin{abstract}
 Wave shape (\eg wave skewness and asymmetry) impacts sediment transport,
-beach morphology, and ship safety.
+remote sensing, and ship safety.
 Previous work by the authors showed that wind (via changes in surface
 pressure) affects wave shape in intermediate and deep water.
 This effect was most pronounced as the depth decreased.
@@ -80,6 +80,52 @@ intermediate and deep water.
 \end{abstract}
 
 \section{Introduction}
+
+The study of wind's interaction with ocean waves has a long history, beginning
+with \citet{jeffreys1925formation} and continuing to be an active field
+of
+research~\citep[\eg][]{banner1976separation,touboul2006interaction,tian2013evolution}.
+Early
+theories~\citep[\eg][]{jeffreys1925formation,miles1957generation,phillips1957generation}
+where primarily interested in calculating wind-induced growth rates
+and often employed a phase-averaging technique.
+However, it is also known that wind can influence wave shape~\citep[\eg][]{leykin1995asymmetry,feddersen2005wind,zdyrski2019effects}.
+Wave shape can be parameterized by third-order shape statistics such as
+skewness and asymmetry, corresponding to the wave's vertical and
+horizontal asymmetry, respectively.
+These shape parameters can influence sediment transport \citep[\eg][]{drake2001discrete,
+hsu2004effects,gonzalez2007seabed} which modulates beach
+morphodynamics~\citep[\eg][]{hoefel2003wave,grasso2011sediment}.
+Additionally, wave skewness affects the returned signal in radar
+altimetry~\citep[\eg][]{jackson1979reflection,hayne1980radar,huang1983non},
+and wave asymmetry influences ship response to wave
+impacts~\citep[\eg][]{soares2008abnormal,oberhagemann2013prediction}.
+Therefore, understanding how wind influences these shape statistics is a
+matter of practical importance.
+
+When the water depth $h$ is small compared to the wavelength $\lambda$,
+waves are classified as shallow water waves $kh \ll 1$ (with $k
+\coloneqq 2 \pi/\lambda$).
+Waves in shallow water differ qualitatively from those in intermediate
+to deep water where $kh \sim 1$ or $\gg 1$, respectively.
+The waves' interactions with the bottom modifies the dispersion relation
+and causes wave trains to be nondispersive, to first approximation.
+Furthermore, this weaker dispersion permits a special class of waves
+when dispersion balances nonlinear focusing.
+These localized, propagating waves are known as solitary waves.
+After being observed in a water channel by John Scott Russell in 1834,
+solitary waves have appeared in many environments, including
+nonlinear optical pulses \citep[\eg][]{kivshar1993dark}.
+One of the simplest models for solitons is the Korteweg-de Vries (KdV)
+equation, which incorporates dispersion and nonlinearity.
+If it is augmented with a dissipative term, this becomes the KdV-Burgers
+equation
+The KdV-Burgers appears in a vast number of disciplines, including
+astrophysical dusty plasmas \citep[\eg][]{sahu2012nonextensive},
+ion-acoustic shocks in plasmas \citep[\eg][]{roy2008ion},
+electron waves in graphene \citep[\eg][]{zdyrski2019effects},
+damped internal tides \citep[\eg][]{sandstrom1995dissipation},
+and viscous flow in blood vessels \citep[\eg][]{antar1999weakly}.
 
 \section{Setup}
 \subsection{Governing Equations}
