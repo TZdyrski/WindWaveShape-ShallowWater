@@ -134,6 +134,8 @@ pgf_with_latex = {                      # Setup matplotlib to use latex
         +r'\usepackage{amsmath}'         # Use amsmath to declare new math symbols
         +r'\newcommand{\im}{\mathrm{i}}' # Define \im as Roman i
         +r'\renewcommand*{\epsilon}{\varepsilon}' # Replace epsilon with varepsilon
+        +r'\DeclareMathOperator{\Sk}{Sk}' # Define skewness
+        +r'\DeclareMathOperator{\As}{As}' # Define asymmetry
     ,
     }
 
@@ -156,6 +158,8 @@ if useBackend == 'pgf':
             +r'\usepackage{amsmath}'         # Use amsmath to declare new math symbols
             +r'\newcommand{\im}{\mathrm{i}}' # Define \im as Roman i
             +r'\renewcommand*{\epsilon}{\varepsilon}' # Replace epsilon with varepsilon
+            +r'\DeclareMathOperator{\Sk}{Sk}' # Define skewness
+            +r'\DeclareMathOperator{\As}{As}' # Define asymmetry
         ,
     })
 elif useBackend == 'mplcairoEps':

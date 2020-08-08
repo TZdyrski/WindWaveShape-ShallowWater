@@ -378,7 +378,8 @@ def plot_shape_statistics_template(data_arrays, ax_title=None, **kwargs):
     plot_peak_pos = 'x_peak/h' in data_arrays[0].data_vars
     plot_peak_speed = 'c_peak/sqrt(g*h)' in data_arrays[0].data_vars
 
-    ax_ylabel_list = ['Height $H/h$', 'Skewness', 'Asymmetry']
+    ax_ylabel_list = ['Height $H/h$', r'Skewness $\Sk$',
+            r'Asymmetry $\As$']
     if plot_biphase:
         ax_ylabel_list.append('Biphase')
     if plot_peak_pos:
@@ -440,7 +441,7 @@ def plot_shape_statistics_template(data_arrays, ax_title=None, **kwargs):
                 color='0.75', zorder=-1)
 
         # Put horizontal line at y=0
-        ax[ax_ylabel_list.index('Asymmetry'),ix].item().axhline(0,
+        ax[ax_ylabel_list.index(r'Asymmetry $\As$'),ix].item().axhline(0,
                 color='0.75', zorder=-1)
 
         if plot_peak_speed:
