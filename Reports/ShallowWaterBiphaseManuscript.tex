@@ -190,9 +190,10 @@ accurate surface pressure---is outside the scope of this paper.
 \subsection{\label{sec:nondim} Nondimensionalization}
 We will normalize by identifying characteristic scales.
 The parameters we know \apriori are the characteristic horizontal length
-scale $L$ over which $\eta$ changes rapidly, the (initial) wave height
-$H_0$, the depth $h$, the gravitational acceleration $g$, and the wind
-speed $U$ expressed as a pressure magnitude $P \propto \rho_a (U-c)^2$.
+scale $L$ over which $\eta$ changes rapidly, the (initial) wave
+amplitude $a_0 = H_0/2$ (\ie half the wave height $H_0$), the depth $h$,
+the gravitational acceleration $g$, and the wind speed $U$ expressed as
+a pressure magnitude $P \propto \rho_a (U-c)^2$.
 However, instead of using $L$, we will instead use an effective
 wavenumber $k_E \coloneqq 2 \pi/ L$.
 Denoting nondimensional variables with an prime, we have
@@ -212,10 +213,9 @@ Denoting nondimensional variables with an prime, we have
   \begin{aligned}
   \eta &= a_0 \eta' = h \epsilon \eta' \,, \\
   \phi &= \phi'\frac{a_0}{k_E}\sqrt{\frac{g}{h}}
-    = \frac{\phi'\epsilon}{\sqrt{\mu_E}}\sqrt{g h^3} \,,
+    = \frac{\phi'\epsilon}{\sqrt{\mu_E}}\sqrt{g h^3} \,.
   \end{aligned}
 \end{equation*}
-with $a_0 \coloneqq H_0/2$ the initial wave amplitude.
 Here, we have defined the parameters $\epsilon \coloneqq H_0/(2h)$ and $\mu_E
 \coloneqq (kh)^2$, while choosing $\order{P k_E/(\rho_w g)} =
 \order{\epsilon}$.
