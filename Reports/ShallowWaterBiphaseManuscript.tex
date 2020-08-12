@@ -581,29 +581,12 @@ Furthermore, the wind induces a horizontal asymmetry in the wave shape.
 In both cases, the windward side of the wave becomes steeper (up to
 \SI{8}{\percent} steeper for the time period shown) than the leeward
 side.
-
 Finally, while the front face of the wave shows only a moderate change in
 slope, the rear face of the wave shows a qualitative difference between
 the two wind directions.
 Namely, the offshore wind raises the rear base of the wave relative to
 its initial profile while an onshore wind depresses it, even forming a
 small depression below the still water level.
-This can be understood by considering the fluid velocity, which is
-largely right-to-left in this co-moving frame.
-When the water approaches the solitary wave from $x = +\infty$, it is
-virtually unaffected by the pressure, since $p \propto \partial_x \eta$
-is negligible far away from the wave.
-Hence, the front face of the wave (the right side) is largely unaffected
-by the pressure forcing.
-For the onshore wind case, the water rising on the right side of the
-wave encounters low air pressure, and the water descending on the left
-hand side encounters high air pressure, both of which increase the
-water's energy.
-This additional kinetic energy causes the water flow to overshoot $z=0$
-at the rear base of the wave, leading to the overshoot observed.
-The opposite holds for the onshore wind, where kinetic energy is removed
-from the flow, so that the flow does not immediately return to the still
-water level.
 
 \begin{figure}
   \centering
@@ -699,7 +682,7 @@ Instead, over \SI{80}{\percent} of the discrepancy between $P>0$
 and $P<0$ asymmetries arises from the left half of the wave.
 This is consistent with the observation from
 \cref{fig:snapshots_solitary} that the left side has a much more
-apparent shape change, owing to greater influence of the wind.
+apparent shape change.
 
 \section{Discussion}
 
@@ -750,6 +733,31 @@ If we instead consider laboratory conditions with $h=\SI{0.37}{\meter}$,
 $\mu_E = 1.4$, $\epsilon = 0.14$, and $U_{0.3} = \SI{8}{\meter\per\second}$
 as in \citet{feddersen2005wind}, we instead get $P k_E/(\rho_w g) =
 \num{4.5e-3} = \order{\epsilon^3}$.
+
+\subsection{Physical Interpretation}
+In \cref{sec:results}, it was noted that the rear face of the waves in
+\cref{fig:snapshots_solitary} showed marked shape differences between
+onshore and offshore wind, while the front faces were rather similar.
+This can be understood by considering the fluid velocity, which is
+largely right-to-left in this co-moving frame.
+When the water approaches the solitary wave from $x = +\infty$, it is
+virtually unaffected by the pressure, since $p \propto \partial_x \eta$
+is negligible far away from the wave.
+Hence, the front face of the wave (the right side) is largely unaffected
+by the pressure forcing.
+For the onshore wind case, the water rising on the right side of the
+wave encounters low air pressure, and the water descending on the left
+hand side encounters high air pressure, both of which increase the
+water's energy.
+This additional kinetic energy causes the water flow to overshoot $z=0$
+at the rear base of the wave, leading to the overshoot observed.
+The opposite holds for the onshore wind, where kinetic energy is removed
+from the flow, so that the flow does not immediately return to the still
+water level.
+As discussed in \cref{sec:results}, this discrepancy between the front
+and rear faces of the wave is also largely responsible for the variation
+between onshore asymmetry and offshore asymmetry in
+\cref{fig:statistics_solitary}.
 
 \subsection{Comparison to Intermediate and Deep Water}
 Here, we have coupled wind to waves in shallow water.
