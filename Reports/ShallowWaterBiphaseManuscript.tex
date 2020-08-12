@@ -127,12 +127,11 @@ electron waves in graphene \citep[\eg][]{zdyrski2019effects},
 damped internal tides \citep[\eg][]{sandstrom1995dissipation},
 and viscous flow in blood vessels \citep[\eg][]{antar1999weakly}.
 
-\section{Setup}
+\section{Derivation of KdV-Burgers Equation}
 In order to investigate the interaction of wind and surface waves in
-shallow water, we will begin by including a forcing term in the shallow
-water (Boussinesq) equations.
-This will then produce a KdV-Burgers equation governing the evolution of
-the surface profile, which will be solved numerically.
+shallow water, we introduce a forcing term in the Boussinesq equations.
+This will produce a KdV-Burgers equation governing the surface profile's
+evolution, which we will solve numerically.
 
 \subsection{Governing Equations}
 We will treat the flow as irrotational and inviscid throughout the
@@ -194,14 +193,12 @@ a fully dynamic coupling between wind and waves---necessary for an
 accurate surface pressure---is outside the scope of this paper.
 
 \subsection{\label{sec:nondim} Nondimensionalization}
-We will normalize by identifying characteristic scales.
-The parameters we know \apriori are the characteristic horizontal length
-scale $L$ over which $\eta$ changes rapidly, the (initial) wave
-amplitude $a_0 = H_0/2$ (\ie half the wave height $H_0$), the depth $h$,
-the gravitational acceleration $g$, and the wind speed $U$ expressed as
-a pressure magnitude $P \propto \rho_a (U-c)^2$.
-However, instead of using $L$, we will instead use an effective
-wavenumber $k_E \coloneqq 2 \pi/ L$.
+We will nondimensionalize with the known characteristic scales: the
+horizontal length scale $L$ over which $\eta$ changes
+rapidly, expressed as an effective wavenumber $k_E \coloneqq 2 \pi/L$;
+the (initial) wave amplitude $a_0 = H_0/2$ (\ie half the wave height
+$H_0$); the depth $h$; the gravitational acceleration $g$; and the wind
+speed $U$ expressed as a pressure magnitude $P \propto \rho_a (U-c)^2$.
 Denoting nondimensional variables with an prime, we have
 \begin{equation*}
   \begin{aligned}
@@ -222,14 +219,12 @@ Denoting nondimensional variables with an prime, we have
     = \frac{\phi'\epsilon}{\sqrt{\mu_E}}\sqrt{g h^3} \,.
   \end{aligned}
 \end{equation*}
-Here, we have defined the parameters $\epsilon \coloneqq H_0/(2h)$ and $\mu_E
-\coloneqq (kh)^2$, while choosing $\order{P k_E/(\rho_w g)} =
+We have defined the parameters $\epsilon \coloneqq H_0/(2h)$ and $\mu_E
+\coloneqq (kh)^2$ and chosen $\order{P k_E/(\rho_w g)} =
 \order{\epsilon}$.
-Our problem is defined by these three small, nondimensional parameters.
-We will later require that $\order{\epsilon} = \order{\mu_E}$.
-Furthermore, we see that $\epsilon/\mu_E$ is proportional to the Ursell
-number, $\Ur = H \lambda^2/h^3 = 8 \pi^2 \epsilon/\mu_E$.
-Using these definitions, our equations take the form
+These three small, nondimensional parameters define our system.
+We will later require $\order{\epsilon} = \order{\mu_E}$.
+Now, our equations take the form
 \begin{alignat}{2}
   0 &= \mu_E \phi'_{x'x'} + \phi'_{z'z'} &&\qq{on}
     -1 < z' < \epsilon \eta' \,, \label{eq:laplace_nondim} \\
@@ -247,39 +242,24 @@ Note that this is equivalent to choosing a set of units wherein $h = g =
 The primes will be dropped henceforth for readability.
 
 \subsection{Depth Dependence of \texorpdfstring{$\phi$}{Velocity Potential}}
-Here, we will reproduce the Bousinesq derivations provided by
-\citet{mei2005nonlinear}, modified to include a surface pressure
-forcing.
+Here, we modify the Bousinesq derivation provided by
+\citet{mei2005nonlinear} to include a surface pressure forcing.
 The depth dependence of $\phi$ can be determined from Laplace's equation
 \cref{eq:laplace_nondim} and the bottom boundary condition
-\cref{eq:bottom_bc_nondim}.
-We will do this be expanding $\phi$ in a Taylor series about the bottom
-$z=-1$:
+\cref{eq:bottom_bc_nondim} by expanding $\phi$ about $z=-1$:
 \begin{equation}
   \phi(x,y,z,t) = \sum_{n=0}^\infty (z+1)^n\phi_n(x,y,t) \,.
 \end{equation}
-A standard calculation \citep[\eg][]{mei2005nonlinear} yields $\phi$
-as a partial expansion of $\phi$ in terms of $\mu_E$:
-\begin{equation}
-  \phi(x,z,t) = \sum_{n=0}^{\infty} (-\mu_E)^n \frac{(z+1)^{2n}}{(2n)!}
-  \partial_x^{2n} \phi_0(x,t; \mu_E, \epsilon) \,.
-  \label{eq:phi_expansion}
-\end{equation}
-If we assume $\mu_E \ll 1$, we have,
+A standard calculation \citep[\eg][]{mei2005nonlinear} yields an
+expansion of $\phi$ in terms of $\mu_E \ll 1$:
 \begin{equation}
   \phi = \phi_0 - \frac{1}{2}\mu_E (z+1)^2\partial^2_x\phi_0 +
   \frac{\mu_E^2}{24}(z+1)^4\partial^4_x\phi_0 +
   \order{\mu_E^3} \,.
 \end{equation}
-Note that truncating our series $\phi_n$ at finite $n$ means
-Laplace's equation is only satisfied approximately.
-For convenience, we will define $\varphi \coloneqq \phi_0$, as we will
-need to append more subscripts shortly.
-
-Now, our goal is to determine the form of $\eta$ and $\varphi$.
-Substituting this series expansion into the two
-remaining boundary equations,
-\cref{eq:kinematic_bc_nondim,eq:dynamic_bc_nondim} and recalling that
+For convenience, we define $\varphi \coloneqq \phi_0$.
+Substituting this expansion into the two remaining boundary equations,
+\cref{eq:kinematic_bc_nondim,eq:dynamic_bc_nondim}, and recalling that
 they are evaluated at $z=\epsilon \eta$, we have reduced our system to
 the Boussinesq equations with a pressure forcing term,
 \begin{gather}
@@ -292,8 +272,7 @@ the Boussinesq equations with a pressure forcing term,
 \end{gather}
 where subscripts denote partial derivatives.
 Note that we have used the total depth $H\coloneqq 1+\epsilon\eta$.
-Further, we will now assume $\order{\epsilon} = \order{\mu_E} \ll 1$ which
-implies $\Ur = \order{1}$.
+Further, we will now assume $\order{\epsilon} = \order{\mu_E} \ll 1$.
 
 \subsection{Perturbation Expansion}
 \label{sec:shallow_water}
@@ -302,90 +281,60 @@ We expand our timescale in terms of multiple timescales $t_n =
 Thus, all time derivative become $\partial_t \to \partial_{t_0} +
 \epsilon \partial_{t_1} + \ldots$.
 Then, we expand our variables in an asymptotic series of $\mu_E$
-\begin{align}
-  \eta(x,t) &= \sum_{k=0}^{\infty} \epsilon^k
-    \eta_{k+1}(x,t_0,t_1,\ldots) \,, \\
-  \varphi(x,t) &= \sum_{k=0}^{\infty} \epsilon^k
+\begin{equation}
+  \eta(x,t) = \sum_{k=0}^{\infty} \epsilon^k
+    \eta_{k+1}(x,t_0,t_1,\ldots) \qq{and}
+  \varphi(x,t) = \sum_{k=0}^{\infty} \epsilon^k
     \varphi_{k+1}(x,t_0,t_1,\ldots) \,.
-\end{align}
+\end{equation}
 
-\section{Derivation of KdV-Burgers Equation}
 Now, we will reduce the Bousinessq equations
-\cref{eq:kinematic_bc_varphi,eq:dynamic_bc_varphi} to the KdV equations.
-\subsection{Zeroth Order Equations}
+\cref{eq:kinematic_bc_varphi,eq:dynamic_bc_varphi} to the KdV equations
+following a similar method to \citet{mei2005nonlinear}.
+\subsection{Shallow Water Wave Equations}
 Collecting order-one terms $\order{\epsilon^0}$ from
 \cref{eq:kinematic_bc_varphi,eq:dynamic_bc_varphi} gives
-\begin{gather}
-  \pdv{\eta_0}{t_0} + \pdv[2]{\varphi_0}{x} = 0 \,, \\
+\begin{equation}
+  \pdv{\eta_0}{t_0} + \pdv[2]{\varphi_0}{x} = 0 \qq{and}
   \eta_0 + \pdv{\varphi_0}{t_0} = 0 \,.
-\end{gather}
-Eliminating $\eta_1$ from this gives
-\begin{equation}
-  \pqty{\pdv[2]{t_0} - \pdv[2]{x} } \varphi_0 = 0 \,.
-  \label{eq:wave_eq}
 \end{equation}
-This is the standard one-dimensional wave equation.
-This implies
+These shallow-water wave equations have solutions
 \begin{equation}
-  \varphi_0 = f_0(x-t_0,t_1) + g_0(x+t_0,t_1) \,.
-  \label{eq:phi0_sol}
-\end{equation}
-Here, we have neglected the term linear in $t_0$ since we already set
-our gauge condition $\varphi = f(t_0)$, and we neglected the term linear
-in $x$ since we have chosen \cref{eq:bot_bc_horz} that $u =
-\pdv*{\varphi}_x = 0$ at the bottom.
-We will restrict to right-moving waves and take $g_0 = 0$.
-This also gives
-\begin{equation}
-  \eta_0 = - \pdv{\varphi_0}{t_0} = f_0'(x-t_0,t_1) \,,
-  \label{eq:eta0_sol}
+  \varphi_0 = f_0(x-t_0,t_1) \qq{and} \eta_0 = f'_0(x-t_0,1) \,.
+  \label{eq:order0_sols}
 \end{equation}
 with $f_0'(x-t_0,t_1) \coloneqq \eval{\pdv*{\theta}
 f_0(\theta,t_1)}_{\theta = x-t_0}$.
+We have restricted to right-moving waves and neglected the $x$-linear
+term in $\varphi_0$ since we chose $u = \pdv*{\varphi}_x = 0$ at the
+bottom~\cref{eq:bot_bc_horz}.
 
-\subsection{\label{sec:int_first_order} First Order Equations}
+\subsection{\label{sec:int_first_order} KdV Burgers Equation}
 Continuing to the next order of perturbation theory, we retain terms of
 order $\order{\epsilon}$.
-Inserting our previous solutions, \cref{eq:phi0_sol,eq:eta0_sol} yields
+Inserting our previous solutions, \cref{eq:order0_sols} yields
 \begin{gather}
-  \begin{aligned}
-    \pdv{\eta_1}{t_0} + \pdv[2]{\varphi_{1}}{x} &=
+    \pdv{\eta_1}{t_0} + \pdv[2]{\varphi_{1}}{x} =
       -\pdv{\eta_0}{t_1} - \pdv{x} \pqty{\eta_0 \pdv{\varphi_0}{x}} +
-      \frac{1}{6} \frac{\mu_E}{\epsilon} \pdv[4]{\varphi_0}{x} \\
-      &= -\pdv{f_0'}{t_1} - 2 f_0' f_0'' + \frac{1}{6}
-      \frac{\mu_E}{\epsilon} f_0^{(4)} \,,
-  \end{aligned}
+      \frac{1}{6} \frac{\mu_E}{\epsilon} \pdv[4]{\varphi_0}{x}
   \\
-  \begin{aligned}
-    \eta_1 + \pdv{\varphi_1}{t_0} &= -P \pdv{\eta_0}{x} -\pdv{\varphi_0}{t_1}
+    \eta_1 + \pdv{\varphi_1}{t_0} = -P \pdv{\eta_0}{x} -\pdv{\varphi_0}{t_1}
       + \frac{1}{2} \frac{\mu_E}{\epsilon} \frac{\partial^3 \varphi_0}
         {\partial t_0 \partial^2 x}
-      - \frac{1}{2} \pqty{ \pdv{\varphi_0}{x} }^2 \\
-    &= -\pdv{f_0}{t_1} - P \pdv{\eta_0}{x} - \frac{1}{2} \frac{\mu_E}{\epsilon}
-      f_0^{(3)} - \frac{1}{2} \pqty{f_0'}^2 \,,
-  \end{aligned}
+      - \frac{1}{2} \pqty{ \pdv{\varphi_0}{x} }^2
+  \,.
 \end{gather}
-with $f_0^{(n)} \coloneqq \eval{\pdv*[n]{\theta}
-f_0(\theta,t_1)}_{\theta=x-t_0}$ the $n$-th derivative of $f_0$.
-
-We can eliminate $\eta_1$ from these equations to give
+Inserting our leading order solutions \cref{eq:order0_sols} and
+eliminating $\eta_1$ gives
 \begin{equation}
   \pqty{\pdv[2]{x} - \pdv[2]{t_0}} \varphi_1 = -2 \pdv{f_0'}{t_1} +
     P\pdv{\eta_0}{t_0}{x} - 3 f_0' f_0'' - \frac{1}{3} \frac{\mu_E}{\epsilon}
     f_0^{(4)} \,.
 \end{equation}
-However, we assume all order $\varphi_{n}$ travel at the same speed; in
-particular, this means we will choose
-\begin{align}
-  \varphi_1 = f_1(x-t_0,t_1,\ldots) \,, \label{eq:phi1_sol} \\
-  \eta_1 = f_1'(x-t_0,t_1,\ldots) \,. \label{eq:eta1_sol}
-\end{align}
-Thus, the left hand side vanishes:
-\begin{equation}
-  \pdv{f_0'}{t_1} + \frac{1}{2} P f^{(3)} + \frac{3}{2} f_0' f_0''
-    + \frac{1}{6} \frac{\mu_E}{\epsilon} f_0^{(4)} = 0\,.
-\end{equation}
-Converting back to $\eta_0$ gives
+The homogeneous equation is again the shallow-water wave equation for
+$\varphi_1$.
+Since the right-hand side is a resonant forcing, it must vanish.
+Thus, converting back to $\eta_0$ gives
 \begin{equation}
   \pdv{\eta_0}{t_1} + \frac{3}{2}
     \eta_0 \pdv{\eta_0}{x} + \frac{1}{6} \frac{\mu_E}{\epsilon}
@@ -399,120 +348,49 @@ rather than decay).
 The KdV-Burgers equation is not known to have any closed form solutions,
 so we will instead solve this numerically.
 
-\section{Initial Conditions}
-For an initial condition, we will choose the solutions of the ordinary
-KdV equation: cnoidal or solitary waves (which are a special case of
-cnoidal waves).
-The general case of the KdV equation, with arbitrary coefficients, is
+\subsection{Initial Conditions}
+For an initial condition, we use the solitary wave solutions of
+the ordinary KdV equation:
 \begin{equation}
-  \mathcal{A} \pdv{\eta_0}{t_1} + \mathcal{F} \pdv{\eta_0}{x} + \mathcal{B}
-  \eta_0 \pdv{\eta_0}{x} + \mathcal{C} \pdv[3]{\eta_0}{x} = 0 \,.
+  \pdv{\eta_0}{t_1} + U\pdv{\eta_0}{x} + \frac{3}{2}
+    \eta_0 \pdv{\eta_0}{x} + \frac{1}{6} \frac{\mu_E}{\epsilon}
+    \pdv[3]{\eta_0}{x} = 0 \,.
+  \label{eq:kdv}
 \end{equation}
+We have boosted to a frame moving with the unforced solitary wave speed
+by including a term $U\partial_x \eta_0$.
 Using the solution from \citet{dingemans1997water} (as quoted in
 \citealp{brun2018convective}) and rescaling variables, the solitary
-wave solution is
+wave solution to \cref{eq:kdv} is
 \begin{equation}
-  \eta_0 = H_0 \sech^2\pqty{\frac{x - c_1 t_1}{\Delta}} \,,
-\end{equation}
-with
-\begin{equation}
-  \Delta = \sqrt{\frac{12 \mathcal{C}}{\mathcal{B}} \frac{1}{H_0}}
+  \eta_0 = H_0 \sech^2\pqty{\frac{x - c_1 t_1}{\Delta}}
+  \qq{with}
+  \Delta = \sqrt{\frac{4 \mu_E}{3\epsilon} \frac{1}{H_0}}
   \qq{and}
-  c_1 = \frac{\mathcal{F}}{\mathcal{A}} + \frac{H_0 \mathcal{B}}{3
-    \mathcal{A}} \,.
+  c_1 = U + \frac{H_0}{2} \,.
 \end{equation}
-Here, $\abs{H_0}$ is an order-1 parameter and $\sgn(H_0) =
-\sgn(\mathcal{B} \mathcal{C})$.
-For our particular system, we have $\mathcal{A} = 1$, $\mathcal{B} =
-3/2$, $\mathcal{C} = \mu_E/(6\epsilon)$, and $\mathcal{F} = 0$.
+$H_0>0$ is an order-1 parameter.
+We set $U=-H_0/2$ so the unforced wave is stationary.
 
-\subsection{Value of Nondimensional Parameters}
-If we temporarily revert back to dimensional variables (with primes
-denoting dimensionless), we have
-\begin{equation}
-  \begin{split}
-  \frac{\eta_0}{\epsilon h} &= H'_0 \sech^2\pqty{\frac{k_E x - k_E
-    \sqrt{gh} c_1' \epsilon t}{\Delta'}}
-  \\
-  \implies
-  \eta_0 &= \epsilon h H'_0
-  \sech^2\pqty{\frac{k_E}{\Delta'} \bqty{x - \epsilon \sqrt{gh} c_1' t}}
-  \\
-  &\coloneqq H_0 \sech^2\pqty{\frac{x - c_1 t}{\Delta}} \,.
-  \end{split}
-\end{equation}
-Here, we have defined the dimensional quantities $H_0$, $\Delta$, and $c_1$:
-\begin{gather}
-  H_0 = \epsilon h H'_0
-  \qq{and}
-  \Delta = \frac{\Delta'}{k_E}
-  \label{eq:nondim_solitary_params}
-  \\
-  \qq{and}
-  c_1 = \epsilon \sqrt{gh} c_1' = \epsilon \sqrt{gh} \pqty{
-    \frac{\mathcal{F}}{\mathcal{A}} +
-    \frac{\mathcal{B} H_0}{3 \mathcal{A}} }
-\end{gather}
-Given the conventional definition that $H_0 = 2 a_0$, we have
-\begin{equation}
-  2 a_0 = \epsilon h H'_0 = a H'_0 \implies H'_0 = 2 \,.
-\end{equation}
-We choose
-\begin{equation}
-  k_E \coloneqq \frac{2}{\Delta}
-\end{equation}
-
-Finally, we can now fix $\mu_E$ as a function of $\epsilon$:
-\begin{equation}
-  k_E = \frac{2}{\Delta} = \frac{2 k_E}{\Delta'}
-  \implies \Delta' = 2 \,.
-\end{equation}
-However, using \cref{eq:nondim_solitary_params}, we have
-\begin{equation}
-  2 = \Delta ' = \sqrt{\frac{12 \mathcal{C}}{\mathcal{B}}
-    \frac{1}{H'_0}}
-  = \sqrt{\frac{12 \mathcal{C}}{\mathcal{B}} \frac{1}{2}}
-  \implies 1 = \frac{2 \mathcal{B}}{3 \mathcal{C}} \,.
-\end{equation}
-For our particular values of $\mathcal{B} = 3/2$ and $\mathcal{C} =
-\mu_E/(6 \epsilon)$, we have
-\begin{equation}
-  1 = 6 \frac{\epsilon}{\mu_E} \,.
-\end{equation}
-This means that we have the requirement that
-\begin{equation}
-  \mu_E = 6 \epsilon
-\end{equation}
-for solitary waves.
-This is simply the well-known fact that the height and width of a
-solitary wave satisfy a fixed relationship.
-
+Reverting back to dimensional variables (with primes denoting
+dimensionless), we now choose $H_0$ so that $a_0$ is half the maximum of
+$\eta_0$.
+Furthermore, we now define what $k_E$ means by choosing $\Delta = 2$.
+This choice requires $\mu_E = 6 \epsilon$, which is simply the
+well-known fact that the height and width of a solitary wave satisfy a
+fixed relationship.
 Therefore, the nondimensional equation we are solving is
 \begin{equation}
-  \mathcal{A} \pdv{\eta'_0}{t'_1} + \mathcal{F} \pdv{\eta'_0}{x'} + \mathcal{B}
-  \eta'_0 \pdv{\eta'_0}{x'} + \mathcal{C} \pdv[3]{\eta'_0}{{x'}} =
-  \mathcal{G} \pdv[2]{\eta'_0}{{x'}} \,.
+  \pdv{\eta'_0}{t'_1} - \pdv{\eta'_0}{x'} + \frac{3}{2}
+  \eta'_0 \pdv{\eta'_0}{x'} + \pdv[3]{\eta'_0}{{x'}} =
+  -P \frac{1}{2} \pdv[2]{\eta'_0}{{x'}}
   \label{eq:kdvb_nondim}
-\end{equation}
-with $\mathcal{A} = 1$, $\mathcal{B} = 3/2$, $\mathcal{C} = 1$, and
-$\mathcal{G} = -P'/2$.
-We wish for the unforced case to be stationary in this frame of
-reference, so we include an $\mathcal{F}$ term such that the unforced
-phase speed $\eval{c_1}_{P=0} = 0$:
-\begin{equation}
-  \mathcal{F} = -\frac{2}{3} \mathcal{B} \,.
-\end{equation}
-Note that this is equivalent to boosting to a frame moving with the
-unforced phase speed.
-For our initial condition, we use
-\begin{equation}
-  \eta'_0(x) = 2 \sech^2\pqty{\frac{x'}{2}} \,.
-  \label{eq:initial_cond_nondim}
+  \qq{with}
+  \eta'_0(x',t_1=0) = 2 \sech^2\pqty{\frac{x'}{2}} \,.
 \end{equation}
 
-\section{Numerics}
-To solve \cref{eq:kdvb_nondim} subject to the initial condition
-\cref{eq:initial_cond_nondim}, we will use numerical methods.
+\subsection{Numerics}
+To solve \cref{eq:kdvb_nondim}, we will use numerical methods.
 The spatial domain has periodic boundary conditions and $N_x = 400$
 points spread over a domain of length $L'_x = 20$.
 This yields a spacing $\Delta x' = 0.05$, with $x' = 0, \Delta x',
@@ -525,14 +403,13 @@ The PDE \cref{eq:kdvb_nondim} is discretized in space using a
 second-order central finite difference method and in space using a
 \nth{3}-order Runge-Kutta scheme.
 For numerical stability, we must also include a hyperviscosity term
-$\mathcal{H}$,
+$\nu_{\text{bi}} = \num{3e-3}$,
 \begin{equation}
-  \mathcal{A} \pdv{\eta'_0}{t'_1} + \mathcal{F} \pdv{\eta'_0}{x'} + \mathcal{B}
-  \eta'_0 \pdv{\eta'_0}{x'} + \mathcal{C} \pdv[3]{\eta'_0}{{x'}} =
-  \mathcal{G} \pdv[2]{\eta'_0}{{x'}} - \mathcal{H}
-  \pdv[4]{\eta'_0}{{x'}} \,,
+  \pdv{\eta'_0}{t'_1} - \pdv{\eta'_0}{x'} + \frac{3}{2}
+  \eta'_0 \pdv{\eta'_0}{x'} + \pdv[3]{\eta'_0}{{x'}} =
+  -P \frac{1}{2} \pdv[2]{\eta'_0}{{x'}} - \nu_{\text{bi}}
+  \pdv[4]{\eta'_0}{{x'}} \,.
 \end{equation}
-with $\mathcal{H} = \num{3e-3}$.
 
 \section{\label{sec:results} Results}
 Given the one free parameter $P k_E/(\rho_w g \epsilon)$ of the
