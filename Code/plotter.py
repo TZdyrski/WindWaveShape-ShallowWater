@@ -1826,11 +1826,22 @@ def plot_energy(load_prefix, save_prefix, *args, **kwargs):
     Ps = data_arrays[0]['P']
     # Get E
     energy = data_arrays[0]['E/E_0']
-    # Take logarithm
-    ln_energy = np.log(energy)/Ps
-    # Fit with linear line
-    fit = np.polyfit(t,ln_energy,deg=1)[0]
-    fit = np.nan_to_num(fit)
+    # Fit with exponential
+    from scipy.optimize import curve_fit
+    fit = np.empty(Ps.size)
+    variance = np.empty(Ps.size)
+    for elem,_ in enumerate(Ps):
+        if Ps[elem] == 0.0:
+            # Can't calculate covariance for unforced case
+            fit[elem] = np.nan
+            variance[elem] = np.nan
+            continue
+        result = curve_fit(lambda t,b:
+                np.exp(b*Ps[elem]*t), t, energy[:,elem], p0=(1/2))
+        fit[elem] = result[0][0] # store slope
+        variance[elem] = result[1][0,0] # store slope variance
+    print('Mean exponential factor (Jeffreys, cnoidal): '+str(np.nanmean(fit)))
+    print('Maximum STD of exponential factor: '+str(np.sqrt(np.nanmax(variance))))
     # Calculate energy using best fit
     energy_fit = np.exp(np.outer(t,Ps*fit))
     # Plot
@@ -1878,12 +1889,22 @@ def plot_energy_GM(load_prefix, save_prefix, *args, **kwargs):
     Ps = data_arrays[0]['P']
     # Get E
     energy = data_arrays[0]['E/E_0']
-    # Take logarithm
-    ln_energy = np.log(energy)/Ps
-    # Fit with linear line
-    fit = np.polyfit(t,ln_energy,deg=1)[0]
-    fit = np.nan_to_num(fit)
-    # Calculate energy using best fit
+    # Fit with exponential
+    from scipy.optimize import curve_fit
+    fit = np.empty(Ps.size)
+    variance = np.empty(Ps.size)
+    for elem,_ in enumerate(Ps):
+        if Ps[elem] == 0.0:
+            # Can't calculate covariance for unforced case
+            fit[elem] = np.nan
+            variance[elem] = np.nan
+            continue
+        result = curve_fit(lambda t,b:
+                np.exp(b*Ps[elem]*t), t, energy[:,elem], p0=(1/2))
+        fit[elem] = result[0][0] # store slope
+        variance[elem] = result[1][0,0] # store slope variance
+    print('Mean exponential factor (GM, cnoidal): '+str(np.nanmean(fit)))
+    print('Maximum STD of exponential factor: '+str(np.sqrt(np.nanmax(variance))))
     energy_fit = np.exp(np.outer(t,Ps*fit))
     # Plot
     ax.plot(t, energy_fit, color='y', zorder=-1)
