@@ -1898,13 +1898,13 @@ def plot_energy_solitary(load_prefix, save_prefix, *args, **kwargs):
             variance[elem] = np.nan
             continue
         result = curve_fit(lambda t,b:
-                np.exp(b*Ps[elem]*t), t, energy[:,elem], p0=(1/2))
+                1/(1+Ps[elem]*t/b), t, energy[:,elem], p0=(-5))
         fit[elem] = result[0][0] # store slope
         variance[elem] = result[1][0,0] # store slope variance
-    print('Mean exponential factor (Jeffreys, solitary): '+str(np.nanmean(fit)))
+    print('Mean b factor (Jeffreys, solitary): '+str(np.nanmean(fit)))
     print('Maximum STD of exponential factor: '+str(np.sqrt(np.nanmax(variance))))
     # Calculate energy using best fit
-    energy_fit = np.exp(np.outer(t,Ps*fit))
+    energy_fit = 1/(1+np.outer(t,Ps/fit))
     # Plot
     ax.plot(t, energy_fit, color='y', zorder=-1)
 

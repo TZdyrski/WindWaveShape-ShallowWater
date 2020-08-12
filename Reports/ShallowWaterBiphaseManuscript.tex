@@ -456,9 +456,22 @@ unforced KdV equation.
 The onshore case \subref{fig:snapshots_solitary:a} demonstrates
 marked, accelerating wave growth while the offshore wind
 \subref{fig:snapshots_solitary:b} causes decay which slows over time.
-This is to be expected, as \cref{sec:press_mag} suggests the
-wave's energy $E \propto \int \eta^2 \dd{x}$ is exponential in time, so
-growth will be faster than decay.
+This can be explained by considering the energy growth rate.
+The energy can be numerically fit to
+\begin{equation}
+  E \propto 1/\pqty{1 + t'/t_d'}
+  \qq{with}
+  t_d' \coloneqq b \bqty{P k_E/(\rho_w g)}^{-1}
+  \,,
+  \label{eq:actual_energy}
+\end{equation}
+and $b = -5.025 \pm \num{3e-3}$.
+This is close to the analytic approximation for the decay time, giving
+$b = -15/4$~(\eg eq.\ 72 of \citealp{zdyrski2019effects} with
+$\mathcal{A}=1$, $\mathcal{B} = 3/2$, $\mathcal{C} = \mu_E/(6\epsilon) =
+1$, $\mathcal{G} = -(P k_E)/(2 \rho_w g)$, and $c_0 = H_0 = 2$).
+Thus, the energy (and height) change accelerates for $P>0$ but
+decelerates for $P<0$.
 Furthermore, the wind induces a horizontal asymmetry in the wave shape.
 In both cases, the windward side of the wave becomes steeper (up to
 \SI{8}{\percent} steeper for the time period shown) than the leeward
@@ -594,10 +607,14 @@ Redimensionalizing gives the energy growth rate $\gamma$,
 with the energy $E = \rho_w \int \eta^2 \dd{x}$ and frequency $\omega =
 \sqrt{gh}$.
 In the final equation, we evaluated the growth rate for the initial
-solitary wave profile \cref{eq:initial_cond_nondim}.
+solitary wave profile \cref{eq:kdvb_nondim}.
 Such a relationship between the surface pressure $p(x,t)$ and growth
 rate holds generally for any form of pressure
 forcing~\citep[\eg][]{peirson2008wind}.
+Note that this is consistent with the growth rate found in
+\cref{eq:actual_energy} for small times $\gamma t \ll 1$ since
+$\exp(\gamma t) \approx 1/(1+t/t_d)$ if $t_d \approx -1/\gamma$, which
+we satisfy as $-5.015/P' \approx -5/P'$.
 
 Additionally, \citet{jeffreys1925formation} theory relates this growth
 rate to the wind speed $U_z$, measured at some height $z$, as
