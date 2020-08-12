@@ -494,7 +494,7 @@ small depression below the still water level.
     skewness normalized by the initial time, and
     \subref{fig:statistics_solitary:c}
     asymmetry are defined in
-    \cref{eq:height_def,eq:skew_def,eq:asym_def}.
+    \cref{eq:height_def,eq:shape_stats_def}.
     Results are shown for $\epsilon=0.1$, $\mu_E = 0.6$, and $P
     k_E/(\rho_w g \epsilon) = 0$, $\pm 0.125$, and $\pm 0.25$, as
     indicated in the legend.
@@ -528,29 +528,26 @@ exponential energy growth or decay.
 
 Wave shape can be quantified by the third-order moments, skewness and
 asymmetry.
-The \subref{fig:statistics_solitary:b} skewness is defined as
+The \subref{fig:statistics_solitary:b} skewness and
+\subref{fig:statistics_solitary:c} asymmetry are defined as is defined
+as
 \begin{equation}
   \Sk \coloneqq \frac{\langle \eta^3 \rangle}{\langle \eta^2
-  \rangle^{3/2}} \,,
-  \label{eq:skew_def}
-\end{equation}
- and
-\begin{equation}
+  \rangle^{3/2}} \
+  \qq{and}
+  \As \coloneqq \frac{\langle \hilbert \Bqty{\eta^3} \rangle}{\langle
+    \eta^2 \rangle^{3/2}} \,,
+  \label{eq:shape_stats_def}
+  \qq{with}
   \langle f \rangle \coloneqq \frac{1}{L'_x} \int_{-L'_x/2}^{L'_x/2} f
-  \dd{x} \,.
+  \dd{x}
 \end{equation}
+and $\hilbert$ the Hilbert transform.
 Since this definition caries a factor of the
 domain size $\sqrt{L'_x}$, we normalize by the initial skewness.
 The onshore (offshore) causes the wave to become more (less) skewed over
 time.
 The skewness is largely symmetric with respect $\pm P$ about one.
-Similarly, the \subref{fig:statistics_solitary:c} asymmetry is defined as
-\begin{equation}
-  \As \coloneqq \frac{\langle \hilbert \Bqty{\eta^3} \rangle}{\langle
-    \eta^2 \rangle^{3/2}} \,,
-  \label{eq:asym_def}
-\end{equation}
-with $\hilbert$ the Hilbert transform.
 The initial profile has zero asymmetry, and the unforced case
 $P=0$ maintains zero asymmetry over time.
 However, the onshore wind causes the asymmetry to become negative
@@ -628,10 +625,7 @@ larger than $\abs{U_z}$ offshore.
 We can evaluate $U_z$ for the parameters used in \cref{sec:results}
 ($\epsilon=0.1$, $\mu_E = 0.6$, $Pk/(\rho_w g \epsilon) = 0.25$).
 We choose $\lambda = \SI{20}{\meter}$ to give the wind speed at
-$z=\SI{10}{\meter}$,
-\begin{equation}
-  U_{10} = \SI{29}{\meter\per\second} \,.
-\end{equation}
+$z=\SI{10}{\meter}$, $U_{10} = \SI{29}{\meter\per\second}$.
 For reference, these parameters correspond to a depth of $h =
 \SI{2.5}{\meter}$ and initial wave height $H_0 = \SI{0.5}{\meter}$.
 
@@ -676,8 +670,8 @@ Note that $\As \propto -\sin{\beta}$, to leading order \citep[\cf
 eq.\ 3.55 of][]{zdyrski2020wind}.%
 \footnote{
   Note: \citet[\cf eq.\ 3.55 of][]{zdyrski2020wind} had a sign error.
-  Using the standard definition of asymmetry \cref{eq:asym_def}, $\As
-  \propto -\sin{\beta}$.
+  Using the standard definition of asymmetry \cref{eq:shape_stats_def},
+  $\As \propto -\sin{\beta}$.
 }
 
 For this study, the effect of wind on periodic, cnoidal-like waves was
