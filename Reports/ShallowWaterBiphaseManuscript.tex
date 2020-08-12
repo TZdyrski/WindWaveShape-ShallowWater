@@ -633,12 +633,15 @@ $\pm$ sign) while holding the surface pressure magnitude
 $\abs{Pk_E/(\rho_w g)}$ constant means $\abs{U_z}$ onshore will be
 larger than $\abs{U_z}$ offshore.
 
-\Citet{donelan2006wave} provides a parameterization for data from
-\citet{donelan1999wind} that yields $S_{\lambda/2} = 0.17$.
+\Citet{donelan2006wave} provides a parameterization for shallow water
+waves that depends on airflow separation: $S_{\lambda/2} =
+(ak)\bqty{4.91-3.98 H\Bqty{(ak)\bqty{(U_z/c)^2-1} - 1}}$, with $H$ the
+Heaviside function.
 We can evaluate $U_z$ for the parameters used in \cref{sec:results}
 ($\epsilon=0.1$, $\mu_E = 0.6$, $Pk/(\rho_w g \epsilon) = 0.25$).
+This yields a non-separated flow, $(ak)\bqty{(U_z/c)^2-1} < 1$.
 We choose $\lambda = \SI{20}{\meter}$ to give the wind speed at
-$z=\SI{10}{\meter}$, $U_{10} = \SI{29}{\meter\per\second}$.
+$z=\SI{10}{\meter}$: $U_{10} = \SI{21}{\meter\per\second}$.
 For reference, these parameters correspond to a depth of $h =
 \SI{2.5}{\meter}$ and initial wave height $H_0 = \SI{0.5}{\meter}$.
 
