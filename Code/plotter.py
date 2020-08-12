@@ -1849,6 +1849,67 @@ def plot_energy(load_prefix, save_prefix, *args, **kwargs):
 
     texplot.savefig(fig,save_prefix+'Total-Energy-Jeffreys')
 
+def plot_energy_solitary(load_prefix, save_prefix, *args, **kwargs):
+    filename_base = 'Shape-Statistics'
+
+    # Remove 'P' parameter
+    kwargs.pop('P', None)
+
+    filenames = data_csv.find_filenames(load_prefix, filename_base,
+            parameters={'wave_type' : 'solitary', **kwargs},
+            allow_multiple_files=True)
+
+    data_array_list = []
+    P_val_list = []
+    for filename in filenames:
+        # Extract data
+        data_array = data_csv.load_data(filename, stack_coords=False)
+
+        P_val = float(data_array.attrs['P'])
+
+        P_val_list.append(P_val)
+        data_array_list.append(data_array)
+
+    # Arrange data and parameters into 1d array for plotting
+    data_arrays = np.empty((1),dtype=object)
+    data_arrays[0] = xr.concat(data_array_list, dim=xr.DataArray(P_val_list,
+        name='P', dims='P'))
+    # Transpose to put P coordinate at end; this makes plotting easier
+    data_arrays[0] = data_arrays[0].transpose()
+    # Remove P parameter attribute
+    data_arrays[0].attrs.pop('P', None)
+
+    fig = plot_energy_template(data_arrays)
+
+    # Plot best fit exponential
+    ax = fig.axes[0]
+    t = data_arrays[0]['t*eps*sqrt(g*h)*k_E']
+    Ps = data_arrays[0]['P']
+    # Get E
+    energy = data_arrays[0]['E/E_0']
+    # Fit with exponential
+    from scipy.optimize import curve_fit
+    fit = np.empty(Ps.size)
+    variance = np.empty(Ps.size)
+    for elem,_ in enumerate(Ps):
+        if Ps[elem] == 0.0:
+            # Can't calculate covariance for unforced case
+            fit[elem] = np.nan
+            variance[elem] = np.nan
+            continue
+        result = curve_fit(lambda t,b:
+                np.exp(b*Ps[elem]*t), t, energy[:,elem], p0=(1/2))
+        fit[elem] = result[0][0] # store slope
+        variance[elem] = result[1][0,0] # store slope variance
+    print('Mean exponential factor (Jeffreys, solitary): '+str(np.nanmean(fit)))
+    print('Maximum STD of exponential factor: '+str(np.sqrt(np.nanmax(variance))))
+    # Calculate energy using best fit
+    energy_fit = np.exp(np.outer(t,Ps*fit))
+    # Plot
+    ax.plot(t, energy_fit, color='y', zorder=-1)
+
+    texplot.savefig(fig,save_prefix+'Total-Energy-Jeffreys-Solitary')
+
 def plot_energy_GM(load_prefix, save_prefix, *args, **kwargs):
     filename_base = 'Shape-Statistics'
 
@@ -2314,6 +2375,7 @@ def main():
             'shape_statistics_vs_press_solitary' : plot_shape_statistics_vs_press_solitary,
             'shape_statistics_vs_press_cnoidal' : plot_shape_statistics_vs_press_cnoidal,
             'energy' : plot_energy,
+            'energy_solitary' : plot_energy_solitary,
             'energy_GM' : plot_energy_GM,
             'power_spec_vs_kappa' : plot_power_spec_vs_kappa,
             'power_spec_vs_kappa_GM' : plot_power_spec_vs_kappa_GM,
