@@ -422,12 +422,16 @@ def plot_shape_statistics_template(data_arrays, ax_title=None, **kwargs):
             data_arrays_rearranged[iy,shape_group].attrs = \
                     data_arrays[shape_group].attrs
 
+    # Remove vertical space between subplots
+    subplot_adjust_params = {'hspace':0}
+
     # Plot data
     fig = plot_multiplot_template(**{
         'data_arrays':data_arrays_rearranged,
         'ax_ylabel':ax_ylabel,
         **({'ax_title':ax_title_full} if ax_title is not None else {}),
         'color_class':'cyclic',
+        'subplot_adjust_params':subplot_adjust_params,
         # Put kwargs last so any parameters will overwrite the defaults
         # we've provided
         **kwargs,
