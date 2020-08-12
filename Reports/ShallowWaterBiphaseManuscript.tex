@@ -263,15 +263,14 @@ Substituting this expansion into the two remaining boundary equations,
 they are evaluated at $z=\epsilon \eta$, we have reduced our system to
 the Boussinesq equations with a pressure forcing term,
 \begin{gather}
-  \eta_t + \pqty{H\varphi_x}_x
-    -\frac{1}{6}\mu_E \pqty{H^3\varphi_{xxx}}_x =
-    \order{\mu_E^2} \label{eq:kinematic_bc_varphi} \,, \\
-  \epsilon P \eta_x + \eta + \varphi_t - \frac{1}{2}\mu_E H^2\varphi_{txx} +
-    \frac{1}{2}\epsilon\pqty{\varphi_x}^2 = \order{\mu_E^2} \,,
-  \label{eq:dynamic_bc_varphi}
+  \partial_t \eta + \partial_x^2 \varphi + \epsilon \partial_x
+    \pqty{\eta \partial_x \varphi} -\frac{1}{6}\mu_E \partial^4_x
+    \varphi = \order{\mu_E^2} \label{eq:kinematic_bc_varphi} \,, \\
+  \epsilon P \partial_x \eta + \eta + \partial_t \varphi -
+    \frac{1}{2}\mu_E \partial_t \partial_x^2 \varphi +
+    \frac{1}{2}\epsilon\pqty{\partial_x \varphi}^2 = \order{\mu_E^2} \,.
+    \label{eq:dynamic_bc_varphi}
 \end{gather}
-where subscripts denote partial derivatives.
-Note that we have used the total depth $H\coloneqq 1+\epsilon\eta$.
 Further, we will now assume $\order{\epsilon} = \order{\mu_E} \ll 1$.
 
 \subsection{Perturbation Expansion}
