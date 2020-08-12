@@ -210,8 +210,23 @@ Here, we encounter an issue: the experimental measurements are taken for
 deep water, and are not necessarily expected to hold for shallow water
 waves.
 
-We will use the \citet{miles1957generation} theory for $P' \ll 1$ as a model%
+\subsection{Pressure to Growth Rate}
+First, we need to relate the pressure magnitude $P$ to the energy growth
+rate $\gamma$.
+We will find the same relation holds in shallow water as it did in deep
+water (for monochromatic waves):
+\begin{equation}
+  \frac{\gamma}{\Re{\omega}} = s \frac{P k}{\rho_w g} \sin(\psi_P) \,,
+  \label{eq:gamma_vs_P}
+\end{equation}
+with $s$ a shape constant depending on the wave shape, with $s=1$ for
+monochromatic sinusoids and $s=1/5$ for solitary waves.
+There are multiple ways to show this.
+
+An informal method is to quote \citet{miles1957generation} theory for
+$P' \ll 1$%
 \footnote{
+  \label{foot:miles_shallow}
   Though Miles does specialize to deep-water waves partway through the
   derivation, the equation we utilize is applicable to both shallow and
   deep water.
@@ -221,7 +236,15 @@ We will use the \citet{miles1957generation} theory for $P' \ll 1$ as a model%
   Hence, the extra factor of $\tanh(kh)$ appearing in
   \cref{eq:miles_growth_rate}.
 }%
-, where
+,
+\begin{equation}
+  \frac{\gamma}{\Re{\omega}} \coloneqq
+  \frac{1}{\Re{\omega} E} \pdv{E}{t}
+  = \tilde{\beta} \frac{\rho_a}{\rho_w} \frac{U^2}{c_0^2} \tanh(kh) \,,
+  \label{eq:miles_growth_rate}
+\end{equation}
+with $c_0 = \sqrt{g\tanh(kh)/k}$.
+The pressure term Miles used was
 \begin{equation}
   p_M = k \rho_a U^2 \Re{(\tilde{\alpha} + \im \tilde{\beta}) \eta_a}
   \coloneqq k P_M \Re{ e^{\im \psi_P} \eta_a} \,.
@@ -236,89 +259,267 @@ representation%
   $\sin(x)$ is $-\im e^{\im x}$.
 }
 of $\eta$.
-This gives a relationship between the pressure magnitude $P$ and growth
-rate $\gamma$ as
+Note that if we consider only monochromatic waves, then this Miles
+forcing is equivalent to a Jeffreys forcing with $\psi_P = \pm \pi/2$.
+Thus, Miles' theory gives a relationship between the pressure magnitude
+$P$ and growth rate $\gamma$ as
 \begin{equation}
-  \frac{\gamma}{\omega_0} \approx \frac{\gamma}{\Re{\omega}} \coloneqq
-  \frac{1}{\omega E} \pdv{E}{t}
-  = \tilde{\beta} \frac{\rho_a}{\rho_w} \frac{U^2}{c_0^2} \tanh(kh)
-  = \tilde{\beta} \frac{\rho_a}{\rho_w} \frac{U^2 k}{g} \,,
-  \label{eq:miles_growth_rate}
+  \frac{\gamma}{\Re{\omega}} \approx \frac{P_M k}{\rho_w g} \sin(\psi_P)
+  \,.
 \end{equation}
-with $c_0 = \sqrt{g\tanh(kh)/k}$ and $\omega_0 = c_0 k$.
-Using our definition for $P_M \exp(\im \psi_P) = (\tilde{\alpha} + \im
-\tilde{\beta}) \rho_a U^2$, we find
-\begin{equation}
-  \frac{\gamma}{\omega_0} \approx \frac{P_M k}{\rho_w g} \sin(\psi_P)
-  = P'_M \alpha \sin(\psi_P) \,.
-\end{equation}
-Note that this also matches the $P = \order{\epsilon}$ growth rate we
-derive later for the Jeffreys case (\ie $\psi_P = \pm \pi/2$) for
-intermediate-strength wind in \cref{sec:energy_growth_rate}.
+This is the same as \cref{eq:miles_growth_rate} for monochromatic waves
+with $s=1$.
 
-According to \citet{donelan2006wave}, the wind speed and growth rate
-are related in shallow water by
+Alternatively, we can integrate the resulting KdVB equation to find a
+more general expression%
+\footnote{
+  Note that the derivation in \cref{sec:energy_growth_rate} does not
+  distinguish between $\Re{\omega}$ which could be affected by the
+  component of pressure in-phase with the wave, and $\omega_0 \coloneqq
+  c_0 k = \sqrt{gk \tanh(kh)}$ since, for weak pressure, they are
+  equivalent to leading order.
+}
 \begin{equation}
-  \frac{\gamma}{\omega_0} = \frac{\rho_a}{\rho_w} (ak)
-  \pqty{\frac{U_{\lambda/2}}{c_0} - 1}^2
-  G \bqty{(ak)
-  \pqty{\frac{U_{\lambda/2}}{c_0} - 1}^2}
+  \frac{\gamma}{\Re{\omega}} = \frac{P k}{\rho_w g} \frac{\langle
+  \pqty{\partial_x \eta}^2 \rangle}{\langle \pqty{k \eta}^2 \rangle}
 \end{equation}
-with $G[x] = b - q \mathcal{H}(x - 1)$ with $b = 4.91$, $q = 3.98$, and
-$\mathcal{H}$ the Heaviside unit step function.
-Furthermore, in the logarithmic boundary layer, we have
+which reduces to \cref{eq:gamma_vs_P} (with $\psi_P = \pm \pi/2$ for a
+Jeffreys forcing), where $s = \langle(\partial_x \eta)^2\rangle/
+\langle(k \eta)^2\rangle$ is $s=1$ for monochromatic waves and $s=1/5$
+for solitary waves $\sech(x/2)^2$.
+This is done in \cref{sec:energy_growth_rate}.
+
+Finally, we could also relate the pressure to the wind induced from drag
+$\tau_{\text{form}}$~\citep{peirson2008wind}:
 \begin{equation}
-  \frac{U_z}{\ln(z/z_0)} = \text{const}
-  \implies U_{z} = U_{\lambda/2} \frac{\ln(z/z_0)}{\ln[\lambda/(2 z_0)]}
+  \tau_{\text{form}} = \langle p \partial_x \eta \rangle \,,
 \end{equation}
-with \citep{taylor2001dependence}
+with $\langle \vdot \rangle$ an average over a wavelength.
+Then, if the viscous stress $\tau_{\text{visc}}$ is small compared to
+$\tau_{\text{form}}$, the total stress $\tau$ is approximated by
+\begin{equation}
+  \tau  = \tau_{\text{form}} + \tau_{\text{tang}} = \tau_{\text{form}} +
+  \frac{\tau_{\text{visc}}}{\sqrt{1+(\partial_x \eta)^2}}
+  \approx \tau_{\text{form}} \,.
+\end{equation}
+Then, considering the wave action is given by
+\begin{equation}
+  \pdv{E}{t} = S = S_{wind} + S_{\text{visc}} + S_{nonlin} \,,
+\end{equation}
+and
+\begin{equation}
+  S_{wind} = \tau c_0 \,,
+\end{equation}
+the wind increases the energy as
+\begin{equation}
+  \pdv{E}{t} = \tau \Re{c} \approx \tau_{\text{form}} \Re{c}
+  \approx \langle p \partial_x \eta \rangle \Re{c} \,.
+\end{equation}
+Finally, dividing by $E \Re{\omega}$ gives
+\begin{equation}
+  \frac{\gamma}{\Re{\omega}}
+  = \frac{\Re{c} \langle p \partial_x \eta \rangle}{\Re{\omega} E}
+  = \frac{\langle p \partial_x \eta \rangle}{k E} \,.
+\end{equation}
+Now, if we assume $\eta$ is monochromatic, then either Miles or
+GM forcings give $p = P k \cos(\psi_P) \eta + P \sin(\psi_P) \partial_x
+\eta$.
+Additionally, to first approximation, $E = \rho_w g a^2/2$.
+Thus, we have
+\begin{equation}
+  \frac{\gamma}{\Re{\omega}}
+  = \frac{P (ak)^2}{k \rho_w g a^2} \sin(\psi_P)
+  = \frac{P k}{\rho_w g} \sin(\psi_P) \,,
+\end{equation}
+with Jeffreys being reproduced for $\psi_P = \pm \pi/2$.
+Alternatively, using a Jeffreys type forcing gives
+\begin{equation}
+  \frac{\gamma}{\Re{\omega}}
+  = \frac{P k}{\rho_w g} \frac{\langle (\partial_x \eta)^2 \rangle}
+    {\langle (\partial_x \eta)^2 \rangle} \,.
+\end{equation}
+This is, again, \cref{eq:gamma_vs_P} (with $\psi_P = \pm \pi/2$ for a
+Jeffreys forcing), where $s = \langle(\partial_x \eta)^2\rangle/
+\langle(k \eta)^2\rangle$ is $s=1$ for monochromatic waves and $s=1/5$
+for solitary waves $\sech(x/2)^2$.
+
+\subsection{Growth Rate to Wind Speed}
+There are two theories for relating wind speed and growth rate: Jeffreys
+and Miles.
+
+\subsubsection{Miles Forcing}
+The Miles theory \cref{eq:miles_growth_rate} is more popular, with
+authors often choosing $U = u_*$, giving
+\begin{equation}
+  \frac{\gamma}{\Re{\omega}}
+  = \tilde{\beta} \frac{\rho_a}{\rho_w} \pqty{\frac{u_*}{c_0}}^2 \tanh(kh)
+  = \tilde{\beta} \frac{\rho_a}{\rho_w} \frac{\kappa^2}{\ln^2(z/z_0)}
+  \pqty{\frac{U_z}{c_0}}^2 \tanh(kh)
+  \,,
+\end{equation}
+where we used the law-of-the-wall in the second equality,
+with $\kappa \approx 0.4$ the von K\'{a}rm\'{a}n constant and $z_0$ the
+surface roughness, which is an empirical parameter dependent on $c/u_*$,
+$ak$, and $kh$.
+See the \cref{foot:miles_shallow} in the previous section regarding this
+applicability of this equation to shallow water.
+Note that this depends on $U_z/c_0$, \emph{not} $U_z/c_0 -1$.
+
+Then, we can combine this with \cref{eq:gamma_vs_P}, assuming
+monochromicity, and solve for $U_z$ to give
+\begin{equation}
+  U_z = c_0 \frac{\ln(z/z_0)}{\kappa} \sqrt{
+    \frac{s P k \sin(\psi_P)}{\rho_w g} \frac{\rho_a}{\rho_w}
+    \frac{1}{\tilde{\beta} \tanh(kh)}} \,,
+\end{equation}
+or, inserting the dispersion relation,
+\begin{equation}
+  U_z = \frac{\ln(z/z_0)}{\kappa} \sqrt{
+    \frac{s P \sin(\psi_P)}{\rho_w} \frac{\rho_a}{\rho_w}
+    \frac{1}{\tilde{\beta}}}
+    \,.
+  \label{eq:Uz_miles}
+\end{equation}
+Here, $\beta$ is an empirical constant which could depend on $z_0
+g/u_*^2$, $c/u_*$, $ak$, and $kh$ (recall that $z_0$ could also depend
+on these quantities).
+It is interesting to note that the depth dependence only appears through
+$\beta$ and/or $z_0$ (and if we revert from $U_z$ to $u_*$, the depth
+dependence can only enter through $\tilde{\beta}$).
+Note also that most sources quote \cref{eq:gamma_vs_P} without the
+$\tanh(kh)$ term, even when in intermediate or shallow water; in that
+case, \cref{eq:Uz_miles} would still have an $\sqrt{\tanh(kh)}$ term.
+
+One particular parameterization for the surface roughness
+is \citep{taylor2001dependence}
 \begin{equation}
   \frac{z_0}{H} = 1200 \pqty{\frac{H}{\lambda}}^{4.5}
 \end{equation}
 where $H$ is the wave height.
-Combining this, we find
+Additionally, a common parameterization is given by
+\citet{plant1977growth}, wherein $\tilde{\beta} = 32.5$, giving
 \begin{equation}
-  P'_M \alpha = \frac{\rho_a}{\rho_w} \csc(\psi_P)
-  y \Bqty{b-qH[y - 1]}
+  U_z = \frac{\ln(z/z_0)}{\kappa} \sqrt{
+    \frac{s P \sin(\psi_P)}{\rho_w} \frac{\rho_a}{\rho_w}
+    \frac{1}{32.5}}
+    \,.
+\end{equation}
+Alternatively, \citet{grare2013growth} determined that $\tilde{\beta} = 2.56
+(ak)^{-1.65 \pm 0.11}$.
+Thus, we have
+\begin{equation}
+  U_z = \frac{\ln(z/z_0)}{\kappa} \sqrt{
+    \frac{s P \sin(\psi_P)}{\rho_w} \frac{\rho_a}{\rho_w}
+    \frac{(ak)^{1.65}}{2.56}}
+    \,.
+\end{equation}
+
+\subsubsection{Jeffreys Forcing}
+Alternatively, we could use a Jeffreys parameterization
+\begin{equation}
+  \frac{\gamma}{\omega_0} = S_z \frac{\rho_a}{\rho_w}
+    \pqty{\frac{U_z}{c_0}-1}^2 \,,
+\end{equation}
+with $\omega_0 = c_0 k = \sqrt{gk \tanh(kh)}$; note that, for
+$Pk/(\rho_w g) \ll 1$, as we assume, $\Re{\omega} = \omega_0$ to leading
+order.
+Then, combining this with \cref{eq:gamma_vs_P} and solving for $U_z$
+gives
+\begin{equation}
+  U_z = c_0 \pqty{1 \pm \sqrt{\frac{s P k \sin(\psi_P)}{\rho_w g}
+    \frac{\rho_w}{\rho_a} \frac{1}{S_z}}} \,.
+\end{equation}
+Here, $S_z$ could depend on $u_*/c_0$, $ak$, $z_0 g/u_*^2$, and $kh$.
+However, in practice, most parameterizations of $S_{z}$ are independent
+of water depth; therefore, the conversion from
+$P$ to $U_z$ only depends on the depth through $c_0$; that is, $U_z
+\propto \sqrt{\tanh(kh)}$.
+
+Note that $S_z$ is commonly specified at $z=\lambda/2$.
+Assuming the law-of-the-wall holds, the logarithmic boundary layer
+yields
+\begin{equation}
+  \frac{U_z}{\ln(z/z_0)} = \text{const}
+  \implies U_{\lambda/2}  = U_{z} \frac{\ln[\lambda/(2 z_0)]}{\ln(z/z_0)}
+  \,.
+\end{equation}
+Furthermore, one particular parameterization for the surface roughness
+is \citep{taylor2001dependence}
+\begin{equation}
+  \frac{z_0}{H} = 1200 \pqty{\frac{H}{\lambda}}^{4.5}
+\end{equation}
+where $H$ is the wave height.
+This yields
+\begin{equation}
+  U_z = c_0 Z \pqty{1 \pm \sqrt{\frac{s P k \sin(\psi_P)}{\rho_w g}
+    \frac{\rho_w}{\rho_a} \frac{1}{S_{\lambda/2}}}} \,,
+  \label{eq:jeffreys_param}
+\end{equation}
+with
+\begin{equation}
+  Z \coloneqq
+  \frac{\ln[z\lambda^{4.5}/(1200 H^{3.5})]}{\ln[\lambda^{5.5}/(2400 H^{3.5})]}
+  =
+  \frac{\ln(1200) + 4.5 \ln(\epsilon \sqrt{\mu}/\pi) + \ln(H/z)}
+    {\ln(2400)+5.5\ln(\epsilon \sqrt{\mu}/\pi)} \,,
+\end{equation}
+Now, we need a parameterization for $S_z$ to proceed.
+
+\subsubsection{Donelan 2006}
+One of the few, if only, shallow water measurements,
+\citet{donelan2006wave} finds
+\begin{equation}
+  S_{\lambda/2} = (ak) G \bqty{(ak)
+  \pqty{\frac{U_{\lambda/2}}{c_0} - 1}^2}
+\end{equation}
+with $G[x] = b - q \mathcal{H}(x - 1)$ with $b = 4.91$, $q = 3.98$, and
+$\mathcal{H}$ the Heaviside unit step function.
+
+Inserting this into \cref{eq:jeffreys_param}, we find
+\begin{equation}
+  U_z = c_0 Z \pqty{1 \pm \sqrt{\frac{s P k \sin(\psi_P)}{\rho_w g}
+    \frac{\rho_w}{\rho_a} \frac{1}{(ak) \bqty{b-q H\pqty{y-1}}}}} \,,
 \end{equation}
 with
 \begin{equation}
   y \coloneqq
-  \epsilon \sqrt{\mu}
-  \pqty{\frac{U_{z}}{c_0} \frac{\ln(2400)+5.5\ln(\epsilon \sqrt{\mu}/\pi)}
-    {\ln(1200) + 4.5 \ln(\epsilon \sqrt{\mu}/\pi) + \ln(H/z)} - 1}^2
+  \epsilon \sqrt{\mu} \pqty{\frac{U_{z}}{c_0} \frac{1}{Z} - 1}^2
+  = \frac{s P k \sin(\psi_P)}{\rho_w g}
+    \frac{\rho_w}{\rho_a} \frac{1}{\bqty{b-q H\pqty{y-1}}}
+    \,.
 \end{equation}
-with $T$ the wave period.
-If we take $\psi_P = \pi/2$ and $\rho_a/\rho_w = \num{1.225e-3}$, we get
-\begin{equation}
-  P'_M \alpha = \num{1.2e-3} y \Bqty{b-q \mathcal{H}[y - 1]}
-\end{equation}
-with $y$ given above.
+If we treat $P$ as the input and $U_z$ as the output, then $U_z$ is
+double valued for $(b-q) \rho_a/\rho_w < sPk\sin(\psi_P)/(\rho_w g) < b
+\rho_a/\rho_w$; this means that, according to this parameterization, two
+different wind speeds (one fully separated, one not) produce the same
+pressure magnitude.
+Also, it is easy to see that, in order to have non-separated sheltering
+(\ie $y<1$), we must have $sPk\sin(\psi_P)/(\rho_w g) < b \rho_a/\rho_w$.
 
-If we take $\mu = \epsilon = 0.1$, $T = \SI{10}{\second}$, $h =
-\SI{10}{\meter}$, and $z = \SI{10}{\meter}$, we find
-\begin{equation}
-  y = \num{3.2e-2} \pqty{U_{10} \SI{0.12}{\second\per\meter} - 1}^2
-\end{equation}
-For $U_{10} < \SI{56}{\meter\per\second}$, we have
-\begin{equation}
-  P'_M \alpha = \SI{2.7e-6}{\second\squared\per\meter\squared} U_{10}^2
-\end{equation}
-For instance, $U_{10} = \SI{50}{\meter\per\second}$ gives
-$P'_M \alpha = \num{4.6e-3} \approx \epsilon^2$.
+First, we impose $\psi_P = \pi/2$ and $\rho_a/\rho_w = \num{1.225e-3}$.
+Furthermore, we take $\epsilon = 0.1$, $\mu = 0.6$, and $P k/(\epsilon
+\rho_w g) = 0.25$, giving $s=1/5$.
+Since $s P k/(\rho_w g) = \num{5e-3} < b \rho_a/\rho_w = \num{6.0e-3}$,
+the flow should be non-separated.
+Then, taking $\lambda = \SI{20}{\meter}$ so that $z=\SI{10}{\meter}$, we
+yield require $U_{10} = \SI{21}{\meter\per\second}$.
 
-If we instead consider laboratory conditions with $h=\SI{0.37}{\meter}$,
-$\mu = 1.4$, and $\epsilon = 0.14$ as in \citet{feddersen2005wind}, we
-instead get
+\subsubsection{Donelan 1999}
+It appears that studies prefer the parameterization arising from
+\citet{donelan1999wind} (more specifically, the reparameterization).
+For intermediate depth ($kh = 1.7$), \citet{donelan1999wind} found
+$S_{\lambda/2} = 0.28$ for onshore winds and $S_{\lambda/2} = 0.11$ for
+offshore, though \citet{donelan2006wave} reanalyzed the dataset and
+found $S_{\lambda/2} = 0.17$.
+Using this value instead, we have
 \begin{equation}
-  y = \num{0.17} \pqty{U_{10} \SI{0.73}{\second\per\meter} - 1}^2
+  U_z = c_0 Z \pqty{1 \pm \sqrt{\frac{s P k \sin(\psi_P)}{\rho_w g}
+    \frac{\rho_w}{\rho_a} \frac{1}{0.17}}} \,.
 \end{equation}
-For $U_{10} > \SI{4.7}{\meter\per\second}$, we have
-\begin{equation}
-  P'_M \alpha = \SI{1.0e-4}{\second\squared\per\meter\squared} U_{10}^2
-\end{equation}
-For instance, $U_{0.3} = \SI{8}{\meter\per\second}$ gives
-$P'_M \alpha = \num{4.5e-3} \approx \epsilon^3$.
+Again choosing $\psi_P = \pi/2$, $\rho_a/\rho_w = \num{1.225e-3}$,
+$\epsilon = 0.1$, $\mu = 0.6$, $P k/(\epsilon \rho_w g) = 0.25$, and
+$\lambda = \SI{20}{\meter}$, we find $U_{10} =
+\SI{29}{\meter\per\second}$.
 
 \section{Shape Statistics}
 Wave shape can be quantified by the third-order moments, skewness and

@@ -534,7 +534,7 @@ $\mathcal{H}$,
 \end{equation}
 with $\mathcal{H} = \num{3e-3}$.
 
-\section{Results}
+\section{\label{sec:results} Results}
 Given the one free parameter $P k_E/(\rho_w g \epsilon)$ of the
 KdV-Burgers equation \cref{eq:kdvb_nondim}, we can now plot the results
 for different pressure magnitudes $P k_E/(\rho_w g \epsilon)$.
@@ -580,7 +580,7 @@ unforced KdV equation.
 The onshore case \subref{fig:snapshots_solitary:a} demonstrates
 marked, accelerating wave growth while the offshore wind
 \subref{fig:snapshots_solitary:b} causes decay which slows over time.
-This is to be expected, as \cref{sec:energy_growth_rate} suggests the
+This is to be expected, as \cref{sec:press_mag} suggests the
 wave's energy $E \propto \int \eta^2 \dd{x}$ is exponential in time, so
 growth will be faster than decay.
 Furthermore, the wind induces a horizontal asymmetry in the wave shape.
@@ -697,48 +697,66 @@ In \cref{sec:nondim}, we chose to nondimensionalize the pressure as
 $P k_E/(\rho_w g) = \order{\epsilon}$, which corresponds to the
 intermediate strength wind analyzed in \citet{zdyrski2020wind}.
 Now, we will estimate the wind speed associated with such a pressure
-magnitude over a simple sinusoidal wave to show that such a choice is
-reasonable.
-In \cref{sec:energy_growth_rate}, we show that Jeffreys forcing yields
-an energy growth rate
+magnitude to show that such a choice is reasonable.
+We can calculate the energy growth rate from the KdVB equation
+\cref{eq:kdvb_nondim} with the standard procedure
+\citep[\eg][]{mei2005nonlinear} of multiplying by $\eta'_0$ and
+integrating from $x'=-\infty$ to $\infty$.
+This yields the energy growth rate $\gamma$,
 \begin{equation}
-  \frac{\gamma}{\omega_0} = \frac{P k}{\rho_w g} \,,
-  \label{eq:growth_rate_P}
+  \pdv{t'_1} \int_{-\infty}^{\infty} \frac{1}{2} {\eta'}_0^2 \dd{x}
+  = \int_{-\infty}^{\infty} \frac{1}{2} P' \pqty{\pdv{\eta'_0}{x'}}^2
+  \dd{x} \,.
 \end{equation}
-with $\omega_0$ the unforced angular frequency.
-According to \citet{donelan2006wave}, the wind speed and growth rate
-are related in shallow water by
+Redimensionalizing gives the energy growth rate $\gamma$,
 \begin{equation}
-  \frac{\gamma}{\omega_0} = \frac{\rho_a}{\rho_w} (ak)
-  \pqty{\frac{U_{\lambda/2}}{c_0} - 1}^2
-  G \bqty{(ak)
-  \pqty{\frac{U_{\lambda/2}}{c_0} - 1}^2}
-  \label{eq:growth_rate_U}
+  \frac{\gamma}{\omega} \coloneqq
+  \frac{1}{\omega E} \pdv{E}{t}
+  = \frac{P k_E}{\rho_w g} \frac{\langle (\partial_x \eta)^2 \rangle}
+    {\langle (k_E \eta)^2 \rangle} \,,
 \end{equation}
-with $G[x] = b - q \mathcal{H}(x - 1)$ with $b = 4.91$, $q = 3.98$, and
-$\mathcal{H}$ the Heaviside unit step function.
-Furthermore, in the logarithmic boundary layer, we have
+with the energy $E = \rho_w \int \eta^2 \dd{x}$ and frequency $\omega =
+\sqrt{gh}$.
+Such a relationship between the surface pressure $p(x,t)$ and growth
+rate holds generally for any form of pressure
+forcing~\citep[\eg][]{peirson2008wind}.
+For the initial solitary wave profile \cref{eq:initial_cond_nondim},
+this can be evaluated exactly to give
 \begin{equation}
-  \frac{U_z}{\ln(z/z_0)} = \text{const}
-  \implies U_{z} = U_{\lambda/2} \frac{\ln(z/z_0)}{\ln[\lambda/(2 z_0)]}
-  \label{eq:log_boundary_layer}
+  \frac{\gamma}{\omega}
+  = \frac{1}{5} \frac{P k_E}{\rho_w g} \,.
+  \label{eq:gamma_vs_P_solitary}
 \end{equation}
-with \citep{taylor2001dependence}
+
+Additionally, \citet{jeffreys1925formation} theory relates this growth
+rate to the wind speed $U_z$, measured at some height $z$, as
 \begin{equation}
-  \frac{z_0}{H} = 1200 \pqty{\frac{H}{\lambda}}^{4.5}
+  \frac{\gamma}{\omega} = S_z \frac{\rho_a}{\rho_w}
+    \pqty{\frac{U_z}{c}-1} \abs{\frac{U_z}{c}-1} \,.
+  \label{eq:gamma_vs_u_jeffreys}
 \end{equation}
-where $H$ is the wave height.
-Using \cref{eq:growth_rate_P,eq:growth_rate_U,eq:log_boundary_layer}, we
-can calculate the pressure magnitude $P$ from the wind speed $U$ at an
-arbitrary height.
-If we take $\rho_a/\rho_w = \num{1.225e-3}$, $\mu_E = \epsilon = 0.1$, $T
-= \SI{10}{\second}$, $h = \SI{10}{\meter}$, and $U_{10} =
-\SI{50}{\meter\per\second}$ gives $P k_E/(\rho_w g) = \num{4.6e-3} =
-\order{\epsilon^2}$.
-If we instead consider laboratory conditions with $h=\SI{0.37}{\meter}$,
-$\mu_E = 1.4$, $\epsilon = 0.14$, and $U_{0.3} = \SI{8}{\meter\per\second}$
-as in \citet{feddersen2005wind}, we instead get $P k_E/(\rho_w g) =
-\num{4.5e-3} = \order{\epsilon^3}$.
+Combining this with \cref{eq:gamma_vs_P_solitary} gives
+\begin{equation}
+  U_z = c \pqty{1 \pm \sqrt{\frac{1}{5} \abs{\frac{P k_E}{\rho_w g}}
+    \frac{\rho_w}{\rho_a} \frac{1}{S_z}}} \,.
+\end{equation}
+Here, the $\pm$ corresponds to onshore ($+$) or offshore ($-$) winds.
+Note that changing the wind direction (\ie sign of $Pk_E/(\rho_w g)$, or
+$\pm$ sign) while holding the surface pressure magnitude
+$\abs{Pk_E/(\rho_w g)}$ constant means $\abs{U_z}$ onshore will be
+larger than $\abs{U_z}$ offshore.
+
+\Citet{donelan2006wave} provides a parameterization for data from
+\citet{donelan1999wind} that yields $S_{\lambda/2} = 0.17$.
+We can evaluate $U_z$ for the parameters used in \cref{sec:results}
+($\epsilon=0.1$, $\mu_E = 0.6$, $Pk/(\rho_w g \epsilon) = 0.25$).
+We choose $\lambda = \SI{20}{\meter}$ to give the wind speed at
+$z=\SI{10}{\meter}$,
+\begin{equation}
+  U_{10} = \SI{29}{\meter\per\second} \,.
+\end{equation}
+For reference, these parameters correspond to a depth of $h =
+\SI{2.5}{\meter}$ and initial wave height $H_0 = \SI{0.5}{\meter}$.
 
 \subsection{Physical Interpretation}
 In \cref{sec:results}, it was noted that the rear face of the waves in
@@ -835,64 +853,6 @@ shallow-water waves would allow a direct, quantitative comparison with
 the periodic deep-water waves.
 
 \appendix
-
-\section{Energy Growth Rate \label{sec:energy_growth_rate}}
-As a useful check on our earlier estimation of the magnitude of $P'$, we
-can derive the energy growth rate.
-Multiplying \cref{eq:kdv_burgers} by $\eta_0$, we find
-\begin{equation}
-  \frac{1}{2} \pdv{t_1} \eta_0^2 + P
-  \frac{1}{4} (\eta_0^2)'' - \frac{1}{2} P
-  (\eta_0')^2 + \frac{1}{2} (\eta_0^3)' + \frac{1}{12}
-  \frac{\mu_E}{\epsilon} (\eta_0^2)''' - \frac{1}{4} \frac{\mu_E}{\epsilon}
-  \bqty{\pqty{\eta_0'}^2}' = 0 \,.
-\end{equation}
-Then, integrating over a wavelength gives
-\begin{equation}
-  \begin{split}
-  &\pdv{t_1} \int_{-L/2}^{L/2} \frac{1}{2} \eta_0^2 \dd{x} \\
-  &\qquad= \int_{-L/2}^{L/2} \frac{1}{2} P
-    (\eta_0')^2 \dd{x} + \int_{-L/2}^{L/2} -P
-    \frac{1}{4} (\eta_0^2)'' - \frac{1}{2}
-    (\eta_0^3)' - \frac{1}{12} \frac{\mu_E}{\epsilon} (\eta_0^2)''' +
-    \frac{1}{4} \frac{\mu_E}{\epsilon} \bqty{\pqty{\eta_0'}^2}' \dd{x}
-  \\
-  &\qquad=
-  \int_{-L/2}^{L/2} \frac{1}{2} P
-  (\eta_0')^2 \dd{x} + \eval{\bqty{-P
-      \frac{1}{4} (\eta_0^2)'  - \frac{1}{2} (\eta_0^3) - \frac{1}{12}
-      \frac{\mu_E}{\epsilon} (\eta_0^2)'' + \frac{1}{4}
-      \frac{\mu_E}{\epsilon} \pqty{\eta_0'}^2}}_{-L/2}^{L/2}
-  \\
-  &\qquad=
-  \int_{-L/2}^{L/2} \frac{1}{2} P (\eta_0')^2 \dd{x} \,.
-  \end{split}
-\end{equation}
-Redimensionalizing, we find
-\begin{equation}
-  \frac{k}{\rho_w a^2} \frac{1}{\omega_0 \epsilon} \pdv{t} \int_{-L/2}^{L/2}
-  \rho_w \eta^2 \dd{x} = \frac{1}{k a^2} \int_{-L/2}^{L/2} P'
-  (\partial_x \eta)^2 \dd{x}
-\end{equation}
-or
-\begin{equation}
-  \frac{1}{\omega_0 E} \pdv{t} E =
-  \epsilon
-  \frac{
-    \int_{-L/2}^{L/2} P' (\partial_x \eta)^2 \dd{x}
-  }
-  {
-    \int_{-L/2}^{L/2} k^2 \eta^2 \dd{x}
-  }
-\end{equation}
-with $E = \rho_w \int_{-L/2}^{L/2} \eta^2 \dd{x}$ the average
-energy per wavelength.
-The left-hand side is simply $\gamma/\omega_0$.
-If, for simplicity, we consider a simple sinusoid $\eta_0 = A \cos(k x -
-\omega_0 t)$, we find
-\begin{equation}
-  \frac{\gamma}{\omega_0} = \epsilon P' = \frac{P k}{\rho_w g} \,.
-\end{equation}
 
 % Bibliography
 \bibliographystyle{jfm}
