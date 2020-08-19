@@ -342,10 +342,10 @@ Thus, converting back to $\eta_0$ gives
     \pdv[3]{\eta_0}{x} = -P \frac{1}{2} \pdv[2]{\eta_0}{x} \,.
   \label{eq:kdv_burgers}
 \end{equation}
-This is the Korteweg-de Vries (KdV)-Burgers equation, though the
-``damping term'', $\partial^2_x \eta_0$ can have a ``negative
-viscosity'' (which is expected, since the wind can cause either growth
-or decay).
+This is the Korteweg-de Vries (KdV)-Burgers equation.
+Note that the pressure term, $P \partial^2_x \eta_0$, can act as either
+a positive viscosity for offshore, damping wind or a negative viscosity
+when onshore wind causes wave growth.
 The KdV-Burgers equation is not known to have any closed form solutions,
 so we will instead solve this numerically.
 
