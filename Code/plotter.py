@@ -1582,7 +1582,7 @@ def plot_shape_statistics_solitary(load_prefix, save_prefix, *args, **kwargs):
 
     texplot.savefig(fig,save_prefix+'Skew-Asymm')
 
-def plot_shape_statistics_solitary_no_peak(load_prefix, save_prefix, *args, **kwargs):
+def plot_shape_statistics_solitary_production(load_prefix, save_prefix, *args, **kwargs):
     filename_base = 'Shape-Statistics'
 
     # Remove 'P' parameter
@@ -1621,7 +1621,7 @@ def plot_shape_statistics_solitary_no_peak(load_prefix, save_prefix, *args, **kw
 
     fig = plot_shape_statistics_vs_time_template(data_arrays)
 
-    texplot.savefig(fig,save_prefix+'Skew-Asymm-No-Peak')
+    texplot.savefig(fig,save_prefix+'Skew-Asymm-Production')
 
 def plot_shape_statistics_cnoidal(load_prefix, save_prefix, *args, **kwargs):
     filename_base = 'Shape-Statistics'
@@ -2372,7 +2372,7 @@ def main():
             'slope_statistics_solitary' : plot_slope_statistics_solitary,
             'slope_statistics_cnoidal' : plot_slope_statistics_cnoidal,
             'shape_statistics_solitary' : plot_shape_statistics_solitary,
-            'shape_statistics_solitary_no_peak' : plot_shape_statistics_solitary_no_peak,
+            'shape_statistics_solitary_production' : plot_shape_statistics_solitary_production,
             'shape_statistics_cnoidal' : plot_shape_statistics_cnoidal,
             'shape_statistics_cnoidal_GM' : plot_shape_statistics_cnoidal_GM,
             'shape_statistics_vs_depth' : plot_shape_statistics_vs_depth,
