@@ -629,6 +629,7 @@ Combining this with \cref{eq:gamma_vs_P_solitary} gives
 \begin{equation}
   U_z = c \pqty{1 \pm \sqrt{\frac{1}{5} \abs{\frac{P k_E}{\rho_w g}}
     \frac{\rho_w}{\rho_a} \frac{1}{S_z}}} \,.
+  \label{eq:U_vs_P}
 \end{equation}
 Here, the $\pm$ corresponds to onshore ($+$) or offshore ($-$) winds.
 Note that changing the wind direction (\ie{} sign of $Pk_E/(\rho_w g)$,
@@ -639,12 +640,14 @@ larger than $\abs{U_z}$ offshore.
 \Citet{donelan2006wave} provides a parameterization for shallow water
 waves that depends on airflow separation: $S_{\lambda/2} =
 (ak)\bqty{4.91-3.98 H\Bqty{(ak)\bqty{(U_{\lambda/2}/c)^2-1} - 1}}$, with
-$H$ the Heaviside function.
-We can evaluate $U_z$ for the parameters used in \cref{sec:results}
-($\epsilon=0.1$, $\mu_E = 0.6$, $Pk/(\rho_w g \epsilon) = 0.25$).
-This yields a non-separated flow, $(ak)\bqty{(U_{\lambda/2}/c)^2-1} <
-1$.
-We choose $\lambda = \SI{20}{\meter}$ to give the wind speed at
+$H$ the Heaviside function and $U_z$ measured at $z=\lambda/2$.
+We can evaluate \cref{eq:U_vs_P} for the parameters used in
+\cref{sec:results} ($\epsilon=0.1$, $\mu_E = 0.6$, $Pk/(\rho_w g
+\epsilon) = 0.25$). This yields a non-separated flow,
+$(ak)\bqty{(U_{\lambda/2}/c)^2-1} < 1$.
+While this parameterization is meant for periodic waves, we will
+assume it holds approximately for solitary waves and take $\lambda = 2
+\pi/k_E = \SI{20}{\meter}$ to give the wind speed at
 $z=\SI{10}{\meter}$: $U_{10} = \SI{21}{\meter\per\second}$.
 For reference, these parameters correspond to a depth of $h =
 \SI{2.5}{\meter}$ and initial wave height $H_0 = \SI{0.5}{\meter}$.
