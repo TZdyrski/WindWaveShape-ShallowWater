@@ -386,8 +386,11 @@ Therefore, the nondimensional equation we are solving is
   \eta'_0 \pdv{\eta'_0}{x'} + \pdv[3]{\eta'_0}{{x'}} =
   -P \frac{1}{2} \pdv[2]{\eta'_0}{{x'}}
   \label{eq:kdvb_nondim}
-  \qq{with}
+\end{equation}
+with initial condition
+\begin{equation}
   \eta'_0(x',t_1=0) = 2 \sech^2\pqty{\frac{x'}{2}} \,.
+  \label{eq:initial_condition}
 \end{equation}
 
 \subsection{Numerics}
@@ -611,7 +614,7 @@ Redimensionalizing gives the energy growth rate $\gamma$,
 with the energy $E = \rho_w \int \eta^2 \dd{x}$ and frequency $\omega =
 \sqrt{gh}$.
 In the final equation, we evaluated the growth rate for the initial
-solitary wave profile \cref{eq:kdvb_nondim}.
+solitary wave profile \cref{eq:initial_condition}.
 Such a relationship between the surface pressure $p(x,t)$ and growth
 rate holds generally for any form of pressure
 forcing~\citep[\eg][]{peirson2008wind}.
