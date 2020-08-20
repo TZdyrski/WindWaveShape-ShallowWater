@@ -1290,6 +1290,33 @@ def plot_pos_neg_solitary(load_prefix, save_prefix, *args, **kwargs):
 
     texplot.savefig(fig,save_prefix+'Snapshots-Positive-Negative')
 
+def plot_pos_neg_solitary_production(load_prefix, save_prefix, *args, **kwargs):
+    filename_base = 'Snapshots'
+
+    # Arrange data and parameters into 2d array for plotting
+    data_arrays = np.empty((2,1),dtype=object)
+
+    P = float(kwargs.get('P'))
+
+    for indx_num, P_val in enumerate([P,-P]):
+        filename = data_csv.find_filenames(load_prefix, filename_base,
+            parameters={'wave_type' : 'solitary', **kwargs,
+                'P' : P_val})
+
+        # Extract data
+        data_array = data_csv.load_data(filename, stack_coords=True)
+
+        indx = np.unravel_index(indx_num,data_arrays.shape)
+        data_arrays[indx] = data_array
+
+    ax_title=np.array([[r'$P k_E/(\rho_w g \epsilon) = {P}$'],
+        [r'$P k_E/(\rho_w g \epsilon) = {P}$']])
+
+    fig = plot_snapshots_template(data_arrays, norm_by_wavelength=False,
+            ax_title=ax_title)
+
+    texplot.savefig(fig,save_prefix+'Snapshots-Positive-Negative-Production')
+
 def plot_pos_cnoidal(load_prefix, save_prefix, *args, **kwargs):
     filename_base = 'Snapshots'
 
@@ -1619,7 +1646,8 @@ def plot_shape_statistics_solitary_production(load_prefix, save_prefix, *args, *
     # Remove P parameter attribute
     data_arrays[0].attrs.pop('P', None)
 
-    fig = plot_shape_statistics_vs_time_template(data_arrays)
+    fig = plot_shape_statistics_vs_time_template(data_arrays,
+            ax_title=None)
 
     texplot.savefig(fig,save_prefix+'Skew-Asymm-Production')
 
@@ -2362,6 +2390,7 @@ def main():
             'pos_solitary' : plot_pos_solitary,
             'neg_solitary' : plot_neg_solitary,
             'pos_neg_solitary' : plot_pos_neg_solitary,
+            'pos_neg_solitary_production' : plot_pos_neg_solitary_production,
             'pos_cnoidal' : plot_pos_cnoidal,
             'neg_cnoidal' : plot_neg_cnoidal,
             'pos_neg_cnoidal' : plot_pos_neg_cnoidal,
