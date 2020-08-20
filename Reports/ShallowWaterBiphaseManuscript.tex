@@ -35,7 +35,7 @@
 \newcommand{\hilbert}{\mathcal{H}}
 
 % Define custom math functions
-\DeclarePairedDelimiter{\round}\lfloor\rceil
+\DeclarePairedDelimiter{\round}{\lfloor}{\rceil}
 
 % Define \im as Roman i
 \newcommand{\im}{\mathrm{i}}
@@ -46,7 +46,7 @@
 %\newcommand\squart{\ensuremath{{\textstyle\frac{1}{4}}}}
 %\newcommand\thalf{\ensuremath{{\textstyle\frac{1}{2}}}}
 
-\linenumbers
+\linenumbers{}
 
 \title{Wind-Induced Changes to Surface Gravity Wave Shape in Shallow Water}
 
@@ -57,8 +57,8 @@
 \maketitle
 
 \begin{abstract}
-Wave shape (\eg wave skewness and asymmetry) impacts sediment transport,
-remote sensing, and ship safety.
+Wave shape (\eg{} wave skewness and asymmetry) impacts sediment
+transport, remote sensing, and ship safety.
 Previous work by the authors showed that wind (via changes in surface
 pressure) affects wave shape in intermediate and deep water.
 This effect was most pronounced as the depth decreased.
@@ -184,13 +184,13 @@ Jeffreys-type forcing \citep{jeffreys1925formation}:
   p(x,t) = P \pdv{\eta(x,t)}{x} \,.
 \end{equation}
 Here, $P$ is proportional to $(U-c)^2$, with $U$ the wind speed and $c$
-the wave speed (\cf \cref{sec:press_mag}), and $P>0$ corresponding to wind in
-the same direction as the wave.
+the wave speed (\cf{} \cref{sec:press_mag}), and $P>0$ corresponding to
+wind in the same direction as the wave.
 We use a Jeffreys forcing for its analytic simplicity and clear
 demonstration of wind-wave coupling.
 Though Jeffrey's separated sheltering mechanism is likely only relevant
-in special situations (\eg near breaking \citealp{banner1976separation}
-or for steep waves under strong winds
+in special situations (\eg{} near breaking
+\citealp{banner1976separation} or for steep waves under strong winds
 \citealp{tian2013evolution,touboul2006interaction}),
 a fully dynamic coupling between wind and waves---necessary for an
 accurate surface pressure---is outside the scope of this paper.
@@ -199,7 +199,7 @@ accurate surface pressure---is outside the scope of this paper.
 We will nondimensionalize with the known characteristic scales: the
 horizontal length scale $L$ over which $\eta$ changes
 rapidly, expressed as an effective wavenumber $k_E \coloneqq 2 \pi/L$;
-the (initial) wave amplitude $a_0 = H_0/2$ (\ie half the wave height
+the (initial) wave amplitude $a_0 = H_0/2$ (\ie{} half the wave height
 $H_0$); the depth $h$; the gravitational acceleration $g$; and the wind
 speed $U$ expressed as a pressure magnitude $P \propto \rho_a (U-c)^2$.
 Denoting nondimensional variables with an prime, we have
@@ -426,9 +426,9 @@ We are particularly interested in the differences between onshore wind
   \centering
   { % Put \phantomsubcaption in their own group to prevent it from
     % affecting the main figure's numbering
-    \phantomsubcaption
+    \phantomsubcaption{}
     \label{fig:snapshots_solitary:a}
-    \phantomsubcaption
+    \phantomsubcaption{}
     \label{fig:snapshots_solitary:b}
   }
   \includegraphics{Snapshots-Positive-Negative.eps}
@@ -472,7 +472,7 @@ The energy can be numerically fit to
 \end{equation}
 and $b = -5.025 \pm \num{3e-3}$.
 This is close to the analytic approximation for the decay time, giving
-$b = -15/4$~(\eg eq.\ 72 of \citealp{zdyrski2019effects} with
+$b = -15/4$~(\eg{} eq.\ 72 of \citealp{zdyrski2019effects} with
 $\mathcal{A}=1$, $\mathcal{B} = 3/2$, $\mathcal{C} = \mu_E/(6\epsilon) =
 1$, $\mathcal{G} = -(P k_E)/(2 \rho_w g)$, and $c_0 = H_0 = 2$).
 Thus, the energy (and height) change accelerates for $P>0$ but
@@ -492,11 +492,11 @@ small depression below the still water level.
   \centering
   { % Put \phantomsubcaption in their own group to prevent it from
     % affecting the main figure's numbering
-    \phantomsubcaption
+    \phantomsubcaption{}
     \label{fig:statistics_solitary:a}
-    \phantomsubcaption
+    \phantomsubcaption{}
     \label{fig:statistics_solitary:b}
-    \phantomsubcaption
+    \phantomsubcaption{}
     \label{fig:statistics_solitary:c}
   }
   \includegraphics{Skew-Asymm-No-Peak.eps}
@@ -635,8 +635,8 @@ Combining this with \cref{eq:gamma_vs_P_solitary} gives
     \frac{\rho_w}{\rho_a} \frac{1}{S_z}}} \,.
 \end{equation}
 Here, the $\pm$ corresponds to onshore ($+$) or offshore ($-$) winds.
-Note that changing the wind direction (\ie sign of $Pk_E/(\rho_w g)$, or
-$\pm$ sign) while holding the surface pressure magnitude
+Note that changing the wind direction (\ie{} sign of $Pk_E/(\rho_w g)$,
+or $\pm$ sign) while holding the surface pressure magnitude
 $\abs{Pk_E/(\rho_w g)}$ constant means $\abs{U_z}$ onshore will be
 larger than $\abs{U_z}$ offshore.
 
@@ -687,7 +687,7 @@ However, qualitative agreement is still found between these two studies.
 \Cref{fig:statistics_solitary} shows that, for a fixed time $t \neq 0$,
 the asymmetry increases as the pressure $P$ increases.
 We observed a similar trend for the corresponding Jeffreys pressure
-profile in \figname 4(a) of \citet{zdyrski2020wind}, where the
+profile in \figname{} 4(a) of \citet{zdyrski2020wind}, where the
 harmonic phase $\beta$ is plotted against pressure magnitude $P$.
 Note that $\As \propto -\sin{\beta}$, to leading order \citep[\cf
 eq.\ 3.55 of][]{zdyrski2020wind}.
@@ -708,7 +708,7 @@ When applied to shallow water, cnoidal-like waves, the GM profile
 generates an asymmetry whose sign is consistent with
 \citet{zdyrski2020wind}.
 However, results for GM forcings were not included here since the GM
-forcing is most applicable to periodic waves (\eg Stokes waves or
+forcing is most applicable to periodic waves (\eg{} Stokes waves or
 cnoidal waves), and it produces unphysical effects such as the growth of
 higher harmonics under offshore winds.
 
@@ -718,7 +718,7 @@ demonstrated that wind, acting though an $\eta$-dependent surface
 pressure, can generate shape changes that become more pronounced in
 shallow water.
 This motivated the current work which used a multiple scales analysis to
-couple weak wind with mild-slope long waves, \ie $H_0/h \sim (k_E h)^2
+couple weak wind with mild-slope long waves, \ie{} $H_0/h \sim (k_E h)^2
 \sim P k/(\rho_w g) \ll 1$.
 This derivation produced a KdV-Burgers equation governing the wave
 profile $\eta$.
