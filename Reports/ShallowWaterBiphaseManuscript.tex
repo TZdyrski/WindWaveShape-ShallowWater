@@ -127,12 +127,19 @@ The KdV-Burgers appears across disciplines including damped internal
 tides \citep[\eg][]{sandstrom1995dissipation}, electron waves in
 graphene \citep[\eg][]{zdyrski2019effects}, and viscous flow in blood
 vessels \citep[\eg][]{antar1999weakly}.
-
-\section{Derivation of KdV-Burgers Equation}
 In order to investigate the interaction of wind and surface waves in
-shallow water, we introduce a forcing term in the Boussinesq equations.
+shallow water, we introduce a forcing term in the Boussinesq equations
+in \cref{sec:derivation}.
 This will produce a KdV-Burgers equation governing the surface profile's
 evolution, which we will solve numerically.
+We analyze the wave height, skewness, and asymmetry in
+\cref{sec:results}.
+Finally, we discuss corresponding wind speeds and compare the results to
+intermediate and deep water waves in \cref{sec:discussion}.
+
+\section{\label{sec:derivation} Derivation of KdV-Burgers Equation}
+We begin by specifying the assumptions and governing equations; we will
+then derive the KdV-Burgers equation and clarify the numerical scheme.
 
 \subsection{Governing Equations}
 We will treat the flow as irrotational and inviscid throughout the
@@ -573,7 +580,7 @@ This is consistent with the observation from
 \cref{fig:snapshots_solitary} that the left side has a much more
 apparent shape change.
 
-\section{Discussion}
+\section{\label{sec:discussion} Discussion}
 
 \subsection{\label{sec:press_mag} Wind Speed Estimation}
 In \cref{sec:nondim}, we chose to nondimensionalize the pressure as
