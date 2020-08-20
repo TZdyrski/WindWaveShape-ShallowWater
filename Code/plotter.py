@@ -1930,7 +1930,7 @@ def plot_energy_solitary(load_prefix, save_prefix, *args, **kwargs):
             variance[elem] = np.nan
             continue
         result = curve_fit(lambda t,b:
-                1/(1+Ps[elem]*t/b), t, energy[:,elem], p0=(-5))
+                1/(1-b*Ps[elem]*t), t, energy[:,elem], p0=(1/5))
         fit[elem] = result[0][0] # store slope
         variance[elem] = result[1][0,0] # store slope variance
     print('Mean b factor (Jeffreys, solitary): '+str(np.nanmean(fit)))

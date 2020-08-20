@@ -463,22 +463,6 @@ unforced KdV equation.
 The onshore case \subref{fig:snapshots_solitary:a} demonstrates
 marked, accelerating wave growth while the offshore wind
 \subref{fig:snapshots_solitary:b} causes decay which slows over time.
-The energy growth rate explains this difference and is numerically fit
-by
-\begin{equation}
-  E \propto 1/\pqty{1 + t'/t_d'}
-  \qq{with}
-  t_d' \coloneqq b \bqty{P k_E/(\rho_w g)}^{-1}
-  \,,
-  \label{eq:actual_energy}
-\end{equation}
-and $b = -5.025 \pm \num{3e-3}$.
-This is close to the analytic approximation for the decay time, giving
-$b = -15/4$~(\eg{} eq.\ 72 of \citealp{zdyrski2019effects} with
-$\mathcal{A}=1$, $\mathcal{B} = 3/2$, $\mathcal{C} = \mu_E/(6\epsilon) =
-1$, $\mathcal{G} = -(P k_E)/(2 \rho_w g)$, and $c_0 = H_0 = 2$).
-Thus, the energy (and height) change accelerates for $P>0$ but
-decelerates for $P<0$.
 Furthermore, the wind induces a horizontal asymmetry in the wave shape.
 In both cases, the windward side of the wave becomes steeper (up to
 \SI{8}{\percent} steeper for the time period shown) than the leeward
@@ -537,9 +521,7 @@ The height \subref{fig:statistics_solitary:a} begins at $H_0/h = 2
 causing wave growth while the offshore wind causes decay, as was
 observed in \cref{fig:snapshots_solitary}.
 Again, the onshore wind causes faster growth than the offshore wind
-causes decay.
-As stated in the previous paragraph, this is consistent with an
-exponential energy growth or decay.
+causes decay as observed in \cref{fig:snapshots_solitary}.
 
 We quantify wave shape by the third-order moments, skewness and
 asymmetry.
@@ -588,14 +570,31 @@ $P k_E/(\rho_w g) = \order{\epsilon}$, which corresponds to the
 intermediate strength wind analyzed in \citet{zdyrski2020wind}.
 Now, we will estimate the wind speed associated with such a pressure
 magnitude to show that such a choice is reasonable.
-We can calculate the energy growth rate from the KdVB equation
-\cref{eq:kdvb_nondim} with the standard procedure
-\citep[\eg][]{mei2005nonlinear} of multiplying by $\eta'_0$ and
-integrating from $x'=-\infty$ to $\infty$.
-This yields the energy growth rate $\gamma$,
+First we need the growth rate of the energy $E$, which can be fit
+numerically to
 \begin{equation}
-  \pdv{t'_1} \int_{-\infty}^{\infty} \frac{1}{2} {\eta'}_0^2 \dd{x}
-  = \int_{-\infty}^{\infty} \frac{1}{2} P' \pqty{\pdv{\eta'_0}{x'}}^2
+  E \coloneqq \rho_w g \int_{-\infty}^{\infty} {\eta'}_0^2 \dd{x}
+  \propto \frac{1}{1 - \gamma' t'}
+  \qq{with}
+  \gamma' \coloneqq b \bqty{\frac{P k_E}{\rho_w g}}
+  \,,
+  \label{eq:actual_energy}
+\end{equation}
+and $b = 1.992 \pm \num{1e-4}$.
+This is close to the analytic approximation for the decay time, giving
+$b = 4/15$~(\eg{} eq.\ 72 of \citealp{zdyrski2019effects} with
+$\mathcal{A}=1$, $\mathcal{B} = 3/2$, $\mathcal{C} = \mu_E/(6\epsilon) =
+1$, $\mathcal{G} = (P k_E)/(2 \rho_w g)$, and $c_0 = H_0 = 2$).
+This is consistent with the observation in
+\cref{fig:snapshots_solitary,fig:statistics_solitary} that the energy
+(and height) change accelerates for $P>0$ but decelerates for $P<0$.
+Alternatively, we can approximate the energy growth rate from the KdVB
+equation \cref{eq:kdvb_nondim} with the standard procedure
+\citep[\eg][]{mei2005nonlinear} of multiplying by $\eta'_0$ and
+integrating from $x'=-\infty$ to $\infty$:
+\begin{equation}
+  \pdv{t'_1} \int_{-\infty}^{\infty} {\eta'}_0^2 \dd{x}
+  = \int_{-\infty}^{\infty} P' \pqty{\pdv{\eta'_0}{x'}}^2
   \dd{x} \,.
 \end{equation}
 Redimensionalizing gives the energy growth rate $\gamma$,
@@ -608,17 +607,14 @@ Redimensionalizing gives the energy growth rate $\gamma$,
   \,,
   \label{eq:gamma_vs_P_solitary}
 \end{equation}
-with the energy $E = \rho_w \int \eta^2 \dd{x}$ and frequency $\omega =
-\sqrt{gh}$.
+with the frequency $\omega = \sqrt{gh}$.
 In the final equation, we evaluated the growth rate for the initial
 solitary wave profile \cref{eq:initial_condition}.
 Such a relationship between the surface pressure $p(x,t)$ and growth
 rate holds generally for any form of pressure
 forcing~\citep[\eg][]{peirson2008wind}.
 Note that this is consistent with the growth rate found in
-\cref{eq:actual_energy} for small times $\gamma t \ll 1$ since
-$\exp(\gamma t) \approx 1/(1+t/t_d)$ if $t_d \approx -1/\gamma$, which
-we satisfy as $-5.015/P' \approx -5/P'$.
+\cref{eq:actual_energy} for small times $\gamma t \ll 1$.
 
 Additionally, \citet{jeffreys1925formation} theory relates this growth
 rate to the wind speed $U_z$, measured at some height $z$, as
