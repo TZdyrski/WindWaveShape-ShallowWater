@@ -304,13 +304,11 @@ Collecting order-one terms $\order{\epsilon^0}$ from
   \pdv{\eta_0}{t_0} + \pdv[2]{\varphi_0}{x} = 0 \qq{and}
   \eta_0 + \pdv{\varphi_0}{t_0} = 0 \,.
 \end{equation}
-These shallow-water wave equations have solutions
-\begin{equation}
-  \varphi_0 = f_0(x-t_0,t_1) \qq{and} \eta_0 = f'_0(x-t_0,1) \,.
-  \label{eq:order0_sols}
-\end{equation}
-with $f_0'(x-t_0,t_1) \coloneqq \eval{\pdv*{\theta}
-f_0(\theta,t_1)}_{\theta = x-t_0}$.
+These shallow-water wave equations have left- and right-moving wave
+solutions.
+Restricting to right moving waves gives $\varphi_0 = f_0(x-t_0,t_1)$ and
+$\eta_0 = f'_0(x-t_0,1)$, with $f_0'(x-t_0,t_1) \coloneqq
+\eval{\pdv*{\theta} f_0(\theta,t_1)}_{\theta = x-t_0}$.
 We have restricted to right-moving waves and neglected the $x$-linear
 term in $\varphi_0$ since we chose $u = \pdv*{\varphi}_x = 0$ at the
 bottom~\cref{eq:bot_bc_horz}.
@@ -329,7 +327,7 @@ order $\order{\epsilon}$:
       - \frac{1}{2} \pqty{ \pdv{\varphi_0}{x} }^2
   \,.
 \end{gather}
-Inserting our leading order solutions \cref{eq:order0_sols} and
+Inserting our leading order solutions for $\eta_0$ and $\varphi_0$ while
 eliminating $\eta_1$ gives
 \begin{equation}
   \pqty{\pdv[2]{x} - \pdv[2]{t_0}} \varphi_1 = -2 \pdv{f_0'}{t_1} +
