@@ -643,12 +643,13 @@ larger than $\abs{U_z}$ offshore.
 
 \Citet{donelan2006wave} provides a parameterization for shallow water
 waves that depends on airflow separation: $S_{\lambda/2} =
-(ak)\bqty{4.91-3.98 H\Bqty{(ak)\bqty{(U_{\lambda/2}/c)^2-1} - 1}}$, with
-$H$ the Heaviside function and $U_z$ measured at $z=\lambda/2$.
+\epsilon \sqrt{\mu} \bqty{4.91-3.98 H\Bqty{\epsilon \sqrt{\mu}
+\bqty{(U_{\lambda/2}/c)^2-1} - 1}}$, with $H$ the Heaviside function,
+$U_z$ measured at $z=\lambda/2$, and $\mu \coloneqq (kh)^2$.
 We can evaluate \cref{eq:U_vs_P} for the parameters used in
 \cref{sec:results} ($\epsilon=0.1$, $\mu_E = 0.6$, $Pk/(\rho_w g
 \epsilon) = 0.25$). This yields a non-separated flow,
-$(ak)\bqty{(U_{\lambda/2}/c)^2-1} < 1$.
+$\epsilon \sqrt{\mu} \bqty{(U_{\lambda/2}/c)^2-1} < 1$.
 While this parameterization is meant for periodic waves, we will
 assume it holds approximately for solitary waves and take $\lambda = 2
 \pi/k_E = \SI{20}{\meter}$, corresponding to a depth of $h =
