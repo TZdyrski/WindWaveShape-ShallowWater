@@ -658,32 +658,34 @@ depth of $h = \SI{2.5}{\meter}$ and initial wave height $H_0 =
 \SI{0.5}{\meter}$.
 Then, this gives the wind speed at $z=\SI{10}{\meter}$ as $U_{10} =
 \SI{21}{\meter\per\second}$, a reasonable wind speed for strongly forced
-shallow water waves.
+shallow-water waves.
 
 \subsection{Physical Interpretation}
 In \cref{sec:results}, we noted that the rear face of the waves in
 \cref{fig:snapshots_solitary} showed marked shape differences between
 onshore and offshore wind, while the front faces were rather similar.
-This can be understood by considering the fluid velocity, which is
-largely right-to-left in this co-moving frame.
-When the water approaches the solitary wave from $x = +\infty$, it is
-virtually unaffected by the pressure, since $p \propto \partial_x \eta$
-is negligible far away from the wave.
-Hence, the front face of the wave is largely unaffected by the pressure
-forcing.
-For the onshore wind case, the water rising on the front face of the
-wave encounters low air pressure, and the water descending on the rear
-face encounters high air pressure, both of which increase the water's
-energy.
-This additional kinetic energy causes the water flow to overshoot $z=0$
-at the rear base of the wave, leading to the overshoot observed.
-The opposite holds for the onshore wind, where wind removes kinetic energy
-from the flow, so that the flow does not immediately return to the still
-water level.
+We can understand this by considering the fluid velocity in this
+co-moving frame.
+The surface pressure $p \propto \partial_x \eta$ only does work
+close to the wave where $\partial_x \eta$ is significant.
+The water reaching the front face has only been acted upon by pressure
+for a short distance, so the work done by the wind is minimal and causes
+little shape change.
+Once the water reaches the rear face, the surface pressure has acted
+over a longer distance, performed more work, and yielded a larger shape
+change.
+Onshore wind (\cref{fig:snapshots_solitary:a}) does positive work---see
+the increasing wave height in \cref{fig:statistics_solitary:a}.
+This additional kinetic energy causes the downward-moving water to
+overshoot $z=0$ at the rear base of the wave, leading to the depression
+seen in \cref{fig:snapshots_solitary:a}.
+Conversely, offshore wind does negative work and the decreased kinetic
+energy delays the flow's return to the still water level in
+\cref{fig:snapshots_solitary:b}.
 As discussed in \cref{sec:results}, this discrepancy between the front
-and rear faces of the wave is also largely responsible for the variation
+and rear wave faces is also largely responsible for the variation
 between onshore asymmetry and offshore asymmetry in
-\cref{fig:statistics_solitary}.
+\cref{fig:statistics_solitary:c}.
 
 \subsection{Comparison to Intermediate and Deep Water}
 Here, we have coupled wind to waves in shallow water.
