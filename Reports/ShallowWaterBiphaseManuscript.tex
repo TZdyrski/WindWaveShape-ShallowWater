@@ -356,17 +356,13 @@ so we will instead solve this numerically.
 
 \subsection{Initial Conditions}
 For an initial condition, we use the solitary wave solutions of
-the ordinary KdV equation:
-\begin{equation}
-  \pdv{\eta_0}{t_1} + U\pdv{\eta_0}{x} + \frac{3}{2}
-    \eta_0 \pdv{\eta_0}{x} + \pdv[3]{\eta_0}{x} = 0 \,.
-  \label{eq:kdv}
-\end{equation}
-We have boosted to a frame moving with the unforced solitary wave speed
-by including a term $U\partial_x \eta_0$.
+the unforced KdV equation, \ie{} \cref{eq:kdv_burgers} with $P=0$.
+For better numerical accuracy, we also boost into a frame moving with
+the unforced solitary wave speed by including a term $U\partial_x
+\eta_0$ on the left-hand side of \cref{eq:kdv_burgers}.
 Using the solution from \citet{dingemans1997water} (as quoted in
-\citealp{brun2018convective}) the solitary wave solution to
-\cref{eq:kdv} is
+\citealp{brun2018convective}) the solitary wave solution to the KdV
+equation is
 \begin{equation}
   \eta_0 = H_0 \sech^2\pqty{\frac{x - c_1 t_1}{\Delta}}
   \qq{with}
