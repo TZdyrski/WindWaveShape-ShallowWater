@@ -385,6 +385,9 @@ This yields a spacing $\Delta x' = 0.05$, with $x' = 0, \Delta x',
 The simulation runs from $t'= 0$ to $T' = 3$, inclusive, with
 $N_t = \num{4.8e5}$ points, yielding a spacing $\Delta t' = T'/(N_t-1)
 \approx \num{6.25e-6}$.
+We found that slowly ramping $P'$ up from $0$ at $t'=0$ to its full
+value did not qualitatively modify the results, so we do not utilize
+such a ramp-up here.
 
 The PDE \cref{eq:kdv_burgers} is discretized in space using a
 second-order central finite difference method and in space using a
