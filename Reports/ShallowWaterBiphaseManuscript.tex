@@ -409,7 +409,8 @@ The PDE \cref{eq:kdvb_nondim} is discretized in space using a
 second-order central finite difference method and in space using a
 \nth{3}-order Runge-Kutta scheme.
 For numerical stability, we must also include a hyperviscosity term
-$\nu_{\text{bi}} = \num{3e-3}$,
+$-\nu_{\text{bi}} \partial_x^4$ on the right-hand side of
+\cref{eq:kdv_burgers},
 \begin{equation}
   \pdv{\eta'_0}{t'_1} - \pdv{\eta'_0}{x'} + \frac{3}{2}
   \eta'_0 \pdv{\eta'_0}{x'} + \pdv[3]{\eta'_0}{{x'}} =
