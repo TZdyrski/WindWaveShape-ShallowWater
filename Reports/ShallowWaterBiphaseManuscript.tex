@@ -415,6 +415,29 @@ condition
   \label{eq:initial_condition}
 \end{equation}
 
+We will quantify the wave shape via the wave height $H$,
+\begin{equation}
+  H = \max(\eta) - \min(\eta) \,,
+  \label{eq:height_def}
+\end{equation}
+as well as the skewness $\Sk$ and $\As$,
+\begin{equation}
+  \Sk \coloneqq \frac{\langle \eta^3 \rangle}{\langle \eta^2
+  \rangle^{3/2}} \
+  \qq{and}
+  \As \coloneqq \frac{\langle \hilbert \Bqty{\eta^3} \rangle}{\langle
+    \eta^2 \rangle^{3/2}} \,.
+  \label{eq:shape_stats_def}
+\end{equation}
+Here,
+\begin{equation}
+  \langle f \rangle \coloneqq \frac{1}{L'} \int_{-L'/2}^{L'/2} f
+  \dd{x}
+\end{equation}
+and $\hilbert$ is the Hilbert transform.
+Since this definition caries a factor of the domain size $\sqrt{L'}$, we
+normalize the skewness $\Sk$ by the initial skewness $\Sk_0$.
+
 \section{\label{sec:results} Results}
 Given the one free parameter $P k_E/(\rho_w g \epsilon)$ of the
 KdV-Burgers equation \cref{eq:kdvb_nondim}, we can now plot the results
@@ -505,11 +528,6 @@ k_E/(\rho_w g \epsilon) = -0.125$ and $-0.25$), and the unforced case
 ($P k_E/(\rho_w g \epsilon) = 0$).
 We plot all cases for initial steepness $\epsilon = 0.1$ up to slow
 time $t'_1 = 3$, corresponding to $4/\epsilon = 30$ wave periods.
-We calculate the wave height (\cref{fig:statistics_solitary:a}) as
-\begin{equation}
-  H(t) = \max(\eta) - \min(\eta) \,.
-  \label{eq:height_def}
-\end{equation}
 The height (\cref{fig:statistics_solitary:a}) begins at $H_0/h = 2
 \epsilon = 0.2$ and shows the onshore wind
 causing wave growth while the offshore wind causes decay, as was
@@ -521,27 +539,9 @@ We can even see this qualitatively in the accelerating crest growth
 (\cref{fig:snapshots_solitary:b}) of \cref{fig:snapshots_solitary} at
 $x=0$.
 
-We quantify wave shape by the third-order moments, skewness and
-asymmetry.
-The skewness (\cref{fig:statistics_solitary:b}) and
-asymmetry (\cref{fig:statistics_solitary:c}) are
-\begin{equation}
-  \Sk \coloneqq \frac{\langle \eta^3 \rangle}{\langle \eta^2
-  \rangle^{3/2}} \
-  \qq{and}
-  \As \coloneqq \frac{\langle \hilbert \Bqty{\eta^3} \rangle}{\langle
-    \eta^2 \rangle^{3/2}} \,,
-  \label{eq:shape_stats_def}
-\end{equation}
-with
-\begin{equation}
-  \langle f \rangle \coloneqq \frac{1}{L'} \int_{-L'/2}^{L'/2} f
-  \dd{x}
-\end{equation}
-and $\hilbert$ the Hilbert transform.
-Since this definition caries a factor of the
-domain size $\sqrt{L'}$, we normalize the skewness $\Sk$ by the
-initial skewness $\Sk_0$.
+We quantify wave shape by the third-order moments, skewness
+(\cref{fig:statistics_solitary:b}) and asymmetry
+(\cref{fig:statistics_solitary:c}).
 The onshore (offshore) causes the wave to become more (less) skewed over
 time.
 The skewness is nearly symmetric with respect to $\pm P$ about one.
