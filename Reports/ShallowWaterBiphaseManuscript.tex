@@ -374,7 +374,6 @@ Using the solution from \citet{dingemans1997water} (as quoted in
 \end{equation}
 $H_0>0$ is an order-1 parameter.
 We set $U=-H_0/2$ so the unforced wave is stationary.
-
 Reverting back to dimensional variables (with primes denoting
 dimensionless), we now choose $H_0$ so that $a_0$ is half the maximum of
 $\eta_0$.
@@ -382,16 +381,9 @@ Furthermore, we now define what $k_E$ means by choosing $\Delta = 2$.
 This choice requires $\mu_E = 6 \epsilon$, which is simply the
 well-known fact that the height and width of a solitary wave satisfy a
 fixed relationship.
-Therefore, the nondimensional equation we are solving is
-\begin{equation}
-  \pdv{\eta'_0}{t'_1} - \pdv{\eta'_0}{x'} + \frac{3}{2}
-  \eta'_0 \pdv{\eta'_0}{x'} + \pdv[3]{\eta'_0}{{x'}} =
-  -P \frac{1}{2} \pdv[2]{\eta'_0}{{x'}}
-  \label{eq:kdvb_nondim}
-\end{equation}
 
 \subsection{Numerics}
-We will solve \cref{eq:kdvb_nondim} numerically.
+We will solve \cref{eq:kdv_burgers} numerically.
 The spatial domain has periodic boundary conditions and $N_x = 400$
 points spread over a domain of length $L' = 20$.
 This yields a spacing $\Delta x' = 0.05$, with $x' = 0, \Delta x',
@@ -400,7 +392,7 @@ The simulation runs from $t'= 0$ to $T' = 3$, inclusive, with
 $N_t = \num{4.8e5}$ points, yielding a spacing $\Delta t' = T'/(N_t-1)
 \approx \num{6.25e-6}$.
 
-The PDE \cref{eq:kdvb_nondim} is discretized in space using a
+The PDE \cref{eq:kdv_burgers} is discretized in space using a
 second-order central finite difference method and in space using a
 \nth{3}-order Runge-Kutta scheme.
 For numerical stability, we must also include a hyperviscosity term
@@ -411,6 +403,7 @@ $-\nu_{\text{bi}} \partial_x^4$ on the right-hand side of
   \eta'_0 \pdv{\eta'_0}{x'} + \pdv[3]{\eta'_0}{{x'}} =
   -P \frac{1}{2} \pdv[2]{\eta'_0}{{x'}} - \nu_{\text{bi}}
   \pdv[4]{\eta'_0}{{x'}} \,,
+  \label{eq:kdvb_nondim}
 \end{equation}
 with $\nu_{\text{bi}} = \num{3e-3}$, which we solve with initial
 condition
