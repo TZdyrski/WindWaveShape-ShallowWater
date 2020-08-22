@@ -348,9 +348,11 @@ This is the Korteweg-de Vries (KdV)-Burgers equation.
 Note that the pressure term, $P \partial^2_x \eta_0$, can act as either
 a positive viscosity for offshore, damping wind or a negative viscosity
 when onshore wind causes wave growth.
-Furthermore, we now define what $k_E$ means by choosing $\mu_E = 6
-\epsilon$, which is simply the well-known fact that the height and width
-of a solitary wave satisfy a fixed relationship.
+As written, \cref{eq:kdv_burgers} has a rescaling symmetry where $\mu_E
+\to \lambda^2 \mu_E$ is equivalent to taking $(x,t_0,t_1,P) \to
+(x,t_0,t_1,P)/\lambda$.
+Therefore, we now fix the length scale (equivalently, $k_E$) by choosing
+$\mu_E = 6 \epsilon$.
 The KdV-Burgers equation is not known to have any closed form solutions,
 so we will instead solve this numerically.
 
