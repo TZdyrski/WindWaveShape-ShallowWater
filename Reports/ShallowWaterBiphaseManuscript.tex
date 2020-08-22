@@ -348,6 +348,9 @@ This is the Korteweg-de Vries (KdV)-Burgers equation.
 Note that the pressure term, $P \partial^2_x \eta_0$, can act as either
 a positive viscosity for offshore, damping wind or a negative viscosity
 when onshore wind causes wave growth.
+Furthermore, we now define what $k_E$ means by choosing $\mu_E = 6
+\epsilon$, which is simply the well-known fact that the height and width
+of a solitary wave satisfy a fixed relationship.
 The KdV-Burgers equation is not known to have any closed form solutions,
 so we will instead solve this numerically.
 
@@ -356,8 +359,7 @@ For an initial condition, we use the solitary wave solutions of
 the ordinary KdV equation:
 \begin{equation}
   \pdv{\eta_0}{t_1} + U\pdv{\eta_0}{x} + \frac{3}{2}
-    \eta_0 \pdv{\eta_0}{x} + \frac{1}{6} \frac{\mu_E}{\epsilon}
-    \pdv[3]{\eta_0}{x} = 0 \,.
+    \eta_0 \pdv{\eta_0}{x} + \pdv[3]{\eta_0}{x} = 0 \,.
   \label{eq:kdv}
 \end{equation}
 We have boosted to a frame moving with the unforced solitary wave speed
@@ -368,7 +370,7 @@ Using the solution from \citet{dingemans1997water} (as quoted in
 \begin{equation}
   \eta_0 = H_0 \sech^2\pqty{\frac{x - c_1 t_1}{\Delta}}
   \qq{with}
-  \Delta = \sqrt{\frac{4 \mu_E}{3\epsilon} \frac{1}{H_0}}
+  \Delta = \sqrt{\frac{8}{H_0}}
   \qq{and}
   c_1 = U + \frac{H_0}{2} \,.
 \end{equation}
@@ -377,10 +379,6 @@ We set $U=-H_0/2$ so the unforced wave is stationary.
 Reverting back to dimensional variables (with primes denoting
 dimensionless), we now choose $H_0$ so that $a_0$ is half the maximum of
 $\eta_0$.
-Furthermore, we now define what $k_E$ means by choosing $\Delta = 2$.
-This choice requires $\mu_E = 6 \epsilon$, which is simply the
-well-known fact that the height and width of a solitary wave satisfy a
-fixed relationship.
 
 \subsection{Numerics}
 We will solve \cref{eq:kdv_burgers} numerically.
