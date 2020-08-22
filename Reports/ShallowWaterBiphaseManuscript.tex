@@ -134,8 +134,8 @@ This will produce a KdV-Burgers equation governing the surface profile's
 evolution, which we will solve numerically.
 We analyze the wave height, skewness, and asymmetry in
 \cref{sec:results}.
-Finally, we discuss corresponding wind speeds and compare the results to
-intermediate and deep-water waves in \cref{sec:discussion}.
+Finally, we discuss wind speeds and compare the results to intermediate
+and deep-water waves in \cref{sec:discussion}.
 
 \section{\label{sec:derivation} Derivation of KdV-Burgers Equation}
 We begin by specifying the assumptions and governing equations; we will
@@ -520,7 +520,7 @@ level near $x/h = -6$ at $t\epsilon \sqrt{gh} k_E=3$ (green line).
   }\label{fig:statistics_solitary}
 \end{figure}
 
-In order to quantify the effect of wind on wave shape,
+To quantify the effect of wind on wave shape,
 \cref{fig:statistics_solitary} shows shape statistics as functions of
 the nondimensional slow time $t \epsilon \sqrt{g h} k_E$ for onshore
 wind ($P k_E/(\rho_w g \epsilon) = 0.125$ and $0.25$), offshore wind ($P
@@ -569,11 +569,11 @@ brevity.
 \section{\label{sec:discussion} Discussion}
 
 \subsection{\label{sec:press_mag} Wind Speed Estimation}
-In \cref{sec:nondim}, we chose to nondimensionalize the pressure as
-$P k_E/(\rho_w g) = \order{\epsilon}$.
-Now, we will estimate the wind speed associated with such a pressure
-magnitude to show that such a choice is reasonable.
-First we need the growth rate of the energy $E$, which numerically fits
+In \cref{sec:nondim}, we chose to nondimensionalize the pressure as $P
+k_E/(\rho_w g) = \order{\epsilon}$.
+Now, we estimate the wind speed associated with such a pressure
+to show that this choice is reasonable.
+First we need the growth rate of the energy $E$, which we numerically fit
 to
 \begin{equation}
   E \coloneqq \rho_w g \int_{-\infty}^{\infty} {\eta'}_0^2 \dd{x}
