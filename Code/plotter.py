@@ -192,8 +192,7 @@ def plot_multiplot_template(data_arrays, x_coordinate,
 
     # Adjust figure height
     figsize = fig.get_size_inches()
-    fig.set_size_inches([figsize[0],figsize[1]*(0.8+0.2*ax.shape[0])])
-
+    fig.set_size_inches([figsize[0],figsize[1]*(0.6+0.2*ax.shape[0])])
 
     # Save parameters into a separate array of dictionaries so we can
     # edit without affecting the dictionary
