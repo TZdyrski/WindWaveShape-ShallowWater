@@ -389,11 +389,6 @@ Therefore, the nondimensional equation we are solving is
   -P \frac{1}{2} \pdv[2]{\eta'_0}{{x'}}
   \label{eq:kdvb_nondim}
 \end{equation}
-with initial condition
-\begin{equation}
-  \eta'_0(x',t_1=0) = 2 \sech^2\pqty{\frac{x'}{2}} \,.
-  \label{eq:initial_condition}
-\end{equation}
 
 \subsection{Numerics}
 We will solve \cref{eq:kdvb_nondim} numerically.
@@ -415,7 +410,13 @@ $-\nu_{\text{bi}} \partial_x^4$ on the right-hand side of
   \pdv{\eta'_0}{t'_1} - \pdv{\eta'_0}{x'} + \frac{3}{2}
   \eta'_0 \pdv{\eta'_0}{x'} + \pdv[3]{\eta'_0}{{x'}} =
   -P \frac{1}{2} \pdv[2]{\eta'_0}{{x'}} - \nu_{\text{bi}}
-  \pdv[4]{\eta'_0}{{x'}} \,.
+  \pdv[4]{\eta'_0}{{x'}} \,,
+\end{equation}
+with $\nu_{\text{bi}} = \num{3e-3}$, which we solve with initial
+condition
+\begin{equation}
+  \eta'_0(x',t_1=0) = 2 \sech^2\pqty{\frac{x'}{2}} \,.
+  \label{eq:initial_condition}
 \end{equation}
 
 \section{\label{sec:results} Results}
