@@ -398,11 +398,11 @@ with initial condition
 \subsection{Numerics}
 We will solve \cref{eq:kdvb_nondim} numerically.
 The spatial domain has periodic boundary conditions and $N_x = 400$
-points spread over a domain of length $L'_x = 20$.
+points spread over a domain of length $L' = 20$.
 This yields a spacing $\Delta x' = 0.05$, with $x' = 0, \Delta x',
-2\Delta x', \ldots L'_x - \Delta x'$.
-The simulation runs from $t'= 0$ to $L'_t = 3$, inclusive, with
-$N_t = \num{4.8e5}$ points, yielding a spacing $\Delta t' = L'_t/(N_t-1)
+2\Delta x', \ldots L' - \Delta x'$.
+The simulation runs from $t'= 0$ to $T' = 3$, inclusive, with
+$N_t = \num{4.8e5}$ points, yielding a spacing $\Delta t' = T'/(N_t-1)
 \approx \num{6.25e-6}$.
 
 The PDE \cref{eq:kdvb_nondim} is discretized in space using a
@@ -534,12 +534,12 @@ The \subref{fig:statistics_solitary:b} skewness and
 \end{equation}
 with
 \begin{equation}
-  \langle f \rangle \coloneqq \frac{1}{L'_x} \int_{-L'_x/2}^{L'_x/2} f
+  \langle f \rangle \coloneqq \frac{1}{L'} \int_{-L'/2}^{L'/2} f
   \dd{x}
 \end{equation}
 and $\hilbert$ the Hilbert transform.
 Since this definition caries a factor of the
-domain size $\sqrt{L'_x}$, we normalize the skewness $\Sk$ by the
+domain size $\sqrt{L'}$, we normalize the skewness $\Sk$ by the
 initial skewness $\Sk_0$.
 The onshore (offshore) causes the wave to become more (less) skewed over
 time.
