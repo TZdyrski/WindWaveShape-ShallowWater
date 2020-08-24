@@ -387,10 +387,10 @@ The spatial domain has periodic boundary conditions and $N_x = 400$
 points spread over a domain of length $L' = 20$.
 This yields a spacing $\Delta x' = 0.05$, with $x' = 0, \Delta x',
 2\Delta x', \ldots L' - \Delta x'$.
-The simulation runs from $t'= 0$ to $T' = 3$, inclusive, with
-$N_t = \num{4.8e5}$ points, yielding a spacing $\Delta t' = T'/(N_t-1)
+The simulation runs from $t'_1 = 0$ to $T' = 3$, inclusive, with
+$N_t = \num{4.8e5}$ points, yielding a spacing $\Delta t'_1 = T'/(N_t-1)
 \approx \num{6.25e-6}$.
-We found that slowly ramping $P'$ up from $0$ at $t'=0$ to its full
+We found that slowly ramping $P'$ up from $0$ at $t'_1=0$ to its full
 value did not qualitatively modify the results, so we do not utilize
 such a ramp-up here.
 
@@ -575,7 +575,7 @@ First we need the growth rate of the energy $E$, which we numerically fit
 to
 \begin{equation}
   E \coloneqq \rho_w g \int_{-\infty}^{\infty} {\eta'}_0^2 \dd{x}
-  \propto \frac{1}{1 - \gamma' t'}
+  \propto \frac{1}{1 - \gamma' t'_1}
   \qq{with}
   \gamma' \coloneqq b \bqty{\frac{P k_E}{\rho_w g}}
   \,,
