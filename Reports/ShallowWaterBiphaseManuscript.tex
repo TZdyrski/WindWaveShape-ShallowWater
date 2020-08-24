@@ -583,10 +583,10 @@ to
 \end{equation}
 with the phase speed $c = \sqrt{gh}$ and $b = \num{0.1992 \pm 0.0001}$.
 \Cref{eq:actual_energy} has the same functional form and approximately
-the same analytic growth rate $\gamma' = (4/15) (P k_E/\rho_w g
-\epsilon)$ as derived, for example, by \citet{zdyrski2019effects} with a
-secondary multiple scales approximation of the KdV-Burgers equation
-acting on a solitary wave.
+the same analytic growth rate $\gamma = (4/15) (P k_E/\rho_w g
+\epsilon) ck$ as derived, for example, by \citet{zdyrski2019effects}
+with a secondary multiple scales approximation of the KdV-Burgers
+equation acting on a solitary wave.
 This is consistent with the observation in
 \cref{fig:snapshots_solitary,fig:statistics_solitary} that the energy
 (and height) change accelerates for $P>0$ but decelerates for $P<0$.
@@ -619,7 +619,7 @@ Additionally, \citet{jeffreys1925formation} theory relates the growth
 rate of periodic waves to the wind speed $U_z$ (the subscript giving the
 measurement height $z$) as
 \begin{equation}
-  \frac{\gamma}{\omega} = S_z \frac{\rho_a}{\rho_w}
+  \frac{\gamma}{c k} = S_z \frac{\rho_a}{\rho_w}
     \pqty{\frac{U_z}{c}-1} \abs{\frac{U_z}{c}-1} \,,
   \label{eq:gamma_vs_u_jeffreys}
 \end{equation}
