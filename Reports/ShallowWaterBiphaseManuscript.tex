@@ -281,7 +281,8 @@ the Boussinesq equations with a pressure forcing term,
 \end{gather}
 Further, we will now assume $\order{\epsilon} = \order{\mu_E} \ll 1$.
 
-\subsection{\label{sec:shallow_water} Perturbation Expansion}
+\subsection{\label{sec:shallow_water} Multiple Scales Expansion and KdV
+Equation}
 We expand the time $t$ in terms of multiple timescales $t_n =
 \epsilon^n t$ for $n= 0,1$, so all time derivatives become $\partial_t \to
 \partial_{t_0} + \epsilon \partial_{t_1}$.
@@ -296,7 +297,6 @@ Then, we write $\eta$ and $\varphi$ in asymptotic series of $\epsilon$,
 Now, we will reduce the Bousinessq equations
 \cref{eq:kinematic_bc_varphi,eq:dynamic_bc_varphi} to the KdV equations
 following a similar method to \citet{mei2005nonlinear}.
-\subsection{Shallow Water Wave Equations}
 Collecting order-one terms $\order{\epsilon^0}$ from
 \cref{eq:kinematic_bc_varphi,eq:dynamic_bc_varphi} gives
 \begin{equation}
@@ -312,7 +312,6 @@ We have restricted to right-moving waves and neglected the $x$-linear
 term in $\varphi_0$ since we chose $u = \partial_x \varphi = 0$ at the
 bottom~\cref{eq:bot_bc_horz}.
 
-\subsection{\label{sec:int_first_order} KdV Burgers Equation}
 Continuing to the next order of perturbation theory, we retain terms of
 order $\order{\epsilon}$:
 \begin{gather}
