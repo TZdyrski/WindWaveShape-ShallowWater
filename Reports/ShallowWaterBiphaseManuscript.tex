@@ -355,9 +355,6 @@ so we will instead solve this numerically.
 \subsection{Initial Condition}
 For an initial condition, we use unforced KdV equation with $P=0$
 solitary wave solution.
-For better numerical accuracy, we also boost into a frame moving with
-the unforced solitary wave speed by including a term $U\partial_x
-\eta_0$ on the left-hand side of \cref{eq:kdv_burgers}.
 Using the solution from \citet{dingemans1997water} (as quoted in
 \citealp{brun2018convective}) the solitary wave solution to the KdV
 equation is
@@ -366,10 +363,9 @@ equation is
   \qq{with}
   \Delta = \sqrt{\frac{8}{H_0}}
   \qq{and}
-  c_1 = U + \frac{H_0}{2} \,.
+  c_1 = \frac{H_0}{2} \,.
 \end{equation}
 $H_0>0$ is an order-1 parameter.
-We set $U=-H_0/2$ so the unforced wave is stationary.
 Reverting back to dimensional variables (with primes denoting
 dimensionless), we now choose $H_0'=2$ so that $a_0$ is half the maximum
 of $\eta_0$.
@@ -399,7 +395,7 @@ For numerical stability, we must also include a hyperviscosity term
 $-\nu_{\text{bi}} \partial_x^4$ on the right-hand side of
 \cref{eq:kdv_burgers},
 \begin{equation}
-  \pdv{\eta'_0}{t'_1} - \pdv{\eta'_0}{x'} + \frac{3}{2}
+  \pdv{\eta'_0}{t'_1} + \frac{3}{2}
   \eta'_0 \pdv{\eta'_0}{x'} + \pdv[3]{\eta'_0}{{x'}} =
   -P \frac{1}{2} \pdv[2]{\eta'_0}{{x'}} - \nu_{\text{bi}}
   \pdv[4]{\eta'_0}{{x'}} \,,
