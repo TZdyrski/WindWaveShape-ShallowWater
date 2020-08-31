@@ -352,7 +352,7 @@ $\mu_E = 6 \epsilon$.
 The KdV-Burgers equation is not known to have any closed form solutions,
 so we will instead solve this numerically.
 
-\subsection{Initial Condition}
+\subsection{\label{sec:initial} Initial Condition}
 For an initial condition, we use unforced KdV equation with $P=0$
 solitary wave solution.
 Using the solution from \citet{dingemans1997water} (as quoted in
@@ -364,6 +364,7 @@ equation is
   \Delta = \sqrt{\frac{8}{H_0}}
   \qq{and}
   c_1 = \frac{H_0}{2} \,.
+  \label{eq:initial_condition}
 \end{equation}
 $H_0>0$ is an order-1 parameter.
 Reverting back to dimensional variables (with primes denoting
@@ -374,6 +375,7 @@ dispersion $\partial_x \eta_0$ with focusing nonlinearity $\eta_0
 \partial_x \eta_0$; the introduction of a dissipative term $P
 \partial_x^2 \eta_0$ will disrupt the balance, inducing shape changes
 and growth or decay.
+Thus, our initial condition is \cref{eq:initial_condition} with $t_1=0$.
 
 \subsection{Numerics}
 We will solve \cref{eq:kdv_burgers} numerically.
@@ -391,22 +393,9 @@ such a ramp-up here.
 The PDE \cref{eq:kdv_burgers} is discretized in space using a
 second-order central finite difference method and in time using a
 \nth{3}-order Runge-Kutta scheme.
-For numerical stability, we must also include a hyperviscosity term
-$-\nu_{\text{bi}} \partial_x^4$ on the right-hand side of
-\cref{eq:kdv_burgers},
-\begin{equation}
-  \pdv{\eta'_0}{t'_1} + \frac{3}{2}
-  \eta'_0 \pdv{\eta'_0}{x'} + \pdv[3]{\eta'_0}{{x'}} =
-  -P \frac{1}{2} \pdv[2]{\eta'_0}{{x'}} - \nu_{\text{bi}}
-  \pdv[4]{\eta'_0}{{x'}} \,,
-  \label{eq:kdvb_nondim}
-\end{equation}
-with $\nu_{\text{bi}} = \num{3e-3}$, which we solve with the initial
-condition
-\begin{equation}
-  \eta'_0(x',t_1=0) = 2 \sech^2\pqty{\frac{x'}{2}} \,.
-  \label{eq:initial_condition}
-\end{equation}
+For numerical stability, we must also include a hyperviscosity term,
+$-\nu_{\text{bi}} \partial_x^4 \eta_0'$ with $\nu_{\text{bi}} =
+\num{3e-3}$, on the right-hand side of \cref{eq:kdv_burgers}.
 We will quantify the wave shape according to the wave height $H$,
 \begin{equation}
   H = \max(\eta) - \min(\eta) \,,
@@ -432,7 +421,7 @@ we will normalize the skewness $\Sk$ by the initial skewness $\Sk_0$.
 
 \section{\label{sec:results} Results}
 Given the one free parameter $P k_E/(\rho_w g \epsilon)$ of the
-KdV-Burgers equation \cref{eq:kdvb_nondim}, we can examine the effect of
+KdV-Burgers equation \cref{eq:kdv_burgers}, we can examine the effect of
 different pressure magnitudes on wave evolution and shape, with
 particular emphasis on the contrast between onshore ($P > 0$) and
 offshore wind ($P < 0$).
@@ -585,7 +574,7 @@ This is consistent with the observation in
 \cref{fig:snapshots_solitary,fig:statistics_solitary} that the energy
 (and height) change accelerates for $P>0$ but decelerates for $P<0$.
 Alternatively, we can approximate the energy growth rate from the
-KdV-Burgers equation \cref{eq:kdvb_nondim} with the standard procedure
+KdV-Burgers equation \cref{eq:kdv_burgers} with the standard procedure
 \citep[\eg][]{mei2005nonlinear} of multiplying by $\eta'_0$ and
 integrating from $x'=-\infty$ to $\infty$:
 \begin{equation}
@@ -605,7 +594,7 @@ redimensionalizing gives the energy growth rate $\gamma$,
   \label{eq:gamma_vs_P_solitary}
 \end{equation}
 In the final equation, we evaluated the growth rate for the initial
-solitary wave profile \cref{eq:initial_condition}.
+solitary wave profile (\cf \cref{sec:initial}).
 Note that this is consistent with the growth rate found in
 \cref{eq:actual_energy} for small times $\gamma t \ll 1$.
 
