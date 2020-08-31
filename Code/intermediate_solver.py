@@ -478,13 +478,9 @@ class kdvSystem():
         uxxx = derivative(u, dx=self.dx, period=self.xLen, order=3, **kwargs)
         uxxxx = derivative(u, dx=self.dx, period=self.xLen, order=4, **kwargs)
 
-        # Ramping function
-        t_ramp = 0.1 # Ramp time in (slow) time variable
-        R = np.minimum(1, t/t_ramp)
-
         # Compute du/dt
         dudt = -u*ux*self.B/self.A -uxxx*self.C/self.A \
-                -ux*self.F/self.A + uxx*self.G/self.A*R \
+                -ux*self.F/self.A + uxx*self.G/self.A \
                 -uxxxx*self.H/self.A
 
         return dudt
@@ -499,13 +495,9 @@ class kdvSystem():
                 shift=int(round(-self.psiP*self.WaveLength/(2*np.pi)/self.dx)),
                 axis=0)
 
-        # Ramping function
-        t_ramp = 0.1 # Ramp time in (slow) time variable
-        R = np.minimum(1, t/t_ramp)
-
         # Compute du/dt
         dudt = -u*ux*self.B/self.A -uxxx*self.C/self.A \
-                -ux*self.F/self.A + uxnl*self.G/self.A*R \
+                -ux*self.F/self.A + uxnl*self.G/self.A \
                 -uxxxx*self.H/self.A
 
         return dudt
