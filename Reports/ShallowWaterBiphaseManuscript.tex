@@ -382,7 +382,7 @@ the results, so we do not utilize such a ramp up here.
 
 The PDE \cref{eq:kdv_burgers} is discretized in space using a
 second-order central finite difference method and in time using a
-\nth{3}-order Runge-Kutta scheme.
+third-order Runge-Kutta scheme.
 For numerical stability, we must also include a hyperviscosity term,
 $-\nu_{\text{bi}} \partial_x^4 \eta_0$ with $\nu_{\text{bi}} =
 \num{3e-3}$, on the right-hand side of \cref{eq:kdv_burgers}.
