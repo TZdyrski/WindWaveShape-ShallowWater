@@ -369,22 +369,22 @@ Thus, our initial condition is \cref{eq:initial_condition} with $t_1=0$.
 \subsection{Numerics}
 We will solve \cref{eq:kdv_burgers} numerically.
 The spatial domain has periodic boundary conditions and $N_x = 400$
-points spread over a domain of length $L' = 20$.
-This yields a spacing $\Delta x' = 0.05$, with $x' = 0, \Delta x',
-2\Delta x', \ldots L' - \Delta x'$.
-The simulation runs from $t'_1 = 0$ to $T' = 3$, inclusive, with
-$N_t = \num{4.8e5}$ points, yielding a spacing $\Delta t'_1 = T'/(N_t-1)
+points spread over a domain of length $L = 20$.
+This yields a spacing $\Delta x = 0.05$, with $x = 0, \Delta x,
+2\Delta x, \ldots L - \Delta x$.
+The simulation runs from $t_1 = 0$ to $T = 3$, inclusive, with
+$N_t = \num{4.8e5}$ points, yielding a spacing $\Delta t_1 = T/(N_t-1)
 \approx \num{6.25e-6}$.
-We found that linearly ramping $P'$ up from $0$ at $t'_1=0$ to its full
-value at $t'_1 = 0.1$ (or $t = \sqrt{gh} k_E$, \ie{} approximately one
-wave-crossing time) did not qualitatively modify the results, so we do
-not utilize such a ramp-up here.
+We found that linearly ramping $P$ up from $0$ at $t_1=0$ to its full
+value at $t_1 = 0.1$ (or full, dimensional time $t = \sqrt{gh} k_E$,
+\ie{} approximately one wave-crossing time) did not qualitatively modify
+the results, so we do not utilize such a ramp-up here.
 
 The PDE \cref{eq:kdv_burgers} is discretized in space using a
 second-order central finite difference method and in time using a
 \nth{3}-order Runge-Kutta scheme.
 For numerical stability, we must also include a hyperviscosity term,
-$-\nu_{\text{bi}} \partial_x^4 \eta_0'$ with $\nu_{\text{bi}} =
+$-\nu_{\text{bi}} \partial_x^4 \eta_0$ with $\nu_{\text{bi}} =
 \num{3e-3}$, on the right-hand side of \cref{eq:kdv_burgers}.
 We will quantify the wave shape according to the wave height $H$,
 \begin{equation}
@@ -402,11 +402,11 @@ as well as the skewness $\Sk$ and $\As$,
 \end{equation}
 Here, we have used the wave average
 \begin{equation}
-  \langle f \rangle \coloneqq \frac{1}{L'} \int_{-L'/2}^{L'/2} f
+  \langle f \rangle \coloneqq \frac{1}{L} \int_{-L/2}^{L/2} f
   \dd{x} \,,
 \end{equation}
 and $\hilbert$ is the Hilbert transform.
-Since these definitions carry a factor of the domain size $\sqrt{L'}$,
+Since these definitions carry a factor of the domain size $\sqrt{L}$,
 we will normalize the skewness $\Sk$ by the initial skewness $\Sk_0$.
 
 \section{\label{sec:results} Results}
