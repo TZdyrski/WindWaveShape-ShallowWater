@@ -58,7 +58,7 @@
 
 \begin{abstract}
 Wave shape (\eg{} wave skewness and asymmetry) impacts sediment
-transport, remote sensing, and ship safety.
+transport, remote sensing and ship safety.
 Previous work by the authors showed that wind (via changes in surface
 pressure) affects wave shape in intermediate and deep water.
 This effect was most pronounced as the depth decreased.
@@ -69,7 +69,7 @@ flat bottom and forced by a Jeffreys-type surface pressure produces a
 Korteweg-de Vries (KdV)-Burgers equation governing the wave profile.
 The evolution of an initially symmetric solitary wave is calculated
 numerically.
-The wave's height, skewness, and asymmetry are investigated as functions
+The wave's height, skewness and asymmetry are investigated as functions
 of time and pressure magnitude.
 These results are in qualitative agreement with prior results in
 intermediate and deep water.
@@ -109,7 +109,7 @@ For waves with amplitudes $a_0$ much less than the water depth $h$,
 leveraging the small parameters $a/h \sim (kh)^2 \ll 1$
 yields the Boussinesq equations for small waves in shallow water.
 The waves' interactions with the bottom modifies the dispersion
-relation, causes shallow-water wave trains to be weakly dispersive, and
+relation, causes shallow-water wave trains to be weakly dispersive and
 permits a special class of waves wherein dispersion balances nonlinear
 focusing known as solitary waves.
 These have appeared in environments ranging from nonlinear optical pulses
@@ -121,14 +121,14 @@ When augmented with a dissipative term, this becomes the KdV-Burgers
 equation.
 The KdV-Burgers equation appears across disciplines including damped
 internal tides \citep[\eg][]{sandstrom1995dissipation}, electron waves
-in graphene \citep[\eg][]{zdyrski2019effects}, and viscous flow in blood
+in graphene \citep[\eg][]{zdyrski2019effects} and viscous flow in blood
 vessels \citep[\eg][]{antar1999weakly}.
 In order to investigate the interaction of wind and surface waves in
 shallow water, we introduce a wind-induced pressure term in the
 Boussinesq equations in \cref{sec:derivation}.
 This will produce a KdV-Burgers equation governing the surface profile's
 evolution, which we will solve numerically.
-We analyze the wave height, skewness, and asymmetry in
+We analyze the wave height, skewness and asymmetry in
 \cref{sec:results}.
 Finally, we discuss wind speeds and compare the results to intermediate
 and deep-water waves in \cref{sec:discussion}.
@@ -158,7 +158,7 @@ are
 Here, $\eta(x,t)$ is the wave profile, $\phi(x,z,t)$ is the flow
 velocity potential related to the velocity $\vec{u} = \grad{\phi}$,
 $p(x,t)$ is the surface pressure, $g$ is the acceleration due to
-gravity, and $\rho_w$ is the water density.
+gravity and $\rho_w$ is the water density.
 We also used the gauge freedom to absorb the Bernoulli `constant' $C(t)$
 in the dynamic boundary condition into the definition of $\phi$.
 We are seeking a solitary, progressive wave with boundary conditions
@@ -222,7 +222,7 @@ Denoting non-dimension variables with an prime, we have
 \end{equation*}
 The dynamics of our system are controlled by three small,
 non-dimensional parameters, $\epsilon \coloneqq a_0/h$, $\mu_E \coloneqq
-(k_E h)^2$, and $P k_E/(\rho_w g)$.
+(k_E h)^2$ and $P k_E/(\rho_w g)$.
 We will later require $\order{\epsilon} = \order{\mu_E} =
 \order{Pk_E/(\rho_w g)}$.
 Now, our non-dimension equations take the form
@@ -438,9 +438,9 @@ offshore wind ($P < 0$).
     solitary wave speed.
     The non-dimension wave height $\eta/h$ is plotted for
     non-dimension distance $-10 \le x/h \le 10$.
-    Results are shown for $\epsilon=0.1$, $\mu_E = 0.6$, and $\abs{P
+    Results are shown for $\epsilon=0.1$, $\mu_E = 0.6$ and $\abs{P
     k_E/(\rho_w g \epsilon)} = 0.25$ non-dimension slow times $t'_1 = t
-    \epsilon \sqrt{gh} k_E = 0$, $1.5$, and $3$, as indicated in the
+    \epsilon \sqrt{gh} k_E = 0$, $1.5$ and $3$, as indicated in the
     legend.
     The arrows denote the direction of wave propagation (phase speed) or
     wind direction.
@@ -486,12 +486,12 @@ wave growth, apparent at the wave crest $x=0$, while the onshore wind
     \subref{fig:statistics_solitary:a}
     height,
     \subref{fig:statistics_solitary:b}
-    skewness normalized by the initial time, and
+    skewness normalized by the initial time and
     \subref{fig:statistics_solitary:c}
     asymmetry are defined in
     \cref{eq:height_def,eq:shape_stats_def}.
-    Results are shown for $\epsilon=0.1$, $\mu_E = 0.6$, and $P
-    k_E/(\rho_w g \epsilon) = 0$, $\pm 0.125$, and $\pm 0.25$, as
+    Results are shown for $\epsilon=0.1$, $\mu_E = 0.6$ and $P
+    k_E/(\rho_w g \epsilon) = 0$, $\pm 0.125$ and $\pm 0.25$, as
     indicated in the legend.
     The solid black line corresponds to the unforced case, $P = 0$, and
     shows no growth or asymmetry and a constant, positive skewness.
@@ -610,7 +610,7 @@ measurement height $z$) as
   \label{eq:gamma_vs_u_jeffreys}
 \end{equation}
 with $S_z$ a small, non-dimensional sheltering parameter potentially
-dependent on the $\epsilon$, $\mu_E$, and $U_z/c$.
+dependent on the $\epsilon$, $\mu_E$ and $U_z/c$.
 Combining this with \cref{eq:gamma_vs_P_solitary} gives
 \begin{equation}
   U_z = c \pqty{1 \pm \sqrt{\frac{1}{5} \abs{\frac{P k_E}{\rho_w g}}
@@ -706,7 +706,7 @@ profile $\eta$.
 We utilized a symmetric solitary wave satisfying the unforced KdV
 equation as our initial condition.
 A third-order Runge Kutta solver determined the time-evolution of the
-surface profile, and we extracted height, skewness, and asymmetry as
+surface profile, and we extracted height, skewness and asymmetry as
 functions of time and pressure magnitude.
 For onshore wind (positive $P$), wave height and skewness increased with
 time while asymmetry decreased, with offshore wind producing opposite
