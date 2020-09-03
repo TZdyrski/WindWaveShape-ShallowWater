@@ -130,8 +130,9 @@ This will produce a KdV-Burgers equation governing the surface profile's
 evolution, which we will solve numerically.
 We analyze the wave height, skewness and asymmetry in
 \cref{sec:results}.
-Finally, we discuss wind speeds and compare the results to intermediate
-and deep-water waves in \cref{sec:discussion}.
+Finally, we calculate wind speeds, discuss the asymmetry's cause and
+compare the results to intermediate and deep-water waves in
+\cref{sec:discussion}.
 
 \section{\label{sec:derivation} Derivation of KdV-Burgers equation}
 
@@ -451,7 +452,8 @@ non-dimensional distance $x/h$ in a frame co-moving with the unforced
 solitary wave speed.
 Despite the wave starting from a symmetric, solitary-wave initial
 condition, the wind induces a horizontal asymmetry in the wave shape,
-particularly on the rear face ($x<0$) of the wave.
+particularly on the rear face ($x<0$) of the wave (\cf{}
+\cref{sec:physical_reason}).
 Namely, the offshore wind (\cref{fig:snapshots_solitary:b}) raises the
 rear base of the wave (near $x/h = -6$) relative to its initial profile
 (purple line), but an onshore wind (\cref{fig:snapshots_solitary:a})
@@ -640,35 +642,60 @@ wave height $H_0 = \SI{0.5}{\meter}$ and yields a wind speed of $U_{10}
 = \SI{21}{\meter\per\second}$, a reasonable wind speed for strongly
 forced shallow-water waves.
 
-\subsection{\label{sec:physical_reason} Physical interpretation}
-In \cref{sec:results}, we noted that the rear faces ($x<0$) of the waves
-in \cref{fig:snapshots_solitary} showed marked shape differences between
-onshore and offshore wind, while the front faces ($x>0$) were rather
-similar.
-We can understand this by considering the fluid velocity in the
-co-moving frame of \cref{fig:snapshots_solitary}.
-The surface pressure $p \propto \partial_x \eta$ only does work
-close to the wave where $\partial_x \eta$ is significant.
-In front of the wave, the slope is small so the surface pressure acting
-on the water approaching the front face of the wave is negligible and
-causes little shape change.
-The front face of the wave has a large slope and thus large pressure,
-causing the onshore (offshore) wind to begin adding (removing) energy
-from the water flow.
-Similarly, the rear face of the wave also adds (removes) energy for
-onshore (offshore) wind.
-Thus, the wind has done work on the water leaving the rear face of the
-wave.
-The additional kinetic energy from the onshore wind causes the
-downward-moving water to overshoot $z=0$ at the rear base of the wave,
-leading to the depression seen in \cref{fig:snapshots_solitary:a}.
-Conversely, the offshore wind does negative work, and the decreased
-kinetic energy delays the flow's return to the still water level in
-\cref{fig:snapshots_solitary:b}.
-As discussed in \cref{sec:results}, this discrepancy between the front
-and rear wave faces is responsible for much of the variation between
-the asymmetry for onshore and offshore winds in
-\cref{fig:statistics_solitary:c}.
+\subsection{\label{sec:physical_reason} Cause of asymmetry}
+Our initial, symmetric solitary waves \cref{eq:initial_condition} are
+eigenfunctions of the unforced KdV equation, so the pressure forcing
+term in the KdV-Burgers equation is responsible for the resultant shape
+changes and asymmetry.
+However, the surface pressure does not cause these changes directly.
+Indeed, if the surface profile $\eta$ is symmetric (as it is in our
+initial condition), then the pressure forcing term $P \partial_x^2 \eta$
+preserves this symmetry.
+Instead, the pressure forcing causes a (symmetric) bound wave, which can
+be seen by considering the non-dimensional KdV-Burgers equation
+\cref{eq:kdv_burgers} evaluated in the co-moving frame of
+\cref{fig:snapshots_solitary} at the initial time,
+\begin{equation}
+  \eval{\pdv{\eta'_0}{t_1}}_{t'_1=0} = -P' \pdv[2]{x} \bqty{
+  \sech^2\pqty{\frac{x'}{2}}} =  P' \bqty{
+  \frac{3}{2}\sech^4\pqty{\frac{x'}{2}}
+  -\sech^2\pqty{\frac{x'}{2}}
+  }\,.
+\end{equation}
+Thus, after a short time $\Delta t'_1$, the wave profile will be
+\begin{equation}
+  \eta'_0(x', \Delta t'_1) =
+  (2-P'\Delta t'_1) \sech^2\pqty{\frac{x'}{2}}
+  +
+  P' \Delta t'_1 \frac{3}{2}\sech^4\pqty{\frac{x'}{2}}
+  \,.
+  \label{eq:pressure_change}
+\end{equation}
+Though we assumed that $P' = Pk_E/(\rho_w g \epsilon) = \order{1}$, the
+numerical value $\abs{P'} = 0.25$ we used in \cref{sec:results} was
+moderately small.
+Therefore, we can consider the wave's evolution as two components with
+temporal scale separation between them.
+First, the pressure adiabatically introduces a slow change to the wave
+\cref{eq:pressure_change}, and then the wave quickly evolves from this
+new profile according to the standard KdV evolution, given by the
+inverse scattering transform (IST).
+The IST shows that any localized, initial profile which does not exactly
+match the solitary wave form \cref{eq:initial_condition} will decay into
+a sum of discrete solitary waves and an oscillatory tail that decays to
+the rear ($x<0$) of the wave.
+Hence, the symmetric disturbance induced by the pressure forcing
+\cref{eq:pressure_change} has two effects on the wave.
+First, it adiabatically changes the height and width of the singular,
+initial solitary wave, which is reflected in the growth/decay and
+narrowing/steepening under onshore/offshore winds in
+\cref{fig:snapshots_solitary}.
+Second, it causes asymmetry by generating a dispersive tail to the rear
+of the wave, which explains the greater shape change of the rear face.
+Finally, the sign of the pressure forcing (\ie{} wind direction) changes
+the phase of the oscillatory tail, causing the negative/positive
+asymmetry for onshore/offshore wind forcing in
+\cref{fig:statistics_solitary}.
 
 \subsection{Comparison to intermediate and deep water}
 A previous study \citep{zdyrski2020wind} studied the effect of
