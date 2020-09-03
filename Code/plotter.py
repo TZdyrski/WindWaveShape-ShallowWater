@@ -1316,6 +1316,42 @@ def plot_pos_neg_solitary_production(load_prefix, save_prefix, *args, **kwargs):
 
     texplot.savefig(fig,save_prefix+'Snapshots-Positive-Negative-Production')
 
+def plot_pos_neg_solitary_tail(load_prefix, save_prefix, *args, **kwargs):
+    filename_base = 'Snapshots'
+
+    # Arrange data and parameters into 2d array for plotting
+    data_arrays = np.empty((2,1),dtype=object)
+
+    P = float(kwargs.get('P'))
+
+    for indx_num, P_val in enumerate([P,-P]):
+        filename = data_csv.find_filenames(load_prefix, filename_base,
+            parameters={'wave_type' : 'solitary', **kwargs,
+                'P' : P_val})
+
+        # Extract data
+        data_array = data_csv.load_data(filename, stack_coords=True)
+
+        indx = np.unravel_index(indx_num,data_arrays.shape)
+        H0 = 2
+        gamma = 1/5*data_array.attrs['P']
+        H = H0/(1-data_array.coords['t*eps*sqrt(g*h)*k_E']*gamma)
+        initial = data_array.attrs['eps']*\
+                H/np.cosh(np.sqrt(H/8)*\
+                (data_array.coords['x/h']*np.sqrt(data_array.attrs['mu'])-\
+                (H-2)/2*data_array.coords['t*eps*sqrt(g*h)*k_E'])
+                )**2
+        data_arrays[indx] = data_array - initial
+        data_arrays[indx].attrs = data_array.attrs
+
+    ax_title=np.array([[r'Profile minus adiabatically changing solitary wave: $P k_E/(\rho_w g \epsilon) = {P}$'],
+        [r'$P k_E/(\rho_w g \epsilon) = {P}$']])
+
+    fig = plot_snapshots_template(data_arrays, norm_by_wavelength=False,
+            ax_title=ax_title)
+
+    texplot.savefig(fig,save_prefix+'Snapshots-Positive-Negative-Tail')
+
 def plot_pos_cnoidal(load_prefix, save_prefix, *args, **kwargs):
     filename_base = 'Snapshots'
 
@@ -2390,6 +2426,7 @@ def main():
             'neg_solitary' : plot_neg_solitary,
             'pos_neg_solitary' : plot_pos_neg_solitary,
             'pos_neg_solitary_production' : plot_pos_neg_solitary_production,
+            'pos_neg_solitary_tail' : plot_pos_neg_solitary_tail,
             'pos_cnoidal' : plot_pos_cnoidal,
             'neg_cnoidal' : plot_neg_cnoidal,
             'pos_neg_cnoidal' : plot_pos_neg_cnoidal,
