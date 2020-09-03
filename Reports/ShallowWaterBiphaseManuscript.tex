@@ -123,10 +123,10 @@ The KdV-Burgers equation appears across disciplines including damped
 internal tides \citep[\eg][]{sandstrom1995dissipation}, electron waves
 in graphene \citep[\eg][]{zdyrski2019effects} and viscous flow in blood
 vessels \citep[\eg][]{antar1999weakly}.
-In order to investigate the interaction of wind and surface waves in
+To investigate the interaction of wind and surface waves in
 shallow water, we introduce a wind-induced pressure term in the
 Boussinesq equations in \cref{sec:derivation}.
-This will produce a KdV-Burgers equation governing the surface profile's
+This produces a KdV-Burgers equation governing the surface profile's
 evolution, which we will solve numerically.
 We analyze the wave height, skewness and asymmetry in
 \cref{sec:results}.
@@ -646,11 +646,9 @@ forced shallow-water waves.
 Our initial, symmetric solitary waves \cref{eq:initial_condition} are
 eigenfunctions of the unforced KdV equation, so the pressure forcing
 term in the KdV-Burgers equation is responsible for the resultant shape
-changes and asymmetry.
-However, the surface pressure does not cause these changes directly.
-Indeed, if the surface profile $\eta$ is symmetric (as it is in our
-initial condition), then the pressure forcing term $P \partial_x^2 \eta$
-preserves this symmetry.
+changes and asymmetry, though not directly.
+Indeed, when the surface profile $\eta$ is symmetric, then the pressure
+forcing term $P \partial_x^2 \eta$ preserves this symmetry.
 Instead, the pressure forcing causes a (symmetric) bound wave, which can
 be seen by considering the non-dimensional KdV-Burgers equation
 \cref{eq:kdv_burgers} evaluated in the co-moving frame of
