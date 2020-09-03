@@ -654,19 +654,16 @@ be seen by considering the non-dimensional KdV-Burgers equation
 \cref{eq:kdv_burgers} evaluated in the co-moving frame of
 \cref{fig:snapshots_solitary} at the initial time,
 \begin{equation}
-  \eval{\pdv{\eta'_0}{t_1}}_{t'_1=0} = -P' \pdv[2]{x} \bqty{
-  \sech^2\pqty{\frac{x'}{2}}} =  P' \bqty{
-  \frac{3}{2}\sech^4\pqty{\frac{x'}{2}}
-  -\sech^2\pqty{\frac{x'}{2}}
-  }\,.
-\end{equation}
-Thus, after a short time $\Delta t'_1$, the wave profile will be
-\begin{equation}
-  \eta'_0(x', \Delta t'_1) =
+  \begin{split}
+  &\eval{\pdv{\eta'_0}{t_1}}_{t'_1=0} = -P' \pdv[2]{x} \bqty{
+  \sech^2\pqty{\frac{x'}{2}}}
+  \\
+  &\qquad \implies \eta'_0(x', \Delta t'_1) =
   (2-P'\Delta t'_1) \sech^2\pqty{\frac{x'}{2}}
   +
   P' \Delta t'_1 \frac{3}{2}\sech^4\pqty{\frac{x'}{2}}
   \,.
+  \end{split}
   \label{eq:pressure_change}
 \end{equation}
 Though we assumed that $P' = Pk_E/(\rho_w g \epsilon) = \order{1}$, the
