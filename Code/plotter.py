@@ -306,7 +306,7 @@ def plot_snapshots_template(data_arrays, norm_by_wavelength=True,
     ax_xlabel = r'Distance $x/\lambda$' if norm_by_wavelength else\
             r'Distance $x/h$'
 
-    ax_ylabel = r'Wave Height $\eta / h$'
+    ax_ylabel = r'Wave profile $\eta / h$'
 
     title_string =  r'$\epsilon = {eps}$,'+\
             r' $\mu_E = {mu}$,'+\
@@ -1346,7 +1346,7 @@ def plot_pos_neg_solitary_tail(load_prefix, save_prefix, *args, **kwargs):
 
     ax_title=np.array([[r'$P k_E/(\rho_w g \epsilon) = {P}$'],
         [r'$P k_E/(\rho_w g \epsilon) = {P}$']])
-    ax_ylabel=r'Height change $\Delta \eta/h$'
+    ax_ylabel=r'Profile change $\Delta \eta/h$'
 
     fig = plot_snapshots_template(data_arrays, norm_by_wavelength=False,
             ax_title=ax_title,
