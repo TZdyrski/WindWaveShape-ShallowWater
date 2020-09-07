@@ -472,6 +472,63 @@ wave growth, apparent at the wave crest $x=0$, while the onshore wind
   \centering
   { % Put \phantomsubcaption in their own group to prevent it from
     % affecting the main figure's numbering
+    \phantomsubcaption{}\label{fig:snapshots_solitary_tail:a}
+    \phantomsubcaption{}\label{fig:snapshots_solitary_tail:b}
+  }
+  \includegraphics{Snapshots-Positive-Negative-Tail.eps}
+  \caption{
+    Discrepancy between surface profile and symmetric solitary wave
+    (\cf{} \cref{eq:profile_discrepancy}) under onshore
+    \subref{fig:snapshots_solitary_tail:a} onshore and
+    \subref{fig:snapshots_solitary_tail:b} offshore Jeffreys forcing in
+    a frame co-moving with the symmetric wave's speed.
+    The change in profile $\Delta \eta/h$ is plotted for non-dimensional
+    distance $-10 \le x/h \le 10$.
+    Results are shown for $\epsilon=0.1$, $\mu_E = 0.6$, $\abs{P
+    k_E/(\rho_w g \epsilon)} = 0.25$, and non-dimensional slow times
+    $t'_1 = t \epsilon \sqrt{gh} k_E = 0$, $1.5$ and $3$, as indicated
+    in the legend.
+    The arrows denote the direction of wave propagation (phase speed) or
+    wind direction.
+  }\label{fig:snapshots_solitary_tail}
+\end{figure}
+
+To a first approximation, the KdV-Burgers equation causes the solitary
+wave height $H$ to vary as
+\begin{equation}
+  H'(t'_1) = \frac{H'_0}{1 - \gamma' t'_1}
+  \qq{with}
+  \gamma' \coloneqq b \bqty{\frac{P k_E}{\rho_w g \epsilon}}
+  \,.
+  \label{eq:height_approx}
+\end{equation}
+This can be derived using a secondary multiple-scale approximation as
+derived, for example, by \citet{zdyrski2019effects}, giving $\gamma =
+(2/15) (P k_E/\rho_w g \epsilon) ck$.
+Alternatively, we can numerically fit the energy growth $E' \propto
+H'^2$ to find $b = \num{1.00000 \pm 0.00009}$ (\cf{}
+\cref{sec:press_mag}).
+Then, we are able to calculate the discrepancy between the actual wave
+profile $\eta$ and the solitary wave approximation,
+\begin{equation}
+  \Delta \eta' \coloneqq \eta'
+    - H'(t'_1) \sech^2\pqty{\frac{x' - c'_1 t'_1}{\Delta'}}
+  \qq{with}
+  \Delta' = \sqrt{\frac{8}{H'(t'_1)}}
+  \qq{and}
+  c'_1 = \frac{H'(t'_1)}{2} \,.
+  \label{eq:profile_discrepancy}
+\end{equation}
+The discrepancy is shown in \cref{fig:snapshots_solitary_tail} in a
+co-moving frame with speed $c'_1(t'_1)$ relative to the lab frame.
+Here, an oscillatory tail that trails the main, solitary wave.
+Notice that the tail begins near the front face of the wave and decays
+with distance behind the wave.
+
+\begin{figure}
+  \centering
+  { % Put \phantomsubcaption in their own group to prevent it from
+    % affecting the main figure's numbering
     \phantomsubcaption{}\label{fig:statistics_solitary:a}
     \phantomsubcaption{}\label{fig:statistics_solitary:b}
     \phantomsubcaption{}\label{fig:statistics_solitary:c}
@@ -580,7 +637,8 @@ $\gamma$,
 with $c = \sqrt{gh}$ the phase speed.
 In the final equation, we evaluated the growth rate for the initial,
 solitary wave profile (\cf{} \cref{sec:initial}).
-Alternatively, we can numerically fit the energy growth rate to
+Alternatively, we can numerically fit the energy growth rate
+$E \propto H(t)^2$ to
 \begin{equation}
   E \propto \frac{1}{\pqty{1 - \gamma t}^2}
   \qq{with}
@@ -588,12 +646,8 @@ Alternatively, we can numerically fit the energy growth rate to
   \,,
   \label{eq:actual_energy}
 \end{equation}
-with $b = \num{1.00000 \pm 0.00009}$.
-\Cref{eq:actual_energy} has the same functional form and approximately
-the same analytic growth rate $\gamma = (2/15) (P k_E/\rho_w g
-\epsilon) ck$ as derived, for example, by \citet{zdyrski2019effects}
-with a secondary multiple-scale approximation of the KdV-Burgers
-equation acting on a solitary wave.
+with $H(t)$ given analytically by \cref{eq:height_approx} and $b =
+\num{1.00000 \pm 0.00009}$.
 Note that the exponential energy growth \cref{eq:gamma_vs_P_solitary}
 correctly approximates the rational energy growth
 \cref{eq:actual_energy} for small times $\gamma t \ll 1$.
@@ -677,7 +731,8 @@ inverse scattering transform (IST).
 The IST shows that any localized, initial profile which does not exactly
 match the solitary wave form \cref{eq:initial_condition} will decay into
 a sum of discrete solitary waves and an oscillatory tail that decays to
-the rear ($x<0$) of the wave \citep[\eg][]{mei2005nonlinear}.
+the rear ($x<0$) of the wave \citep[\eg][]{mei2005nonlinear}, which can
+be seen in \cref{fig:snapshots_solitary_tail}.
 Hence, the symmetric disturbance induced by the pressure forcing
 \cref{eq:pressure_change} has two effects on the wave.
 First, it adiabatically changes the height and width of the singular,
