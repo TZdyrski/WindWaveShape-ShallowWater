@@ -1973,7 +1973,7 @@ def plot_energy_solitary(load_prefix, save_prefix, *args, **kwargs):
     print('Mean b factor (Jeffreys, solitary): '+str(np.nanmean(fit)))
     print('Maximum STD of exponential factor: '+str(np.sqrt(np.nanmax(variance))))
     # Calculate energy using best fit
-    energy_fit = 1/(1+np.outer(t,Ps/fit))
+    energy_fit = 1/(1-np.outer(t,Ps*fit))
     # Plot
     ax.plot(t, energy_fit, color='y', zorder=-1)
 
