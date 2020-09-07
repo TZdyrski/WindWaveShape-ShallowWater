@@ -1346,9 +1346,11 @@ def plot_pos_neg_solitary_tail(load_prefix, save_prefix, *args, **kwargs):
 
     ax_title=np.array([[r'$P k_E/(\rho_w g \epsilon) = {P}$'],
         [r'$P k_E/(\rho_w g \epsilon) = {P}$']])
+    ax_ylabel=r'Height change $\Delta \eta/h$'
 
     fig = plot_snapshots_template(data_arrays, norm_by_wavelength=False,
-            ax_title=ax_title)
+            ax_title=ax_title,
+            ax_ylabel=ax_ylabel)
 
     texplot.savefig(fig,save_prefix+'Snapshots-Positive-Negative-Tail')
 
