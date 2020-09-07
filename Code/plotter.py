@@ -121,7 +121,7 @@ def label_subplots(ax):
         subplotLabel = indxToAlpha + ')'
 
         # Add subplot labels
-        t = ax[indx].text(0.05, 0.9, subplotLabel,
+        t = ax[indx].text(-0.225, 1.0, subplotLabel,
                 transform=ax[indx].transAxes, va='top',ha='left')
         # Make box behind text semitransparent
         t.set_bbox(dict(facecolor='white', edgecolor='white',
