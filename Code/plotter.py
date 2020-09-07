@@ -1344,7 +1344,7 @@ def plot_pos_neg_solitary_tail(load_prefix, save_prefix, *args, **kwargs):
         data_arrays[indx] = data_array - initial
         data_arrays[indx].attrs = data_array.attrs
 
-    ax_title=np.array([[r'Profile minus adiabatically changing solitary wave: $P k_E/(\rho_w g \epsilon) = {P}$'],
+    ax_title=np.array([[r'$P k_E/(\rho_w g \epsilon) = {P}$'],
         [r'$P k_E/(\rho_w g \epsilon) = {P}$']])
 
     fig = plot_snapshots_template(data_arrays, norm_by_wavelength=False,
