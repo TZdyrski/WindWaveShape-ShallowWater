@@ -183,12 +183,12 @@ class kdvSystem():
         """Regularize cnoidal wavelength so we don't need an
         infinitely-long domain."""
 
-        # Cut-off WaveLength at 40
-        regularized_wave_length = min(WaveLength,40)
+        # Cut-off WaveLength at 80
+        regularized_wave_length = min(WaveLength,80)
 
         return regularized_wave_length
 
-    def set_spatial_grid(self, xLen=40, xNum=None,
+    def set_spatial_grid(self, xLen=80, xNum=None,
             xStep=None, xOffset=None,
             WaveLength=2*np.pi,NumWaves=1, *args, **kwargs):
         """Set the x coordinate grid.
@@ -199,7 +199,7 @@ class kdvSystem():
             Length of x domain. If 'int_wave_lengths', choose xLen to
             fit NumWaves wavelengths of length WaveLength. If 'cnoidal',
             choose Xeln to fit NumWaves wavelengths of a cnoidal wave
-            wave-length. Default is 40.
+            wave-length. Default is 80.
         xNum : float or None
             Number of grid points in x domain. If None, xStep
             must be specified. Default is None.
