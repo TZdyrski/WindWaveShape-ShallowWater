@@ -289,7 +289,7 @@ def plot_multiplot_template(data_arrays, x_coordinate,
         # Set alignment in case provided legend_title is multilined
         leg.get_title().set_multialignment('center')
 
-    default_subplot_adjust_params = {'hspace':0.3, 'wspace':0.2}
+    default_subplot_adjust_params = {'hspace':0, 'wspace':0.2}
     if suptitle is not None:
         default_subplot_adjust_params['top'] = 0.875
 
@@ -430,16 +430,12 @@ def plot_shape_statistics_template(data_arrays, ax_title=None, **kwargs):
             data_arrays_rearranged[iy,shape_group].attrs = \
                     data_arrays[shape_group].attrs
 
-    # Remove vertical space between subplots
-    subplot_adjust_params = {'hspace':0}
-
     # Plot data
     fig = plot_multiplot_template(**{
         'data_arrays':data_arrays_rearranged,
         'ax_ylabel':ax_ylabel,
         **({'ax_title':ax_title_full} if ax_title is not None else {}),
         'color_class':'cyclic',
-        'subplot_adjust_params':subplot_adjust_params,
         # Put kwargs last so any parameters will overwrite the defaults
         # we've provided
         **kwargs,
