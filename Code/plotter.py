@@ -88,6 +88,10 @@ def annotate_arrow(ax, windLeft=True, wave_type='solitary'):
             spacing = np.array([0,-0.2])
         else:
             spacing = np.array([0.75,0])
+    elif wave_type == 'tail':
+        arrowLeft = np.array([0.05,0.1])
+        arrowRight = np.array([0.25,0.1])
+        spacing = np.array([0.7,0])
     else:
         raise(ValueError("'wave_type' must be either 'solitary' "+\
                 "or 'cnoidal' but "+wave_type+" was given"))
@@ -173,7 +177,7 @@ def plot_multiplot_template(data_arrays, x_coordinate,
         ax_xlabel=None, ax_ylabel=None, color_class=None,
         show_legend=False, legend_title=None, plotter=default_plotter,
         subplot_adjust_params={}, label_sig_figs=3, legend_sig_figs=2,
-        trim_times=3,
+        trim_times=3, sharex=True, sharey='row',
         pi_parameters=[]):
     """
     Parameters
@@ -185,7 +189,7 @@ def plot_multiplot_template(data_arrays, x_coordinate,
 
     # Initialize figure
     fig, ax = texplot.newfig(1,nrows=data_arrays.shape[0],
-            ncols=data_arrays.shape[1], sharex=True,sharey='row')
+            ncols=data_arrays.shape[1], sharex=sharex,sharey=sharey)
 
     # Make 2d ndarrays even if only scalars or 1d arrays
     ax = atleast_2d(ax)
@@ -299,7 +303,7 @@ def plot_multiplot_template(data_arrays, x_coordinate,
     return fig
 
 def plot_snapshots_template(data_arrays, norm_by_wavelength=True,
-        wind_arrows=True, zoom_xaxis=True, **kwargs):
+        wind_arrows=True, **kwargs):
 
     # Set axis labels and titles
 
@@ -355,8 +359,7 @@ def plot_snapshots_template(data_arrays, norm_by_wavelength=True,
 
     # Zoom in on solitary wave
     for iy, ix in np.ndindex(ax.shape):
-        if data_arrays[iy,ix].attrs.get('wave_type',None) == 'solitary' \
-            and zoom_xaxis:
+        if data_arrays[iy,ix].attrs.get('wave_type',None) == 'solitary':
             ax[iy,ix].set_xlim(-10,10)
 
     # Add arrow depicting wind and wave directions
@@ -1344,6 +1347,7 @@ def plot_pos_neg_solitary_tail(load_prefix, save_prefix, *args, **kwargs):
                 )**2
 
         data_arrays[indx] = data_array - symmetric_approx
+        data_array.attrs['wave_type'] = 'tail'
         data_arrays[indx].attrs = data_array.attrs
 
     ax_title=np.array([[r'$P k_E/(\rho_w g \epsilon) = {P}$'],
@@ -1353,7 +1357,7 @@ def plot_pos_neg_solitary_tail(load_prefix, save_prefix, *args, **kwargs):
     fig = plot_snapshots_template(data_arrays, norm_by_wavelength=False,
             ax_title=ax_title,
             ax_ylabel=ax_ylabel,
-            zoom_xaxis=False)
+            sharey=True)
 
     texplot.savefig(fig,save_prefix+'Snapshots-Positive-Negative-Tail')
 
