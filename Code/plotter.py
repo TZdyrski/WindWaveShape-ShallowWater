@@ -299,7 +299,7 @@ def plot_multiplot_template(data_arrays, x_coordinate,
     return fig
 
 def plot_snapshots_template(data_arrays, norm_by_wavelength=True,
-        wind_arrows=True, **kwargs):
+        wind_arrows=True, zoom_xaxis=True, **kwargs):
 
     # Set axis labels and titles
 
@@ -355,7 +355,8 @@ def plot_snapshots_template(data_arrays, norm_by_wavelength=True,
 
     # Zoom in on solitary wave
     for iy, ix in np.ndindex(ax.shape):
-        if data_arrays[iy,ix].attrs.get('wave_type',None) == 'solitary':
+        if data_arrays[iy,ix].attrs.get('wave_type',None) == 'solitary' \
+            and zoom_xaxis:
             ax[iy,ix].set_xlim(-10,10)
 
     # Add arrow depicting wind and wave directions
@@ -1350,7 +1351,8 @@ def plot_pos_neg_solitary_tail(load_prefix, save_prefix, *args, **kwargs):
 
     fig = plot_snapshots_template(data_arrays, norm_by_wavelength=False,
             ax_title=ax_title,
-            ax_ylabel=ax_ylabel)
+            ax_ylabel=ax_ylabel,
+            zoom_xaxis=False)
 
     texplot.savefig(fig,save_prefix+'Snapshots-Positive-Negative-Tail')
 
