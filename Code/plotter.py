@@ -114,6 +114,11 @@ def annotate_arrow(ax, windLeft=True, wave_type='solitary'):
                 'arrowstyle': ('<-' if windLeft else '->'),
                 'shrinkA':1,'shrinkB':0})
 
+def annotate_title(ax, title):
+    textUpperLeft = (0.025,0.95)
+    ax.annotate(title, xy=textUpperLeft, xycoords='axes fraction',
+            ha='left',va='top',ma='left')
+
 def label_subplots(ax):
 
     if ax.size == 1:
@@ -228,7 +233,7 @@ def plot_multiplot_template(data_arrays, x_coordinate,
                 ax[iy,ix].set_ylabel(fill_to_shape(ax_ylabel,ax.shape)[iy,ix]\
                         .format(**parameters[iy,ix]))
         if ax_title is not None:
-            ax[iy,ix].set_title(fill_to_shape(ax_title,ax.shape)[iy,ix]\
+            annotate_title(ax[iy,ix], fill_to_shape(ax_title,ax.shape)[iy,ix]\
                     .format(**parameters[iy,ix]))
 
         # Set property cycle
