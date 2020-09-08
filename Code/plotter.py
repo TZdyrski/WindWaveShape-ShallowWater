@@ -1334,15 +1334,16 @@ def plot_pos_neg_solitary_tail(load_prefix, save_prefix, *args, **kwargs):
         data_array = data_csv.load_data(filename, stack_coords=True)
 
         indx = np.unravel_index(indx_num,data_arrays.shape)
-        H0 = 2
-        gamma = 1/5*data_array.attrs['P']
-        H = H0/(1-data_array.coords['t*eps*sqrt(g*h)*k_E']*gamma)
-        initial = data_array.attrs['eps']*\
+
+        maximum = data_array.max(dim='x/h')
+        H = maximum/data_array.attrs['eps']
+        symmetric_approx = data_array.attrs['eps']*\
                 H/np.cosh(np.sqrt(H/8)*\
                 (data_array.coords['x/h']*np.sqrt(data_array.attrs['mu'])-\
                 (H-2)/2*data_array.coords['t*eps*sqrt(g*h)*k_E'])
                 )**2
-        data_arrays[indx] = data_array - initial
+
+        data_arrays[indx] = data_array - symmetric_approx
         data_arrays[indx].attrs = data_array.attrs
 
     ax_title=np.array([[r'$P k_E/(\rho_w g \epsilon) = {P}$'],
