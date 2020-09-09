@@ -1,20 +1,10 @@
 #!/usr/bin/env python3
 # pi_formatter.py
 import scipy as sp
-import numpy as np
-import scipy.special as spec
-from cycler import cycler
-from scipy.integrate import trapz, solve_ivp
-import scipy.signal
-from scipy.fftpack import diff as psdiff
-from numpy import gradient
 import matplotlib as mpl
-import matplotlib.pyplot as plt
 from matplotlib.ticker import StrMethodFormatter,MultipleLocator
-from copy import deepcopy
 import fractions
 import re
-import texplot
 
 ## Return tick labels in units of pi*multiple
 def _pi_label_format(x,pos=0):
