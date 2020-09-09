@@ -1348,6 +1348,22 @@ def plot_pos_neg_solitary_tail(load_prefix, save_prefix, *args, **kwargs):
                 )**2
 
         data_arrays[indx] = data_array - symmetric_approx
+
+        # Boost into frame moving with c = H(t)/2 relative to lab
+        for H_val in H:
+            # Speed c_1/sqrt(g*h)/eps in lab frame
+            speed_lab = H_val/2
+            # Speed in co-moving frame c_ = c_1_lab - 1
+            speed = speed_lab - 1
+            # Nondimensional Distance x' = c_1/t*k_E
+            nondim_distance = speed*H_val['t*eps*sqrt(g*h)*k_E']
+            # Convert x' = x*k_E = c_1/t*k_E to x'/sqrt(mu) = x/h =
+            # c_1/(t*h)
+            distance = nondim_distance/np.sqrt(data_array.attrs['mu'])
+            distance = int(np.round(distance.values))
+            data_arrays[indx] = data_arrays[indx].roll({'x/h':-distance},
+                    roll_coords=True)
+
         data_array.attrs['wave_type'] = 'tail'
         data_arrays[indx].attrs = data_array.attrs
 
