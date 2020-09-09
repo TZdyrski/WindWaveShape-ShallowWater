@@ -61,8 +61,9 @@ def property_cycle(num_lines,color_class='sequential'):
         linestyles.extend([*((0,(3+i,i)) for i in range(round((num_lines+1)/2)))])
     else:
         raise(ValueError(
-            "color_class must be either 'sequential' or 'cyclic' but "+
-            color_class+" was given"))
+            "color_class must be either 'sequential', "\
+                    +"inverse_sequential', or 'cyclic' but "\
+                    + color_class+" was given"))
 
     prop_cycle = cycler('color', new_colors) + cycler('linestyle',
             linestyles)
