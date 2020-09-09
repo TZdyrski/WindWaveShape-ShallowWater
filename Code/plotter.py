@@ -71,21 +71,21 @@ def property_cycle(num_lines,color_class='sequential'):
 
 def annotate_arrow(ax, windLeft=True, wave_type='solitary'):
     if wave_type == 'solitary':
-        arrowLeft = np.array([0.05,0.4])
-        arrowRight = np.array([0.25,0.4])
+        arrowLeft = np.array([0.05,0.35])
+        arrowRight = np.array([0.25,0.35])
         if windLeft:
             arrowLeft = arrowLeft + [0,0.1]
             arrowRight = arrowRight + [0,0.1]
-            spacing = np.array([0,-0.2])
+            spacing = np.array([0,-0.225])
         else:
             spacing = np.array([0.7,0])
     elif wave_type == 'cnoidal':
-        arrowLeft = np.array([0.025,0.4])
-        arrowRight = np.array([0.225,0.4])
+        arrowLeft = np.array([0.025,0.35])
+        arrowRight = np.array([0.225,0.35])
         if windLeft:
             arrowLeft = arrowLeft + [0,0.1]
             arrowRight = arrowRight + [0,0.1]
-            spacing = np.array([0,-0.2])
+            spacing = np.array([0,-0.225])
         else:
             spacing = np.array([0.75,0])
     elif wave_type == 'tail':
@@ -130,7 +130,7 @@ def label_subplots(ax):
         subplotLabel = indxToAlpha + ')'
 
         # Add subplot labels
-        t = ax[indx].text(-0.225, 1.0, subplotLabel,
+        t = ax[indx].text(-0.275, 1.0, subplotLabel,
                 transform=ax[indx].transAxes, va='top',ha='left')
         # Make box behind text semitransparent
         t.set_bbox(dict(facecolor='white', edgecolor='white',
@@ -201,7 +201,7 @@ def plot_multiplot_template(data_arrays, x_coordinate,
 
     # Adjust figure height
     figsize = fig.get_size_inches()
-    fig.set_size_inches([figsize[0],figsize[1]*(0.6+0.2*ax.shape[0])])
+    fig.set_size_inches([figsize[0],figsize[1]*(0.4+0.2*ax.shape[0])])
 
     # Save parameters into a separate array of dictionaries so we can
     # edit without affecting the dictionary
@@ -315,7 +315,7 @@ def plot_snapshots_template(data_arrays, norm_by_wavelength=True,
     ax_xlabel = r'Distance $x/\lambda$' if norm_by_wavelength else\
             r'Distance $x/h$'
 
-    ax_ylabel = r'Wave profile $\eta / h$'
+    ax_ylabel = 'Wave'+'\n'+r'profile $\eta / h$'
 
     title_string =  r'$\epsilon = {eps}$,'+\
             r' $\mu_E = {mu}$,'+\
@@ -386,14 +386,14 @@ def plot_shape_statistics_template(data_arrays, ax_title=None, **kwargs):
     plot_peak_pos = 'x_peak/h' in data_arrays[0].data_vars
     plot_peak_speed = 'c_peak/sqrt(g*h)' in data_arrays[0].data_vars
 
-    ax_ylabel_list = ['Height $H/h$', r'Skewness $\Sk/\Sk_0$',
-            r'Asymmetry $\As$']
+    ax_ylabel_list = ['Height'+'\n'+'$H/h$', 'Skewness'+'\n'+r'$\Sk/\Sk_0$',
+            'Asymmetry'+'\n'+'$\As$']
     if plot_biphase:
         ax_ylabel_list.append('Biphase')
     if plot_peak_pos:
         # Insert after Height
         ax_ylabel_list.insert(1,
-                r'Peak Position $x_{{\text{{peak}}}}/h$')
+                'Peak'+'\n'+'Position'+'\n'+r'$x_{{\text{{peak}}}}/h$')
     if plot_peak_speed:
         # Insert before Skewness
         ax_ylabel_list.insert(2,
@@ -445,12 +445,12 @@ def plot_shape_statistics_template(data_arrays, ax_title=None, **kwargs):
         data_arrays.size))
     for ix in np.ndindex(ax.shape[1]):
         # Put horizontal line at y=2*eps = H_0
-        ax[ax_ylabel_list.index('Height $H/h$'),ix].item().axhline(
+        ax[ax_ylabel_list.index('Height'+'\n'+'$H/h$'),ix].item().axhline(
                 2*data_arrays[0].attrs['eps'],
                 color='0.75', zorder=-1)
 
         # Put horizontal line at y=0
-        ax[ax_ylabel_list.index(r'Asymmetry $\As$'),ix].item().axhline(0,
+        ax[ax_ylabel_list.index('Asymmetry'+'\n'+r'$\As$'),ix].item().axhline(0,
                 color='0.75', zorder=-1)
 
         if plot_peak_speed:
@@ -1353,7 +1353,7 @@ def plot_pos_neg_solitary_tail(load_prefix, save_prefix, *args, **kwargs):
 
     ax_title=np.array([[r'$P k_E/(\rho_w g \epsilon) = {P}$'],
         [r'$P k_E/(\rho_w g \epsilon) = {P}$']])
-    ax_ylabel=r'Profile change $\Delta \eta/h$'
+    ax_ylabel='Profile'+'\n'+r'change $\Delta \eta/h$'
 
     fig = plot_snapshots_template(data_arrays, norm_by_wavelength=False,
             ax_title=ax_title,
