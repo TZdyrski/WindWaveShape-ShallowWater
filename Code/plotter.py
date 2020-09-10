@@ -1365,10 +1365,25 @@ def symmetric_approximation(profile):
     H = maximum/eps
 
     symmetric_approx = eps*H/np.cosh(np.sqrt(H/8)*\
-            (profile.coords['x/h']*np.sqrt(mu)-\
-            (H/2-1)*eps*profile.coords['t*eps*sqrt(g*h)*k_E']))**2
+            (profile.coords['(x-x_peak)/h']*np.sqrt(mu)))**2
 
     return symmetric_approx
+
+def peak_centered_coord(profile, load_prefix, parameters):
+    # Extract peak position
+    stats_filename = data_csv.find_filenames(load_prefix,
+            'Shape-Statistics', parameters=parameters)
+    stats =  data_csv.load_data(stats_filename, stack_coords=False)
+
+    # Extract peak location at desired times
+    peak_locs = stats['x_peak/h'].loc[
+            {'t*eps*sqrt(g*h)*k_E': profile['t*eps*sqrt(g*h)*k_E']}]
+
+    # Boost into peak-centered frame
+    profile = profile.assign_coords({'(x-x_peak)/h':
+        profile.coords['x/h']-peak_locs})
+
+    return profile
 
 def plot_pos_neg_solitary_tail(load_prefix, save_prefix, *args, **kwargs):
     filename_base = 'Snapshots'
@@ -1379,13 +1394,19 @@ def plot_pos_neg_solitary_tail(load_prefix, save_prefix, *args, **kwargs):
     P = float(kwargs.get('P'))
 
     for indx_num, P_val in enumerate([P,-P]):
+        parameters = parameters={'wave_type' : 'solitary', **kwargs,
+                'P' : P_val}
         filename = data_csv.find_filenames(load_prefix, filename_base,
-            parameters={'wave_type' : 'solitary', **kwargs,
-                'P' : P_val})
+                parameters=parameters)
 
         # Extract data
         data_array = data_csv.load_data(filename, stack_coords=True)
 
+        # Create peak-centered coordinates
+        data_array = peak_centered_coord(data_array, load_prefix,
+                parameters)
+
+        # Create symmetric approximation
         symmetric_approx = symmetric_approximation(data_array)
         data_array.attrs['wave_type'] = 'tail'
 
@@ -1395,11 +1416,15 @@ def plot_pos_neg_solitary_tail(load_prefix, save_prefix, *args, **kwargs):
 
     ax_title=np.array([[r'$P k_E/(\rho_w g \epsilon) = {P}$'],
         [r'$P k_E/(\rho_w g \epsilon) = {P}$']])
+    ax_xlabel=r'Peak-centered distance $(x-x_{{\text{{peak}}}})/h$'
     ax_ylabel='Profile'+'\n'+r'change $\Delta \eta/h$'
 
     fig = plot_snapshots_template(data_arrays, norm_by_wavelength=False,
             ax_title=ax_title,
+            ax_xlabel=ax_xlabel,
             ax_ylabel=ax_ylabel,
+            x_coordinate='(x-x_peak)/h',
+            line_coord='t*eps*sqrt(g*h)*k_E',
             sharey=True)
 
     texplot.savefig(fig,save_prefix+'Snapshots-Positive-Negative-Tail')
@@ -1413,13 +1438,18 @@ def plot_pos_neg_solitary_and_sech(load_prefix, save_prefix, *args, **kwargs):
     P = float(kwargs.get('P'))
 
     for indx_num, P_val in enumerate([P,-P]):
+        parameters={'wave_type' : 'solitary', **kwargs, 'P' : P_val}
         filename = data_csv.find_filenames(load_prefix, filename_base,
-            parameters={'wave_type' : 'solitary', **kwargs,
-                'P' : P_val})
+            parameters=parameters)
 
         # Extract data
         data_array = data_csv.load_data(filename, stack_coords=True)
 
+        # Create peak-centered coordinates
+        data_array = peak_centered_coord(data_array, load_prefix,
+                parameters)
+
+        # Create symmetric approximation
         symmetric_approx = symmetric_approximation(data_array)
         data_array.attrs['wave_type'] = 'tail'
 
@@ -1430,8 +1460,12 @@ def plot_pos_neg_solitary_and_sech(load_prefix, save_prefix, *args, **kwargs):
 
     ax_title=np.array([[r'$P k_E/(\rho_w g \epsilon) = {P}$'],
         [r'$P k_E/(\rho_w g \epsilon) = {P}$']])
+    ax_xlabel=r'Peak-centered distance $(x-x_{{\text{{peak}}}})/h$'
 
     fig = plot_snapshots_template(data_arrays, norm_by_wavelength=False,
+            line_coord='t*eps*sqrt(g*h)*k_E',
+            x_coordinate='(x-x_peak)/h',
+            ax_xlabel=ax_xlabel,
             ax_title=ax_title)
 
     # Zoom in on crest

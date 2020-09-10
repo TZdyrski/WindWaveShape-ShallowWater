@@ -484,8 +484,8 @@ wave growth, apparent at the wave crest $x=0$, while the onshore wind
     Discrepancy between surface profile and symmetric solitary wave
     (\cf{} \cref{eq:profile_discrepancy}) under onshore
     \subref{fig:snapshots_solitary_tail:a} onshore and
-    \subref{fig:snapshots_solitary_tail:b} offshore Jeffreys forcing in
-    a frame co-moving with the symmetric wave's speed.
+    \subref{fig:snapshots_solitary_tail:b} offshore Jeffreys forcing
+    versus peak-centered distance $(x-x_{\text{peak}})/h$.
     The change in profile $\Delta \eta/h$ is plotted for non-dimensional
     distance $-10 \le x/h \le 10$.
     Results are shown for $\epsilon=0.1$, $\mu_E = 0.6$, $\abs{P
@@ -505,20 +505,18 @@ At each time $t'_1$, we calculate the wave height $H(t)$,
   H' = \max(\eta') - \min(\eta') \,.
   \label{eq:height_def}
 \end{equation}
-We then subtract the solitary wave of the appropriate height from the
-profile $\eta$,
+After boosting to a frame centered on the peak location
+$x'_{\text{peak}}$ with coordinate $\tilde{x}' \coloneqq
+(x'-x'_{\text{peak}}$, we subtract the solitary wave of the appropriate
+height from the profile $\eta$,
 \begin{equation}
-  \Delta \eta' \coloneqq \eta'
-    - H'(t'_1) \sech^2\pqty{\frac{x' - c'_1 t'_1}{\Delta'}}
+  \Delta \eta'(\tilde{x}') \coloneqq \eta'(\tilde{x}')
+  - H'(t'_1) \sech^2\pqty{\frac{\tilde{x}'}{\Delta'}}
   \qq{with}
-  \Delta' = \sqrt{\frac{8}{H'(t'_1)}}
-  \qq{and}
-  c'_1 = \frac{H'(t'_1)}{2} \,.
+  \Delta' = \sqrt{\frac{8}{H'(t'_1)}} \,.
   \label{eq:profile_discrepancy}
 \end{equation}
-The discrepancy is shown in \cref{fig:snapshots_solitary_tail} in the
-same, co-moving frame as \cref{fig:snapshots_solitary}.
-Here, an oscillatory tail that trails the main, solitary wave.
+The discrepancy is shown in \cref{fig:snapshots_solitary_tail}.
 Notice that the tail begins near the front face of the wave and decays
 with distance behind the wave.
 
