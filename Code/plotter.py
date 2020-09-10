@@ -9,6 +9,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1.inset_locator import zoomed_inset_axes
 from mpl_toolkits.axes_grid1.inset_locator import mark_inset
+from scipy.optimize import curve_fit
 from pi_formatter import pi_multiple_ticks, float_to_pi
 import itertools
 import texplot
@@ -1354,6 +1355,37 @@ def print_solitary_unforced_difference(load_prefix, save_prefix, *args, **kwargs
     print('Normalized, RMS between end and start for'\
             +'unforced solitary wave:'+str(L2ratio))
 
+def fit_sech(profile):
+
+    x = profile['x/h']
+    t = profile['t*eps*sqrt(g*h)*k_E']
+    eps = profile.attrs['eps']
+    mu = profile.attrs['mu']
+
+    # Fit with sech^2
+    H = np.empty(t.size)
+    x_center = np.empty(t.size)
+    H_var = np.empty(t.size)
+    x_center_var = np.empty(t.size)
+    for elem,_ in enumerate(t):
+        result = curve_fit(lambda x,H,x_center:
+                eps*H/np.cosh(np.sqrt(H/8)*(x-x_center)*np.sqrt(mu))**2,
+                x, profile[{'t*eps*sqrt(g*h)*k_E':elem}], p0=(2,0))
+        H[elem] = result[0][0] # store height
+        x_center[elem] = result[0][1] # store center location
+        H_var[elem] = result[1][0,0] # store height variance
+        x_center_var[elem] = result[1][1,1] # store center location variance
+
+    # Convert H and x_center to DataArrays
+    H = xr.DataArray(H,
+            dims=['t*eps*sqrt(g*h)*k_E'],
+            coords={'t*eps*sqrt(g*h)*k_E': profile['t*eps*sqrt(g*h)*k_E']})
+    x_center = xr.DataArray(x_center,
+            dims=['t*eps*sqrt(g*h)*k_E'],
+            coords={'t*eps*sqrt(g*h)*k_E': profile['t*eps*sqrt(g*h)*k_E']})
+
+    return H, x_center
+
 def symmetric_approximation(profile):
     ## Calculate approximate symmetric, sech^2 profile
 
@@ -1361,27 +1393,25 @@ def symmetric_approximation(profile):
     eps = profile.attrs['eps']
     mu =  profile.attrs['mu']
 
-    maximum = profile.max(dim='x/h')
-    H = maximum/eps
+    # Generate sech-centered coordinate
+    profile = sech_centered_coord(profile)
 
+    # Get profile height
+    H,_ = fit_sech(profile)
+
+    # Create symmetric, sech^2 profile
     symmetric_approx = eps*H/np.cosh(np.sqrt(H/8)*\
-            (profile.coords['(x-x_peak)/h']*np.sqrt(mu)))**2
+            (profile.coords['(x-x_center)/h']*np.sqrt(mu)))**2
 
     return symmetric_approx
 
-def peak_centered_coord(profile, load_prefix, parameters):
-    # Extract peak position
-    stats_filename = data_csv.find_filenames(load_prefix,
-            'Shape-Statistics', parameters=parameters)
-    stats =  data_csv.load_data(stats_filename, stack_coords=False)
+def sech_centered_coord(profile):
+    # Get center of sech^2
+    _,x_center = fit_sech(profile)
 
-    # Extract peak location at desired times
-    peak_locs = stats['x_peak/h'].loc[
-            {'t*eps*sqrt(g*h)*k_E': profile['t*eps*sqrt(g*h)*k_E']}]
-
-    # Boost into peak-centered frame
-    profile = profile.assign_coords({'(x-x_peak)/h':
-        profile.coords['x/h']-peak_locs})
+    # Boost into sech-centered frame
+    profile = profile.assign_coords({'(x-x_center)/h':
+        profile.coords['x/h']-x_center})
 
     return profile
 
@@ -1402,10 +1432,6 @@ def plot_pos_neg_solitary_tail(load_prefix, save_prefix, *args, **kwargs):
         # Extract data
         data_array = data_csv.load_data(filename, stack_coords=True)
 
-        # Create peak-centered coordinates
-        data_array = peak_centered_coord(data_array, load_prefix,
-                parameters)
-
         # Create symmetric approximation
         symmetric_approx = symmetric_approximation(data_array)
         data_array.attrs['wave_type'] = 'tail'
@@ -1416,14 +1442,14 @@ def plot_pos_neg_solitary_tail(load_prefix, save_prefix, *args, **kwargs):
 
     ax_title=np.array([[r'$P k_E/(\rho_w g \epsilon) = {P}$'],
         [r'$P k_E/(\rho_w g \epsilon) = {P}$']])
-    ax_xlabel=r'Peak-centered distance $(x-x_{{\text{{peak}}}})/h$'
+    ax_xlabel=r'Peak-centered distance $(x-x_{{\text{{center}}}})/h$'
     ax_ylabel='Profile'+'\n'+r'change $\Delta \eta/h$'
 
     fig = plot_snapshots_template(data_arrays, norm_by_wavelength=False,
             ax_title=ax_title,
             ax_xlabel=ax_xlabel,
             ax_ylabel=ax_ylabel,
-            x_coordinate='(x-x_peak)/h',
+            x_coordinate='(x-x_center)/h',
             line_coord='t*eps*sqrt(g*h)*k_E',
             sharey=True)
 
@@ -1445,13 +1471,12 @@ def plot_pos_neg_solitary_and_sech(load_prefix, save_prefix, *args, **kwargs):
         # Extract data
         data_array = data_csv.load_data(filename, stack_coords=True)
 
-        # Create peak-centered coordinates
-        data_array = peak_centered_coord(data_array, load_prefix,
-                parameters)
-
         # Create symmetric approximation
         symmetric_approx = symmetric_approximation(data_array)
         data_array.attrs['wave_type'] = 'tail'
+
+        # Generate sech-centered coordinate
+        data_array = sech_centered_coord(data_array)
 
         indx = np.unravel_index(indx_num,data_arrays.shape)
         data_arrays[indx] = xr.concat([
@@ -1460,11 +1485,11 @@ def plot_pos_neg_solitary_and_sech(load_prefix, save_prefix, *args, **kwargs):
 
     ax_title=np.array([[r'$P k_E/(\rho_w g \epsilon) = {P}$'],
         [r'$P k_E/(\rho_w g \epsilon) = {P}$']])
-    ax_xlabel=r'Peak-centered distance $(x-x_{{\text{{peak}}}})/h$'
+    ax_xlabel=r'Peak-centered distance $(x-x_{{\text{{center}}}})/h$'
 
     fig = plot_snapshots_template(data_arrays, norm_by_wavelength=False,
             line_coord='t*eps*sqrt(g*h)*k_E',
-            x_coordinate='(x-x_peak)/h',
+            x_coordinate='(x-x_center)/h',
             ax_xlabel=ax_xlabel,
             ax_title=ax_title)
 
@@ -1978,7 +2003,6 @@ def plot_energy(load_prefix, save_prefix, *args, **kwargs):
     # Get E
     energy = data_arrays[0]['E/E_0']
     # Fit with exponential
-    from scipy.optimize import curve_fit
     fit = np.empty(Ps.size)
     variance = np.empty(Ps.size)
     for elem,_ in enumerate(Ps):
@@ -2039,7 +2063,6 @@ def plot_energy_solitary(load_prefix, save_prefix, *args, **kwargs):
     # Get E
     energy = data_arrays[0]['E/E_0']
     # Fit with exponential
-    from scipy.optimize import curve_fit
     fit = np.empty(Ps.size)
     variance = np.empty(Ps.size)
     for elem,_ in enumerate(Ps):

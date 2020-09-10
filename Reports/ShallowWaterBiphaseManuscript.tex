@@ -485,7 +485,7 @@ wave growth, apparent at the wave crest $x=0$, while the onshore wind
     (\cf{} \cref{eq:profile_discrepancy}) under onshore
     \subref{fig:snapshots_solitary_tail:a} onshore and
     \subref{fig:snapshots_solitary_tail:b} offshore Jeffreys forcing
-    versus peak-centered distance $(x-x_{\text{peak}})/h$.
+    versus $\sech^2$-centered distance $(x-x_{\text{center}})/h$.
     The change in profile $\Delta \eta/h$ is plotted for non-dimensional
     distance $-10 \le x/h \le 10$.
     Results are shown for $\epsilon=0.1$, $\mu_E = 0.6$, $\abs{P
@@ -500,15 +500,11 @@ wave growth, apparent at the wave crest $x=0$, while the onshore wind
 The wave profile $\eta$ is dominated by the symmetric, $\sech^2$
 solitary wave, but we can subtract off this component to emphasize the
 asymmetric remainder.
-At each time $t'_1$, we calculate the wave height $H(t)$,
-\begin{equation}
-  H' = \max(\eta') - \min(\eta') \,.
-  \label{eq:height_def}
-\end{equation}
-After boosting to a frame centered on the peak location
-$x'_{\text{peak}}$ with coordinate $\tilde{x}' \coloneqq
-(x'-x'_{\text{peak}}$, we subtract the solitary wave of the appropriate
-height from the profile $\eta$,
+We calculate the $\sech^2$ profile's height $H'(t'_1)$ and center
+location $x'_{\text{center}}(t'_1)$ using a nonlinear least squares fit.
+After boosting to a frame centered on $x'_{\text{center}}(t'_1)$ with
+coordinate $\tilde{x}' \coloneqq (x'-x'_{\text{center}})$, we subtract
+the solitary wave of the appropriate height from the profile $\eta$,
 \begin{equation}
   \Delta \eta'(\tilde{x}') \coloneqq \eta'(\tilde{x}')
   - H'(t'_1) \sech^2\pqty{\frac{\tilde{x}'}{\Delta'}}
