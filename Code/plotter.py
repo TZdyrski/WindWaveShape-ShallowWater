@@ -9,7 +9,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1.inset_locator import zoomed_inset_axes
 from mpl_toolkits.axes_grid1.inset_locator import mark_inset
-from scipy.optimize import curve_fit
+from scipy.optimize import curve_fit, minimize
 from pi_formatter import pi_multiple_ticks, float_to_pi
 import itertools
 import texplot
@@ -1365,16 +1365,22 @@ def fit_sech(profile):
     # Fit with sech^2
     H = np.empty(t.size)
     x_center = np.empty(t.size)
-    H_var = np.empty(t.size)
-    x_center_var = np.empty(t.size)
     for elem,_ in enumerate(t):
-        result = curve_fit(lambda x,H,x_center:
-                eps*H/np.cosh(np.sqrt(H/8)*(x-x_center)*np.sqrt(mu))**2,
-                x, profile[{'t*eps*sqrt(g*h)*k_E':elem}], p0=(2,0))
-        H[elem] = result[0][0] # store height
-        x_center[elem] = result[0][1] # store center location
-        H_var[elem] = result[1][0,0] # store height variance
-        x_center_var[elem] = result[1][1,1] # store center location variance
+        def assumed_sech(x,H,x_center):
+            return eps*H/np.cosh(np.sqrt(H/8)*(x-x_center)*np.sqrt(mu))**2
+
+        def cost(params, x, result):
+            H,x_center = params
+            model = assumed_sech(x,H,x_center)
+            cost = np.sum(np.abs(result - model))
+            return cost
+
+        result = minimize(cost, x0=(2,0),
+                args=(x.values,
+                    profile[{'t*eps*sqrt(g*h)*k_E':elem}].values))
+
+        H[elem] = result.x[0] # store height
+        x_center[elem] = result.x[1] # store center location
 
     # Convert H and x_center to DataArrays
     H = xr.DataArray(H,

@@ -501,7 +501,8 @@ The wave profile $\eta$ is dominated by the symmetric, $\sech^2$
 solitary wave, but we can subtract off this component to emphasize the
 asymmetric remainder.
 We calculate the $\sech^2$ profile's height $H'(t'_1)$ and center
-location $x'_{\text{center}}(t'_1)$ using a nonlinear least squares fit.
+location $x'_{\text{center}}(t'_1)$ using a least-absolute-deviation fit
+to leverage the cancellation of the oscillatory remainder.
 After boosting to a frame centered on $x'_{\text{center}}(t'_1)$ with
 coordinate $\tilde{x}' \coloneqq (x'-x'_{\text{center}})$, we subtract
 the solitary wave of the appropriate height from the profile $\eta$,
