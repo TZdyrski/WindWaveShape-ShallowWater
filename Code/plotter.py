@@ -388,12 +388,12 @@ def plot_shape_statistics_template(data_arrays, ax_title=None, **kwargs):
     plot_peak_pos = 'x_peak/h' in data_arrays[0].data_vars
     plot_peak_speed = 'c_peak/sqrt(g*h)' in data_arrays[0].data_vars
 
-    ax_ylabel_list = ['Height'+'\n'+'$H/h$', 'Skewness'+'\n'+r'$\Sk/\Sk_0$',
+    ax_ylabel_list = ['Energy'+'\n'+'$E/E_0$', 'Skewness'+'\n'+r'$\Sk/\Sk_0$',
             'Asymmetry'+'\n'+'$\As$']
     if plot_biphase:
         ax_ylabel_list.append('Biphase')
     if plot_peak_pos:
-        # Insert after Height
+        # Insert after Energy
         ax_ylabel_list.insert(1,
                 'Peak'+'\n'+'Position'+'\n'+r'$x_{{\text{{peak}}}}/h$')
     if plot_peak_speed:
@@ -411,7 +411,7 @@ def plot_shape_statistics_template(data_arrays, ax_title=None, **kwargs):
 
     for shape_group in range(data_arrays_rearranged.shape[1]):
         split_data_arrays = [
-                data_arrays[shape_group]['max(eta)/h'],
+                data_arrays[shape_group]['E/E_0'],
                 data_arrays[shape_group]['skewness']/
                 data_arrays[shape_group]['skewness'][{kwargs.get('x_coordinate'):0}],
                 data_arrays[shape_group]['asymmetry'],
@@ -419,7 +419,7 @@ def plot_shape_statistics_template(data_arrays, ax_title=None, **kwargs):
         if plot_biphase:
             split_data_arrays.append(data_arrays[shape_group]['biphase'])
         if plot_peak_pos:
-            # Insert after Height
+            # Insert after Energy
             split_data_arrays.insert(1,
                     data_arrays[shape_group]['x_peak/h'])
         if plot_peak_speed:
@@ -446,10 +446,9 @@ def plot_shape_statistics_template(data_arrays, ax_title=None, **kwargs):
     ax = atleast_2d(fig.axes).reshape((len(ax_ylabel_list),
         data_arrays.size))
     for ix in np.ndindex(ax.shape[1]):
-        # Put horizontal line at y=2*eps = H_0
-        ax[ax_ylabel_list.index('Height'+'\n'+'$H/h$'),ix].item().axhline(
-                2*data_arrays[0].attrs['eps'],
-                color='0.75', zorder=-1)
+        # Put horizontal line at y=1
+        ax[ax_ylabel_list.index('Energy'+'\n'+'$E/E_0$'),ix].item().axhline(
+                1, color='0.75', zorder=-1)
 
         # Put horizontal line at y=0
         ax[ax_ylabel_list.index('Asymmetry'+'\n'+r'$\As$'),ix].item().axhline(0,

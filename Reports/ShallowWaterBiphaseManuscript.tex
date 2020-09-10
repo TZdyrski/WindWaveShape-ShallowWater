@@ -69,7 +69,7 @@ flat bottom and forced by a Jeffreys-type surface pressure produces a
 Korteweg-de Vries (KdV)-Burgers equation governing the wave profile.
 The evolution of an initially symmetric solitary wave is calculated
 numerically.
-The wave's height, skewness and asymmetry are investigated as functions
+The wave's energy, skewness and asymmetry are investigated as functions
 of time and pressure magnitude.
 These results are in qualitative agreement with prior results in
 intermediate and deep water.
@@ -122,7 +122,7 @@ shallow water, we introduce a wind-induced pressure term in the
 Boussinesq equations in \cref{sec:derivation}.
 This produces a KdV-Burgers equation governing a solitary wave's
 evolution, which we will solve numerically.
-We analyze the wave height, skewness and asymmetry in
+We analyze the wave energy, skewness and asymmetry in
 \cref{sec:results}.
 Finally, we calculate wind speeds, discuss the asymmetry's cause and
 compare the results to intermediate and deep-water waves in
@@ -386,10 +386,10 @@ This hyperviscosity does not noticeably affect the wave; the normalized
 root-mean-square difference between the unforced ($P=0$) profile $\eta$
 at $t'_1=3$ and the initial condition $\eta_0$ is $\sqrt{\langle (\eta -
 \eta_0)^2 \rangle/ \langle \eta_0^2 \rangle} = \num{2e-3}$.
-We will quantify the wave shape according to the wave height $H$,
+We will quantify the wave shape according to the wave energy $E$,
 \begin{equation}
-  H = \max(\eta) - \min(\eta) \,,
-  \label{eq:height_def}
+  E \coloneqq \langle \eta^2 \rangle \,,
+  \label{eq:energy_def}
 \end{equation}
 as well as the skewness $\Sk$ and $\As$,
 \begin{equation}
@@ -406,8 +406,8 @@ Here, we have used the wave average
   \dd{x} \,,
 \end{equation}
 and the Hilbert transform $\hilbert$.
-Since these definitions carry a factor of the domain size $\sqrt{L}$,
-we will normalize the skewness $\Sk$ by the initial skewness $\Sk_0$.
+Since these definitions carry factors of the domain size $L$, we will
+normalize the energy $E$ and skewness $\Sk$ by their initial values.
 
 \section{\label{sec:results} Results}
 Given the one free parameter $P k_E/(\rho_w g \epsilon)$ of the
@@ -492,7 +492,12 @@ wave growth, apparent at the wave crest $x=0$, while the onshore wind
 \end{figure}
 
 To a first approximation, the KdV-Burgers equation causes the solitary
-wave height $H$ to vary as
+wave height $H$,
+\begin{equation}
+  H = \max(\eta) - \min(\eta) \,,
+  \label{eq:height_def}
+\end{equation}
+to vary as
 \begin{equation}
   H'(t'_1) = \frac{H'_0}{1 - \gamma' t'_1}
   \qq{with}
@@ -538,12 +543,12 @@ with distance behind the wave.
     \epsilon \sqrt{gh} k_E = \numrange{0}{3}$.
     The
     \subref{fig:statistics_solitary:a}
-    height,
+    energy (normalized by the initial time),
     \subref{fig:statistics_solitary:b}
     skewness (normalized by the initial time) and
     \subref{fig:statistics_solitary:c}
     asymmetry are defined in
-    \cref{eq:height_def,eq:shape_stats_def}.
+    \cref{eq:energy_def,eq:shape_stats_def}.
     Results are shown for $\epsilon=0.1$, $\mu_E = 0.6$ and $P
     k_E/(\rho_w g \epsilon) = 0$, $\pm 0.125$ and $\pm 0.25$, as
     indicated in the legend.
@@ -560,10 +565,10 @@ between $\pm 0.25$.
 We plot all cases for initial steepness $\epsilon = 0.1$ up to slow time
 $t \epsilon \sqrt{g h} k_E = 3$, corresponding to $3/\epsilon = 30$
 wave-crossing times, $\sqrt{gh} k_E$.
-The height (\cref{fig:statistics_solitary:a}) begins at $H_0/h = 2
-\epsilon = 0.2$ and shows an asymmetry in growth/decay rates: the
-onshore wind ($P>0$) causes accelerating wave growth while the offshore
-wind ($P<0$) causes decay which slows over time.
+The normalized energy $E/E_0$ (\cref{fig:statistics_solitary:a}) shows
+an asymmetry in growth/decay rates: the onshore wind ($P>0$) causes
+accelerating wave growth while the offshore wind ($P<0$) causes decay
+which slows over time.
 We can even see this qualitatively in the accelerating crest growth
 (\cref{fig:snapshots_solitary:a}) and decelerating crest decay
 (\cref{fig:snapshots_solitary:b}) at $x=0$ of
@@ -606,10 +611,7 @@ k_E/(\rho_w g) = \order{\epsilon}$.
 Now, we estimate the wind speed associated with such a pressure
 to show that this choice is reasonable.
 First, we need to relate the surface pressure to changes in the wave
-energy $E$,
-\begin{equation}
-  E \coloneqq \rho_w g \int_{-\infty}^{\infty} {\eta}_0^2 \dd{x} \,.
-\end{equation}
+energy $E$ \cref{eq:energy_def}.
 We can approximate the relationship between $E$ and $P$ with the
 standard procedure \citep[\eg][]{mei2005nonlinear} of multiplying the
 (non-dimensional, denoted by primes) KdV-Burgers equation
@@ -779,9 +781,9 @@ profile $\eta$.
 We utilized a symmetric, solitary wave satisfying the unforced KdV
 equation as our initial condition.
 A third-order Runge Kutta solver determined the time-evolution of the
-surface profile, and we extracted height, skewness and asymmetry as
+surface profile, and we extracted energy, skewness and asymmetry as
 functions of time and pressure magnitude.
-For onshore wind (positive $P$), wave height and skewness increased with
+For onshore wind (positive $P$), wave energy and skewness increased with
 time while asymmetry decreased, while offshore wind produced opposite
 effects.
 Furthermore, these effects were enhanced for strong pressures and
