@@ -1322,6 +1322,22 @@ def plot_pos_neg_solitary_production(load_prefix, save_prefix, *args, **kwargs):
 
     texplot.savefig(fig,save_prefix+'Snapshots-Positive-Negative-Production')
 
+def symmetric_approximation(profile):
+    ## Calculate approximate symmetric, sech^2 profile
+
+    # Calculate maximum
+    eps = profile.attrs['eps']
+    mu =  profile.attrs['mu']
+
+    maximum = profile.max(dim='x/h')
+    H = maximum/eps
+
+    symmetric_approx = eps*H/np.cosh(np.sqrt(H/8)*\
+            (profile.coords['x/h']*np.sqrt(mu)-\
+            (H/2-1)*eps*profile.coords['t*eps*sqrt(g*h)*k_E']))**2
+
+    return symmetric_approx
+
 def plot_pos_neg_solitary_tail(load_prefix, save_prefix, *args, **kwargs):
     filename_base = 'Snapshots'
 
@@ -1338,18 +1354,11 @@ def plot_pos_neg_solitary_tail(load_prefix, save_prefix, *args, **kwargs):
         # Extract data
         data_array = data_csv.load_data(filename, stack_coords=True)
 
-        indx = np.unravel_index(indx_num,data_arrays.shape)
-
-        maximum = data_array.max(dim='x/h')
-        H = maximum/data_array.attrs['eps']
-        symmetric_approx = data_array.attrs['eps']*\
-                H/np.cosh(np.sqrt(H/8)*\
-                (data_array.coords['x/h']*np.sqrt(data_array.attrs['mu'])-\
-                (H/2-1)*data_array.attrs['eps']*data_array.coords['t*eps*sqrt(g*h)*k_E'])
-                )**2
-
-        data_arrays[indx] = data_array - symmetric_approx
+        symmetric_approx = symmetric_approximation(data_array)
         data_array.attrs['wave_type'] = 'tail'
+
+        indx = np.unravel_index(indx_num,data_arrays.shape)
+        data_arrays[indx] = data_array - symmetric_approx
         data_arrays[indx].attrs = data_array.attrs
 
     ax_title=np.array([[r'$P k_E/(\rho_w g \epsilon) = {P}$'],
@@ -1379,19 +1388,12 @@ def plot_pos_neg_solitary_and_sech(load_prefix, save_prefix, *args, **kwargs):
         # Extract data
         data_array = data_csv.load_data(filename, stack_coords=True)
 
+        symmetric_approx = symmetric_approximation(data_array)
+        data_array.attrs['wave_type'] = 'tail'
+
         indx = np.unravel_index(indx_num,data_arrays.shape)
-
-        maximum = data_array.max(dim='x/h')
-        H = maximum/data_array.attrs['eps']
-        symmetric_approx = data_array.attrs['eps']*\
-                H/np.cosh(np.sqrt(H/8)*\
-                (data_array.coords['x/h']*np.sqrt(data_array.attrs['mu'])-\
-                (H/2-1)*data_array.attrs['eps']*data_array.coords['t*eps*sqrt(g*h)*k_E'])
-                )**2
-
         data_arrays[indx] = xr.concat([
             data_array, symmetric_approx], dim='t*eps*sqrt(g*h)*k_E')
-        data_array.attrs['wave_type'] = 'tail'
         data_arrays[indx].attrs = data_array.attrs
 
     ax_title=np.array([[r'$P k_E/(\rho_w g \epsilon) = {P}$'],
