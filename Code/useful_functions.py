@@ -84,3 +84,17 @@ def derivative(u, dx=1, period=2*np.pi, axis=0, order=1,
         "'FFT', or 'periodic_fd', but "+deriv_type+" was given"))
 
     return derivative
+
+def get_var_stats(profile, var='x/h',periodic=True):
+    varNum = profile[var].size
+    varLen = float(profile[var].max()-profile[var].min())
+    dvar = varLen/(varNum-1)
+    if periodic:
+        # If the domain in 'var' is assumed periodic, then the last
+        # point is not included. That is, only
+        # 0, dvar, 2*dvar, ..., (varNum-1)*dvar
+        # are provided, but the domain is assumed to have length
+        # varNum*dvar. Therefore adjust varLen
+        varLen = varNum*dvar
+
+    return varLen, varNum, dvar

@@ -18,21 +18,7 @@ import scipy.special as spec
 import xrscipy.signal as dsp
 import xarray as xr
 import data_csv
-from useful_functions import round_sig_figs, derivative
-
-def get_var_stats(profile, var='x/h',periodic=True):
-    varNum = profile[var].size
-    varLen = float(profile[var].max()-profile[var].min())
-    dvar = varLen/(varNum-1)
-    if periodic:
-        # If the domain in 'var' is assumed periodic, then the last
-        # point is not included. That is, only
-        # 0, dvar, 2*dvar, ..., (varNum-1)*dvar
-        # are provided, but the domain is assumed to have length
-        # varNum*dvar. Therefore adjust varLen
-        varLen = varNum*dvar
-
-    return varLen, varNum, dvar
+from useful_functions import round_sig_figs, derivative, get_var_stats
 
 def skewness(profile):
     """Get the skewness of the solution calculated with
