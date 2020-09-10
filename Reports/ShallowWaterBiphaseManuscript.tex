@@ -237,7 +237,8 @@ Note that this is equivalent to choosing a set of units wherein $h = g =
 \rho_w = 1$.
 We will drop the primes henceforth for readability.
 
-\subsection{Boussinesq equation}
+\subsection{Boussinesq equation, multiple-scale expansion, and KdV
+equation}
 Here, we modify the Boussinesq equation's derivation provided by
 \citet{mei2005nonlinear} to include a surface pressure forcing.
 Laplace's equation \cref{eq:laplace_nondim} and the bottom boundary
@@ -269,9 +270,7 @@ the Boussinesq equations with a pressure forcing term,
 \end{gather}
 Further, we will now assume $\order{\epsilon} = \order{\mu_E} \ll 1$.
 
-\subsection{\label{sec:shallow_water} Multiple scales expansion and KdV
-equation}
-We expand the time $t$ in terms of multiple time scales $t_n =
+We now expand the time $t$ in terms of multiple time scales $t_n =
 \epsilon^n t$ for $n= 0,1$, so all time derivatives become $\partial_t \to
 \partial_{t_0} + \epsilon \partial_{t_1}$.
 Then, we write $\eta$ and $\varphi$ in asymptotic series of $\epsilon$,
