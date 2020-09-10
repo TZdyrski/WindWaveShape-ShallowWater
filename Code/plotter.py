@@ -179,7 +179,7 @@ def convert_x_norm(data_arrays):
 def default_plotter(data_array, x_name, axis):
     axis.plot(data_array[x_name], data_array)
 
-def plot_multiplot_template(data_arrays, x_coordinate,
+def plot_multiplot_template(data_arrays, x_coordinate, line_coord=None,
         suptitle=None, format_title=False, ax_title=None,
         ax_xlabel=None, ax_ylabel=None, color_class=None,
         show_legend=False, legend_title=None, plotter=default_plotter,
@@ -250,9 +250,10 @@ def plot_multiplot_template(data_arrays, x_coordinate,
         x_name = fill_to_shape(x_coordinate,ax.shape)[iy,ix]
 
         if atleast_2d(data_arrays[iy,ix]).shape[1] > 1:
-            # Sort lines
-            line_coord = [val for val in data_arrays[iy,ix].dims if val
-                    != x_name][0]
+            if line_coord is None:
+                # Sort lines
+                line_coord = [val for val in data_arrays[iy,ix].dims if val
+                        != x_name][0]
             data_array_sorted = \
                     data_arrays[iy,ix].sortby(line_coord)
         else:
