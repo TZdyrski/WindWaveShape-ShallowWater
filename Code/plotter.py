@@ -2,6 +2,7 @@
 # plotter.py
 import sys
 import numpy as np
+import scipy.integrate
 import xarray as xr
 from cycler import cycler
 import matplotlib as mpl
@@ -12,7 +13,7 @@ from pi_formatter import pi_multiple_ticks, float_to_pi
 import itertools
 import texplot
 import data_csv
-from useful_functions import round_sig_figs
+from useful_functions import round_sig_figs, get_var_stats
 
 def property_cycle(num_lines,color_class='sequential'):
     """Generates a property cycle.
@@ -1322,6 +1323,37 @@ def plot_pos_neg_solitary_production(load_prefix, save_prefix, *args, **kwargs):
 
     texplot.savefig(fig,save_prefix+'Snapshots-Positive-Negative-Production')
 
+def print_solitary_unforced_difference(load_prefix, save_prefix, *args, **kwargs):
+    filename_base = 'Snapshots'
+
+    P = 0
+
+    filename = data_csv.find_filenames(load_prefix, filename_base,
+        parameters={'wave_type' : 'solitary', **kwargs,
+            'P' : P})
+
+    # Extract data
+    data_array = data_csv.load_data(filename, stack_coords=True)
+
+    # Subtract last time from first timee
+    difference = data_array[{'t*eps*sqrt(g*h)*k_E':-1}] - \
+            data_array[{'t*eps*sqrt(g*h)*k_E':0}]
+
+    xLen,_,dx = get_var_stats(data_array)
+
+    # Take the L2 norm
+    L2diff = scipy.integrate.trapz(difference**2, dx=dx,
+            axis=0)/(xLen)
+
+    # Normalize by the original L2 norm
+    L2orig = scipy.integrate.trapz(
+            data_array[{'t*eps*sqrt(g*h)*k_E':0}]**2, dx=dx,
+            axis=0)/(xLen)
+    L2ratio = np.sqrt(L2diff/L2orig)
+
+    print('Normalized, RMS between end and start for'\
+            +'unforced solitary wave:'+str(L2ratio))
+
 def symmetric_approximation(profile):
     ## Calculate approximate symmetric, sech^2 profile
 
@@ -2482,6 +2514,7 @@ def main():
             'neg_solitary' : plot_neg_solitary,
             'pos_neg_solitary' : plot_pos_neg_solitary,
             'pos_neg_solitary_production' : plot_pos_neg_solitary_production,
+            'print_solitary_unforced_difference': print_solitary_unforced_difference,
             'pos_neg_solitary_tail' : plot_pos_neg_solitary_tail,
             'pos_neg_solitary_and_sech' : plot_pos_neg_solitary_and_sech,
             'pos_cnoidal' : plot_pos_cnoidal,
