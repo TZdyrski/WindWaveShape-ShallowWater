@@ -373,9 +373,10 @@ The simulation runs from $t_1 = 0$ to $T = 3$, inclusive, with
 $N_t = \num{4.8e5}$ points, yielding a spacing $\Delta t_1 = T/(N_t-1)
 \approx \num{6.25e-6}$.
 We found that linearly ramping up $P$ from $0$ at $t_1=0$ to its full
-value at $t_1 = 0.1$ (or full, dimensional time $t = \sqrt{gh} k_E$,
-\ie{} approximately one wave-crossing time) did not qualitatively modify
-the results, so we do not utilize such a ramp up here.
+value at $t_1 = \epsilon$, or full, dimensional time $t = \sqrt{gh} k_E$
+(\ie{} the time required to cross the effective wavelength $2\pi/k_E$,
+or `wave-crossing time') did not qualitatively modify the results, so we
+do not utilize such a ramp up here.
 
 \Cref{eq:kdv_burgers} is discretized in space using a
 second-order central finite difference method and in time using a
