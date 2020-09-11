@@ -1352,7 +1352,7 @@ def print_solitary_unforced_difference(load_prefix, save_prefix, *args, **kwargs
             axis=0)/(xLen)
     L2ratio = np.sqrt(L2diff/L2orig)
 
-    print('Normalized, RMS between end and start for'\
+    print('Normalized, RMS between end and start for '\
             +'unforced solitary wave:'+str(L2ratio))
 
 def fit_sech(profile):
