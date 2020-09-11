@@ -1459,6 +1459,10 @@ def plot_pos_neg_solitary_tail(load_prefix, save_prefix, *args, **kwargs):
             line_coord='t*eps*sqrt(g*h)*k_E',
             sharey=True)
 
+    # Zoom in on wave
+    for ax in fig.axes:
+        ax.set_xlim(right=15)
+
     texplot.savefig(fig,save_prefix+'Snapshots-Positive-Negative-Tail')
 
 def plot_pos_neg_solitary_and_sech(load_prefix, save_prefix, *args, **kwargs):
