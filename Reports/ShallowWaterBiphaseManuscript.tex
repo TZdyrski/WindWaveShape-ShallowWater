@@ -449,7 +449,30 @@ non-dimensional ones with primes.
     The arrows denote the wave propagation (phase speed) and wind
     direction.
   }\label{fig:snapshots_solitary}
+
+  { % Put \phantomsubcaption in their own group to prevent it from
+    % affecting the main figure's numbering
+    \phantomsubcaption{}\label{fig:snapshots_solitary_tail:a}
+    \phantomsubcaption{}\label{fig:snapshots_solitary_tail:b}
+  }
+  \includegraphics{Snapshots-Positive-Negative-Tail.eps}
+  \caption{
+    Discrepancy between surface profile and symmetric solitary wave
+    (\cf{} \cref{eq:profile_discrepancy}) under onshore
+    \subref{fig:snapshots_solitary_tail:a} onshore and
+    \subref{fig:snapshots_solitary_tail:b} offshore Jeffreys forcing
+    versus $\sech^2$-centered distance $(x-x_{\text{center}})/h$.
+    The profile change $\Delta \eta/h$ is plotted for non-dimensional
+    distance $-10 \le x/h \le 10$.
+    Results are shown for $\epsilon=0.1$, $\mu_E = 0.6$, $\abs{P
+    k_E/(\rho_w g \epsilon)} = 0.25$, and non-dimensional slow times
+    $t'_1 = t \epsilon \sqrt{gh} k_E = 0$, $1.5$ and $3$, as indicated
+    in the legend.
+    The arrows denote the direction of wave propagation (phase speed) or
+    wind direction.
+  }\label{fig:snapshots_solitary_tail}
 \end{figure}
+
 
 The wave profile $\eta/h$ snapshots in \cref{fig:snapshots_solitary}
 qualitatively show how the wave shape evolves over non-dimensional slow
@@ -477,31 +500,6 @@ increases the maximum wave slope magnitude with time while the offshore
 wind (\cref{fig:snapshots_solitary:b}) decreases it, though the windward
 side of the wave becomes steeper than the leeward side for both winds
 (up to \SI{8}{\percent} steeper for the time period shown).
-
-\begin{figure}
-  \centering
-  { % Put \phantomsubcaption in their own group to prevent it from
-    % affecting the main figure's numbering
-    \phantomsubcaption{}\label{fig:snapshots_solitary_tail:a}
-    \phantomsubcaption{}\label{fig:snapshots_solitary_tail:b}
-  }
-  \includegraphics{Snapshots-Positive-Negative-Tail.eps}
-  \caption{
-    Discrepancy between surface profile and symmetric solitary wave
-    (\cf{} \cref{eq:profile_discrepancy}) under onshore
-    \subref{fig:snapshots_solitary_tail:a} onshore and
-    \subref{fig:snapshots_solitary_tail:b} offshore Jeffreys forcing
-    versus $\sech^2$-centered distance $(x-x_{\text{center}})/h$.
-    The profile change $\Delta \eta/h$ is plotted for non-dimensional
-    distance $-10 \le x/h \le 10$.
-    Results are shown for $\epsilon=0.1$, $\mu_E = 0.6$, $\abs{P
-    k_E/(\rho_w g \epsilon)} = 0.25$, and non-dimensional slow times
-    $t'_1 = t \epsilon \sqrt{gh} k_E = 0$, $1.5$ and $3$, as indicated
-    in the legend.
-    The arrows denote the direction of wave propagation (phase speed) or
-    wind direction.
-  }\label{fig:snapshots_solitary_tail}
-\end{figure}
 
 The wave profile $\eta$ is dominated by the symmetric, $\sech^2$
 solitary wave, but we can subtract off this component to emphasize the
