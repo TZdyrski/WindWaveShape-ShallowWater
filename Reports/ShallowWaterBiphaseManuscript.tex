@@ -472,7 +472,7 @@ side of the wave becomes steeper than the leeward side for both winds
   }
   \includegraphics{Snapshots-Positive-Negative-Tail.eps}
   \caption{
-    Discrepancy between surface profile and symmetric solitary wave
+    Discrepancy between the surface profile and $\sech^2$, solitary wave
     (\cf{} \cref{eq:profile_discrepancy}) under
     \subref{fig:snapshots_solitary_tail:a} onshore and
     \subref{fig:snapshots_solitary_tail:b} offshore Jeffreys forcing
@@ -494,9 +494,9 @@ asymmetric remainder.
 We calculate the $\sech^2$ profile's height $H'(t'_1)$ and center
 location $x'_{\text{center}}(t'_1)$ using a least-absolute-deviation fit
 to leverage the cancellation of the oscillatory remainder.
-After boosting to a frame centered on $x'_{\text{center}}(t'_1)$ with
-coordinate $\tilde{x}' \coloneqq (x'-x'_{\text{center}})$, we subtract
-the solitary wave of the appropriate height from the profile $\eta$,
+After boosting to a frame centered on the $\sech^2$, solitary wave
+$\tilde{x}' \coloneqq (x'-x'_{\text{center}})$, we subtract the solitary
+wave of the appropriate height from the profile $\eta$,
 \begin{equation}
   \Delta \eta'(\tilde{x}') \coloneqq \eta'(\tilde{x}')
   - H'(t'_1) \sech^2\pqty{\frac{\tilde{x}'}{\Delta'}}
