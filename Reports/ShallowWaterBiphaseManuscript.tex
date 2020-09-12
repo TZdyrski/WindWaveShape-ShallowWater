@@ -77,33 +77,26 @@ intermediate and deep water.
 
 \section{Introduction}
 
-The study of wind's interaction with ocean waves has a long history, beginning
-with \citet{jeffreys1925formation}, and continues to be an active field
-of
+The study of wind and ocean wave interactions began with
+\citet{jeffreys1925formation} and continues to be an active field of
 research~\citep[\eg][]{janssen1991quasi,donelan2004limiting,sulivan2010dynamics}.
 Many theoretical
 studies~\citep[\eg][]{jeffreys1925formation,miles1957generation,phillips1957generation}
-focus on calculating wind-induced growth rates and often employed a
-phase-averaging technique.
-However, wind can also influence wave
-shape~\citep[\eg][]{leykin1995asymmetry,feddersen2005wind,zdyrski2020wind},
-as represented by third-order shape statistics such as skewness and
-asymmetry, corresponding to the wave's vertical and horizontal
-asymmetry, respectively.
-Wave shape influences sediment transport
-\citep[\eg][]{drake2001discrete} which modulates
-beach morphodynamics~\citep[\eg][]{hoefel2003wave}.
-Additionally, wave skewness affects the returned signal in radar
-altimetry~\citep[\eg][]{hayne1980radar},
-and wave asymmetry influences ship response to wave
-impacts~\citep[\eg][]{soares2008abnormal}.
+focus on calculating wind-induced growth rates and often employ
+phase-averaging techniques.
+However, wind can also influence wave shape, quantified by third-order
+shape statistics such as skewness (vertical asymmetry) and asymmetry
+(horizontal asymmetry)~\citep[\eg][]{leykin1995asymmetry,feddersen2005wind,zdyrski2020wind}.
+Wave shape influences sediment transport, modulating beach
+morphodynamics~\citep[\eg][]{drake2001discrete,hoefel2003wave}, while
+wave skewness affects radar altimetry
+signals~\citep[\eg][]{hayne1980radar} and asymmetry modulates ship
+responses to wave impacts~\citep[\eg][]{soares2008abnormal}.
 
-When the water depth $h$ is small compared to the wavelength $\lambda$,
-waves are classified as shallow-water waves $kh \ll 1$ (with $k
-\coloneqq 2 \pi/\lambda$).
-Waves in shallow water differ qualitatively from those in intermediate
-to deep water where $kh \sim 1$ or $\gg 1$, respectively.
-For waves with amplitudes $a_0$ much less than the water depth $h$,
+Waves in shallow water, where $kh \ll 1$ (with $h$ the water depth and
+$k=2\pi/\lambda$ the wavenumber), differ qualitatively from those in
+intermediate to deep water where $kh \sim 1$ or $\gg 1$, respectively.
+For waves with amplitudes $a_0 \ll h$,
 leveraging the small parameters $a/h \sim (kh)^2 \ll 1$
 yields the Boussinesq equations with weak dispersion and nonlinearity.
 A special class of waves formed when dispersion balances nonlinear
@@ -113,17 +106,16 @@ astrophysical dusty plasmas \citep[\eg][]{sahu2012nonextensive}.
 One of the simplest models for solitary waves is the Korteweg-de Vries
 (KdV) equation, which incorporates dispersion and nonlinearity.
 When augmented with a dissipative term, this becomes the KdV-Burgers
-equation, which has appeared across disciplines including damped
-internal tides \citep[\eg][]{sandstrom1995dissipation}, electron waves
-in graphene \citep[\eg][]{zdyrski2019effects} and viscous flow in blood
-vessels \citep[\eg][]{antar1999weakly}.
-To investigate the interaction of wind and surface waves in
-shallow water, we introduce a wind-induced pressure term in the
-Boussinesq equations in \cref{sec:derivation}.
-This produces a KdV-Burgers equation governing a solitary wave's
-evolution, which we will solve numerically.
-We analyze the wave energy, skewness and asymmetry in
-\cref{sec:results}.
+equation, with applications to damped internal tides
+\citep[\eg][]{sandstrom1995dissipation}, electron waves in graphene
+\citep[\eg][]{zdyrski2019effects} and viscous flow in blood vessels
+\citep[\eg][]{antar1999weakly}.
+To investigate wind and surface wave interactions in shallow water, we
+introduce a wind-induced pressure term to the Boussinesq equations in
+\cref{sec:derivation}.
+The resulting KdV-Burgers equation governs a solitary wave's evolution,
+which we solve numerically to yield the wave energy, skewness and
+asymmetry in \cref{sec:results}.
 Finally, we calculate wind speeds, discuss the asymmetry's cause and
 compare the results to intermediate and deep-water waves in
 \cref{sec:discussion}.
@@ -131,9 +123,9 @@ compare the results to intermediate and deep-water waves in
 \section{\label{sec:derivation} Derivation of KdV-Burgers equation}
 
 \subsection{Governing equations}
-We will treat the flow as irrotational and inviscid throughout the
-fluid and neglect surface tension by restricting to characteristic
-length scales much greater than \SI{2}{\centi\meter}.
+We will treat the flow as irrotational and inviscid and neglect surface
+tension by considering length scales much greater than
+\SI{2}{\centi\meter}.
 Furthermore, we restrict to planar wave propagation in the $+x$
 direction.
 Finally, we choose a coordinate system with $z=0$ at the mean water
@@ -152,16 +144,14 @@ are
 \end{alignat}
 Here, $\eta(x,t)$ is the wave profile, $\phi(x,z,t)$ is the flow
 velocity potential related to the velocity $\vec{u} = \grad{\phi}$,
-$p(x,t)$ is the surface pressure, $g$ is the acceleration due to
-gravity and $\rho_w$ is the water density.
-We also used the gauge freedom in the definition of $\phi$ to absorb the
-Bernoulli `constant' $C(t)$ in the dynamic boundary condition.
+$p(x,t)$ is the surface pressure, $g$ is the gravitational acceleration
+and $\rho_w$ is the water density.
+We used the $\phi$'s gauge freedom to absorb the Bernoulli `constant'
+$C(t)$ in the dynamic boundary condition.
 We are seeking a solitary, progressive wave which decays at infinity,
-\begin{gather}
-  \eta(\vec{x},t) \to 0 \qq{as} \abs{\vec{x}} \to \infty \,,
-\end{gather}
-with similar conditions on $\vec{u}$.
-We will choose a coordinate system where the average bottom horizontal
+$\eta(\vec{x},t) \to 0$ as $\abs{\vec{x}} \to \infty$, with similar
+conditions on $\vec{u}$.
+We choose a coordinate system where the average bottom horizontal
 velocity vanishes,
 \begin{equation}
   \overline{ \pdv{\phi}{x} } = 0 \qq{on} z=-h \,,
@@ -189,13 +179,13 @@ accurate surface pressure over a non-sinusoidal, dynamic water
 surface---is outside the scope of this paper.
 
 \subsection{\label{sec:nondim} Non-dimensionalization}
-We will non-dimensionalize our system with the known characteristic
+We non-dimensionalize our system with the known characteristic
 scales: the horizontal length scale $L$ over which $\eta$ changes
 rapidly, expressed as an effective wavenumber $k_E \coloneqq 2 \pi/L$;
 the (initial) wave amplitude $a_0 = H_0/2$ (\ie{} half the wave height
 $H_0$); the depth $h$; the gravitational acceleration $g$; and the wind
-speed $U$ expressed as a pressure magnitude $P \propto \rho_a (U-c)^2$.
-Denoting non-dimensional variables with a prime, we have
+speed $U$, expressed as a pressure magnitude $P \propto \rho_a (U-c)^2$.
+Denoting non-dimensional variables with primes, we have
 \begin{equation}
   \begin{aligned}
   x &= \frac{x'}{k_E} = h \frac{x'}{\sqrt{\mu_E}}\,, \\
@@ -215,9 +205,9 @@ Denoting non-dimensional variables with a prime, we have
     = \frac{\phi'\epsilon}{\sqrt{\mu_E}}\sqrt{g h^3} \,.
   \end{aligned}
 \end{equation}
-The dynamics of our system are controlled by three small,
-non-dimensional parameters: $\epsilon \coloneqq a_0/h$, $\mu_E \coloneqq
-(k_E h)^2$ and $P k_E/(\rho_w g)$.
+Our system's dynamics are controlled by three small, non-dimensional
+parameters: $\epsilon \coloneqq a_0/h$, $\mu_E \coloneqq (k_E h)^2$ and
+$P k_E/(\rho_w g)$.
 We will later require $\order{\epsilon} = \order{\mu_E} =
 \order{Pk_E/(\rho_w g)}$.
 Now, our non-dimensional equations take the form
@@ -233,8 +223,7 @@ Now, our non-dimensional equations take the form
     \phi_{z'}^{\prime \, 2}} &&\qq{on} z'= \epsilon \eta' \,.
     \label{eq:dynamic_bc_nondim}
 \end{alignat}
-Note that this is equivalent to choosing a set of units wherein $h = g =
-\rho_w = 1$.
+This is equivalent to choosing units where $h = g = \rho_w = 1$.
 We will drop the primes henceforth for readability.
 
 \subsection{Boussinesq equation, multiple-scale expansion, and KdV
@@ -272,7 +261,7 @@ the Boussinesq equations with a pressure forcing term,
 \end{gather}
 Further, we will now assume $\order{\epsilon} = \order{\mu_E} \ll 1$.
 
-We now expand the time $t$ in terms of multiple time scales $t_n =
+We now expand $t$ using multiple time scales $t_n =
 \epsilon^n t$ for $n= 0,1$, so all time derivatives become $\partial_t \to
 \partial_{t_0} + \epsilon \partial_{t_1}$.
 Then, we write $\eta$ and $\varphi$ in asymptotic series of $\epsilon$,
@@ -331,11 +320,11 @@ Thus, converting back to $\eta_0$ gives the Korteweg-de Vries
     \pdv[3]{\eta_0}{x} = -P \frac{1}{2} \pdv[2]{\eta_0}{x} \,.
   \label{eq:kdv_burgers}
 \end{equation}
-The pressure term, $P \partial^2_x \eta_0$, acts as either a positive
-viscosity for offshore, damping wind or a negative viscosity when
-onshore wind causes wave growth.
-As written, \cref{eq:kdv_burgers} has a rescaling symmetry where $\mu_E
-\to \lambda^2 \mu_E$ is equivalent to taking $(x,t_0,t_1,P) \to
+The pressure term, $P \partial^2_x \eta_0$, acts as a positive viscosity
+for offshore, damping wind or a negative viscosity when onshore wind
+causes wave growth.
+Note that \cref{eq:kdv_burgers} has a rescaling symmetry, with $\mu_E
+\to \lambda^2 \mu_E$ equivalent to taking $(x,t_0,t_1,P) \to
 (x,t_0,t_1,P)/\lambda$.
 Therefore, we fix the length scale (equivalently, $k_E$) by choosing
 $\mu_E = 6 \epsilon$.
@@ -388,7 +377,7 @@ This hyperviscosity does not noticeably affect the wave; the normalized
 root-mean-square difference between the unforced ($P=0$) profile $\eta$
 at $t'_1=3$ and the initial condition $\eta_0$ is $\sqrt{\langle (\eta -
 \eta_0)^2 \rangle/ \langle \eta_0^2 \rangle} = \num{2e-3}$.
-We will quantify the wave shape according to the wave energy $E$,
+We quantify the wave shape with the wave energy $E$,
 \begin{equation}
   E \coloneqq \langle \eta^2 \rangle \,,
   \label{eq:energy_def}
@@ -478,6 +467,31 @@ wind (\cref{fig:snapshots_solitary:b}) decreases it, though the windward
 side of the wave becomes steeper than the leeward side for both winds
 (up to \SI{8}{\percent} steeper for the time period shown).
 
+\begin{figure}
+  \centering
+  { % Put \phantomsubcaption in their own group to prevent it from
+    % affecting the main figure's numbering
+    \phantomsubcaption{}\label{fig:snapshots_solitary_tail:a}
+    \phantomsubcaption{}\label{fig:snapshots_solitary_tail:b}
+  }
+  \includegraphics{Snapshots-Positive-Negative-Tail.eps}
+  \caption{
+    Discrepancy between surface profile and symmetric solitary wave
+    (\cf{} \cref{eq:profile_discrepancy}) under onshore
+    \subref{fig:snapshots_solitary_tail:a} onshore and
+    \subref{fig:snapshots_solitary_tail:b} offshore Jeffreys forcing
+    versus $\sech^2$-centered distance $(x-x_{\text{center}})/h$.
+    The profile change $\Delta \eta/h$ is plotted for non-dimensional
+    distance $-10 \le x/h \le 10$.
+    Results are shown for $\epsilon=0.1$, $\mu_E = 0.6$, $\abs{P
+    k_E/(\rho_w g \epsilon)} = 0.25$, and non-dimensional slow times
+    $t'_1 = t \epsilon \sqrt{gh} k_E = 0$, $1.5$ and $3$, as indicated
+    in the legend.
+    The arrows denote the direction of wave propagation (phase speed) or
+    wind direction.
+  }\label{fig:snapshots_solitary_tail}
+\end{figure}
+
 The wave profile $\eta$ is dominated by the symmetric, $\sech^2$
 solitary wave, but we can subtract off this component to emphasize the
 asymmetric remainder.
@@ -509,25 +523,29 @@ here as well.
   \centering
   { % Put \phantomsubcaption in their own group to prevent it from
     % affecting the main figure's numbering
-    \phantomsubcaption{}\label{fig:snapshots_solitary_tail:a}
-    \phantomsubcaption{}\label{fig:snapshots_solitary_tail:b}
+    \phantomsubcaption{}\label{fig:statistics_solitary:a}
+    \phantomsubcaption{}\label{fig:statistics_solitary:b}
+    \phantomsubcaption{}\label{fig:statistics_solitary:c}
   }
-  \includegraphics{Snapshots-Positive-Negative-Tail.eps}
+  \includegraphics{Skew-Asymm-Production.eps}
   \caption{
-    Discrepancy between surface profile and symmetric solitary wave
-    (\cf{} \cref{eq:profile_discrepancy}) under onshore
-    \subref{fig:snapshots_solitary_tail:a} onshore and
-    \subref{fig:snapshots_solitary_tail:b} offshore Jeffreys forcing
-    versus $\sech^2$-centered distance $(x-x_{\text{center}})/h$.
-    The profile change $\Delta \eta/h$ is plotted for non-dimensional
-    distance $-10 \le x/h \le 10$.
-    Results are shown for $\epsilon=0.1$, $\mu_E = 0.6$, $\abs{P
-    k_E/(\rho_w g \epsilon)} = 0.25$, and non-dimensional slow times
-    $t'_1 = t \epsilon \sqrt{gh} k_E = 0$, $1.5$ and $3$, as indicated
-    in the legend.
-    The arrows denote the direction of wave propagation (phase speed) or
-    wind direction.
-  }\label{fig:snapshots_solitary_tail}
+    Solitary wave shape statistics under onshore and offshore
+    Jeffreys forcing versus non-dimensional slow time $t'_1 = t
+    \epsilon \sqrt{gh} k_E = \numrange{0}{3}$.
+    The
+    \subref{fig:statistics_solitary:a}
+    energy (normalized by the initial time),
+    \subref{fig:statistics_solitary:b}
+    skewness (normalized by the initial time) and
+    \subref{fig:statistics_solitary:c}
+    asymmetry are defined in
+    \cref{eq:energy_def,eq:shape_stats_def}.
+    Results are shown for $\epsilon=0.1$, $\mu_E = 0.6$ and with with
+    pressure magnitude $P k_E/(\rho_w g \epsilon)$ up to $0.25$, as
+    indicated in the legend.
+    The solid black line corresponds to the unforced case, $P = 0$, and
+    shows no growth or asymmetry and a constant skewness.
+  }\label{fig:statistics_solitary}
 \end{figure}
 
 The effect of wind on wave shape is quantified by the time evolution of
@@ -563,35 +581,6 @@ These deviations contribute strongly to the asymmetry, and the onshore
 wind (\cref{fig:snapshots_solitary:a}) causes larger changes to the rear
 face, and hence asymmetry, than the offshore wind
 (\cref{fig:snapshots_solitary:a}) does.
-
-\begin{figure}
-  \centering
-  { % Put \phantomsubcaption in their own group to prevent it from
-    % affecting the main figure's numbering
-    \phantomsubcaption{}\label{fig:statistics_solitary:a}
-    \phantomsubcaption{}\label{fig:statistics_solitary:b}
-    \phantomsubcaption{}\label{fig:statistics_solitary:c}
-  }
-  \includegraphics{Skew-Asymm-Production.eps}
-  \caption{
-    Solitary wave shape statistics under onshore and offshore
-    Jeffreys forcing versus non-dimensional slow time $t'_1 = t
-    \epsilon \sqrt{gh} k_E = \numrange{0}{3}$.
-    The
-    \subref{fig:statistics_solitary:a}
-    energy (normalized by the initial time),
-    \subref{fig:statistics_solitary:b}
-    skewness (normalized by the initial time) and
-    \subref{fig:statistics_solitary:c}
-    asymmetry are defined in
-    \cref{eq:energy_def,eq:shape_stats_def}.
-    Results are shown for $\epsilon=0.1$, $\mu_E = 0.6$ and with with
-    pressure magnitude $P k_E/(\rho_w g \epsilon)$ up to $0.25$, as
-    indicated in the legend.
-    The solid black line corresponds to the unforced case, $P = 0$, and
-    shows no growth or asymmetry and a constant skewness.
-  }\label{fig:statistics_solitary}
-\end{figure}
 
 
 \section{\label{sec:discussion} Discussion}
