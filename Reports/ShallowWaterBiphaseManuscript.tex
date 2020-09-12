@@ -377,24 +377,19 @@ This hyperviscosity does not noticeably affect the wave; the normalized
 root-mean-square difference between the unforced ($P=0$) profile $\eta$
 at $t'_1=3$ and the initial condition $\eta_0$ is $\sqrt{\langle (\eta -
 \eta_0)^2 \rangle/ \langle \eta_0^2 \rangle} = \num{2e-3}$.
-We quantify the wave shape with the wave energy $E$,
+We quantify the wave shape with the wave energy $E$, skewness $\Sk$ and
+asymmetry $\As$,
 \begin{equation}
-  E \coloneqq \langle \eta^2 \rangle \,,
-  \label{eq:energy_def}
-\end{equation}
-as well as the skewness $\Sk$ and asymmetry $\As$,
-\begin{equation}
+  E \coloneqq \langle \eta^2 \rangle \,, \qquad
   \Sk \coloneqq \frac{\langle \eta^3 \rangle}{\langle \eta^2
   \rangle^{3/2}} \
   \qq{and}
   \As \coloneqq \frac{\langle \hilbert \Bqty{\eta^3} \rangle}{\langle
-    \eta^2 \rangle^{3/2}} \,.
-  \label{eq:shape_stats_def}
-\end{equation}
-Here, we have used the wave average
-\begin{equation}
+    \eta^2 \rangle^{3/2}}
+  \qq{with}
   \langle f \rangle \coloneqq \frac{1}{L} \int_{-L/2}^{L/2} f
   \dd{x} \,,
+  \label{eq:shape_stats_def}
 \end{equation}
 and the Hilbert transform $\hilbert$.
 Since these definitions carry factors of the domain size $L$, we will
@@ -538,7 +533,7 @@ here as well.
     skewness (normalized by the initial skewness) and
     \subref{fig:statistics_solitary:c}
     asymmetry are defined in
-    \cref{eq:energy_def,eq:shape_stats_def}.
+    \cref{eq:shape_stats_def}.
     Results are shown for $\epsilon=0.1$, $\mu_E = 0.6$ and with
     pressure magnitude $P k_E/(\rho_w g \epsilon)$ up to $0.25$, as
     indicated in the legend.
@@ -579,7 +574,7 @@ component.
 We now relate the non-dimensional pressure magnitude $P k_E/(\rho_w g) =
 \order{\epsilon}$ to the wind speed.
 First, we need a relationship between the surface pressure and wave
-energy $E$ \cref{eq:energy_def}, which we can approximate with the
+energy $E$ \cref{eq:shape_stats_def}, which we can approximate with the
 standard procedure \citep[\eg][]{mei2005nonlinear} of multiplying the
 (non-dimensional, denoted by primes) KdV-Burgers equation
 \cref{eq:kdv_burgers} by $\eta'_0$ and integrating from $x'=-\infty$ to
