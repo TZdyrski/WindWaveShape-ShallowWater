@@ -41,17 +41,12 @@
 %%
 
 \NeedsTeXFormat{LaTeX2e}[1996/06/01]
-\ProvidesClass{jfm}[2007/03/13 v1.28 Journal of Fluid Mechanics document class]
+\ProvidesClass{jfm}[2006/11/13 v1.27 Journal of Fluid Mechanics document class]
 
 \usepackage{graphicx}
 
 \newif\ifNAT@numbers\NAT@numbersfalse
-
-\RequirePackage{etoolbox}
-\AtEndPreamble{%
-  \RequirePackage{natbib}
-}
-%\AtBeginDocument{\usepackage{natbib}}
+\AtBeginDocument{\usepackage{natbib}}
 
 \newif\if@index
 \newif\if@referee
@@ -300,9 +295,11 @@
 
 \newcommand\section{%
   \ifno@eqnreset
+  %\ifappendix\setcounter{section}{0}
     \ifappendix \setcounter{equation}\z@\fi
   \else
-    \setcounter{equation}\z@
+ % \setcounter{equation}{0}
+   \setcounter{equation}\z@
   \fi
   \@startsection {section}{1}{\z@}
     {\ifflm@rapids 12\p@ \@plus 6\p@ \@minus 2\p@\else
@@ -317,6 +314,13 @@
     {3\p@}
     {\normalfont\normalsize\itshape\@raggedcenter}%
 }
+
+%\newcommand\subsection{%
+%  \@startsection{subsection}{2}{\z@}
+%    {12\p@ \@plus 3\p@ \@minus 3\p@}
+%    {3\p@}
+%    {\normalfont\normalsize\itshape\@raggedcenter}%
+%}
 
 \newcommand\subsubsection{%
   \@startsection{subsubsection}{3}{\z@}
@@ -388,8 +392,10 @@
 
 \newcommand\oneappendix{\global\oneappendixtrue \appendix}
 \newcommand\appendix{\par
-  \setcounter{section}\z@
-  \setcounter{equation}\z@
+\setcounter{section}{0}
+ % \setcounter{section}\z@
+ \setcounter{equation}{0}
+  %\setcounter{equation}\z@
   \renewcommand\thesection{\@Alph\c@section}%
   \renewcommand\thesubsection{\thesection.\@arabic\c@subsection}%
   \renewcommand\thesubsubsection{\thesubsection.\@arabic\c@subsubsection}%
@@ -428,7 +434,7 @@
 \def\@listI{\parsep\z@ \topsep\z@ \partopsep\z@ \itemsep\z@ \rightmargin\z@
   \leftmargin\labelwidth \advance\leftmargin\labelsep
   }
-  
+
 \def\@listi{\@listI \leftmargin\leftmargini \itemindent 1em}
 \def\@listii{\@listI \advance\leftmargin .5em}
 \def\@listiii{\@listI}
@@ -469,7 +475,7 @@
     {\settowidth\labelwidth{#1}
     \labelwidth 1.5pc
     \labelsep .5em%
-%     \advance\itemindent\labelsep 
+%     \advance\itemindent\labelsep
      \advance\itemindent\labelwidth
      \usecounter\@enumctr\relax}%
 }
@@ -677,6 +683,7 @@
 
 \def\@ysubeqncr{\@ifnextchar [{\@xsubeqncr}{\@xsubeqncr[\z@]}}
 
+
 \def\@xsubeqncr[#1]{\ifnum0=`{\fi}\@@subeqncr
    \noalign{\penalty\@eqpen\vskip\jot\vskip #1\relax}}
 
@@ -776,7 +783,7 @@
  \fontsize{12pt}{12pt}\sffamily\bfseries journals.cambridge.org/rapids\\[-3pt]
  \hrule width \linewidth height 1pt
  \endminipage\par\vskip 24pt\fi}
- 
+
 \def\put@absrule{\ifflm@rapids\par\vskip1pc\hrule\fi}
 
 \def\@title@alignment{\ifflm@rapids\raggedright\fi}
@@ -788,7 +795,7 @@
 \def\@maketitle#1{%
  \newpage
  \vspace*{10\p@}%
- {\centering \sloppy
+ {\flushleft
   {\normalfont\LARGE\fontswitch\bfseries
   \put@rapidsHead%
   \@title@alignment%
@@ -868,18 +875,15 @@
   \vbox to 5.5\p@{\noindent
     \parbox[t]{4.5in}{\normalfont\indexsize\baselineskip 9\p@
       {\itshape J.\ Fluid\ Mech.} (\@pubyear), {\itshape vol.} \@volume,
-      {\itshape pp.} \@pagerange.\quad \copyright\ \@pubyear\ Cambridge University 
+      {\itshape pp.} \@pagerange.\quad \copyright\ \@pubyear\ Cambridge University
         Press\\[2.5\p@]
       DOI: \@doi\quad {Printed in the United Kingdom}}%
   \vss}%
 }
 \gdef\@underjournal{%
   \vbox to 5.5\p@{\noindent
-    %\parbox[t]{4.5in}{\normalfont\indexsize{\itshape% 
-    \parbox[t]{5in}{\normalfont\indexsize{\itshape% 
-      %Under consideration for publication in J.\ Fluid\ Mech.
-      This draft was prepared using the LaTeX style file belonging 
-      to the Journal of Fluid Mechanics}\\[2.5\p@]
+    \parbox[t]{4.5in}{\normalfont\indexsize{\itshape Under consideration
+      for publication in J.\ Fluid\ Mech.}\\[2.5\p@]
       {\ \ }}%
   \vss}%
 }
@@ -1039,21 +1043,24 @@
   \@float{figure}\fstyle@figure}
   {\end@float}
 
-\long\def\@makecaption#1#2{%
-  \ifbot@fig \rule{\textwidth}{.25pt}\fi
-  \vskip 5\p@ \@plus .4\p@ \@minus .4\p@
-  \begingroup
-    \small\setbox\@tempboxa\hbox{{\normalfont\scshape
-     #1\ifrem@fullpt\else .\fi} #2}%
-    \ifdim \wd\@tempboxa >\tw@\hsize
-      \unhbox\@tempboxa\par
-    \else
-      {\centering \unhbox\@tempboxa\par}%
-    \fi
-  \endgroup
-  \global\rem@fullptfalse
-  \global\bot@figfalse
-}
+\usepackage[hang,small,center]{caption}
+\setlength{\captionmargin}{30pt}
+
+%\long\def\@makecaption\normalfont%{%
+ % \ifbot@fig \rule{\textwidth}{.25pt}\fi
+%  \vskip 5\p@ \@plus .4\p@ \@minus .4\p@
+ % \begingroup
+   % \small\setbox\@tempboxa\hbox{{\normalfont\scshape
+    % #1\ifrem@fullpt\else .\fi} #2}%
+    %\ifdim \wd\@tempboxa >\tw@\hsize
+     % \unhbox\@tempboxa\par
+  %  \else
+      %{\centering \unhbox\@tempboxa\par}%
+    %\fi
+ % \endgroup
+  %\global\rem@fullptfalse
+ % \global\bot@figfalse
+%}
 
 \newcounter{table}
 \renewcommand\thetable{\@arabic\c@table}
@@ -1139,16 +1146,16 @@
   \par\vskip 20\p@ \@plus 1\p@ \@minus 1\p@
   \ifflm@rapids\section*{References}\else
   \centerline{\normalfont\small\scshape R\bibls E\bibls F\bibls E\bibls
-              R\bibls E\bibls N\bibls C\bibls E\bibls S}\fi%
-  \nobreak
-  \vskip 4\p@ \@plus .5\p@ \@minus .5\p@
-  \nobreak
-  \list{}{\labelwidth\z@ \leftmargin 2.5em \itemindent -2.5em \itemsep 1\p@}%
-  \normalfont\small\parindent\z@
-  \parskip\z@ \@plus .1\p@\relax
-  \sloppy\clubpenalty\z@ \widowpenalty\@M
-  \sfcode`\.\@m\relax}
-  {\endlist}
+             R\bibls E\bibls N\bibls C\bibls E\bibls S}\fi%
+ \nobreak
+ \vskip 4\p@ \@plus .5\p@ \@minus .5\p@
+ \nobreak
+ \list{}{\labelwidth\z@ \leftmargin 2.5em \itemindent -2.5em \itemsep 1\p@}%
+ \normalfont\small\parindent\z@
+ \parskip\z@ \@plus .1\p@\relax
+ \sloppy\clubpenalty\z@ \widowpenalty\@M
+ \sfcode`\.\@m\relax}
+ {\endlist}
 
 
 \let\JFMthebib\thebibliography
@@ -1228,9 +1235,9 @@
   }
 
   \def\ps@titlepage{\leftskip\z@\let\@mkboth\@gobbletwo\vfuzz=5\p@
-    \def\@oddhead{\small\textsc{J\ls o\ls u\ls r\ls n\ls a\ls l\ns 
-      o\ls f\ns 
-      F\ls l\ls u\ls i\ls d\ns 
+    \def\@oddhead{\small\textsc{J\ls o\ls u\ls r\ls n\ls a\ls l\ns
+      o\ls f\ns
+      F\ls l\ls u\ls i\ls d\ns
       M\ls e\ls c\ls h\ls a\ls n\ls i\ls c\ls s}%
       \hfill\textsc{V\ls o\ls l\ls u\ls m\ls e\ns \@volume\quad 25\ns N\ls o\ls v\ls e\ls m\ls b\ls e\ls r\ns 2000}}%
     \def\@evenhead{\@j@urnal}%
@@ -1353,7 +1360,7 @@
 
 \ifCUPmtlplainloaded \else
   \checkfont{msam10}
-  \iffontfound               
+  \iffontfound
     \IfFileExists{amssymb.sty}
       {\typeout{^^JFound AMS Symbol fonts on the system, using the
                 'amssymb' package.^^J}%
