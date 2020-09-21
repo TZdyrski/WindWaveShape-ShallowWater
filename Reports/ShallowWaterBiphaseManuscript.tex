@@ -59,20 +59,24 @@
 \begin{abstract}
 Wave shape (\eg{} wave skewness and asymmetry) impacts sediment
 transport, remote sensing and ship safety.
-Previous work by the authors showed that wind (via changes in surface
-pressure) affects wave shape in intermediate and deep water, and this
-effect was most pronounced as the depth decreased.
-The current work investigates the interaction of wind and wave shape in
+Previous work showed that wind affects wave shape in intermediate and
+deep water, with this effect most pronounced as the depth decreased, so
+the current work investigates the interaction of wind and wave shape in
 shallow water.
 A multiple-scale analysis of long waves propagating over a shallow,
 flat bottom and forced by a Jeffreys-type surface pressure produces a
 Korteweg-de Vries (KdV)-Burgers equation governing the wave profile's
-whose evolution from an initially symmetric, solitary wave initial
-condition is calculated numerically.
+whose evolution from an symmetric, solitary wave initial condition is
+calculated numerically.
+The deviation of the result from a reference solitary wave shows an
+oscillatory tail, common in KdV systems.
 The wave's energy, skewness and asymmetry are investigated as functions
-of time and pressure magnitude.
-These results are in qualitative agreement with prior results in
-intermediate and deep water.
+of time and pressure magnitude and are in qualitative agreement with
+prior results in intermediate and deep water.
+The wind speeds corresponding to these changes are shown to be
+physically realistic, and the shape changes are explained as
+adiabatic growth followed by a rapid evolution according to the unforced
+KdV equation.
 \end{abstract}
 
 \section{Introduction}
@@ -748,7 +752,13 @@ g) \ll 1$.
 This gave a KdV-Burgers equation governing the wave profile $\eta$
 which was solved numerically with a symmetric, solitary wave initial
 condition.
-From the numerical results, we estimated the energy, skewness and
+The deviations between the numerical results and a reference solitary
+wave had the form of an oscillatory tail, with differing sign for
+onshore and offshore wind.
+The tail's presence and shape are the result of a symmetric,
+pressure-induced shape change evolving under the inverse scattering
+transform.
+We also estimated the energy, skewness and
 asymmetry as functions of time and pressure magnitude.
 For onshore wind (positive $P$), wave energy and skewness increased with
 time while asymmetry decreased, while offshore wind produced the
@@ -756,9 +766,9 @@ opposite effects.
 Furthermore, these effects were enhanced for strong pressures, and they
 reduced to the unforced case for $P=0$.
 The shape statistics found here show qualitative agreement with the
-results in intermediate and deep water, and future work on periodic
-shallow-water waves would allow a direct, quantitative comparison with
-periodic deep-water waves.
+results in intermediate and deep water.
+Finally, the wind speeds corresponding to these pressure differences
+were calculated and found to be physically realistic.
 
 \begin{acknowledgements}
 We are grateful to D.~G.~Grimes and M.~S.~Spydell for discussions on
