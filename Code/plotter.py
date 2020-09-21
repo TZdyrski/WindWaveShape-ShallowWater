@@ -1448,7 +1448,7 @@ def plot_pos_neg_solitary_tail(load_prefix, save_prefix, *args, **kwargs):
 
     ax_title=np.array([[r'$P k_E/(\rho_w g \epsilon) = {P}$'],
         [r'$P k_E/(\rho_w g \epsilon) = {P}$']])
-    ax_xlabel=r'Reference wave-centered distance $(x-x_{{\text{{ref}}}})/h$'
+    ax_xlabel=r'Reference wave-centered distance $\tilde{{x}}/h$'
     ax_ylabel='Profile'+'\n'+r'change $\Delta \eta/h$'
 
     fig = plot_snapshots_template(data_arrays, norm_by_wavelength=False,
@@ -1495,7 +1495,7 @@ def plot_pos_neg_solitary_and_sech(load_prefix, save_prefix, *args, **kwargs):
 
     ax_title=np.array([[r'$P k_E/(\rho_w g \epsilon) = {P}$'],
         [r'$P k_E/(\rho_w g \epsilon) = {P}$']])
-    ax_xlabel=r'Reference wave-centered distance $(x-x_{{\text{{ref}}}})/h$'
+    ax_xlabel=r'Reference wave-centered distance $\tilde{{x}}/h$'
 
     fig = plot_snapshots_template(data_arrays, norm_by_wavelength=False,
             line_coord='t*eps*sqrt(g*h)*k_E',
