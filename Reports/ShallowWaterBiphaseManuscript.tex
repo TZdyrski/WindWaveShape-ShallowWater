@@ -663,8 +663,7 @@ short time $\Delta t'_1 \ll 1$, which can be seen by considering the
 non-dimensional KdV-Burgers equation \cref{eq:kdv_burgers} in the
 unforced solitary wave's frame (\cref{fig:snapshots_solitary}) at the
 initial time,
-\begin{equation}
-  \begin{split}
+\begin{align}
   &\eval{\pdv{\eta'_0}{t_1}}_{t'_1=0} = -P' \pdv[2]{x} \bqty{
   \sech^2\pqty{\frac{x'}{2}}}
   \\
@@ -673,9 +672,8 @@ initial time,
   +
   P' \Delta t'_1 \frac{3}{2}\sech^4\pqty{\frac{x'}{2}}
   \,.
-  \end{split}
   \label{eq:pressure_change}
-\end{equation}
+\end{align}
 The numerical value $\abs{P'} = 0.25$ used in \cref{sec:results} was
 moderately small, so we can consider the wave's evolution as two steps
 with time scale separation.
