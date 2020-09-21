@@ -470,7 +470,7 @@ side of the wave becomes steeper than the leeward side for both winds
   \includegraphics{Snapshots-Positive-Negative-Tail.eps}
   \caption{
     The difference $\Delta \eta/h$ between the surface profile and
-    reference solitary wave \cref{eq:profile_discrepancy} under
+    reference solitary wave \cref{eq:initial_condition} under
     \subref{fig:snapshots_solitary_tail:a} onshore and
     \subref{fig:snapshots_solitary_tail:b} offshore Jeffreys forcing
     versus reference wave-centered distance $\tilde{x}/h$.
@@ -484,22 +484,16 @@ side of the wave becomes steeper than the leeward side for both winds
   }\label{fig:snapshots_solitary_tail}
 \end{figure}
 
-To further examine the wind-induced wave asymmetry, we fit $\eta$
-(minimizing the $L_1$ difference) to a solitary wave profile
-\cref{eq:initial_condition} giving the reference solitary wave's height
-$H'_{\text{ref}}(t'_1)$ and peak location $x'_{\text{ref}}(t'_1)$.
-After boosting to a frame centered on the reference solitary wave
-$\tilde{x}' \coloneqq (x'-x'_{\text{ref}})$, we subtract the reference
-solitary wave of the appropriate height from the profile $\eta'$,
-\begin{equation}
-  \Delta \eta'(\tilde{x}') \coloneqq \eta'(\tilde{x}')
-  - H'_{\text{ref}}(t'_1) \sech^2\pqty{\frac{\tilde{x}'}{\Delta'}}
-  \qq{with}
-  \Delta' = \sqrt{\frac{8}{H'_{\text{ref}}(t'_1)}} \,.
-  \label{eq:profile_discrepancy}
-\end{equation}
-This difference $\Delta \eta(x)$ is shown in
-\cref{fig:snapshots_solitary_tail}.
+To further examine the wind-induced wave asymmetry, we fit $\eta$ to a
+solitary wave profile $\eta_{\text{ref}}$ \cref{eq:initial_condition} by
+minimizing the $L_1$ difference.
+This gives the reference solitary wave's height $H_{\text{ref}}(t_1)$
+and peak location $x_{\text{ref}}(t_1)$.
+We subtract the reference solitary wave of the appropriate height from
+the profile $\Delta \eta(x) \coloneqq \eta -
+\eta_{\text{ref}}$ and plot it as a function of the reference
+wave-centered distance $\tilde{x} \coloneqq x -
+x_{\text{ref}}$ in \cref{fig:snapshots_solitary_tail}.
 Notice that the tail begins near the front face of the wave and decays
 with distance behind the wave and has extrema for negative $\tilde{x}'$
 but with opposite signs for opposite wind directions.
