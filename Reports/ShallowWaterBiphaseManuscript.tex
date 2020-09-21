@@ -375,10 +375,11 @@ third-order Runge-Kutta scheme.
 For numerical stability, we must also include a hyperviscosity term,
 $-\nu_{\text{bi}} \partial_x^4 \eta_0$ with $\nu_{\text{bi}} =
 \num{3e-3}$, on the right-hand side of \cref{eq:kdv_burgers}.
-This hyperviscosity does not noticeably affect the wave; the normalized
-root-mean-square difference between the unforced ($P=0$) profile $\eta$
-at $t'_1=3$ and the initial condition $\eta_0$ is $\sqrt{\langle (\eta -
-\eta_0)^2 \rangle/ \langle \eta_0^2 \rangle} = \num{2e-3}$.
+This hyperviscosity has minimal effect on the wave evolution as the
+normalized root-mean-square difference between the unforced ($P=0$)
+profile $\eta$ at $t'_1=3$ and the initial condition $\eta_0$ is
+$\sqrt{\langle (\eta - \eta_0)^2 \rangle/ \langle \eta_0^2 \rangle} =
+\num{2e-3}$.
 We quantify the wave shape with the wave energy $E$, skewness $\Sk$ and
 asymmetry $\As$,
 \begin{equation}
