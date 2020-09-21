@@ -622,35 +622,35 @@ and both expressions are consistent with the observed accelerating
 
 Next, \citeauthor{jeffreys1925formation}'s
 \citeyearpar{jeffreys1925formation} theory relates the growth rate of
-periodic waves to the wind speed $U_z$ (the subscript giving the
-measurement height $z$) as
+periodic waves to the wind speed $U_{\lambda/2}$,
+measured at a height equal to half the wavelength $z=\lambda/2$, as
 \begin{equation}
-  \frac{\gamma}{c k} = S_z \frac{\rho_a}{\rho_w}
-    \pqty{\frac{U_z}{c}-1} \abs{\frac{U_z}{c}-1} \,,
+  \frac{\gamma}{c k} = S_{\lambda/2} \frac{\rho_a}{\rho_w}
+    \pqty{\frac{U_{\lambda/2}}{c}-1}
+    \abs{\frac{U_{\lambda/2}}{c}-1} \,,
   \label{eq:gamma_vs_u_jeffreys}
 \end{equation}
-with $S_z$ a small, non-dimensional sheltering parameter potentially
-dependent on $\epsilon$, $\mu_E$ and $U_z/c$.
+with $S_{\lambda/2}$ a small, non-dimensional sheltering parameter
+potentially dependent on $\epsilon$, $\mu_E$ and $U_{\lambda/2}/c$.
 Combining this with \cref{eq:gamma_vs_P_solitary} gives
 \begin{equation}
-  U_z = c \pqty{1 \pm \sqrt{\frac{1}{5} \abs{\frac{P k_E}{\rho_w g}}
-    \frac{\rho_w}{\rho_a} \frac{1}{S_z}}} \,.
+  U_{\lambda/2} = c \pqty{1 \pm \sqrt{\frac{1}{5} \abs{\frac{P k_E}{\rho_w g}}
+    \frac{\rho_w}{\rho_a} \frac{1}{S_{\lambda/2}}}} \,.
   \label{eq:U_vs_P}
 \end{equation}
 Here, the $\pm$ corresponds to onshore ($+$) or offshore ($-$) winds.
 Note that changing the wind direction (\ie{} $\pm$ sign) while holding
 the surface pressure magnitude $\abs{Pk_E/(\rho_w g)}$ constant means
-onshore wind speeds $\abs{U_z}$ will be larger than offshore wind speeds
-$\abs{U_z}$.
+onshore wind speeds $\abs{U_{\lambda/2}}$ will be larger than offshore
+wind speeds $\abs{U_{\lambda/2}}$.
 
 We can evaluate \cref{eq:U_vs_P} for the parameters of
 \cref{sec:results}: $\epsilon=0.1$, $\mu_E = 0.6$ and $Pk/(\rho_w g
 \epsilon) = 0.25$.
-\Citet{donelan2006wave} parameterized $S_z$ for
+\Citet{donelan2006wave} parameterized $S_{\lambda/2}$ for
 periodic shallow-water waves with a dependence on airflow separation:
 $S_{\lambda/2} = 4.91 \epsilon \sqrt{\mu}$ for our non-separated
-flow (according to their criterion), with $U_z$ measured at
-$z=\lambda/2$ and $\mu \coloneqq (kh)^2$.
+flow (according to their criterion), with $\mu \coloneqq (kh)^2$.
 Assuming this holds approximately for solitary waves, we choose $\lambda
 = 2 \pi/k_E = \SI{20}{\meter}$ to calculate the wind speed at $z
 = \lambda/2 = \SI{10}{\meter}$.
