@@ -334,8 +334,8 @@ The KdV-Burgers equation is not known to have any closed form solutions,
 so we will instead solve it numerically.
 
 \subsection{\label{sec:initial} Initial condition}
-For the initial condition, we use solitary wave solutions of the unforced
-($P=0$) KdV equation \citep[\eg][]{mei2005nonlinear},
+The solitary wave solutions of the unforced ($P=0$) KdV equation
+are \citep[\eg][]{mei2005nonlinear}
 \begin{equation}
   \eta_0 = H_0 \sech^2\pqty{\frac{x - c_1 t_1}{\Delta}}
   \qq{with}
@@ -345,8 +345,8 @@ For the initial condition, we use solitary wave solutions of the unforced
   \label{eq:initial_condition}
 \end{equation}
 with $H_0>0$ an order-1 parameter.
-Thus, our initial condition is \cref{eq:initial_condition} with $t_1=0$.
-We now choose $H_0 = 2$ so that our characteristic initial amplitude
+We use \cref{eq:initial_condition} for our initial condition with
+$t_1=0$ and choose $H_0 = 2$ so the characteristic initial amplitude
 $a_0 = H_0/2$ is unity (\cf{} \cref{sec:nondim}).
 The solitary wave solution of the unforced KdV equation balances
 dispersion $\partial_x^3 \eta_0$ with focusing nonlinearity $\eta_0
