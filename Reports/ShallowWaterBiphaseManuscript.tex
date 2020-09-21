@@ -228,8 +228,8 @@ Now, our non-dimensional equations take the form
 This is equivalent to choosing units where $h = g = \rho_w = 1$.
 We will drop the primes henceforth for readability.
 
-\subsection{Boussinesq equation, multiple-scale expansion, and KdV
-equation}
+\subsection{Boussinesq equation, multiple-scale expansion, KdV equation,
+and initial condition}
 Here, we modify the Boussinesq equation's derivation provided by
 \citet{mei2005nonlinear} by including the surface pressure forcing in
 \cref{eq:dynamic_bc}.
@@ -330,10 +330,7 @@ Note that \cref{eq:kdv_burgers} has a rescaling symmetry, with $\mu_E
 (x,t_0,t_1,P)/\lambda$.
 Therefore, we fix the length scale (equivalently, $k_E$) by choosing
 $\mu_E = 6 \epsilon$.
-The KdV-Burgers equation is not known to have any closed form solutions,
-so we will instead solve it numerically.
 
-\subsection{\label{sec:initial} Initial condition}
 The solitary wave solutions of the unforced ($P=0$) KdV equation
 balance dispersion $\partial_x^3 \eta_0$ with focusing nonlinearity
 $\eta_0 \partial_x \eta_0$ and have the form
@@ -353,6 +350,8 @@ is half the wave height (\cf{} \cref{sec:nondim}).
 The introduction of a dissipative term $P \partial_x^2 \eta_0$ in
 \cref{eq:kdv_burgers} disrupts the solitary wave's balance of dispersion
 and nonlinearity, inducing shape changes and growth or decay.
+The KdV-Burgers equation is not known to have any closed form solutions,
+so we will instead solve it numerically.
 
 \subsection{Numerics and shape statistics}
 To solve \cref{eq:kdv_burgers} numerically,
