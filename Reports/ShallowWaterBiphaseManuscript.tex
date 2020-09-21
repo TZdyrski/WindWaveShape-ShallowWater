@@ -484,19 +484,18 @@ side of the wave becomes steeper than the leeward side for both winds
   }\label{fig:snapshots_solitary_tail}
 \end{figure}
 
-To further examine the wind-induced wave asymmetry, we subtract off an
-unforced, solitary reference wave from $\eta$.
-We calculate the reference solitary wave's height $H'(t'_1)$ and peak
-location $x'_{\text{ref}}(t'_1)$ using a least-absolute-deviation fit
-to leverage the cancellation of the oscillatory remainder.
+To further examine the wind-induced wave asymmetry, we fit $\eta$
+(minimizing the $L_1$ difference) to a solitary wave profile
+\cref{eq:initial_condition} giving the reference solitary wave's height
+$H'_{\text{ref}}(t'_1)$ and peak location $x'_{\text{ref}}(t'_1)$.
 After boosting to a frame centered on the reference solitary wave
 $\tilde{x}' \coloneqq (x'-x'_{\text{ref}})$, we subtract the reference
 solitary wave of the appropriate height from the profile $\eta$,
 \begin{equation}
   \Delta \eta'(\tilde{x}') \coloneqq \eta'(\tilde{x}')
-  - H'(t'_1) \sech^2\pqty{\frac{\tilde{x}'}{\Delta'}}
+  - H'_{\text{ref}}(t'_1) \sech^2\pqty{\frac{\tilde{x}'}{\Delta'}}
   \qq{with}
-  \Delta' = \sqrt{\frac{8}{H'(t'_1)}} \,.
+  \Delta' = \sqrt{\frac{8}{H'_{\text{ref}}(t'_1)}} \,.
   \label{eq:profile_discrepancy}
 \end{equation}
 This difference $\Delta \eta(x)$ is shown in
