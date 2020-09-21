@@ -68,15 +68,14 @@ flat bottom and forced by a Jeffreys-type surface pressure produces a
 Korteweg-de Vries (KdV)-Burgers equation governing the wave profile's
 whose evolution from an symmetric, solitary wave initial condition is
 calculated numerically.
-The deviation of the result from a reference solitary wave shows an
+The result's deviation from a reference solitary wave shows an
 oscillatory tail, common in KdV systems.
 The wave's energy, skewness and asymmetry are investigated as functions
 of time and pressure magnitude and are in qualitative agreement with
 prior results in intermediate and deep water.
-The wind speeds corresponding to these changes are shown to be
-physically realistic, and the shape changes are explained as
-adiabatic growth followed by a rapid evolution according to the unforced
-KdV equation.
+The corresponding wind speeds are shown to be physically realistic, and
+the shape changes are explained as adiabatic growth followed by a rapid
+evolution according to the unforced KdV equation.
 \end{abstract}
 
 \section{Introduction}
@@ -122,7 +121,7 @@ introduce a wind-induced pressure term to the Boussinesq equations in
 The resulting KdV-Burgers equation governs a solitary wave's evolution,
 which we solve numerically to yield the wave energy, skewness and
 asymmetry in \cref{sec:results}.
-Finally, we calculate wind speeds, discuss the asymmetry's cause and
+We calculate the wind speed, discuss the asymmetry and
 compare our results to intermediate- and deep-water waves in
 \cref{sec:discussion}.
 
@@ -341,23 +340,22 @@ $\mu_E = 6 \epsilon$.
 
 The solitary wave solutions of the unforced ($P=0$) KdV equation
 balance dispersion $\partial_x^3 \eta_0$ with focusing nonlinearity
-$\eta_0 \partial_x \eta_0$ and have the form in a co-moving frame of
-\citep[\eg][]{mei2005nonlinear}
+$\eta_0 \partial_x \eta_0$ and have form~\citep[\eg][]{mei2005nonlinear}
 \begin{equation}
   \eta_0 = H_0 \sech^2\pqty{\frac{x}{\Delta}}
   \qq{with}
   \Delta = \sqrt{\frac{8}{H_0}} \,,
   \label{eq:initial_condition}
 \end{equation}
-with $H_0>0$ an order-1 parameter.
+in a co-moving frame with $H_0>0$ an order-1 parameter.
 We use \cref{eq:initial_condition} for our initial condition and choose
 $H_0 = 2$ so the initial, dimensional amplitude $a_0$ is half the wave
 height (\cf{} \cref{sec:nondim}).
-The introduction of a dissipative term $P \partial_x^2 \eta_0$ in
-\cref{eq:kdv_burgers} disrupts the solitary wave's balance of dispersion
-and nonlinearity, inducing shape changes and growth or decay.
-The KdV-Burgers equation is not known to have any closed form solutions,
-so we will instead solve it numerically.
+The dissipative term $P \partial_x^2 \eta_0$ in \cref{eq:kdv_burgers}
+disrupts the solitary wave's balance of dispersion and nonlinearity,
+inducing shape changes and growth/decay.
+The KdV-Burgers equation has no known, solitary wave solutions, so we
+will solve it numerically.
 
 \subsection{Numerics and shape statistics}
 To solve \cref{eq:kdv_burgers} numerically,
@@ -638,7 +636,7 @@ Here, the $\pm$ corresponds to onshore ($+$) or offshore ($-$) winds.
 Note that changing the wind direction (\ie{} $\pm$ sign) while holding
 the surface pressure magnitude $\abs{Pk_E/(\rho_w g)}$ constant means
 onshore wind speeds $\abs{U_{\lambda/2}}$ will be larger than offshore
-wind speeds $\abs{U_{\lambda/2}}$.
+wind speeds.
 
 We can evaluate \cref{eq:U_vs_P} for the parameters of
 \cref{sec:results}: $\epsilon=0.1$, $\mu_E = 0.6$ and $Pk/(\rho_w g
@@ -664,7 +662,7 @@ permanent-form solutions of the unforced KdV equation, so the pressure
 forcing term in the KdV-Burgers equation is responsible for the wave
 growth/decay and resultant shape changes and asymmetry, though not
 directly.
-Indeed, when the surface profile $\eta$ is symmetric, then the pressure
+Indeed, when the surface profile $\eta$ is symmetric, the pressure
 forcing term $P \partial_x^2 \eta$ preserves this symmetry.
 Instead, the pressure forcing causes a (symmetric) bound wave after a
 short time $\Delta t'_1 \ll 1$, which can be seen by considering the
