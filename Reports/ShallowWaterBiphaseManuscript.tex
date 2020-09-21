@@ -335,7 +335,9 @@ so we will instead solve it numerically.
 
 \subsection{\label{sec:initial} Initial condition}
 The solitary wave solutions of the unforced ($P=0$) KdV equation
-are \citep[\eg][]{mei2005nonlinear}
+balance dispersion $\partial_x^3 \eta_0$ with focusing nonlinearity
+$\eta_0 \partial_x \eta_0$ and have the form
+\citep[\eg][]{mei2005nonlinear}
 \begin{equation}
   \eta_0 = H_0 \sech^2\pqty{\frac{x - c_1 t_1}{\Delta}}
   \qq{with}
@@ -348,11 +350,9 @@ with $H_0>0$ an order-1 parameter.
 We use \cref{eq:initial_condition} for our initial condition with
 $t_1=0$ and choose $H_0 = 2$ so the initial, dimensional amplitude $a_0$
 is half the wave height (\cf{} \cref{sec:nondim}).
-The solitary wave solution of the unforced KdV equation balances
-dispersion $\partial_x^3 \eta_0$ with focusing nonlinearity $\eta_0
-\partial_x \eta_0$.
-The introduction of a dissipative term $P \partial_x^2 \eta_0$ will
-disrupt this balance, inducing shape changes and growth or decay.
+The introduction of a dissipative term $P \partial_x^2 \eta_0$ in
+\cref{eq:kdv_burgers} disrupts the solitary wave's balance of dispersion
+and nonlinearity, inducing shape changes and growth or decay.
 
 \subsection{Numerics and shape statistics}
 To solve \cref{eq:kdv_burgers} numerically,
