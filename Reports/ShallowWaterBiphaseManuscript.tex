@@ -72,8 +72,8 @@ calculated numerically.
 The resulting wave grows (decays) for onshore (offshore) wind and
 becomes asymmetric, with the rear face showing the largest shape
 changes.
-Additionally, the result's deviation from a reference solitary wave
-shows an bound, dispersive tail.
+The wave profile's deviation from a reference solitary wave shows an
+bound, dispersive, decaying tail.
 The onshore wind increases the wave's energy and skewness with time
 while decreasing the wave's asymmetry, with the opposite holding for
 offshore wind.
@@ -567,7 +567,7 @@ Notice that $\abs{\As}$ is larger for onshore winds than offshore winds.
 Since the definitions of the skewness and asymmetry are insensitive to
 waveform scaling $\eta \to \lambda \eta$, this effect is not simply
 caused by the wave's growth/decay.
-Instead, the onshore wind generates a larger oscillatory tail
+Instead, the onshore wind generates a larger dispersive tail
 (\cref{fig:snapshots_solitary_tail}), which is the asymmetric wave
 component.
 
@@ -700,10 +700,10 @@ new profile according to unforced KdV evolution.
 This evolution is described by the inverse scattering transform, which
 shows that any localized, initial profile differing from
 \cref{eq:initial_condition} will split into discrete solitary waves and
-an oscillatory tail that decays behind ($x<0$) the wave
+a bound, dispersive tail that decays behind ($x<0$) the wave
 \citep[\eg][]{mei2005nonlinear}.
 Prior studies on shallow-water, KdV solitary waves have also noted this
-ubiquitous oscillatory tail, such as \figsname{} 8(b) and (c) of
+ubiquitous dispersive tail, such as \figsname{} 8(b) and (c) of
 \citet{hammack1974korteweg}.
 Hence, the symmetric disturbance induced by the pressure forcing
 \cref{eq:pressure_change} has two effects on the wave.
@@ -711,12 +711,12 @@ First, the wind slowly changes the height and width of the initial
 solitary wave, which is reflected in the growth (decay) and narrowing
 (widening) under onshore (offshore) winds in
 \cref{fig:snapshots_solitary}.
-Second, it quickly generates an asymmetric, oscillatory tail behind the
+Second, it quickly generates an asymmetric, dispersive tail behind the
 wave (\cref{fig:snapshots_solitary_tail}), producing a greater shape
 change on the wave's rear face (\cref{fig:snapshots_solitary}).
 Finally, the different wind directions (\ie{} pressure forcing signs)
-change the sign of the oscillatory tail and, hence, the sign of the
-asymmetry in \cref{fig:statistics_solitary}.
+change the sign of the bound, dispersive tail and, hence, the sign of
+the asymmetry in \cref{fig:statistics_solitary}.
 
 \subsection{Comparison to intermediate and deep water}
 \Citet{zdyrski2020wind} investigated the effect of
@@ -754,7 +754,7 @@ This gave a KdV-Burgers equation governing the wave profile $\eta$
 which was solved numerically with a symmetric, solitary wave initial
 condition.
 The deviations between the numerical results and a reference solitary
-wave had the form of an oscillatory tail, with differing sign for
+wave had the form of an bound, dispersive tail, with differing sign for
 onshore and offshore wind.
 The tail's presence and shape are the result of a symmetric,
 pressure-induced shape change evolving under the inverse scattering
