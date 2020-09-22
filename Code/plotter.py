@@ -1465,6 +1465,59 @@ def plot_pos_neg_solitary_tail(load_prefix, save_prefix, *args, **kwargs):
 
     texplot.savefig(fig,save_prefix+'Snapshots-Positive-Negative-Tail')
 
+def plot_pos_neg_solitary_tail_thumbnail(load_prefix, save_prefix, *args, **kwargs):
+    filename_base = 'Snapshots'
+
+    # Arrange data and parameters into 2d array for plotting
+    data_arrays = np.empty((1,1),dtype=object)
+
+    P = float(kwargs.get('P'))
+
+    parameters = parameters={'wave_type' : 'solitary', **kwargs,
+            'P' : P}
+    filename = data_csv.find_filenames(load_prefix, filename_base,
+            parameters=parameters)
+
+    # Extract data
+    data_array = data_csv.load_data(filename, stack_coords=True)
+
+    # Create symmetric approximation
+    symmetric_approx = symmetric_approximation(data_array)
+    data_array.attrs['wave_type'] = 'tail'
+
+    data_arrays[0,0] = data_array - symmetric_approx
+    data_arrays[0,0].attrs = data_array.attrs
+    # Only show first and last
+    data_arrays[0,0] = data_arrays[0,0].where(
+            (data_arrays[0,0].coords['t*eps*sqrt(g*h)*k_E'] < 1)
+            | (data_arrays[0,0].coords['t*eps*sqrt(g*h)*k_E'] > 2)
+            ,drop=True)
+
+    fig = plot_snapshots_template(data_arrays, norm_by_wavelength=False,
+            ax_title='',
+            ax_xlabel='',
+            ax_ylabel='',
+            x_coordinate='(x-x_center)/h',
+            line_coord='t*eps*sqrt(g*h)*k_E',
+            show_legend=False,
+            wind_arrows=False)
+
+    fig_size_cm = np.array([2.4,2])
+    fig_size_in = fig_size_cm/2.54
+    fig.set_size_inches(fig_size_in)
+
+    # Zoom in on wave
+    for ax in fig.axes:
+        ax.set_xlim(right=10)
+        ax.axis('off')
+        lines = ax.get_lines()
+        for line in lines:
+            line.set_linestyle('-')
+
+    fig.set_tight_layout({'pad':0.1})
+
+    texplot.savefig(fig,save_prefix+'Snapshots-Positive-Negative-Tail-Thumbnail')
+
 def plot_pos_neg_solitary_and_sech(load_prefix, save_prefix, *args, **kwargs):
     filename_base = 'Snapshots'
 
@@ -2545,6 +2598,7 @@ def main():
             'pos_neg_solitary_production' : plot_pos_neg_solitary_production,
             'print_solitary_unforced_difference': print_solitary_unforced_difference,
             'pos_neg_solitary_tail' : plot_pos_neg_solitary_tail,
+            'pos_neg_solitary_tail_thumbnail' : plot_pos_neg_solitary_tail_thumbnail,
             'pos_neg_solitary_and_sech' : plot_pos_neg_solitary_and_sech,
             'pos_cnoidal' : plot_pos_cnoidal,
             'neg_cnoidal' : plot_neg_cnoidal,
