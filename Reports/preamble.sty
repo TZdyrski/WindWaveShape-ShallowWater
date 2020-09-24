@@ -181,6 +181,9 @@
 % Allow SIrange or numrange to be used in math mode
 \sisetup{mode=text,range-phrase = {\text{~to~}}, separate-uncertainty=true}
 
+% Use an en-dash for cleveref ranges
+\newcommand{\crefrangeconjunction}{--}
+
 % Define command to import pgf figure from subdirectory
 %\newcommand\inputpgf[2]{{
 %\let\pgfimageWithoutPath\pgfimage
