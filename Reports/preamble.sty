@@ -36,7 +36,7 @@
 \usepackage{graphicx} % improve graphics inclusion
 %\usepackage{float} % allow for floating graphics
 \usepackage[labelsep=period,justification=justified]{caption} % allow changes to figure captions
-\usepackage[subrefformat=parens]{subcaption} % allow inclusion of subfigures
+\usepackage[subrefformat=simple,labelformat=simple]{subcaption} % allow inclusion of subfigures
 %\usepackage{svg} % allow for inclusion of svg vector images
 %\usepackage{tikz} % allow programatically-created graphics
 %\usetikzlibrary{positioning} % add positioning commands to tikz
@@ -128,6 +128,10 @@
 \newcommand{\Eqname}{\Cref@equation@name}
 \newcommand{\eqsname}{\cref@equations@name}
 \newcommand{\Eqsname}{\Cref@equations@name}
+
+% Change subfigure reference to use parentheses around the italic
+% subfigure letter
+\renewcommand{\thesubfigure}{(\textit{\alph{subfigure}})}
 
 %% Glossaries
 %\usepackage[acronym, xindy, nonumberlist, nopostdot, nomain]{glossaries} % add glossaries and nomenclature lists (load laster than hyperref)
