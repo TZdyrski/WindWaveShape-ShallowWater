@@ -140,7 +140,7 @@ class kdvSystem():
         self.m = self._calculate_m()
 
     def _calculate_m(self):
-        # If mu and eps are specified, then m is fixed
+        # If B and C are specified, then m is fixed
         m = self.Height*self.B/(3*self.C)
 
         # Round to num_sig_figs significant figures (to prevent
