@@ -996,8 +996,8 @@ def gen_snapshots(save_prefix, eps=0.1, mu=0.8, P=0.25, psiP=3/4*np.pi,
         Default is 3e-3.
     """
 
-    for forcing_type in ['Jeffreys', 'GM']:
-        for wave_type in ['solitary','cnoidal']:
+    for forcing_type in ['Jeffreys']:
+        for wave_type in ['solitary']:
             if forcing_type == 'GM' and wave_type == 'solitary':
                 # We don't need GM applied to solitary waves, as it
                 # doesn't make as much sense
