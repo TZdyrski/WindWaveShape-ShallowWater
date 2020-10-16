@@ -1041,12 +1041,6 @@ def gen_snapshots(save_prefix, eps=0.1, mu=0.8, P=0.25, psiP=3/4*np.pi,
                             wave_length=dataClass.WaveLength,
                             **parameters, stack_coords=True)
 
-                    if wave_type == 'solitary':
-                        # We don't use mu for solitary waves, so break
-                        # after a single run (since changing mu won't
-                        # affect the output)
-                        break
-
 def gen_depth_varying(save_prefix, eps=0.1, mu=0.6, P=0.25, psiP=3/4*np.pi,
         nu_bi=3e-3, forcing_type='Jeffreys'):
 
