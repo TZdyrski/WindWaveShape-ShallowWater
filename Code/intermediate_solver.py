@@ -189,17 +189,20 @@ class kdvSystem():
         return regularized_wave_length
 
     def set_spatial_grid(self, xLen=80, xNum=None,
-            xStep=None, xOffset=None,
+            xStep=None, xOffset=None, WaveType=None,
             WaveLength=2*np.pi,NumWaves=1, *args, **kwargs):
         """Set the x coordinate grid.
 
         Parameters
         ----------
-        xLen : float, 'int_wave_lengths', 'cnoidal', or None
-            Length of x domain. If 'int_wave_lengths', choose xLen to
-            fit NumWaves wavelengths of length WaveLength. If 'cnoidal',
-            choose Xeln to fit NumWaves wavelengths of a cnoidal wave
-            wave-length. Default is 80.
+        xLen : float or None
+            Length of x domain, or maximum domain length if WaveType is
+            not None. Default is 80.
+        WaveType : 'int_wave_lengths', 'cnoidal', or None
+            If 'int_wave_lengths', choose domain length to fit NumWaves
+            wavelengths of length WaveLength. If 'cnoidal', choose
+            domain length to fit NumWaves wavelengths of a cnoidal wave
+            wave-length. Default is None.
         xNum : float or None
             Number of grid points in x domain. If None, xStep
             must be specified. Default is None.
@@ -224,18 +227,19 @@ class kdvSystem():
 
         self.NumWaves = NumWaves
 
-        if xLen == 'cnoidal':
+        if WaveType == 'cnoidal':
             self.WaveLength = self._cnoidal_wavelength()
         else:
             self.WaveLength = WaveLength
 
         if xLen == 'cnoidal':
+            # Ensure WaveLength isn't larger than xLen
             regularized_wave_length = \
                     self._regularize_wavelength(self.WaveLength)
         else:
             regularized_wave_length = self.WaveLength
 
-        if xLen == 'int_wave_lengths' or xLen == 'cnoidal':
+        if WaveType == 'int_wave_lengths' or WaveType == 'cnoidal':
             self.xLen = self.NumWaves*regularized_wave_length
         else:
             self.xLen = xLen
@@ -248,7 +252,7 @@ class kdvSystem():
             if xStep is None:
                 # Use default value of xStep = 0.3
                 xStep = 0.3
-            if xLen == 'int_wave_lengths' or xLen == 'cnoidal':
+            if WaveType == 'int_wave_lengths' or WaveType == 'cnoidal':
                 # xNum = xLen/xStep = NumWaves*WaveLength/xStep, but to
                 # prevent rounding errors; round WaveLength/xStep, then
                 # multiply by NumWaves
@@ -307,9 +311,9 @@ class kdvSystem():
         """Set the initial conditions.
         Parameters
         ----------
-        y0 : array_like or 'cnoidal'
+        y0 : array_like or 'kdv'
             Given initial condition. If array_like, must have same size as
-            self.x array. 'cnoidal' gives a cnoidal wave profile which
+            self.x array. 'kdv' gives a cnoidal wave profile which
             satisfies the unforced KdV equation. Default is a 'cnoidal'.
 
         Returns
@@ -317,7 +321,7 @@ class kdvSystem():
         None
         """
 
-        # If we are using 'cnoidal' initial conditions, ensure that the
+        # If we are using 'kdv' initial conditions, ensure that the
         # previously set height has the correct sign
         if np.sign(self.Height) != np.sign(self.B*self.C) \
                 and y0 == 'cnoidal':
@@ -325,7 +329,7 @@ class kdvSystem():
 
         if type(y0) == np.ndarray:
             self.y0 = y0
-        elif y0 == 'cnoidal':
+        elif y0 == 'kdv':
             m = self.m
 
             if m == 1:
@@ -351,14 +355,14 @@ class kdvSystem():
 
         Parameters
         ----------
-        boostVelocity : float or 'cnoidal'
+        boostVelocity : float or 'kdv'
             The type of wave. If 'cnoidal', a value is chosen to cancel
-            the propagation of the default, cnoidal solution with zero
-            damping.
+            the propagation of the solution to the unforced KdV
+            equation with zero damping.
         """
 
-        if boostVelocity == 'cnoidal':
-            # Choose value to give default, cnoidal solution zero
+        if boostVelocity == 'kdv':
+            # Choose value to give default, KdV solution zero
             # propagation velocity
             m = self.m
             K = spec.ellipk(m)
@@ -793,18 +797,18 @@ class kdvSystem():
         """
         Parameters
         ----------
-        boostVelocity : float, 'cnoidal', or None
+        boostVelocity : float, 'kdv', or None
             The velocity of the initial, wave frame relative to the lab
-            frame in units of [x]/[t]. 'cnoidal' boosts into the
-            co-moving frame of an unforced cnoidal wave. Default is
-            -1/6.
+            frame in units of [x]/[t]. 'kdv' boosts into the
+            co-moving frame of the solution to the unforced KdV
+            equation. Default is -1/6.
 
         Returns
         -------
         None
         """
 
-        if boostVelocity == 'cnoidal':
+        if boostVelocity == 'kdv':
             m = self.m
             Height = self.Height
             K = spec.ellipk(m)
@@ -828,14 +832,14 @@ def default_solver(y0_func=None, solver='RK3', *args, **kwargs):
     forcing_type_dict = {'Jeffreys' : 'KdVB', 'GM' : 'KdVNL'}
     if 'forcing_type' in kwargs:
         kwargs['diffeq'] = forcing_type_dict[kwargs['forcing_type']]
-    if kwargs.get('wave_type',None) == 'solitary':
-        kwargs['wave_type'] = 'cnoidal'
-    if 'boostVelocity' not in kwargs and (kwargs.get('wave_type') == 'cnoidal'):
-        kwargs['boostVelocity'] = kwargs['wave_type']
     if 'xLen' not in kwargs and kwargs.get('wave_type') == 'cnoidal':
-        kwargs['xLen'] = kwargs['wave_type']
-    if 'y0' not in kwargs and kwargs.get('wave_type') == 'cnoidal':
-        kwargs['y0'] = kwargs['wave_type']
+        kwargs['WaveType'] = kwargs['wave_type']
+    if 'boostVelocity' not in kwargs and (kwargs.get('wave_type') ==
+            'cnoidal' or kwargs.get('wave_type') == 'solitary'):
+        kwargs['boostVelocity'] = 'kdv'
+    if 'y0' not in kwargs and (kwargs.get('wave_type') == 'cnoidal' or
+            kwargs.get('wave_type') == 'solitary'):
+        kwargs['y0'] = 'kdv'
 
     # Create KdV-Burgers or nonlocal KdV system
     solverSystem = kdvSystem(**kwargs)
