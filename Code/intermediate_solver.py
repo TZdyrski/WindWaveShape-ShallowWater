@@ -1202,13 +1202,13 @@ def main():
     save_prefix = '../Data/Raw/'
 
     callable_functions = {
-            'trig_verf' : gen_trig_verf,
-            'long_verf' : gen_long_verf,
+#            'trig_verf' : gen_trig_verf,
+#            'long_verf' : gen_long_verf,
             'snapshots' : gen_snapshots,
-            'depth_varying' : gen_depth_varying,
-            'press_varying' : gen_press_varying,
-            'biviscosity' : gen_biviscosity_variation,
-            'decaying_no_nu_bi' : gen_decaying_no_nu_bi,
+#            'depth_varying' : gen_depth_varying,
+#            'press_varying' : gen_press_varying,
+#            'biviscosity' : gen_biviscosity_variation,
+#            'decaying_no_nu_bi' : gen_decaying_no_nu_bi,
             }
 
     if len(sys.argv) == 1:
