@@ -1336,7 +1336,7 @@ def print_solitary_unforced_difference(load_prefix, save_prefix, *args, **kwargs
     # Extract data
     data_array = data_csv.load_data(filename, stack_coords=True)
 
-    # Subtract last time from first timee
+    # Subtract last time from first time
     difference = data_array[{'t*eps*sqrt(g*h)*k_E':-1}] - \
             data_array[{'t*eps*sqrt(g*h)*k_E':0}]
 
