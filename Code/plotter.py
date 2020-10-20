@@ -1239,6 +1239,28 @@ def plot_long_verf_cnoidal(load_prefix, save_prefix, *args, **kwargs):
 
     texplot.savefig(fig,save_prefix+'Long-Run-Cnoidal')
 
+def plot_verf_solitary(load_prefix, save_prefix, *args, **kwargs):
+    filename_base = 'Snapshots'
+
+    filename = data_csv.find_filenames(load_prefix, filename_base,
+            parameters={'wave_type':'solitary', 'P':0})
+
+    # Extract data
+    data_array = data_csv.load_data(filename, stack_coords=True)
+
+    # Arrange data and parameters into 2d array for plotting
+    data_arrays = np.empty((1,1),dtype=object)
+    data_arrays[0,0] = data_array
+
+    # Plot points, not lines
+    def point_plotter(data_array, x_name, axis):
+        axis.plot(data_array[x_name], data_array,'o')
+
+    fig = plot_snapshots_template(data_arrays, norm_by_wavelength=False,
+            plotter=point_plotter)
+
+    texplot.savefig(fig,save_prefix+'Solitary-Verf')
+
 def plot_pos_solitary(load_prefix, save_prefix, *args, **kwargs):
     filename_base = 'Snapshots'
 
@@ -2592,6 +2614,7 @@ def main():
 #            'long_verf_cnoidal' : plot_long_verf_cnoidal,
 #            'long_statistics_solitary' : plot_long_statistics_solitary,
 #            'long_statistics_cnoidal' : plot_long_statistics_cnoidal,
+            'verf_solitary' : plot_verf_solitary,
             'pos_solitary' : plot_pos_solitary,
             'neg_solitary' : plot_neg_solitary,
             'pos_neg_solitary' : plot_pos_neg_solitary,
