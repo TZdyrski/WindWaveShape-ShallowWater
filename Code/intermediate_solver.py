@@ -208,7 +208,7 @@ class kdvSystem():
             must be specified. Default is None.
         xStep : float or None
             Spacing between grid points in x domain. If
-            None, xNum must be specified. Default is 0.3.
+            None, xNum must be specified. Default is 0.05.
         xOffset : float, 'nice_value', or None
             Distance that origin is offset from the center of the
             domain. 'nice_value' gives a nice shift slightly to the
@@ -250,8 +250,8 @@ class kdvSystem():
             self.xNum = xNum
         else:
             if xStep is None:
-                # Use default value of xStep = 0.3
-                xStep = 0.3
+                # Use default value of xStep = 0.05
+                xStep = 0.05
             if WaveType == 'int_wave_lengths' or WaveType == 'cnoidal':
                 # xNum = xLen/xStep = NumWaves*WaveLength/xStep, but to
                 # prevent rounding errors; round WaveLength/xStep, then
