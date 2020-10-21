@@ -58,23 +58,35 @@ def derivative(u, dx=1, period=2*np.pi, axis=0, order=1,
         # Center difference with periodic boundary conditions
         if order == 1:
             u_padded_once = np.concatenate((u[[-1]], u, u[[0]]))
-            derivative = (u_padded_once[2:]-u_padded_once[0:-2])/\
+            derivative = (
+                    u_padded_once[2:]
+                    -u_padded_once[0:-2]
+                    )/\
                     (2*dx)
         elif order == 2:
             u_padded_once = np.concatenate((u[[-1]], u, u[[0]]))
-            derivative = (u_padded_once[2:] - 2*u_padded_once[1:-1]
-                    + u_padded_once[0:-2])/(dx**2)
+            derivative = (
+                    u_padded_once[2:]
+                    - 2*u_padded_once[1:-1]
+                    + u_padded_once[0:-2]
+                    )/(dx**2)
         elif order == 3:
             u_padded_twice = np.concatenate((u[-2:], u, u[0:2]))
-            derivative = (u_padded_twice[4:] -
-                    2*u_padded_twice[3:-1] + 2*u_padded_twice[1:-3]
-                    - u_padded_twice[0:-4])/(2*dx**3)
+            derivative = (
+                    u_padded_twice[4:]
+                    - 2*u_padded_twice[3:-1]
+                    + 2*u_padded_twice[1:-3]
+                    - u_padded_twice[0:-4]
+                    )/(2*dx**3)
         elif order == 4:
             u_padded_twice = np.concatenate((u[-2:], u, u[0:2]))
-            derivative = (u_padded_twice[4:] -
-                    4*u_padded_twice[3:-1] + 6*u_padded_twice[2:-2]
-                    - 4*u_padded_twice[1:-3] +
-                    u_padded_twice[0:-4])/(dx**4)
+            derivative = (
+                    u_padded_twice[4:]
+                    - 4*u_padded_twice[3:-1]
+                    + 6*u_padded_twice[2:-2]
+                    - 4*u_padded_twice[1:-3]
+                    + u_padded_twice[0:-4]
+                    )/(dx**4)
         else:
             raise(ValueError("Derivatives of type 'periodic_fd'"+\
                     "are only supported up to order 4, but "+\
