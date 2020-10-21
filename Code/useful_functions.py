@@ -98,15 +98,19 @@ def derivative(u, dx=1, period=2*np.pi, axis=0, order=1,
                     - u_padded_thrice[0:-6]
                     )/(2*dx**5)
         elif order == 6:
-            u_padded_thrice = np.concatenate((u[-3:], u, u[0:3]))
+            # Calculate third-order accurate derivative (since there is
+            # no 2nd order accurate one)
+            u_padded_quatrice = np.concatenate((u[-4:], u, u[0:4]))
             derivative = (
-                    u_padded_thrice[6:]
-                    - 6*u_padded_thrice[5:-1]
-                    + 15*u_padded_thrice[4:-2]
-                    - 20*u_padded_thrice[3:-3]
-                    + 15*u_padded_thrice[2:-4]
-                    - 6*u_padded_thrice[1:-5]
-                    + u_padded_thrice[0:-6]
+                    - 1/4*u_padded_quatrice[8:]
+                    + 3*u_padded_quatrice[7:-1]
+                    - 13*u_padded_quatrice[6:-2]
+                    + 29*u_padded_quatrice[5:-3]
+                    - 75/2*u_padded_quatrice[4:-4]
+                    + 29*u_padded_quatrice[3:-5]
+                    - 13*u_padded_quatrice[2:-6]
+                    + 3*u_padded_quatrice[1:-7]
+                    - 1/4*u_padded_quatrice[0:-8]
                     )/(dx**6)
         else:
             raise(ValueError("Derivatives of type 'periodic_fd'"+\
