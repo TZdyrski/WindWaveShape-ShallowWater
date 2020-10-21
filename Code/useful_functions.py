@@ -55,62 +55,75 @@ def derivative(u, dx=1, period=2*np.pi, axis=0, order=1,
         # Compute the x derivatives using the pseudo-spectral method
         derivative = psdiff(u, period=period, order=order)
     elif deriv_type == 'periodic_fd':
-        # 2nd-order center difference with periodic boundary conditions
+        # 4th-order center difference with periodic boundary conditions
         if order == 1:
-            u_padded_once = np.concatenate((u[[-1]], u, u[[0]]))
+            u_padded_twice = np.concatenate((u[-2:], u, u[0:2]))
             derivative = (
-                    u_padded_once[2:]
-                    -u_padded_once[0:-2]
+                    - 1/12*u_padded_twice[4:]
+                    + 2/3*u_padded_twice[3:-1]
+                    - 2/3*u_padded_twice[1:-3]
+                    + 1/12*u_padded_twice[0:-4]
                     )/\
-                    (2*dx)
+                    (dx)
         elif order == 2:
-            u_padded_once = np.concatenate((u[[-1]], u, u[[0]]))
+            u_padded_twice = np.concatenate((u[-2:], u, u[0:2]))
             derivative = (
-                    u_padded_once[2:]
-                    - 2*u_padded_once[1:-1]
-                    + u_padded_once[0:-2]
-                    )/(dx**2)
+                    - 1/12*u_padded_twice[4:]
+                    + 4/3*u_padded_twice[3:-1]
+                    - 5/2*u_padded_twice[2:-2]
+                    + 4/3*u_padded_twice[1:-3]
+                    - 1/12*u_padded_twice[0:-4]
+                    )/\
+                    (dx**2)
         elif order == 3:
-            u_padded_twice = np.concatenate((u[-2:], u, u[0:2]))
-            derivative = (
-                    u_padded_twice[4:]
-                    - 2*u_padded_twice[3:-1]
-                    + 2*u_padded_twice[1:-3]
-                    - u_padded_twice[0:-4]
-                    )/(2*dx**3)
-        elif order == 4:
-            u_padded_twice = np.concatenate((u[-2:], u, u[0:2]))
-            derivative = (
-                    u_padded_twice[4:]
-                    - 4*u_padded_twice[3:-1]
-                    + 6*u_padded_twice[2:-2]
-                    - 4*u_padded_twice[1:-3]
-                    + u_padded_twice[0:-4]
-                    )/(dx**4)
-        elif order == 5:
             u_padded_thrice = np.concatenate((u[-3:], u, u[0:3]))
             derivative = (
-                    u_padded_thrice[6:]
-                    - 4*u_padded_thrice[5:-1]
-                    + 5*u_padded_thrice[4:-2]
-                    - 5*u_padded_thrice[2:-4]
-                    + 4*u_padded_thrice[1:-5]
-                    - u_padded_thrice[0:-6]
-                    )/(2*dx**5)
-        elif order == 6:
-            # Calculate third-order accurate derivative (since there is
-            # no 2nd order accurate one)
+                    - 1/8*u_padded_thrice[6:]
+                    + 1*u_padded_thrice[5:-1]
+                    - 13/8*u_padded_thrice[4:-2]
+                    + 13/8*u_padded_thrice[2:-4]
+                    - 1*u_padded_thrice[1:-5]
+                    + 1/8*u_padded_thrice[0:-6]
+                    )/(dx**3)
+        elif order == 4:
+            u_padded_thrice = np.concatenate((u[-3:], u, u[0:3]))
+            derivative = (
+                    - 1/6*u_padded_thrice[6:]
+                    + 2*u_padded_thrice[5:-1]
+                    - 13/2*u_padded_thrice[4:-2]
+                    + 28/3*u_padded_thrice[3:-3]
+                    - 13/2*u_padded_thrice[2:-4]
+                    + 2*u_padded_thrice[1:-5]
+                    - 1/6*u_padded_thrice[0:-6]
+                    )/(dx**4)
+        elif order == 5:
             u_padded_quatrice = np.concatenate((u[-4:], u, u[0:4]))
             derivative = (
-                    - 1/4*u_padded_quatrice[8:]
-                    + 3*u_padded_quatrice[7:-1]
-                    - 13*u_padded_quatrice[6:-2]
-                    + 29*u_padded_quatrice[5:-3]
-                    - 75/2*u_padded_quatrice[4:-4]
-                    + 29*u_padded_quatrice[3:-5]
-                    - 13*u_padded_quatrice[2:-6]
-                    + 3*u_padded_quatrice[1:-7]
-                    - 1/4*u_padded_quatrice[0:-8]
+                    - 1/6*u_padded_quatrice[8:]
+                    + 3/2*u_padded_quatrice[7:-1]
+                    - 13/3*u_padded_quatrice[6:-2]
+                    + 29/6*u_padded_quatrice[5:-3]
+                    - 29/6*u_padded_quatrice[3:-5]
+                    + 13/3*u_padded_quatrice[2:-6]
+                    - 3/2*u_padded_quatrice[1:-7]
+                    + 1/6*u_padded_quatrice[0:-8]
+                    )/(dx**5)
+        elif order == 6:
+            # Calculate 5th-order accurate derivative (since there is
+            # no 4nd order accurate one)
+            u_padded_quintrice = np.concatenate((u[-5:], u, u[0:5]))
+            derivative = (
+                    + 13/240*u_padded_quintrice[10:]
+                    - 19/24*u_padded_quintrice[9:-1]
+                    + 87/16*u_padded_quintrice[8:-2]
+                    - 39/2*u_padded_quintrice[7:-3]
+                    + 323/8*u_padded_quintrice[6:-4]
+                    - 1023/20*u_padded_quintrice[5:-5]
+                    + 323/8*u_padded_quintrice[4:-6]
+                    - 39/2*u_padded_quintrice[3:-7]
+                    + 87/16*u_padded_quintrice[2:-8]
+                    - 19/24*u_padded_quintrice[1:-9]
+                    + 13/240*u_padded_quintrice[0:-10]
                     )/(dx**6)
         else:
             raise(ValueError("Derivatives of type 'periodic_fd'"+\
