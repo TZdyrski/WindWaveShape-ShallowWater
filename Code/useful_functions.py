@@ -55,7 +55,7 @@ def derivative(u, dx=1, period=2*np.pi, axis=0, order=1,
         # Compute the x derivatives using the pseudo-spectral method
         derivative = psdiff(u, period=period, order=order)
     elif deriv_type == 'periodic_fd':
-        # Center difference with periodic boundary conditions
+        # 2nd-order center difference with periodic boundary conditions
         if order == 1:
             u_padded_once = np.concatenate((u[[-1]], u, u[[0]]))
             derivative = (
