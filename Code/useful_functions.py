@@ -87,9 +87,30 @@ def derivative(u, dx=1, period=2*np.pi, axis=0, order=1,
                     - 4*u_padded_twice[1:-3]
                     + u_padded_twice[0:-4]
                     )/(dx**4)
+        elif order == 5:
+            u_padded_thrice = np.concatenate((u[-3:], u, u[0:3]))
+            derivative = (
+                    u_padded_thrice[6:]
+                    - 4*u_padded_thrice[5:-1]
+                    + 5*u_padded_thrice[4:-2]
+                    - 5*u_padded_thrice[2:-4]
+                    + 4*u_padded_thrice[1:-5]
+                    - u_padded_thrice[0:-6]
+                    )/(2*dx**5)
+        elif order == 6:
+            u_padded_thrice = np.concatenate((u[-3:], u, u[0:3]))
+            derivative = (
+                    u_padded_thrice[6:]
+                    - 6*u_padded_thrice[5:-1]
+                    + 15*u_padded_thrice[4:-2]
+                    - 20*u_padded_thrice[3:-3]
+                    + 15*u_padded_thrice[2:-4]
+                    - 6*u_padded_thrice[1:-5]
+                    + u_padded_thrice[0:-6]
+                    )/(dx**6)
         else:
             raise(ValueError("Derivatives of type 'periodic_fd'"+\
-                    "are only supported up to order 4, but "+\
+                    "are only supported up to order 6, but "+\
                     str(order)+" was given"))
     else:
         raise(ValueError("'deriv_type' must be either 'gradient',"+\

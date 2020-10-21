@@ -480,12 +480,12 @@ class kdvSystem():
         ux = derivative(u, dx=self.dx, period=self.xLen, order=1, **kwargs)
         uxx = derivative(u, dx=self.dx, period=self.xLen, order=2, **kwargs)
         uxxx = derivative(u, dx=self.dx, period=self.xLen, order=3, **kwargs)
-        uxxxx = derivative(u, dx=self.dx, period=self.xLen, order=4, **kwargs)
+        uxxxxxx = derivative(u, dx=self.dx, period=self.xLen, order=6, **kwargs)
 
         # Compute du/dt
         dudt = -u*ux*self.B/self.A -uxxx*self.C/self.A \
                 -ux*self.F/self.A + uxx*self.G/self.A \
-                -uxxxx*self.H/self.A
+                +uxxxxxx*self.H/self.A
 
         return dudt
 
@@ -494,7 +494,7 @@ class kdvSystem():
 
         ux = derivative(u, dx=self.dx, period=self.xLen, order=1, **kwargs)
         uxxx = derivative(u, dx=self.dx, period=self.xLen, order=3, **kwargs)
-        uxxxx = derivative(u, dx=self.dx, period=self.xLen, order=4, **kwargs)
+        uxxxxxx = derivative(u, dx=self.dx, period=self.xLen, order=6, **kwargs)
         uxnl = np.roll(ux,
                 shift=int(round(-self.psiP*self.WaveLength/(2*np.pi)/self.dx)),
                 axis=0)
@@ -502,7 +502,7 @@ class kdvSystem():
         # Compute du/dt
         dudt = -u*ux*self.B/self.A -uxxx*self.C/self.A \
                 -ux*self.F/self.A + uxnl*self.G/self.A \
-                -uxxxx*self.H/self.A
+                +uxxxxxx*self.H/self.A
 
         return dudt
 
@@ -972,7 +972,7 @@ def gen_long_verf(save_prefix, mu=0.8, nu_bi=3e-3):
                     **parameters)
 
 def gen_snapshots(save_prefix, eps=0.1, mu=0.8, P=0.25, psiP=3/4*np.pi,
-        nu_bi=3e-3):
+        nu_bi=1e-5):
     """ Generate snapshots for range of parameters. Save the results to
     the directory given by 'save_prefix'.
 
