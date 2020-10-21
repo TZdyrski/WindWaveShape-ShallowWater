@@ -384,16 +384,17 @@ wavenumber $1/k_E$, or `wave-crossing time') did not qualitatively
 modify the results, so we do not utilize such a ramp-up here.
 
 We discretize \cref{eq:kdv_burgers} in space using a
-second-order central finite difference method and in time using a
+fourth-order central finite difference method and in time using a
 third-order Runge-Kutta scheme.
-For numerical stability, we must also include a hyperviscosity term,
-$\nu_{\text{bi}} \partial_x^6 \eta_0$ with $\nu_{\text{bi}} =
-\num{1e-5}$, on the right-hand side of \cref{eq:kdv_burgers}.
+For numerical stability, we must also include a fifth-order accurate
+hyperviscosity term, $\nu_{\text{bi}} \partial_x^6 \eta_0$ with
+$\nu_{\text{bi}} = \num{1e-5}$, on the right-hand side of
+\cref{eq:kdv_burgers}.
 This hyperviscosity has minimal effect on the wave evolution as the
 normalized root-mean-square difference between the unforced ($P=0$)
 profile $\eta$ at $t'_1=3$ and the initial condition $\eta_0$ is
 $\sqrt{\langle (\eta - \eta_0)^2 \rangle/ \langle \eta_0^2 \rangle} =
-\num{2e-3}$.
+\num{1e-5}$.
 We quantify the wave shape with the wave energy $E$, skewness $\Sk$ and
 asymmetry $\As$,
 \begin{equation}
