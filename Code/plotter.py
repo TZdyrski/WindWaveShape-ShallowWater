@@ -1254,7 +1254,7 @@ def plot_verf_solitary(load_prefix, save_prefix, *args, **kwargs):
 
     # Plot points, not lines
     def point_plotter(data_array, x_name, axis):
-        axis.plot(data_array[x_name], data_array,'o')
+        axis.plot(data_array[x_name], data_array,'.')
 
     fig = plot_snapshots_template(data_arrays, norm_by_wavelength=False,
             plotter=point_plotter)
