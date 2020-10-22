@@ -1255,16 +1255,17 @@ $\mathcal{H}$,
   \pdv[4]{\eta'_0}{{x'}} \,,
 \end{equation}
 with $\mathcal{H} = \num{3e-3}$.
-This results in a grid biharmonic Reynolds number
+This results in a cell biharmonic Reynolds number
 \begin{equation}
-  \Reyn_{\nu_bi} \coloneqq \frac{\max{\eta} \pqty{\Delta
+  \Reyn_{\nu_{bi}} \coloneqq \frac{\max{\eta} \pqty{\Delta
   x}^3}{\mathcal{H}} = \num{8.3e-3} \,.
 \end{equation}
-Likewise, we can determine a biharmonic stability number
+Likewise, we can determine a biharmonic stability (or Courant) number
 \begin{equation}
-  \Stab_{\nu_bi} \coloneqq \frac{\mathcal{H} \Delta t}{\pqty{\Delta
+  \Stab_{\nu_{bi}} \coloneqq \frac{\mathcal{H} \Delta t}{\pqty{\Delta
     x}^4} = \num{3e-3} \,.
 \end{equation}
+
 Note: we appear to be in an acceptable range for $\Reyn_{\nu_bi}$ and
 $\Stab_{\nu_ni}$.
 In addition to these values, we have also found that $\Delta x = 0.1$,
