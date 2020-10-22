@@ -2651,7 +2651,7 @@ def main():
             'xt_offset_solitary' : plot_xt_offset_solitary,
 #            'xt_offset_cnoidal' : plot_xt_offset_cnoidal,
 #            'biviscosity' : plot_biviscosity,
-            'spacetime_mesh' : plot_spacetime_mesh,
+#            'spacetime_mesh' : plot_spacetime_mesh,
 #            'decaying_no_nu_bi' : plot_decaying_no_nu_bi,
             'forcing_types' : plot_forcing_types,
             }
