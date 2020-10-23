@@ -382,6 +382,35 @@ def plot_snapshots_template(data_arrays, norm_by_wavelength=True,
 
     return fig
 
+def plot_snapshots_terms_template(data_arrays, **kwargs):
+
+    # Use parameters from first data_array since we assume they're all
+    # the same
+    norm_by_wavelength = data_arrays[0,0].attrs['wave_type'] \
+            == 'cnoidal'
+
+    # Stack terms (generating a new coordinate 'variable' holding the
+    # names of the data arrays)
+    for indx in np.ndindex(data_arrays.shape):
+        data_arrays[indx] = data_arrays[indx].to_array().T
+
+    fig = plot_snapshots_template(**{
+        'data_arrays':data_arrays,
+        'show_legend':False,
+        'wind_arrows':False,
+        'norm_by_wavelength':norm_by_wavelength,
+        # Put kwargs last so any parameters will overwrite the defaults
+        # we've provided
+        **kwargs,
+        })
+
+    # Use values from first dataset since we assume they all use the same
+    # values
+    leg = fig.legend(data_arrays[0,0]['variable'].values, loc='right')
+    leg.get_title().set_multialignment('center')
+
+    return fig
+
 def plot_shape_statistics_template(data_arrays, ax_title=None, **kwargs):
 
     # Set axis labels and titles
@@ -1345,6 +1374,34 @@ def plot_pos_neg_solitary_production(load_prefix, save_prefix, *args, **kwargs):
             ax_title=ax_title)
 
     texplot.savefig(fig,save_prefix+'Snapshots-Positive-Negative-Production')
+
+def plot_pos_neg_solitary_terms(load_prefix, save_prefix, *args, **kwargs):
+    filename_base = 'Terms'
+
+    # Arrange data and parameters into 2d array for plotting
+    data_arrays = np.empty((2,1),dtype=object)
+
+    P = float(kwargs.get('P'))
+
+    for indx_num, P_val in enumerate([P,-P]):
+        filename = data_csv.find_filenames(load_prefix, filename_base,
+            parameters={'wave_type' : 'solitary', **kwargs,
+                'P' : P_val})
+
+        # Extract data
+        data_array = data_csv.load_data(filename, stack_coords=False)
+        data_array = data_array.set_coords('t*eps*sqrt(g*h)*k_E')
+
+        indx = np.unravel_index(indx_num,data_arrays.shape)
+        data_arrays[indx] = data_array
+
+    ax_title=np.array([[r'$P k_E/(\rho_w g \epsilon) = {P}$'],
+        [r'$P k_E/(\rho_w g \epsilon) = {P}$']])
+
+    fig = plot_snapshots_terms_template(data_arrays, norm_by_wavelength=False,
+            ax_title=ax_title)
+
+    texplot.savefig(fig,save_prefix+'Terms-Positive-Negative')
 
 def print_solitary_unforced_difference(load_prefix, save_prefix, *args, **kwargs):
     filename_base = 'Snapshots'
@@ -2619,6 +2676,7 @@ def main():
             'neg_solitary' : plot_neg_solitary,
             'pos_neg_solitary' : plot_pos_neg_solitary,
             'pos_neg_solitary_production' : plot_pos_neg_solitary_production,
+            'pos_neg_solitary_terms' : plot_pos_neg_solitary_terms,
             'print_solitary_unforced_difference': print_solitary_unforced_difference,
             'pos_neg_solitary_tail' : plot_pos_neg_solitary_tail,
             'pos_neg_solitary_tail_thumbnail' : plot_pos_neg_solitary_tail_thumbnail,

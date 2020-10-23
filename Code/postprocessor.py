@@ -933,6 +933,22 @@ def trim_snapshots(load_prefix, save_prefix, *args, **kwargs):
         data_csv.save_data(data_array, save_prefix+'Snapshots',
                 **data_array.attrs, stack_coords=True)
 
+def move_terms(load_prefix, save_prefix, *args, **kwargs):
+    filename_base = 'Terms'
+    # Simply move the terms data from the load directory to the
+    # save directory unchanged
+
+    # Find filenames
+    old_filenames = glob.glob(load_prefix+'*'+'Terms'+'*')
+
+    # Rename files
+    new_filenames = [filename.replace(load_prefix, save_prefix) for
+        filename in old_filenames]
+
+    for old_filename,new_filename in zip(old_filenames, new_filenames):
+        # Copy files
+        shutil.copy(old_filename, new_filename)
+
 def process_spacetime_mesh(load_prefix, save_prefix, *args, **kwargs):
     # Simply move the snapshot data from the load directory to the save
     # directory unchanged
@@ -1222,6 +1238,7 @@ def main():
     callable_functions = {
             'shape_statistics' : process_shape_statistics,
             'trim_snapshots' : trim_snapshots,
+            'move_terms' : move_terms,
 #            'trim_trig_verf' : trim_trig_verf,
 #            'trim_long_verf' : trim_long_verf,
 #            'trig_statistics' : process_trig_statistics,

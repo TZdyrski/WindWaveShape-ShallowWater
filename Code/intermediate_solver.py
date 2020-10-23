@@ -475,7 +475,7 @@ class kdvSystem():
         self.snapshot_indxs = snapshot_indxs
         self.snapshot_ts = snapshot_ts
 
-    def _kdvb(self, t, u, *args, **kwargs):
+    def _kdvb(self, t, u, terms=False, *args, **kwargs):
         """Differential equation for the KdV-Burgers equation."""
         ux = derivative(u, dx=self.dx, period=self.xLen, order=1, **kwargs)
         uxx = derivative(u, dx=self.dx, period=self.xLen, order=2, **kwargs)
@@ -487,9 +487,16 @@ class kdvSystem():
                 -ux*self.F/self.A + uxx*self.G/self.A \
                 +uxxxxxx*self.H/self.A
 
-        return dudt
+        # Return the contributions of the individual terms
+        if terms:
+            return dudt, {'Change':dudt, 'Advection':self.B/self.A*u*ux,
+                    'Dispersion':self.C/self.A*uxxx,
+                    'Current':self.F/self.A*ux, 'Wind':self.G/self.A*uxx,
+                    'Hyperviscosity':self.H/self.A*uxxxxxx}
+        else:
+            return dudt
 
-    def _kdvnl(self, t, u, periodic_deriv=False, *args, **kwargs):
+    def _kdvnl(self, t, u, periodic_deriv=False, terms=True, *args, **kwargs):
         """Differential equation for the nonlocal-KdV equation."""
 
         ux = derivative(u, dx=self.dx, period=self.xLen, order=1, **kwargs)
@@ -504,7 +511,14 @@ class kdvSystem():
                 -ux*self.F/self.A + uxnl*self.G/self.A \
                 +uxxxxxx*self.H/self.A
 
-        return dudt
+        # Return the contributions of the individual terms
+        if terms:
+            return dudt, {'Change':dudt, 'Advection':self.B/self.A*u*ux,
+                    'Dispersion':self.C/self.A*uxxx,
+                    'Current':self.F/self.A*ux, 'Wind':self.G/self.A*uxx,
+                    'Hyperviscosity':self.H/self.A*uxxxxxx}
+        else:
+            return dudt
 
     def _JacSparcity(self, *args, **kwargs):
         """Return the Jacobian sparcity matrix.
@@ -612,11 +626,21 @@ class kdvSystem():
         elif self.diffeq == 'KdVNL':
             rhs_eqn = self._kdvnl
 
+        # Save the contributions of the individual terms
+        PDEterms = {k: np.empty((nt_snapshots.size,nx),
+            dtype=np.float128) for k in ['Change', 'Advection',
+            'Dispersion', 'Current', 'Wind', 'Hyperviscosity']}
+        terms = rhs_eqn(0, y[0,:], deriv_type='periodic_fd',
+                terms=True)[1]
+        for key in terms:
+            PDEterms[key][0,:] = terms[key]
+
         yn = y[0,:]
         for n in range(0,nt-1):
             if n == 0:
                 # First step is an Euler step
-                RHS0 = rhs_eqn(n*dt, y[n,:], deriv_type='periodic_fd')
+                RHS0, terms = rhs_eqn(n*dt, y[n,:],
+                        deriv_type='periodic_fd', terms=True)
                 # Calculate next step
                 yn = yn + dt*RHS0
 
@@ -624,7 +648,8 @@ class kdvSystem():
 
             elif n == 1:
                 # Second step is a 2nd order Adams-Bashforth step
-                RHS0 = rhs_eqn(n*dt, y[n,:], deriv_type='periodic_fd')
+                RHS0, terms = rhs_eqn(n*dt, y[n,:],
+                        deriv_type='periodic_fd', terms=True)
                 # Calculate next step
                 yn = yn + dt*(3/2*RHS0 - 1/2*RHS1)
 
@@ -632,7 +657,8 @@ class kdvSystem():
                 RHS1 = RHS0
             else:
                 # Later steps are all 3rd order Adams-Bashforth steps
-                RHS0 = rhs_eqn(n*dt, yn, deriv_type='periodic_fd')
+                RHS0, terms = rhs_eqn(n*dt, yn,
+                        deriv_type='periodic_fd', terms=True)
                 # Calculate next step
                 yn = yn + dt*(23/12*RHS0 - 16/12*RHS1 + 5/12*RHS2)
 
@@ -644,8 +670,12 @@ class kdvSystem():
                 snapshot_indx = np.nonzero(nt_snapshots ==
                         n+1)[0].item()
                 y[snapshot_indx,:] = yn
+                for key in terms:
+                    PDEterms[key][snapshot_indx,:] = \
+                            terms[key].transpose()
 
         self.sol = y.transpose()
+        self.PDEterms = PDEterms
 
     def solve_system_rk3(self):
         """Use 3rd-order Runge-Kutta method to solve the
@@ -685,6 +715,15 @@ class kdvSystem():
         elif self.diffeq == 'KdVNL':
             rhs_eqn = self._kdvnl
 
+        # Save the contributions of the individual terms
+        PDEterms = {k: np.empty((nt_snapshots.size,nx),
+            dtype=np.float128) for k in ['Change', 'Advection',
+            'Dispersion', 'Current', 'Wind', 'Hyperviscosity']}
+        terms = rhs_eqn(0, y[0,:], deriv_type='periodic_fd',
+                terms=True)[1]
+        for key in terms:
+            PDEterms[key][0,:] = terms[key]
+
         yn = y[0,:]
         for n in range(0,nt-1):
 
@@ -692,8 +731,10 @@ class kdvSystem():
             k = np.zeros((yn.size,s))
             tn = n*dt
             for j in range(0,s):
-              k[:,j] = rhs_eqn(tn+c[j]*dt, yn+dt*np.dot(k,a[j,:]),
-                  deriv_type='periodic_fd')
+              # Overwrite 'terms' so we only have the final version
+              k[:,j], terms = rhs_eqn(tn+c[j]*dt,
+                      yn+dt*np.dot(k,a[j,:]), deriv_type='periodic_fd',
+                      terms=True)
 
             # Calculate next step
             yn = yn + dt*np.dot(k,b)
@@ -703,8 +744,13 @@ class kdvSystem():
                 snapshot_indx = np.nonzero(nt_snapshots ==
                         n+1)[0].item()
                 y[snapshot_indx,:] = yn
+                for key in terms:
+                    PDEterms[key][snapshot_indx,:] = \
+                            terms[key].transpose()
+
 
         self.sol = y.transpose()
+        self.PDEterms = PDEterms
 
     def get_snapshots(self):
         """Get the snapshots at times set by set_snapshot_ts.
@@ -828,6 +874,37 @@ class kdvSystem():
 
         self.sol = sol
 
+def convert_array_to_xarray(system, array, DataSet=False):
+
+    # Hide solution outside of window
+    system.set_x_window()
+    xMasked = system.get_masked_x()
+
+    # Normalize x by wavelength
+    # Convert from x' = x*k_E to x'/sqrt(mu) = x*k_E/k_E/h = x/h
+    # (Primes denote the nondim variables used throughout this solver)
+    xMasked = xMasked/np.sqrt(system.mu)
+
+    # Extract snapshot times
+    # t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k_E
+    snapshot_ts = system.snapshot_ts
+
+    if not DataSet:
+        # Package snapshots, xs, and ts together in a DataArray
+        data = xr.DataArray(array,
+                dims=('x/h','t*eps*sqrt(g*h)*k_E'),
+                coords=[xMasked, snapshot_ts])
+    else:
+        # Package snapshots, xs, and ts together in a DataSet
+        data = xr.Dataset(data_vars={
+            k : (('t*eps*sqrt(g*h)*k_E','x/h'), v) for k,v in
+            array.items()},
+            coords={'x/h':xMasked, 't*eps*sqrt(g*h)*k_E':snapshot_ts})
+
+    # Remove data for x with masked values
+    data = data.where(~np.isnan(data['x/h']),drop=True)
+
+    return data
 
 def default_solver(y0_func=None, solver='RK3', *args, **kwargs):
 
@@ -874,26 +951,8 @@ def default_solver(y0_func=None, solver='RK3', *args, **kwargs):
     # (Primes denote the nondim variables used throughout this solver)
     snapshots = solverSystem.get_snapshots()*solverSystem.eps
 
-    # Hide solution outside of window
-    solverSystem.set_x_window()
-    xMasked = solverSystem.get_masked_x()
-
-    # Normalize x by wavelength
-    # Convert from x' = x*k_E to x'/sqrt(mu) = x*k_E/k_E/h = x/h
-    # (Primes denote the nondim variables used throughout this solver)
-    xMasked = xMasked/np.sqrt(solverSystem.mu)
-
-    # Extract snapshot times
-    # t_1' = epsilon*t' = epsilon*t*sqrt(g*h)*k_E
-    snapshot_ts = solverSystem.snapshot_ts
-
-    # Package snapshots, xs, and ts together in a DataArray
-    data = xr.DataArray(snapshots,
-            dims=('x/h','t*eps*sqrt(g*h)*k_E'),
-            coords=[xMasked, snapshot_ts])
-
-    # Remove data for x with masked values
-    data = data.where(~np.isnan(data['x/h']),drop=True)
+    # Extract xarray of data
+    data = convert_array_to_xarray(solverSystem, snapshots)
 
     return data, solverSystem
 
@@ -1042,6 +1101,16 @@ def gen_snapshots(save_prefix, eps=0.1, mu=0.8, P=0.25, psiP=3/4*np.pi,
                     data_csv.save_data(data, save_prefix+'Snapshots',
                             wave_length=dataClass.WaveLength,
                             **parameters, stack_coords=True)
+
+                    # Extract xarray of data
+                    terms = convert_array_to_xarray(dataClass,
+                            dataClass.PDEterms, DataSet=True)
+
+                    # Save individual terms of PDE
+                    data_csv.save_data(terms[{'t*eps*sqrt(g*h)*k_E':-1}],
+                            save_prefix+'Terms',
+                            wave_length=dataClass.WaveLength,
+                            **parameters, stack_coords=False)
 
 def gen_depth_varying(save_prefix, eps=0.1, mu=0.6, P=0.25, psiP=3/4*np.pi,
         nu_bi=3e-3, forcing_type='Jeffreys'):
