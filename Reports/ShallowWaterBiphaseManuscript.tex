@@ -109,8 +109,11 @@ To investigate wind and surface wave interactions in shallow water, we
 introduce a wind-induced pressure term to the Boussinesq equations in
 \cref{sec:derivation}.
 The resulting KdV-Burgers equation governs a solitary wave's evolution,
-which we solve numerically to yield the wave energy, skewness and
-asymmetry in \cref{sec:results}.
+which we solve numerically
+\begin{LineLabel}{R2-2}
+to yield the wave energy, skewness and asymmetry
+\end{LineLabel}
+in \cref{sec:results}.
 We calculate the wind speed, discuss the asymmetry and
 compare our results to intermediate- and deep-water waves in
 \cref{sec:discussion}.
@@ -159,6 +162,7 @@ Additionally, we assume the surface pressure $p(x,t)$ is a Jeffreys-type
 forcing \citep{jeffreys1925formation},
 \begin{equation}
   p(x,t) = P \pdv{\eta(x,t)}{x} \,.
+  \label{eq:press_def}
 \end{equation}
 Here, $P$ is proportional to $(U-c)^2$, with $c$ the phase speed and $U$
 the wind speed (\cf{} \cref{sec:press_mag}), and $P>0$ corresponds to
@@ -340,9 +344,11 @@ in a co-moving frame with $H_0>0$ an order-1 parameter.
 We use \cref{eq:initial_condition} for our initial condition and choose
 $H_0 = 2$ so the initial, dimensional amplitude $a_0$ is half the wave
 height (\cf{} \cref{sec:nondim}).
+\begin{LineLabel}{R2-1}
 The dissipative term $P \partial_x^2 \eta_0$ in \cref{eq:kdv_burgers}
 disrupts the solitary wave's balance of dispersion and nonlinearity,
 inducing shape changes and growth/decay.
+\end{LineLabel}
 The KdV-Burgers equation has no known, solitary wave solutions, so we
 will solve it numerically.
 
@@ -572,6 +578,7 @@ $\infty$ to obtain
   \pdv{t'_1} \int_{-\infty}^{\infty} {\eta'}_0^2 \dd{x'}
   = \int_{-\infty}^{\infty} P' \pqty{\pdv{\eta'_0}{x'}}^2
   \dd{x'} \,.
+  \label{eq:energy_nondim}
 \end{equation}
 The left integral is the non-dimensional energy
 \cref{eq:shape_stats_def}, so re-dimensionalizing and converting back to
@@ -730,8 +737,11 @@ However, these were omitted for brevity.
 \vspace{-0.25cm}
 \section{Conclusion}
 Prior results~\citep{zdyrski2020wind} in intermediate and deep water
-demonstrated that wind, acting though a wave-dependent surface
-pressure, can generate shape changes that become more pronounced in
+demonstrated that wind,
+\begin{LineLabel}{R2-3}
+acting though a wave-dependent surface pressure,
+\end{LineLabel}
+can generate shape changes that become more pronounced in
 shallow water.
 Here, we utilized a multiple-scale analysis to couple weak wind with
 small, shallow-water waves, \ie{} $a_0/h \sim (k_E h)^2 \sim P k/(\rho_w
