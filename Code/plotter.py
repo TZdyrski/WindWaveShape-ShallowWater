@@ -829,7 +829,7 @@ def plot_wavenum_freq_template(data_arrays, **kwargs):
 
     return fig
 
-def plot_xt_offset_template(data_arrays, **kargs):
+def plot_xt_offset_template(data_arrays, **kwargs):
 
     # Use parameters from first data_array since we assume they're all
     # the same
@@ -847,7 +847,7 @@ def plot_xt_offset_template(data_arrays, **kargs):
         'norm_by_wavelength':norm_by_wavelength,
         # Put kwargs last so any parameters will overwrite the defaults
         # we've provided
-        **kargs,
+        **kwargs,
         })
 
     # Put ticks on right side
