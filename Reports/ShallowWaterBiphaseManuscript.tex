@@ -511,6 +511,66 @@ $\tilde{x}>0$ one.
   \centering
   { % Put \phantomsubcaption in their own group to prevent it from
     % affecting the main figure's numbering
+    \phantomsubcaption{}\label{fig:terms:a}
+    \phantomsubcaption{}\label{fig:terms:b}
+    \phantomsubcaption{}\label{fig:terms:c}
+    \phantomsubcaption{}\label{fig:terms:d}
+  }
+  \includegraphics{Terms-Positive-Negative.eps}
+  \caption{
+    The non-dimensional terms of the KdV-Burgers equation
+    \cref{eq:kdv_burgers} versus non-dimensional distance $x/h$ under
+    \subref{fig:terms:a},
+    \subref{fig:terms:c}
+    onshore and
+    \subref{fig:terms:b},
+    \subref{fig:terms:d}
+    offshore wind-induced surface pressure in the frame of the unforced
+    solitary wave.
+    See the text for a description of each term.
+    The upper panels \subref{fig:terms:a},\subref{fig:terms:b} show all
+    of the terms in the KdV-Burgers equation while the lower panels
+    \subref{fig:terms:c},\subref{fig:terms:d} show just the wind,
+    hyperviscosity, and change terms.
+    Results are shown for $\epsilon=0.1$, $\mu_E = 0.6$, $\abs{P
+    k_E/(\rho_w g \epsilon)} = 0.25$, and non-dimensional slow time
+    $t'_1 = t \epsilon \sqrt{gh} k_E = 3$.
+    Only a subset of the full spatial domain is shown.
+  }\label{fig:terms}
+\end{figure}
+
+To show the influence of each term in the KdV-Burgers equation
+\cref{eq:kdv_burgers}, we show each one as a function of $x/h$ at $t
+\epsilon \sqrt{gh} k_E = 3$ in \cref{fig:terms}.
+Advection ($(3/2) \eta'_0 \partial_{x'} \eta'_0$), dispersion
+($\partial_{x'}^3 \eta_0' \mu_E/(6\epsilon)$), and the current
+($-\partial_{x'} \eta'_0$) balance for unforced solitary waves.
+When wind forcing ($P \partial_{x'}^2 \eta'_0 /2$) and the
+hyperviscosity ($-\nu_{\text{bi}} \partial_{x'}^6 \eta'_0$) are
+included, the wave shape experiences a time-dependent change
+($\partial_{t_1'} \eta'_0$).
+The top panels \subref{fig:terms:a}, \subref{fig:terms:b} show all six
+terms, with advection, dispersion, and current dominating as they would
+in the unforced case.
+The lower panels \subref{fig:terms:c}, \subref{fig:terms:d} show just
+the wind, hyperviscosity, and change terms, which would each be zero in
+the unforced case.
+Notice that the hyperviscosity is negligible compared to the other terms
+in the KdV-Burgers equation and thus does not noticeably affect the wave
+shape.
+Furthermore, the wind term is approximately symmetric about $x=0$ and
+therefore does not directly contribute to the wave asymmetry (\cf
+\cref{sec:physical_reason}).
+Finally, the onshore wind \subref{fig:terms:a}, \subref{fig:terms:c}
+causes the magnitude of all the terms to be greater owing to wave
+growth and changes the sign of the wind and change terms, but is
+otherwise qualitatively similar to the offshore case
+\subref{fig:terms:b}, \subref{fig:terms:d}.
+
+\begin{figure}
+  \centering
+  { % Put \phantomsubcaption in their own group to prevent it from
+    % affecting the main figure's numbering
     \phantomsubcaption{}\label{fig:statistics_solitary:a}
     \phantomsubcaption{}\label{fig:statistics_solitary:b}
     \phantomsubcaption{}\label{fig:statistics_solitary:c}
