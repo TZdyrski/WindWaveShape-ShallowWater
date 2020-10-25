@@ -280,7 +280,7 @@ class kdvSystem():
                 endpoint=False
                 )
 
-    def set_temporal_grid(self, tLen=4, tNum='density', *args, **kwargs):
+    def set_temporal_grid(self, tLen=3, tNum='density', *args, **kwargs):
         """Set the t-coordinate grid.
 
         Parameters
