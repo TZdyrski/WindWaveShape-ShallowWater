@@ -413,11 +413,15 @@ def plot_snapshots_terms_template(data_arrays, **kwargs):
 
     ax_ylabel = 'Terms'
 
+    # Add more padding on right side for large legend
+    subplot_adjust_params = {'right': 0.75}
+
     fig = plot_snapshots_template(**{
         'ax_ylabel':ax_ylabel,
         'data_arrays':data_arrays,
         'wind_arrows':False,
         'norm_by_wavelength':norm_by_wavelength,
+        'subplot_adjust_params':subplot_adjust_params,
         'sort_lines':False,
         'round_legend':False,
         'line_coord':'variable',
