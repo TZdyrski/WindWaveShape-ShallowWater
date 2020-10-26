@@ -183,7 +183,8 @@ def default_plotter(data_array, x_name, axis):
 def plot_multiplot_template(data_arrays, x_coordinate, line_coord=None,
         suptitle=None, format_title=False, ax_title=None,
         ax_xlabel=None, ax_ylabel=None, color_class=None,
-        show_legend=False, legend_title=None, plotter=default_plotter,
+        sort_lines=True, show_legend=False, legend_title=None,
+        round_legend=True, plotter=default_plotter,
         subplot_adjust_params={}, label_sig_figs=3, legend_sig_figs=2,
         trim_times=3, sharex=True, sharey='row',
         pi_parameters=[]):
@@ -250,7 +251,7 @@ def plot_multiplot_template(data_arrays, x_coordinate, line_coord=None,
         # Make 2d ndarrays even if only scalars or 1d arrays
         x_name = fill_to_shape(x_coordinate,ax.shape)[iy,ix]
 
-        if atleast_2d(data_arrays[iy,ix]).shape[1] > 1:
+        if atleast_2d(data_arrays[iy,ix]).shape[1] > 1 and sort_lines:
             if line_coord is None:
                 # Sort lines
                 line_coord = [val for val in data_arrays[iy,ix].dims if val
@@ -260,7 +261,6 @@ def plot_multiplot_template(data_arrays, x_coordinate, line_coord=None,
         else:
             # Only a single line, no need to sort
             data_array_sorted = data_arrays[iy,ix]
-            line_coord = None
 
         # Plot snapshots
         plotter(data_array_sorted, x_name, ax[iy,ix])
@@ -283,13 +283,20 @@ def plot_multiplot_template(data_arrays, x_coordinate, line_coord=None,
 
     if show_legend:
         # Add legend
-        # Use values from first data_array since we assume they all use the same
-        # values
-        leg = fig.legend(round_sig_figs(data_arrays[0,0].sortby(line_coord)\
-                [line_coord].values,legend_sig_figs),
-                **({'title':legend_title} if legend_title is not None else
-                    {}),
-                loc='right')
+        if sort_lines:
+            # Use values from first data_array since we assume they all use the same
+            # values
+            line_labels=data_arrays[0,0].sortby(line_coord)[line_coord].values
+        else:
+            # Use values from first data_array since we assume they all use the same
+            # values
+            line_labels=data_arrays[0,0][line_coord].values
+        if round_legend:
+            line_labels=round_sig_figs(line_labels)
+
+        leg = fig.legend(line_labels, **({'title':legend_title} if
+            legend_title is not None else {}), loc='right')
+
         # Set alignment in case provided legend_title is multilined
         leg.get_title().set_multialignment('center')
 
@@ -396,18 +403,16 @@ def plot_snapshots_terms_template(data_arrays, **kwargs):
 
     fig = plot_snapshots_template(**{
         'data_arrays':data_arrays,
-        'show_legend':False,
         'wind_arrows':False,
         'norm_by_wavelength':norm_by_wavelength,
+        'sort_lines':False,
+        'round_legend':False,
+        'line_coord':'variable',
+        'legend_title':'',
         # Put kwargs last so any parameters will overwrite the defaults
         # we've provided
         **kwargs,
         })
-
-    # Use values from first dataset since we assume they all use the same
-    # values
-    leg = fig.legend(data_arrays[0,0]['variable'].values, loc='right')
-    leg.get_title().set_multialignment('center')
 
     ax = atleast_2d(fig.axes).reshape(data_arrays.shape)
     for iy,ix in np.ndindex(ax.shape):
