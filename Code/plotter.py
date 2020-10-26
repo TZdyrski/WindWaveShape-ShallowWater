@@ -409,6 +409,11 @@ def plot_snapshots_terms_template(data_arrays, **kwargs):
     leg = fig.legend(data_arrays[0,0]['variable'].values, loc='right')
     leg.get_title().set_multialignment('center')
 
+    ax = atleast_2d(fig.axes).reshape(data_arrays.shape)
+    for iy,ix in np.ndindex(ax.shape):
+        # Put horizontal line at y=0
+        ax[iy,ix].axhline(0, color='0.75', zorder=-1)
+
     return fig
 
 def plot_shape_statistics_template(data_arrays, ax_title=None, **kwargs):
