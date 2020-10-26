@@ -411,7 +411,10 @@ def plot_snapshots_terms_template(data_arrays, **kwargs):
     for indx in np.ndindex(data_arrays.shape):
         data_arrays[indx] = data_arrays[indx].to_array().T
 
+    ax_ylabel = 'Terms'
+
     fig = plot_snapshots_template(**{
+        'ax_ylabel':ax_ylabel,
         'data_arrays':data_arrays,
         'wind_arrows':False,
         'norm_by_wavelength':norm_by_wavelength,
