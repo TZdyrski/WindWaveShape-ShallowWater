@@ -491,8 +491,8 @@ class kdvSystem():
         if terms:
             return dudt, {'Change':dudt, 'Advection':self.B/self.A*u*ux,
                     'Dispersion':self.C/self.A*uxxx,
-                    'Current':self.F/self.A*ux, 'Wind':self.G/self.A*uxx,
-                    'Hyperviscosity':self.H/self.A*uxxxxxx}
+                    'Current':self.F/self.A*ux, 'Wind':-self.G/self.A*uxx,
+                    'Hyperviscosity':-self.H/self.A*uxxxxxx}
         else:
             return dudt
 
