@@ -122,7 +122,7 @@ def annotate_title(ax, title):
     ax.annotate(title, xy=textUpperLeft, xycoords='axes fraction',
             ha='left',va='top',ma='left')
 
-def label_subplots(ax):
+def label_subplots(ax, decrease_col_padding=False):
 
     if ax.size == 1:
         return
@@ -132,8 +132,13 @@ def label_subplots(ax):
         indxToAlpha = chr(indx_num+ord('a'))
         subplotLabel = indxToAlpha + ')'
 
+        if (not decrease_col_padding) or indx[-1] == 0:
+            padding = 0.275
+        else:
+            padding = 0.15
+
         # Add subplot labels
-        t = ax[indx].text(-0.275, 1.0, subplotLabel,
+        t = ax[indx].text(-padding, 1.0, subplotLabel,
                 transform=ax[indx].transAxes, va='top',ha='left')
         # Make box behind text semitransparent
         t.set_bbox(dict(facecolor='white', edgecolor='white',
@@ -183,8 +188,9 @@ def default_plotter(data_array, x_name, axis):
 def plot_multiplot_template(data_arrays, x_coordinate, line_coord=None,
         suptitle=None, format_title=False, ax_title=None,
         ax_xlabel=None, ax_ylabel=None, color_class=None,
+        decrease_col_padding=None,
         sort_lines=True, show_legend=False, legend_title=None,
-        round_legend=True, plotter=default_plotter,
+        round_legend=True, plotter=default_plotter, label_plots=True,
         subplot_adjust_params={}, label_sig_figs=3, legend_sig_figs=2,
         trim_times=3, sharex=True, sharey='row',
         pi_parameters=[]):
@@ -278,8 +284,11 @@ def plot_multiplot_template(data_arrays, x_coordinate, line_coord=None,
         else:
             fig.suptitle(suptitle)
 
-    # Add subplot labels
-    label_subplots(ax)
+    if label_plots:
+        # Add subplot labels
+        label_subplots(ax,
+                **({'decrease_col_padding':decrease_col_padding} if
+                    decrease_col_padding is not None else {}))
 
     if show_legend:
         # Add legend
@@ -411,6 +420,7 @@ def plot_snapshots_terms_template(data_arrays, **kwargs):
         'line_coord':'variable',
         'legend_title':'',
         'axes_single_col':False,
+        'decrease_col_padding':True,
         # Put kwargs last so any parameters will overwrite the defaults
         # we've provided
         **kwargs,
