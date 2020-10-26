@@ -1,4 +1,5 @@
 import numpy as np
+from scipy.fftpack import diff as psdiff
 
 def round_sig_figs(number, num_sig_figs=3):
 
