@@ -319,7 +319,7 @@ def plot_multiplot_template(data_arrays, x_coordinate, line_coord=None,
     return fig
 
 def plot_snapshots_template(data_arrays, norm_by_wavelength=True,
-        wind_arrows=True, **kwargs):
+        wind_arrows=True, axes_single_col=True, **kwargs):
 
     # Set axis labels and titles
 
@@ -353,8 +353,9 @@ def plot_snapshots_template(data_arrays, norm_by_wavelength=True,
         data_arrays = convert_x_norm(data_arrays)
 
     # Reorder into a single column
-    data_arrays = data_arrays.reshape((data_arrays.size,1), order='F')
-    ax_title = ax_title.reshape((ax_title.size,1), order='F')
+    if axes_single_col:
+        data_arrays = data_arrays.reshape((data_arrays.size,1), order='F')
+        ax_title = ax_title.reshape((ax_title.size,1), order='F')
 
     # Plot data
     fig = plot_multiplot_template(**{
@@ -409,6 +410,7 @@ def plot_snapshots_terms_template(data_arrays, **kwargs):
         'round_legend':False,
         'line_coord':'variable',
         'legend_title':'',
+        'axes_single_col':False,
         # Put kwargs last so any parameters will overwrite the defaults
         # we've provided
         **kwargs,
@@ -1389,7 +1391,7 @@ def plot_pos_neg_solitary_terms(load_prefix, save_prefix, *args, **kwargs):
     filename_base = 'Terms'
 
     # Arrange data and parameters into 2d array for plotting
-    data_arrays = np.empty((2,1),dtype=object)
+    data_arrays = np.empty((2,2),dtype=object)
 
     P = float(kwargs.get('P'))
 
@@ -1405,8 +1407,15 @@ def plot_pos_neg_solitary_terms(load_prefix, save_prefix, *args, **kwargs):
         indx = np.unravel_index(indx_num,data_arrays.shape)
         data_arrays[indx] = data_array
 
-    ax_title=np.array([[r'$P k_E/(\rho_w g \epsilon) = {P}$'],
-        [r'$P k_E/(\rho_w g \epsilon) = {P}$']])
+        indx = tuple(map(sum, zip(indx,(1,0))))
+        data_array = data_array.copy()
+        data_array['Current'] = None
+        data_array['Advection'] = None
+        data_array['Dispersion'] = None
+        data_arrays[indx] = data_array
+
+    ax_title=np.array([[r'$P k_E/(\rho_w g \epsilon) = {P}$',r'$P k_E/(\rho_w g \epsilon) = {P}$'],
+        [r'$P k_E/(\rho_w g \epsilon) = {P}$',r'$P k_E/(\rho_w g \epsilon) = {P}$']])
 
     fig = plot_snapshots_terms_template(data_arrays, norm_by_wavelength=False,
             ax_title=ax_title)
