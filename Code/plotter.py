@@ -1972,6 +1972,14 @@ def plot_shape_statistics_solitary(load_prefix, save_prefix, *args, **kwargs):
         P_val_list.append(P_val)
         data_array_list.append(data_array)
 
+        if P_val == 0:
+            # Show ratio of final unforced energy to initial unforced
+            # energy
+            energy_change = data_array['E/E_0'][{'t*eps*sqrt(g*h)*k_E':-1}] \
+                    / data_array['E/E_0'][{'t*eps*sqrt(g*h)*k_E':0}]
+            print('One minus ratio of final unforced energy to '+\
+                    'initial energy:'+str(1-energy_change.values))
+
     # Arrange data and parameters into 1d array for plotting
     data_arrays = np.empty((1),dtype=object)
     data_arrays[0] = xr.concat(data_array_list, dim=xr.DataArray(P_val_list,
