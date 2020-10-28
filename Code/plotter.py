@@ -1470,6 +1470,15 @@ def print_solitary_unforced_difference(load_prefix, save_prefix, *args, **kwargs
     print('Normalized, RMS between end and start for '\
             +'unforced solitary wave:'+str(L2ratio))
 
+    maximum = data_array.max(dim='x/h')
+    minimum = data_array.min(dim='x/h')
+    height = maximum - minimum
+
+    heightRatio = height[{'t*eps*sqrt(g*h)*k_E':-1}]/\
+            height[{'t*eps*sqrt(g*h)*k_E':0}]
+    print('One minus ratio of final height (max-min) to initial height:'+\
+            str(1-heightRatio.values))
+
 def fit_sech(profile):
 
     x = profile['x/h']
