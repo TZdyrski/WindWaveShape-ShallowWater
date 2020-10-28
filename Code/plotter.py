@@ -1424,6 +1424,32 @@ def plot_pos_neg_solitary_terms(load_prefix, save_prefix, *args, **kwargs):
         indx = np.unravel_index(indx_num,data_arrays.shape)
         data_arrays[indx] = data_array
 
+        xLen,_,dx = get_var_stats(data_arrays[indx])
+
+        print('RMS for P='+str(P_val)+' of term:')
+        minRMS = np.inf
+        minTerm = ''
+        hyperviscRMS = 0
+        for term in data_arrays[indx]:
+            L2terms = scipy.integrate.trapz(
+                    data_arrays[indx][term]**2, dx=dx,
+                    axis=0)/(xLen)
+            RMSterms = np.sqrt(L2terms)
+            print('    '+term+': '+str(RMSterms))
+            if term != 'Hyperviscosity' and RMSterms < minRMS:
+                minRMS = RMSterms
+                minTerm = term
+            if term == 'Hyperviscosity':
+                hyperviscRMS = RMSterms
+        print('    '+'Ratio of '+minTerm+' to hyperviscosity: '+\
+                str(minRMS/hyperviscRMS))
+
+        print('Range for P='+str(P_val)+' of term:')
+        for term in data_arrays[indx]:
+            rangeTerms = data_arrays[indx][term].max() - \
+                    data_arrays[indx][term].min()
+            print('    '+term+': '+str(rangeTerms.values))
+
         indx = tuple(map(sum, zip(indx,(1,0))))
         data_array = data_array.copy()
         data_array['Current'] = None
