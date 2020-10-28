@@ -364,12 +364,15 @@ This yields a spacing $\Delta x = 0.05$, with $x = -L/2,
 The simulation runs from $t_1 = 0$ to $t_1 = T = 3$, inclusive, with
 $N_t = \num{4.8e5}$ points, yielding a spacing $\Delta t_1 = T/(N_t-1)
 \approx \num{6.25e-6}$.
+\begin{LineLabel}{R2-7}
 We found that linearly ramping up $P$ from $0$ at $t_1=0$ to its full
 value at $t_1 = \epsilon$, or full, dimensional time $t = 1/(\sqrt{gh}
 k_E)$ (\ie{} the time required to cross the inverse, effective
 wavenumber $1/k_E$, or `wave-crossing time') did not qualitatively
 modify the results, so we do not utilize such a ramp-up here.
+\end{LineLabel}
 
+\begin{LineLabel}{R2-8}
 We discretize \cref{eq:kdv_burgers} in space using a
 fourth-order central finite difference method and in time using a
 third-order Runge-Kutta scheme.
@@ -377,12 +380,16 @@ For numerical stability, we must also include a fifth-order accurate
 hyperviscosity term, $\nu_{\text{bi}} \partial_x^6 \eta_0$ with
 $\nu_{\text{bi}} = \num{1e-5}$, on the right-hand side of
 \cref{eq:kdv_burgers}.
+\end{LineLabel}
 This hyperviscosity has minimal effect on the wave evolution as the
 normalized root-mean-square difference between the unforced ($P=0$)
 profile $\eta$ at $t'_1=3$ and the initial condition $\eta_0$ is
 $\sqrt{\langle (\eta - \eta_0)^2 \rangle/ \langle \eta_0^2 \rangle} =
-\num{1e-5}$, and the normalized wave height change is $1-\bqty{\max(\eta)
+\num{1e-5}$,
+\begin{LineLabel}{R2-6}
+and the normalized wave height change is $1-\bqty{\max(\eta)
 - \min(\eta)}/\bqty{\max(\eta_0) - \min(\eta_0)} = \num{9e-6}$.
+\end{LineLabel}
 We quantify the wave shape with the wave energy $E$, skewness $\Sk$ and
 asymmetry $\As$,
 \begin{equation}
@@ -540,6 +547,7 @@ $\tilde{x}>0$ one.
   }\label{fig:terms}
 \end{figure}
 
+\begin{LineLabel}{R2-5}
 To show the influence of each term in the KdV-Burgers equation
 \cref{eq:kdv_burgers}, we show each one as a function of $x/h$ at $t
 \epsilon \sqrt{gh} k_E = 3$ in \cref{fig:terms}.
@@ -570,6 +578,7 @@ causes the magnitude of all the terms to be greater owing to wave
 growth and changes the sign of the wind and change terms, but is
 otherwise qualitatively similar to the offshore case
 \subref{fig:terms:b}, \subref{fig:terms:d}.
+\end{LineLabel}
 
 \begin{figure}
   \centering
@@ -612,8 +621,10 @@ The normalized energy $E/E_0$ shows different growth/decay rates:
 the onshore wind ($P>0$) causes accelerating wave growth while the
 offshore wind ($P<0$) causes slowing wave decay
 (\cref{fig:statistics_solitary:a}).
+\begin{LineLabel}{R2-4}
 The energy of the unforced wave is virtually unchanged, decreasing by
 a factor of \num{1e-5}.
+\end{LineLabel}
 The onshore (offshore) wind causes the wave to become more (less) skewed
 over time, with the normalized skewness nearly symmetric about unity
 with respect to $\pm P$.
