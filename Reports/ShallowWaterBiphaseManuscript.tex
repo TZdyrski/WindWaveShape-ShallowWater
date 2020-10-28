@@ -378,16 +378,16 @@ fourth-order central finite difference method and in time using a
 third-order Runge-Kutta scheme.
 For numerical stability, we must also include a hyperviscosity term,
 $\nu_{\text{bi}} \partial_x^6 \eta_0$ with $\nu_{\text{bi}} =
-\num{1e-5}$, on the right-hand side of \cref{eq:kdv_burgers}.
+\num{3e-3}$, on the right-hand side of \cref{eq:kdv_burgers}.
 \end{LineLabel}
 This hyperviscosity has minimal effect on the wave evolution as the
 normalized root-mean-square difference between the unforced ($P=0$)
 profile $\eta$ at $t'_1=3$ and the initial condition $\eta_0$ is
 $\sqrt{\langle (\eta - \eta_0)^2 \rangle/ \langle \eta_0^2 \rangle} =
-\num{1e-5}$,
+\num{3e-3}$,
 \begin{LineLabel}{R2-6}
 and the normalized wave height change is $1-\bqty{\max(\eta)
-- \min(\eta)}/\bqty{\max(\eta_0) - \min(\eta_0)} = \num{9e-6}$.
+- \min(\eta)}/\bqty{\max(\eta_0) - \min(\eta_0)} = \num{2e-3}$.
 \end{LineLabel}
 We quantify the wave shape with the wave energy $E$, skewness $\Sk$ and
 asymmetry $\As$,
@@ -567,8 +567,8 @@ Notice that the hyperviscosity is negligible compared to the other terms
 in the KdV-Burgers equation and thus does not noticeably affect the wave
 shape.
 Indeed, the root-mean-square $\sqrt{\langle \nu_{\text{bi}}
-\partial_{x'}^6 \eta'_0 \rangle^2}$ of the hyperviscosity is more than
-\num{400} times smaller than that of the other terms.
+\partial_{x'}^6 \eta'_0 \rangle^2}$ of the hyperviscosity is \num{20}
+times smaller than that of the other terms.
 Furthermore, the wind term is approximately symmetric about $x=0$ and
 therefore does not directly contribute to the wave asymmetry (\cf
 \cref{sec:physical_reason}).
@@ -622,7 +622,7 @@ offshore wind ($P<0$) causes slowing wave decay
 (\cref{fig:statistics_solitary:a}).
 \begin{LineLabel}{R2-4}
 The energy of the unforced wave is virtually unchanged, decreasing by
-a factor of \num{1e-5}.
+a factor of \num{3e-3}.
 \end{LineLabel}
 The onshore (offshore) wind causes the wave to become more (less) skewed
 over time, with the normalized skewness nearly symmetric about unity
