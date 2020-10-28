@@ -376,10 +376,9 @@ modify the results, so we do not utilize such a ramp-up here.
 We discretize \cref{eq:kdv_burgers} in space using a
 fourth-order central finite difference method and in time using a
 third-order Runge-Kutta scheme.
-For numerical stability, we must also include a fifth-order accurate
-hyperviscosity term, $\nu_{\text{bi}} \partial_x^6 \eta_0$ with
-$\nu_{\text{bi}} = \num{1e-5}$, on the right-hand side of
-\cref{eq:kdv_burgers}.
+For numerical stability, we must also include a hyperviscosity term,
+$\nu_{\text{bi}} \partial_x^6 \eta_0$ with $\nu_{\text{bi}} =
+\num{1e-5}$, on the right-hand side of \cref{eq:kdv_burgers}.
 \end{LineLabel}
 This hyperviscosity has minimal effect on the wave evolution as the
 normalized root-mean-square difference between the unforced ($P=0$)

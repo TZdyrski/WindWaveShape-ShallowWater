@@ -110,21 +110,17 @@ def derivative(u, dx=1, period=2*np.pi, axis=0, order=1,
                     + 1/6*u_padded_quatrice[0:-8]
                     )/(dx**5)
         elif order == 6:
-            # Calculate 5th-order accurate derivative (since there is
-            # no 4nd order accurate one)
-            u_padded_quintrice = np.concatenate((u[-5:], u, u[0:5]))
+            u_padded_quatrice = np.concatenate((u[-4:], u, u[0:4]))
             derivative = (
-                    + 13/240*u_padded_quintrice[10:]
-                    - 19/24*u_padded_quintrice[9:-1]
-                    + 87/16*u_padded_quintrice[8:-2]
-                    - 39/2*u_padded_quintrice[7:-3]
-                    + 323/8*u_padded_quintrice[6:-4]
-                    - 1023/20*u_padded_quintrice[5:-5]
-                    + 323/8*u_padded_quintrice[4:-6]
-                    - 39/2*u_padded_quintrice[3:-7]
-                    + 87/16*u_padded_quintrice[2:-8]
-                    - 19/24*u_padded_quintrice[1:-9]
-                    + 13/240*u_padded_quintrice[0:-10]
+                    - 1/4*u_padded_quatrice[8:]
+                    + 3*u_padded_quatrice[7:-1]
+                    - 13*u_padded_quatrice[6:-2]
+                    + 29*u_padded_quatrice[5:-3]
+                    - 75/2*u_padded_quatrice[4:-4]
+                    + 29*u_padded_quatrice[3:-5]
+                    - 13*u_padded_quatrice[2:-6]
+                    + 3*u_padded_quatrice[1:-7]
+                    - 1/4*u_padded_quatrice[0:-8]
                     )/(dx**6)
         else:
             raise(ValueError("Derivatives of type 'periodic_fd'"+\
