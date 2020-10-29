@@ -59,59 +59,73 @@ def derivative(u, dx=1, period=2*np.pi, axis=0, order=1,
         # Compute the x derivatives using the pseudo-spectral method
         derivative = psdiff(u, period=period, order=order)
     elif deriv_type == 'periodic_fd':
+        pad_width = [tuple(x) for x in np.zeros((u.ndim,2),int)]
+        N = u.shape[axis]
         if accuracy == 2:
             # 2nd-order center difference with periodic boundary conditions
             if order == 1:
-                u_padded_once = np.concatenate((u[[-1]], u, u[[0]]))
+                # Pad once on axis
+                pad_width[axis] = (1,1)
+                N += 2
                 derivative = (
-                        u_padded_once[2:]
-                        -u_padded_once[0:-2]
+                        np.eye(N,k=-1)
+                        -np.eye(N,k=1)
                         )/\
                         (2*dx)
             elif order == 2:
-                u_padded_once = np.concatenate((u[[-1]], u, u[[0]]))
+                # Pad once on axis
+                pad_width[axis] = (1,1)
+                N += 2
                 derivative = (
-                        u_padded_once[2:]
-                        - 2*u_padded_once[1:-1]
-                        + u_padded_once[0:-2]
+                        np.eye(N,k=-1)
+                        - 2*np.eye(N,k=0)
+                        + np.eye(N,k=1)
                         )/(dx**2)
             elif order == 3:
-                u_padded_twice = np.concatenate((u[-2:], u, u[0:2]))
+                # Pad twice on axis
+                pad_width[axis] = (2,2)
+                N += 4
                 derivative = (
-                        u_padded_twice[4:]
-                        - 2*u_padded_twice[3:-1]
-                        + 2*u_padded_twice[1:-3]
-                        - u_padded_twice[0:-4]
+                        np.eye(N,k=-2)
+                        - 2*np.eye(N,k=-1)
+                        + 2*np.eye(N,k=1)
+                        - np.eye(N,k=2)
                         )/(2*dx**3)
             elif order == 4:
-                u_padded_twice = np.concatenate((u[-2:], u, u[0:2]))
+                # Pad twice on axis
+                pad_width[axis] = (2,2)
+                N += 4
                 derivative = (
-                        u_padded_twice[4:]
-                        - 4*u_padded_twice[3:-1]
-                        + 6*u_padded_twice[2:-2]
-                        - 4*u_padded_twice[1:-3]
-                        + u_padded_twice[0:-4]
+                        np.eye(N,k=-2)
+                        - 4*np.eye(N,k=-1)
+                        + 6*np.eye(N,k=0)
+                        - 4*np.eye(N,k=1)
+                        + np.eye(N,k=2)
                         )/(dx**4)
             elif order == 5:
-                u_padded_thrice = np.concatenate((u[-3:], u, u[0:3]))
+                # Pad thrice on axis
+                pad_width[axis] = (3,3)
+                N += 6
                 derivative = (
-                        u_padded_thrice[6:]
-                        - 4*u_padded_thrice[5:-1]
-                        + 5*u_padded_thrice[4:-2]
-                        - 5*u_padded_thrice[2:-4]
-                        + 4*u_padded_thrice[1:-5]
-                        - u_padded_thrice[0:-6]
+                        np.eye(N,k=-3)
+                        - 4*np.eye(N,k=-2)
+                        + 5*np.eye(N,k=-1)
+                        - 5*np.eye(N,k=1)
+                        + 4*np.eye(N,k=2)
+                        - np.eye(N,k=3)
                         )/(2*dx**5)
             elif order == 6:
-                u_padded_thrice = np.concatenate((u[-3:], u, u[0:3]))
+                # Pad thrice on axis
+                pad_width[axis] = (3,3)
+                N += 6
                 derivative = (
-                        + 1*u_padded_thrice[6:]
-                        - 6*u_padded_thrice[5:-1]
-                        + 15*u_padded_thrice[4:-2]
-                        - 20*u_padded_thrice[3:-3]
-                        + 15*u_padded_thrice[2:-4]
-                        - 6*u_padded_thrice[1:-5]
-                        + 1*u_padded_thrice[0:-6]
+                        + 1*np.eye(N,k=-3)
+                        - 6*np.eye(N,k=-2)
+                        + 15*np.eye(N,k=-1)
+                        - 20*np.eye(N,k=0)
+                        + 15*np.eye(N,k=1)
+                        - 6*np.eye(N,k=2)
+                        + 1*np.eye(N,k=3)
                         )/(dx**6)
             else:
                 raise(ValueError("Derivatives of type 'periodic_fd'"+\
@@ -120,69 +134,81 @@ def derivative(u, dx=1, period=2*np.pi, axis=0, order=1,
         elif accuracy == 4:
             # 4th-order center difference with periodic boundary conditions
             if order == 1:
-                u_padded_twice = np.concatenate((u[-2:], u, u[0:2]))
+                # Pad twice on axis
+                pad_width[axis] = (2,2)
+                N += 4
                 derivative = (
-                        - 1/12*u_padded_twice[4:]
-                        + 2/3*u_padded_twice[3:-1]
-                        - 2/3*u_padded_twice[1:-3]
-                        + 1/12*u_padded_twice[0:-4]
+                        - 1/12*np.eye(N,k=-2)
+                        + 2/3*np.eye(N,k=-1)
+                        - 2/3*np.eye(N,k=1)
+                        + 1/12*np.eye(N,k=2)
                         )/\
                         (dx)
             elif order == 2:
-                u_padded_twice = np.concatenate((u[-2:], u, u[0:2]))
+                # Pad twice on axis
+                pad_width[axis] = (2,2)
+                N += 4
                 derivative = (
-                        - 1/12*u_padded_twice[4:]
-                        + 4/3*u_padded_twice[3:-1]
-                        - 5/2*u_padded_twice[2:-2]
-                        + 4/3*u_padded_twice[1:-3]
-                        - 1/12*u_padded_twice[0:-4]
+                        - 1/12*np.eye(N,k=-2)
+                        + 4/3*np.eye(N,k=-1)
+                        - 5/2*np.eye(N,k=0)
+                        + 4/3*np.eye(N,k=1)
+                        - 1/12*np.eye(N,k=2)
                         )/\
                         (dx**2)
             elif order == 3:
-                u_padded_thrice = np.concatenate((u[-3:], u, u[0:3]))
+                # Pad thrice on axis
+                pad_width[axis] = (3,3)
+                N += 6
                 derivative = (
-                        - 1/8*u_padded_thrice[6:]
-                        + 1*u_padded_thrice[5:-1]
-                        - 13/8*u_padded_thrice[4:-2]
-                        + 13/8*u_padded_thrice[2:-4]
-                        - 1*u_padded_thrice[1:-5]
-                        + 1/8*u_padded_thrice[0:-6]
+                        - 1/8*np.eye(N,k=-3)
+                        + 1*np.eye(N,k=-2)
+                        - 13/8*np.eye(N,k=-1)
+                        + 13/8*np.eye(N,k=1)
+                        - 1*np.eye(N,k=2)
+                        + 1/8*np.eye(N,k=3)
                         )/(dx**3)
             elif order == 4:
-                u_padded_thrice = np.concatenate((u[-3:], u, u[0:3]))
+                # Pad thrice on axis
+                pad_width[axis] = (3,3)
+                N += 6
                 derivative = (
-                        - 1/6*u_padded_thrice[6:]
-                        + 2*u_padded_thrice[5:-1]
-                        - 13/2*u_padded_thrice[4:-2]
-                        + 28/3*u_padded_thrice[3:-3]
-                        - 13/2*u_padded_thrice[2:-4]
-                        + 2*u_padded_thrice[1:-5]
-                        - 1/6*u_padded_thrice[0:-6]
+                        - 1/6*np.eye(N,k=-3)
+                        + 2*np.eye(N,k=-2)
+                        - 13/2*np.eye(N,k=-1)
+                        + 28/3*np.eye(N,k=0)
+                        - 13/2*np.eye(N,k=1)
+                        + 2*np.eye(N,k=2)
+                        - 1/6*np.eye(N,k=3)
                         )/(dx**4)
             elif order == 5:
-                u_padded_quatrice = np.concatenate((u[-4:], u, u[0:4]))
+                # Pad quatrice on axis
+                pad_width[axis] = (4,4)
+                N += 8
                 derivative = (
-                        - 1/6*u_padded_quatrice[8:]
-                        + 3/2*u_padded_quatrice[7:-1]
-                        - 13/3*u_padded_quatrice[6:-2]
-                        + 29/6*u_padded_quatrice[5:-3]
-                        - 29/6*u_padded_quatrice[3:-5]
-                        + 13/3*u_padded_quatrice[2:-6]
-                        - 3/2*u_padded_quatrice[1:-7]
-                        + 1/6*u_padded_quatrice[0:-8]
+                        - 1/6*np.eye(N,k=-4)
+                        + 3/2*np.eye(N,k=-3)
+                        - 13/3*np.eye(N,k=-2)
+                        + 29/6*np.eye(N,k=-1)
+                        - 29/6*np.eye(N,k=1)
+                        + 13/3*np.eye(N,k=2)
+                        - 3/2*np.eye(N,k=3)
+                        + 1/6*np.eye(N,k=4)
                         )/(dx**5)
             elif order == 6:
-                u_padded_quatrice = np.concatenate((u[-4:], u, u[0:4]))
+                # Pad quatrice on axis
+                pad_width[axis] = (4,4)
+                N += 8
                 derivative = (
-                        - 1/4*u_padded_quatrice[8:]
-                        + 3*u_padded_quatrice[7:-1]
-                        - 13*u_padded_quatrice[6:-2]
-                        + 29*u_padded_quatrice[5:-3]
-                        - 75/2*u_padded_quatrice[4:-4]
-                        + 29*u_padded_quatrice[3:-5]
-                        - 13*u_padded_quatrice[2:-6]
-                        + 3*u_padded_quatrice[1:-7]
-                        - 1/4*u_padded_quatrice[0:-8]
+                        - 1/4*np.eye(N,k=-4)
+                        + 3*np.eye(N,k=-3)
+                        - 13*np.eye(N,k=-2)
+                        + 29*np.eye(N,k=-1)
+                        - 75/2*np.eye(N,k=0)
+                        + 29*np.eye(N,k=1)
+                        - 13*np.eye(N,k=2)
+                        + 3*np.eye(N,k=3)
+                        - 1/4*np.eye(N,k=4)
                         )/(dx**6)
             else:
                 raise(ValueError("Derivatives of type 'periodic_fd'"+\
@@ -192,6 +218,15 @@ def derivative(u, dx=1, period=2*np.pi, axis=0, order=1,
             raise(ValueError("Derivatives of type 'periodic_fd'"+\
                     "are only supported for accuracies 2 and 4, but "+\
                     str(accuracy)+" was given"))
+        u_padded = np.pad(u, pad_width, 'wrap')
+        derivative = np.tensordot(derivative, u_padded,
+                axes=([0,axis]))
+
+        # Trim off padding
+        trim_num = pad_width[axis][0]
+        trim_mat = np.eye(N,N-2*trim_num,k=-trim_num)
+        derivative = np.tensordot(trim_mat, derivative,
+                axes=([0,axis]))
     else:
         raise(ValueError("'deriv_type' must be either 'gradient',"+\
         "'FFT', or 'periodic_fd', but "+deriv_type+" was given"))
