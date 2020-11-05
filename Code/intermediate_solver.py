@@ -666,7 +666,7 @@ class kdvSystem():
                 RHS1 = RHS0
 
             if n+1 in nt_snapshots:
-                # Find index of n in nt_snapthos
+                # Find index of n in nt_snapshots
                 snapshot_indx = np.nonzero(nt_snapshots ==
                         n+1)[0].item()
                 y[snapshot_indx,:] = yn
@@ -740,7 +740,7 @@ class kdvSystem():
             yn = yn + dt*np.dot(k,b)
 
             if n+1 in nt_snapshots:
-                # Find index of n in nt_snapthos
+                # Find index of n in nt_snapshots
                 snapshot_indx = np.nonzero(nt_snapshots ==
                         n+1)[0].item()
                 y[snapshot_indx,:] = yn
