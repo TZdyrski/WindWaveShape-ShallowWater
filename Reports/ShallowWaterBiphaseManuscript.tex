@@ -359,11 +359,9 @@ will solve it numerically.
 To solve \cref{eq:kdv_burgers} numerically,
 we will use a spatial domain with periodic boundary conditions and $N_x
 = 1600$ points spread over a domain of length $L = 80$.
-This yields a spacing $\Delta x = 0.05$, with $x = -L/2,
--L/2 + \Delta x, \ldots L/2 - \Delta x$.
 The simulation runs from $t_1 = 0$ to $t_1 = T = 3$, inclusive, with
-$N_t = \num{4.8e5}$ points, yielding a spacing $\Delta t_1 = T/(N_t-1)
-\approx \num{6.25e-6}$.
+$N_t = \num{60}$ points, yielding a spacing $\Delta t_1 = T/(N_t-1)
+\approx \num{0.051}$.
 \begin{LineLabel}{R2-7}
 We found that linearly ramping up $P$ from $0$ at $t_1=0$ to its full
 value at $t_1 = \epsilon$, or full, dimensional time $t = 1/(\sqrt{gh}
@@ -373,21 +371,18 @@ modify the results, so we do not utilize such a ramp-up here.
 \end{LineLabel}
 
 \begin{LineLabel}{R2-8}
-We discretize \cref{eq:kdv_burgers} in space using a
-fourth-order central finite difference method and in time using a
-third-order Runge-Kutta scheme.
-For numerical stability, we must also include a hyperviscosity term,
-$\nu_{\text{bi}} \partial_x^6 \eta_0$ with $\nu_{\text{bi}} =
-\num{3e-3}$, on the right-hand side of \cref{eq:kdv_burgers}.
-\end{LineLabel}
-This hyperviscosity has minimal effect on the wave evolution as the
-normalized root-mean-square difference between the unforced ($P=0$)
+We use the Dedalus spectral solver which implements a generalized tau
+method and zero-padding with a scaling factor of $3/2$ to prevent
+aliasing of nonlinear terms.
+A Chebyshev basis is chosen with, and time stepping is done with a 3rd-order
+4-stage DIRK+ERK scheme.
+The normalized root-mean-square difference between the unforced ($P=0$)
 profile $\eta$ at $t'_1=3$ and the initial condition $\eta_0$ is
 $\sqrt{\langle (\eta - \eta_0)^2 \rangle/ \langle \eta_0^2 \rangle} =
-\num{3e-3}$,
+\num{4e-15}$,
 \begin{LineLabel}{R2-6}
 and the normalized wave height change is $1-\bqty{\max(\eta)
-- \min(\eta)}/\bqty{\max(\eta_0) - \min(\eta_0)} = \num{2e-3}$.
+- \min(\eta)}/\bqty{\max(\eta_0) - \min(\eta_0)} = \num{-3e-15}$.
 \end{LineLabel}
 We quantify the wave shape with the wave energy $E$, skewness $\Sk$ and
 asymmetry $\As$,
@@ -537,8 +532,8 @@ $\tilde{x}>0$ one.
     See the text for a description of each term.
     The upper panels \subref{fig:terms:a},\subref{fig:terms:b} show all
     of the terms in the KdV-Burgers equation while the lower panels
-    \subref{fig:terms:c},\subref{fig:terms:d} show just the wind,
-    hyperviscosity, and change terms.
+    \subref{fig:terms:c},\subref{fig:terms:d} show just the wind and
+    change terms.
     Results are shown for $\epsilon=0.1$, $\mu_E = 0.6$, $\abs{P
     k_E/(\rho_w g \epsilon)} = 0.25$, and non-dimensional slow time
     $t'_1 = t \epsilon \sqrt{gh} k_E = 3$.
@@ -553,22 +548,14 @@ To show the influence of each term in the KdV-Burgers equation
 Advection ($(3/2) \eta'_0 \partial_{x'} \eta'_0$), dispersion
 ($\partial_{x'}^3 \eta_0' \mu_E/(6\epsilon)$), and the current
 ($-\partial_{x'} \eta'_0$) balance for unforced solitary waves.
-When wind forcing ($P \partial_{x'}^2 \eta'_0 /2$) and the
-hyperviscosity ($-\nu_{\text{bi}} \partial_{x'}^6 \eta'_0$) are
-included, the wave shape experiences a time-dependent change
-($\partial_{t_1'} \eta'_0$).
+When wind forcing ($P \partial_{x'}^2 \eta'_0 /2$) is included, the wave
+shape experiences a time-dependent change ($\partial_{t_1'} \eta'_0$).
 The top panels \subref{fig:terms:a}, \subref{fig:terms:b} show all six
 terms, with advection, dispersion, and current dominating as they would
 in the unforced case.
 The lower panels \subref{fig:terms:c}, \subref{fig:terms:d} show just
-the wind, hyperviscosity, and change terms, which would each be zero in
+the wind and change terms, which would each be zero in
 the unforced case.
-Notice that the hyperviscosity is negligible compared to the other terms
-in the KdV-Burgers equation and thus does not noticeably affect the wave
-shape.
-Indeed, the root-mean-square $\sqrt{\langle \nu_{\text{bi}}
-\partial_{x'}^6 \eta'_0 \rangle^2}$ of the hyperviscosity is \num{20}
-times smaller than that of the other terms.
 Furthermore, the wind term is approximately symmetric about $x=0$ and
 therefore does not directly contribute to the wave asymmetry (\cf
 \cref{sec:physical_reason}).

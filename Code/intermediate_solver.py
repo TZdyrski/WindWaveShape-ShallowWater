@@ -190,7 +190,8 @@ class kdvSystem():
 
     def set_spatial_grid(self, xLen=80, xNum=None,
             xStep=None, xOffset=None, WaveType=None,
-            WaveLength=2*np.pi,NumWaves=1, *args, **kwargs):
+            WaveLength=2*np.pi,NumWaves=1, spectral=False, *args,
+            **kwargs):
         """Set the x coordinate grid.
 
         Parameters
@@ -208,7 +209,7 @@ class kdvSystem():
             must be specified. Default is None.
         xStep : float or None
             Spacing between grid points in x domain. If
-            None, xNum must be specified. Default is 0.3.
+            None, xNum must be specified. Default is 0.05.
         xOffset : float, 'nice_value', or None
             Distance that origin is offset from the center of the
             domain. 'nice_value' gives a nice shift slightly to the
@@ -250,8 +251,8 @@ class kdvSystem():
             self.xNum = xNum
         else:
             if xStep is None:
-                # Use default value of xStep = 0.3
-                xStep = 0.3
+                # Use default value of xStep = 0.05
+                xStep = 0.05
             if WaveType == 'int_wave_lengths' or WaveType == 'cnoidal':
                 # xNum = xLen/xStep = NumWaves*WaveLength/xStep, but to
                 # prevent rounding errors; round WaveLength/xStep, then
@@ -280,7 +281,38 @@ class kdvSystem():
                 endpoint=False
                 )
 
-    def set_temporal_grid(self, tLen=3, tNum='density', *args, **kwargs):
+        self.spectral = False
+        if spectral:
+            self.spectral = True
+
+            from dedalus import public as de
+            from fractions import Fraction
+
+            # De-alias by 3/2 for quadratic nonlinearity
+            dealias_factor=Fraction(3,2)
+
+            # Add dx to right endpoint since we specify [xmin,xmax) for
+            # periodic BCs, but Dedalus wants closed intervals
+            # [xmin,xmax+dx]
+            endpoints = (self.x[0], self.x[-1]+self.dx)
+
+            # Ensure that the number of de-aliased points
+            # xNum*dealias_factor is a whole number
+            denom = dealias_factor.denominator
+            self.xNum = int(np.ceil(self.xNum/denom)*denom)
+
+            # Create basis and domain
+            x_basis = de.Chebyshev('x', self.xNum, interval=endpoints,
+                    dealias=dealias_factor)
+            self.domain = de.Domain([x_basis], np.float64)
+
+            self.x = self.domain.grid(0)
+            # Depending on the basis, it is likely that dx is no longer
+            # constant
+            self.dx = np.diff(self.x)
+
+    def set_temporal_grid(self, tLen=3, tNum='density', spectral=False,
+            *args, **kwargs):
         """Set the t-coordinate grid.
 
         Parameters
@@ -300,8 +332,10 @@ class kdvSystem():
 
         self.tLen = tLen
 
-        if tNum == 'density':
+        if tNum == 'density' and not spectral:
             self.tNum = int(self.tLen/(self.xLen/self.xNum)**4)
+        elif tNum == 'density' and spectral:
+            self.tNum = int(self.tLen/(self.xLen/self.xNum))
         else:
             self.tNum = tNum
 
@@ -329,6 +363,10 @@ class kdvSystem():
 
         if type(y0) == np.ndarray:
             self.y0 = y0
+            if self.spectral:
+                raise(ValueError('Cannot provide y0 initial condition'+\
+                        ' as matrix after passing spectral=True to'+\
+                        ' set_spatial_grid'))
         elif y0 == 'kdv':
             m = self.m
 
@@ -753,6 +791,123 @@ class kdvSystem():
         self.sol = y.transpose()
         self.PDEterms = PDEterms
 
+    def solve_system_spectral(self):
+        """Use a spectral method to solve the differential equation on a
+        periodic domain. This is currently only implemented for the
+        KdV-Burgers equation so we must have self.diffeq == 'KdVB'."""
+
+        if self.diffeq != 'KdVB':
+            raise(ValueError("Spectral solver can only solve the"+\
+                    " KdV-Burgers equation (self.diffeq='KdVB'),"+\
+                    " but '"+self.diffeq+"' was passed"))
+
+        from dedalus import public as de
+
+        # Source: https://dedalus-project.readthedocs.io/en/latest/notebooks/dedalus_tutorial_problems_solvers.html
+
+        # We don't use a hyperviscosity for spectral methods
+        self.H = 0
+
+        # We need to transform the third order KdV-B equation to a
+        # system of first order equations
+        # A*d(u)/dt + F*ux + B*u*ux + C*uxxx = G*uxx
+        # to
+        # (A)           (-F ,G ,-C)           (u*ux)
+        # (0)*d(U)/dt = (0  ,0  ,0)*d(U)/dx + (0)
+        # (0)           (0  ,0  ,0)           (0)
+        # with U = (u,ux,uxx).T and (3) boundary conditions
+        # (1,0,0)*U(xmin,t) = 0,
+        # (0,1,0)*U(xmin,t) = 0,
+        # (0,1,0)*U(xmax,t) = 0,
+        # and initial conditions
+        # U(x,0) = (u0, d(u0)/dx, d^2(u0)/dx^2)
+
+        # Create problem
+        problem = de.IVP(self.domain, variables=['u', 'ux', 'uxx'])
+
+        # Apply Dirichlet preconditioning
+        problem.meta[:]['x']['dirichlet'] = True
+
+        # Define parameters
+        problem.parameters['A'] = self.A
+        problem.parameters['B'] = self.B
+        problem.parameters['C'] = self.C
+        problem.parameters['F'] = self.F
+        problem.parameters['G'] = self.G
+
+        # Main equation, with linear terms on the LHS and nonlinear terms on the RHS
+        problem.add_equation("A*dt(u) + F*dx(u) + C*dx(uxx) - G*dx(ux) = -B*u*ux")
+        # Auxiliary equations defining the first-order reduction
+        problem.add_equation("ux - dx(u) = 0")
+        problem.add_equation("uxx - dx(ux) = 0")
+        # Boundary conditions (set u(xMax) = 0 since this is the
+        # upstream side)
+        problem.add_bc('right(u) = 0')
+        problem.add_bc('left(ux) = 0')
+        problem.add_bc('right(ux) = 0')
+
+        # Select timestepping method
+        solver = problem.build_solver(de.timesteppers.RK443)
+
+        # Reference local grid and state fields
+        u = solver.state['u']
+        ux = solver.state['ux']
+        uxx = solver.state['uxx']
+
+        # Differentiate initial conditions and store results in
+        # self.state
+        u['g'] = self.y0
+
+        u.differentiate('x', out=ux)
+        ux.differentiate('x', out=uxx)
+
+        # Stop stopping criteria
+        solver.stop_sim_time = np.inf
+        solver.stop_wall_time = np.inf
+        solver.stop_iteration = self.tNum
+
+        dt = self.dt
+
+        nx = self.xNum
+        nt_snapshots = self.snapshot_indxs
+
+        y = np.empty((nt_snapshots.size,nx), dtype=np.float128)
+        y[0,:] = self.y0
+
+        # Save the contributions of the individual terms
+        analyzer = solver.evaluator.add_dictionary_handler(iter=1)
+        analyzer.add_task(
+                "-F/A*dx(u) - C/A*dx(uxx) + G/A*dx(ux) -B/A*u*ux",
+                layout='g', name='Change')
+        analyzer.add_task("B/A*u*ux", layout='g', name='Advection')
+        analyzer.add_task("C/A*dx(uxx)", layout='g', name='Dispersion')
+        analyzer.add_task("F/A*dx(u)", layout='g', name='Current')
+        analyzer.add_task("-G/A*dx(ux)", layout='g', name='Wind')
+        analyzer.add_task("0", layout='g', name='Hyperviscosity')
+        PDEterms = {k: np.zeros((nt_snapshots.size,nx),
+            dtype=np.float128) for k in ['Change', 'Advection',
+            'Dispersion', 'Current', 'Wind', 'Hyperviscosity']}
+
+        # Main loop
+        while solver.ok:
+            solver.step(dt)
+
+            n = solver.iteration-1
+            if n+1 in nt_snapshots:
+                # Find index of n in nt_snapshots
+                snapshot_indx = np.nonzero(nt_snapshots ==
+                        n+1)[0].item()
+                # Change scales to 1 to save data
+                u_alias = u.copy()
+                u_alias.set_scales(1)
+                y[snapshot_indx,:] = u_alias['g']
+                for key in PDEterms:
+                    PDEterms[key][snapshot_indx,:] = \
+                            analyzer[key].data.transpose()
+
+        self.sol = y.transpose()
+        self.PDEterms = PDEterms
+
     def get_snapshots(self):
         """Get the snapshots at times set by set_snapshot_ts.
 
@@ -907,7 +1062,7 @@ def convert_array_to_xarray(system, array, DataSet=False):
 
     return data
 
-def default_solver(y0_func=None, solver='RK3', *args, **kwargs):
+def default_solver(y0_func=None, solver='Spectral', *args, **kwargs):
 
     forcing_type_dict = {'Jeffreys' : 'KdVB', 'GM' : 'KdVNL'}
     if 'forcing_type' in kwargs:
@@ -920,6 +1075,8 @@ def default_solver(y0_func=None, solver='RK3', *args, **kwargs):
     if 'y0' not in kwargs and (kwargs.get('wave_type') == 'cnoidal' or
             kwargs.get('wave_type') == 'solitary'):
         kwargs['y0'] = 'kdv'
+    if solver == 'Spectral':
+        kwargs['spectral'] = True
 
     # Create KdV-Burgers or nonlocal KdV system
     solverSystem = kdvSystem(**kwargs)
@@ -943,9 +1100,12 @@ def default_solver(y0_func=None, solver='RK3', *args, **kwargs):
         solverSystem.solve_system_rk3()
     elif solver == 'AB3':
         solverSystem.solve_system_ab3()
+    elif solver == 'Spectral':
+        solverSystem.solve_system_spectral()
     else:
-        raise(ValueError("'solver' must be {'Builtin','RK3','AB3'}, but "+
-            solver+" was provided"))
+        raise(ValueError("'solver' must be"+\
+                " {'Builtin','RK3','AB3','Spectral'},"+\
+                " but "+solver+" was provided"))
 
     # Convert back to non-normalized variables
     # Convert from eta' = eta/a = eta/h/eps to eta'*eps = eta/a*eps = eta/h
