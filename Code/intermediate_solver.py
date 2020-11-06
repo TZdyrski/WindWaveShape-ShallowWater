@@ -446,9 +446,10 @@ class kdvSystem():
         """
 
         if snapshot_fracs is None:
-            # Choose indices so that we return xNum timesteps
+            # Choose indices so that we return xNum timesteps (or tNum,
+            # whichever is smaller)
             snapshot_indxs = np.arange(start=0, stop=self.tNum,
-                    step=int(self.tNum/self.xNum))
+                    step=max(1,int(self.tNum/self.xNum)))
             # Ensure we also capture the last timestep
             if self.tNum-1 not in snapshot_indxs:
                 snapshot_indxs = np.append(snapshot_indxs, self.tNum-1)
