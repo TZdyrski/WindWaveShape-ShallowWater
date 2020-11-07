@@ -30,19 +30,21 @@ def skewness(profile):
         Returns the skewness calculated at each time step.
     """
 
-    xLen,xNum,dx = get_var_stats(profile)
+    x = profile['x/h']
+    xLen,_,_ = get_var_stats(profile)
 
     # Cast to type double (float64) since fft (used in Hilbert for
     # asymmetry) is unable to hand long double (float128)
     profile = np.array(profile, dtype=np.float64)
 
-    average_sol_cubed = sp.integrate.trapz(
+    average_sol_cubed = np.trapz(
             profile**3,
-            dx=dx,
-            axis=0)/(xLen)
-    average_sol_squared = sp.integrate.trapz(
+            x=x,
+            axis=0
+            )/(xLen)
+    average_sol_squared = np.trapz(
             profile**2,
-            dx=dx,
+            x=x,
             axis=0)/(xLen)
 
     skewness = average_sol_cubed/average_sol_squared**(3/2)
@@ -59,7 +61,8 @@ def asymmetry(profile, asym_half=None):
         Returns the asymmetry calculated at each time step.
     """
 
-    xLen,xNum,dx = get_var_stats(profile)
+    x = profile['x/h']
+    xLen,_,_ = get_var_stats(profile)
 
     # Create coordinate masks
     if asym_half == 'left':
@@ -82,13 +85,13 @@ def asymmetry(profile, asym_half=None):
     # multiplying by a mask does not commute with the Hilbert transform)
     profile_hilbert = (profile_hilbert.T*x_mask).T
 
-    average_hilbert_cubed = sp.integrate.trapz(
+    average_hilbert_cubed = np.trapz(
             profile_hilbert**3,
-            dx=dx,
+            x=x,
             axis=0)/(xLen)
-    average_sol_squared = sp.integrate.trapz(
+    average_sol_squared = np.trapz(
             profile**2,
-            dx=dx,
+            x=x,
             axis=0)/(xLen)
 
     asymmetry = average_hilbert_cubed/average_sol_squared**(3/2)
@@ -109,20 +112,28 @@ def maximum(profile):
     return maximum
 
 def energy(profile):
-    _,_,dx = get_var_stats(profile)
+    xLen,_,_ = get_var_stats(profile)
 
     # Calculate energy
     # Convert from eta'^2 = eta^2/h^2 to energy density (energy per unit
     # length) dE' = d(E/rho_w/g/h^2) = rho_w*g*eta^2*dx/rho_w/g/h^2 =
     # (eta/h)^2*dx = (eta')^2*dx
     # (Primes denote the nondim variables used throughout this solver)
-    energy_density = profile**2*dx
+    # energy_density = profile**2*dx
 
     # Convert from energy density dE' = d(E/h^2/rho_w/g) to energy
     # E' = E/rho_w/g/h^2 = int dE' = int (eta')^2*dx
     # Note: this is the total energy contained in the domain; ie, if
     # there are n wavelengths, this is n*(energy per wavelength)
-    energy = np.sum(energy_density,axis=0)
+    energy = np.trapz(
+            profile**2,
+            x = profile['x/h'],
+            axis=0)/(xLen)
+
+    energy = xr.DataArray(energy,
+            dims=profile[{'x/h':0}].drop_vars('x/h').dims,
+            coords=profile.drop_vars('x/h').coords,
+            attrs=profile.attrs)
 
     return energy
 
@@ -137,8 +148,13 @@ def slope(profile):
     # to
     # sqrt(mu) \partial eta'/\partial x' = \partial eta/(\partial x)
     # (Primes denote the nondim variables used throughout this solver)
-    slope = derivative(profile, dx=dx,
-            deriv_type='periodic_fd')*np.sqrt(mu)
+    if type(dx) == float or type(dx) == int:
+        slope = derivative(profile, dx=dx,
+                deriv_type='periodic_fd')*np.sqrt(mu)
+    else:
+        # If dx is an array, use gradient
+        slope = derivative(profile, x=profile['x/h'],
+                deriv_type='gradient')*np.sqrt(mu)
 
     slope = xr.DataArray(slope, dims=profile.dims,
             coords=profile.coords, attrs=profile.attrs)

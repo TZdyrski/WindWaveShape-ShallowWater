@@ -209,5 +209,8 @@ def get_var_stats(profile, var='x/h',periodic=True):
         # are provided, but the domain is assumed to have length
         # varNum*dvar. Therefore adjust varLen
         varLen = varNum*dvar
+    if not np.isclose(dvar,profile[var][1]-profile[var][0]):
+        # Uneven spacing
+        dvar = np.diff(profile[var])
 
     return varLen, varNum, dvar
