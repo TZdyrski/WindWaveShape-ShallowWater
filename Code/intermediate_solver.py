@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # intermediate_solver.py
 import sys
+import warnings
 import scipy as sp
 import numpy as np
 import scipy.special as spec
@@ -645,7 +646,7 @@ class kdvSystem():
         self.sol = sol['y']
 
 
-    def solve_system_ab3(self):
+    def solve_system_ab3(self, max_slope=np.inf, *args, **kwargs):
         """Use 3rd-order Adams-Bashforth method to solve the
         differential equation on a periodic domain. If self.diffeq ==
         'KdVB', solve the KdV-Burgers equation; if self.diffeq ==
@@ -704,6 +705,26 @@ class kdvSystem():
                 RHS2 = RHS1
                 RHS1 = RHS0
 
+            # Check if maximum slope is less than max_slope
+            if max_slope != np.inf:
+                maxSlope = np.max(np.abs(
+                    derivative(yn, dx=self.dx, period=self.xLen,
+                        order=1)))
+                if maxSlope > max_slope:
+                    warnings.warn('Local slope '+str(maxSlope)+\
+                            ' exceeds max_slope threshold')
+
+                    # Truncate y to previous value of snapshot_indx
+                    y = y[:snapshot_indx,:]
+
+                    # Truncate times
+                    self.snapshot_ts = self.snapshot_ts[:snapshot_indx]
+                    self.tLen = self.snapshot_ts[-1] - self.t[0]
+                    self.t = self.t[self.t <= self.tLen]
+                    self.tNum = self.t.size
+
+                    break
+
             if n+1 in nt_snapshots:
                 # Find index of n in nt_snapshots
                 snapshot_indx = np.nonzero(nt_snapshots ==
@@ -716,7 +737,7 @@ class kdvSystem():
         self.sol = y.transpose()
         self.PDEterms = PDEterms
 
-    def solve_system_rk3(self):
+    def solve_system_rk3(self, max_slope=np.inf, *args, **kwargs):
         """Use 3rd-order Runge-Kutta method to solve the
         differential equation on a periodic domain. If self.diffeq ==
         'KdVB', solve the KdV-Burgers equation; if self.diffeq ==
@@ -778,6 +799,26 @@ class kdvSystem():
             # Calculate next step
             yn = yn + dt*np.dot(k,b)
 
+            # Check if maximum slope is less than max_slope
+            if max_slope != np.inf:
+                maxSlope = np.max(np.abs(
+                    derivative(yn, dx=self.dx, period=self.xLen,
+                        order=1)))
+                if maxSlope > max_slope:
+                    warnings.warn('Local slope '+str(maxSlope)+\
+                            ' exceeds max_slope threshold')
+
+                    # Truncate y to previous value of snapshot_indx
+                    y = y[:snapshot_indx,:]
+
+                    # Truncate times
+                    self.snapshot_ts = self.snapshot_ts[:snapshot_indx]
+                    self.tLen = self.snapshot_ts[-1] - self.t[0]
+                    self.t = self.t[self.t <= self.tLen]
+                    self.tNum = self.t.size
+
+                    break
+
             if n+1 in nt_snapshots:
                 # Find index of n in nt_snapshots
                 snapshot_indx = np.nonzero(nt_snapshots ==
@@ -791,7 +832,7 @@ class kdvSystem():
         self.sol = y.transpose()
         self.PDEterms = PDEterms
 
-    def solve_system_spectral(self):
+    def solve_system_spectral(self, max_slope=np.inf, *args, **kwargs):
         """Use a spectral method to solve the differential equation on a
         periodic domain. This is currently only implemented for the
         KdV-Burgers equation so we must have self.diffeq == 'KdVB'."""
@@ -891,6 +932,24 @@ class kdvSystem():
         # Main loop
         while solver.ok:
             solver.step(dt)
+
+            # Check if maximum slope is less than max_slope
+            if max_slope != np.inf:
+                maxSlope = np.max(np.abs(u.differentiate('x')['g']))
+                if maxSlope > max_slope:
+                    warnings.warn('Local slope '+str(maxSlope)+\
+                            ' exceeds max_slope threshold')
+
+                    # Truncate y to previous value of snapshot_indx
+                    y = y[:snapshot_indx,:]
+
+                    # Truncate times
+                    self.snapshot_ts = self.snapshot_ts[:snapshot_indx]
+                    self.tLen = self.snapshot_ts[-1] - self.t[0]
+                    self.t = self.t[self.t <= self.tLen]
+                    self.tNum = self.t.size
+
+                    break
 
             n = solver.iteration-1
             if n+1 in nt_snapshots:
@@ -1101,7 +1160,7 @@ def default_solver(y0_func=None, solver='Spectral', *args, **kwargs):
     elif solver == 'AB3':
         solverSystem.solve_system_ab3()
     elif solver == 'Spectral':
-        solverSystem.solve_system_spectral()
+        solverSystem.solve_system_spectral(**kwargs)
     else:
         raise(ValueError("'solver' must be"+\
                 " {'Builtin','RK3','AB3','Spectral'},"+\
@@ -1424,6 +1483,117 @@ def gen_decaying_no_nu_bi(save_prefix, eps=0.1, mu=0.8, P=0.25,
                  # affect the output)
                  break
 
+def gen_validity_domain(save_prefix, eps=0.1, mu=0.8, P=0.25, psiP=3/4*np.pi,
+        nu_bi=3e-3, xStep=1e-1, tStep=1e-2, max_tLen=100,
+        max_slope=10000):
+
+    nu_bi_vals = np.array([0])
+    xStep_vals = np.vectorize(round_sig_figs)(xStep*np.logspace(0,2,4),3)
+    tNum_vals = np.ceil((max_tLen/tStep*np.logspace(-1,1,5))).astype(int)
+
+    parameter_array = np.einsum('i,j,k',xStep_vals,tNum_vals,nu_bi_vals)
+
+    for forcing_type in ['Jeffreys']:
+        for wave_type in ['solitary']:
+            if forcing_type == 'GM' and wave_type == 'solitary':
+                # We don't need GM applied to solitary waves, as it
+                # doesn't make as much sense
+                continue
+            for mu_counter, mu_val in enumerate(mu*np.array([1])):
+
+                metrics = xr.Dataset(
+                        data_vars={
+                    'Stopping time' : (('xStep', 'tNum', 'nu_bi'),
+                        np.zeros(parameter_array.shape)),
+                    'Normalized RMS change' : (('xStep', 'tNum', 'nu_bi'),
+                        np.zeros(parameter_array.shape)),
+                    },
+                    coords={'xStep':xStep_vals, 'tNum':tNum_vals,
+                        'nu_bi':nu_bi_vals})
+
+                for xStep_counter, xStep_val in enumerate(xStep_vals):
+                    for tNum_counter, tNum_val in enumerate(tNum_vals):
+                        for nu_bi_counter, nu_bi_val in enumerate(nu_bi_vals):
+
+                            parameters = {
+                                    'tLen' : max_tLen,
+                                    'xStep' : xStep_val,
+                                    'tNum' : tNum_val,
+                                    'eps' : eps,
+                                    'mu' : mu_val,
+                                    'wave_type' : wave_type,
+                                    'forcing_type' : forcing_type,
+                                    'P' : P,
+                                    'psiP' : psiP,
+                                    'nu_bi' : nu_bi_val,
+                                    'max_slope' : max_slope,
+                                    }
+
+                            # Jeffreys does not just psiP
+                            if forcing_type == 'Jeffreys':
+                                parameters.pop('psiP')
+
+                            # Use default mu for solitary waves
+                            if wave_type == 'solitary':
+                                if mu_counter == 0:
+                                    parameters.pop('mu')
+                                else:
+                                    # Since solitary waves all use the same mu,
+                                    # don't duplicate the calculation
+                                    continue
+
+                            # Suppress warnings
+                            warnings.filterwarnings("ignore")
+
+                            # Run model
+                            data, dataClass = default_solver(**parameters)
+
+                            # Un-suppress warnings
+                            warnings.resetwarnings()
+
+                            # Get default mu for solitary waves
+                            if wave_type == 'solitary':
+                                parameters['mu'] = dataClass.mu
+
+                            # Check what the final time was
+                            metrics['Stopping time'][{'xStep':xStep_counter,
+                                        'tNum':tNum_counter,
+                                        'nu_bi':nu_bi_counter}] = \
+                                                dataClass.tLen
+
+                            # Calculate the normalized RMS change from
+                            # the initial profile
+
+                            # Subtract last time from first time
+                            difference = data[{'t*eps*sqrt(g*h)*k_E':-1}] - \
+                                    data[{'t*eps*sqrt(g*h)*k_E':0}]
+
+                            # Take the L2 norm
+                            L2diff = scipy.integrate.trapz(difference**2, dx=dataClass.dx,
+                                    axis=0)/(dataClass.xLen)
+
+                            # Normalize by the original L2 norm
+                            L2orig = scipy.integrate.trapz(
+                                    data[{'t*eps*sqrt(g*h)*k_E':0}]**2, dx=dataClass.dx,
+                                    axis=0)/(dataClass.xLen)
+                            L2ratio = np.sqrt(L2diff/L2orig)
+
+                            metrics['Normalized RMS change']\
+                                    [{'xStep':xStep_counter,
+                                        'tNum':tNum_counter,
+                                        'nu_bi':nu_bi_counter}] = L2ratio
+
+                # Replace tNum with tStep
+                metrics = metrics.assign_coords({'tStep':
+                    metrics['tNum']/max_tLen})
+                metrics = metrics.swap_dims({'tNum' : 'tStep'})
+                metrics = metrics.drop_vars('tNum')
+
+                # Save data
+                data_csv.save_data(metrics, save_prefix+'Metrics',
+                        wave_length=dataClass.WaveLength,
+                        **parameters, stack_coords=False)
+
 def main():
     save_prefix = '../Data/Raw/'
 
@@ -1435,6 +1605,7 @@ def main():
 #            'press_varying' : gen_press_varying,
 #            'biviscosity' : gen_biviscosity_variation,
 #            'decaying_no_nu_bi' : gen_decaying_no_nu_bi,
+            'validity_domain' : gen_validity_domain,
             }
 
     if len(sys.argv) == 1:

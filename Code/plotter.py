@@ -990,6 +990,94 @@ def plot_spacetime_mesh_template(data_arrays, norm_by_wavelength=False,
 
     return fig
 
+def plot_metrics_mesh_template(data_arrays, norm_by_wavelength=False,
+        **kwargs):
+
+    # Set axis labels and titles
+
+    ax_xlabel = r'$x$-step $\Delta x$'
+
+    ax_ylabel = r'$t$-step $\Delta t$'
+
+    title_string =  r'$\epsilon = {eps}$,'+\
+            r' $\mu_E = {mu}$,'+\
+            r' $P k_E/(\rho_w g \epsilon) = {P}$'+\
+            (r', $\psi_P = {psiP}$' if
+                    data_arrays[0,0].attrs.get('forcing_type',None) ==
+                    'GM' else '')+\
+            (r', Forcing: {forcing_type}' if
+                    data_arrays[0,0].attrs.get('forcing_type',None) is
+                    not None else '')
+
+    if data_arrays.size == 1:
+        ax_title = title_string
+        suptitle = None
+    else:
+        suptitle = title_string
+        ax_title = None
+
+    x_coordinate = 'xStep'
+
+    # Convert psiP to fractions of pi
+    pi_parameters = ['psiP']
+
+    if norm_by_wavelength:
+        data_arrays = convert_x_norm(data_arrays)
+
+    # Define custom plotter
+    def log_mesh_plotter(data_array, x_coord, axis):
+
+        def face_center(X):
+            """ Takes a 1D array X of size n and returns a 1D array X' of
+            size n+1 with each point in X centered between two
+            points in X' in log10 space. """
+            # Source: matplotlib _axes.py
+            X = np.log10(X)
+            dX = np.diff(X)/2.
+            X = np.hstack((X[0] - dX[0],
+                X[:-1] + dX,
+                X[-1] + dX[-1]))
+            X = 10**X
+
+            return X
+
+        # Generate meshes for contour plot
+        t_mesh,x_mesh = np.meshgrid(
+                face_center(data_array['tStep']),
+                face_center(data_array[x_coord]),
+                )
+
+        cs = axis.pcolormesh(x_mesh, t_mesh, data_array,
+                rasterized=True,
+                shading='flat',
+        )
+
+        axis.set_xscale('log')
+        axis.set_yscale('log')
+
+        # Add colorbars
+        axis.figure.colorbar(cs ,ax=axis)
+
+        return
+
+    # Plot data
+    fig = plot_multiplot_template(**{
+        'data_arrays':data_arrays,
+        'x_coordinate':x_coordinate,
+        'suptitle':suptitle,
+        'pi_parameters':pi_parameters,
+        'ax_title':ax_title,
+        'ax_xlabel':ax_xlabel,
+        'ax_ylabel':ax_ylabel,
+        'plotter':log_mesh_plotter,
+        'subplot_adjust_params':{'right':1},
+        # Put kwargs last so any parameters will overwrite the defaults
+        # we've provided
+        **kwargs,
+        })
+
+    return fig
+
 def plot_forcing_types_template(data_arrays):
     # Initialize figure
     fig, ax = texplot.newfig(1,nrows=2,ncols=1,sharex=True,
@@ -2684,6 +2772,47 @@ def plot_spacetime_mesh(load_prefix, save_prefix, *args, **kwargs):
                 ('_'+parameters['label'] if parameters['label'] != ''
                     else ''))
 
+def plot_metrics(load_prefix, save_prefix, *args, **kwargs):
+    filename_base = 'Metrics'
+
+    # Using the default list of parameters, generate plots for ones with
+    # slightly different parameters
+    parameter_list = [
+            {**kwargs, 'wave_type':'solitary', 'label':'solitary'},
+            ]
+    for parameters in parameter_list:
+
+        filename = data_csv.find_filenames(load_prefix, filename_base,
+                parameters=parameters)
+
+        # Extract data
+        data_array = data_csv.load_data(filename, stack_coords=False,
+                coord_names=['xStep','tStep','nu_bi'])
+
+        data_array = data_array[{'nu_bi':0}]
+
+        # Arrange data and parameters into 2d array for plotting
+        data_arrays = np.empty((1,2),dtype=object)
+
+        data_arrays[0,0] = data_array['Stopping time']
+        data_arrays[0,1] = data_array['Normalized RMS change']
+
+        data_arrays[0,0].attrs = data_array.attrs
+        data_arrays[0,1].attrs = data_array.attrs
+
+        norm_by_wavelength = data_array.attrs['wave_type'] == 'cnoidal'
+
+        ax_title = np.array([['Stopping time',
+            'Normalized RMS change']])
+
+        fig = plot_metrics_mesh_template(data_arrays,
+                norm_by_wavelength=norm_by_wavelength, suptitle='',
+                ax_title=ax_title)
+
+        texplot.savefig(fig,save_prefix+'Metrics'+\
+                ('_'+parameters['label'] if parameters['label'] != ''
+                    else ''))
+
 def plot_forcing_types(load_prefix, save_prefix, *args, **kwargs):
 
     import scipy.special as spec
@@ -2797,6 +2926,7 @@ def main():
 #            'biviscosity' : plot_biviscosity,
             'spacetime_mesh' : plot_spacetime_mesh,
 #            'decaying_no_nu_bi' : plot_decaying_no_nu_bi,
+            'metrics' : plot_metrics,
             'forcing_types' : plot_forcing_types,
             }
 
