@@ -1418,8 +1418,9 @@ def plot_pos_neg_solitary_terms(load_prefix, save_prefix, *args, **kwargs):
                 'P' : P_val})
 
         # Extract data
-        data_array = data_csv.load_data(filename, stack_coords=False)
-        data_array = data_array.set_coords('t*eps*sqrt(g*h)*k_E')
+        data_array = data_csv.load_data(filename, stack_coords=False,
+                coord_names=['x/h','t*eps*sqrt(g*h)*k_E'])
+        data_array = data_array.squeeze(dim='t*eps*sqrt(g*h)*k_E')
 
         indx = np.unravel_index(indx_num,data_arrays.shape)
         data_arrays[indx] = data_array

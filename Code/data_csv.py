@@ -41,7 +41,8 @@ def save_data(data, suffix, stack_coords=False, **kwargs):
 
     return
 
-def load_data(filename, extension='.csv', stack_coords=True):
+def load_data(filename, extension='.csv', stack_coords=True,
+        coord_names=None):
 
     if stack_coords:
         # Skip 2nd row, which contains column headers
@@ -60,6 +61,9 @@ def load_data(filename, extension='.csv', stack_coords=True):
         data = data.stack()
     else:
         data = pd.read_csv(filename, index_col=0, comment='#')
+        if coord_names is not None:
+            data = data.reset_index()
+            data = data.set_index(coord_names)
 
     data = data.to_xarray()
 
