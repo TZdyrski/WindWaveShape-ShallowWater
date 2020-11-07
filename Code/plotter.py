@@ -209,6 +209,12 @@ def plot_multiplot_template(data_arrays, x_coordinate, line_coord=None,
     # Make 2d ndarrays even if only scalars or 1d arrays
     ax = atleast_2d(ax)
 
+    # If data_arrays has shape (1, n), then newfig will return a 1D
+    # array of shape (n,). After expanding this to (n,1) with
+    # atleast_2d, we need to transpose to ensure it has shape (n,1)
+    if data_arrays.shape[0] == 1 and data_arrays.shape[1] > 1:
+        ax = ax.T
+
     # Adjust figure height
     figsize = fig.get_size_inches()
     fig.set_size_inches([figsize[0],figsize[1]*(0.4+0.2*ax.shape[0])])
