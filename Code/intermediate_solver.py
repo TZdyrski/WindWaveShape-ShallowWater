@@ -336,7 +336,7 @@ class kdvSystem():
         if tNum == 'density' and not spectral:
             self.tNum = int(self.tLen/(self.xLen/self.xNum)**4)
         elif tNum == 'density' and spectral:
-            self.tNum = int(self.tLen/(self.xLen/self.xNum))
+            self.tNum = int(10*self.tLen/(self.xLen/self.xNum))
         else:
             self.tNum = tNum
 
@@ -843,6 +843,7 @@ class kdvSystem():
                     " but '"+self.diffeq+"' was passed"))
 
         from dedalus import public as de
+        from dedalus.extras import flow_tools
 
         # Source: https://dedalus-project.readthedocs.io/en/latest/notebooks/dedalus_tutorial_problems_solvers.html
 
@@ -903,31 +904,65 @@ class kdvSystem():
         ux.differentiate('x', out=uxx)
 
         # Stop stopping criteria
-        solver.stop_sim_time = np.inf
+        solver.stop_sim_time = self.tLen
         solver.stop_wall_time = np.inf
-        solver.stop_iteration = self.tNum
+        solver.stop_iteration = np.inf
 
         dt = self.dt
 
-        nx = self.xNum
-        nt_snapshots = self.snapshot_indxs
+        # Save the snapshots
+        # Since the evaluator requires a constant sim_dt, we need to
+        # take the average dt form snapshot_ts; this is slightly less
+        # flexible than allowing arbitrary snapshot_ts, but is required
+        # to use dynamic timestepping
+        snapshot_dt = (self.snapshot_ts[-1]-self.snapshot_ts[0])/\
+                self.snapshot_ts.size
 
-        y = np.empty((nt_snapshots.size,nx), dtype=np.float128)
-        y[0,:] = self.y0
+        # Define DictionaryHandler that keeps state
+        from dedalus.core.evaluator import Handler
+        class StatefulDictionaryHandler(Handler):
+            """Handler that stores outputs in a stateful dictionary."""
+
+            def __init__(self, *args, **kw):
+                Handler.__init__(self, *args, **kw)
+                self.fields = dict()
+
+            def __getitem__(self, item):
+                return self.fields[item]
+
+            def process(self, **kw):
+                """Reference fields from dictionary."""
+                for task in self.tasks:
+                    task['out'].set_scales(task['scales'], keep_data=True)
+                    task['out'].require_layout(task['layout'])
+                    if not task['name'] in self.fields:
+                        self.fields[task['name']] = task['out'].data
+                    else:
+                        self.fields[task['name']] = np.vstack(
+                                (self.fields[task['name']],
+                                    task['out'].data))
 
         # Save the contributions of the individual terms
-        analyzer = solver.evaluator.add_dictionary_handler(iter=1)
+        analyzer = solver.evaluator.add_handler(StatefulDictionaryHandler(
+            solver.domain, solver.evaluator.vars, sim_dt=snapshot_dt))
+        analyzer.add_task("t", layout='g', name='t', scales=1)
+        analyzer.add_task("u", layout='g', name='u', scales=1)
         analyzer.add_task(
                 "-F/A*dx(u) - C/A*dx(uxx) + G/A*dx(ux) -B/A*u*ux",
-                layout='g', name='Change')
-        analyzer.add_task("B/A*u*ux", layout='g', name='Advection')
-        analyzer.add_task("C/A*dx(uxx)", layout='g', name='Dispersion')
-        analyzer.add_task("F/A*dx(u)", layout='g', name='Current')
-        analyzer.add_task("-G/A*dx(ux)", layout='g', name='Wind')
-        analyzer.add_task("0", layout='g', name='Hyperviscosity')
-        PDEterms = {k: np.zeros((nt_snapshots.size,nx),
-            dtype=np.float128) for k in ['Change', 'Advection',
-            'Dispersion', 'Current', 'Wind', 'Hyperviscosity']}
+                layout='g', name='Change', scales=1)
+        analyzer.add_task("B/A*u*ux", layout='g', name='Advection', scales=1)
+        analyzer.add_task("C/A*dx(uxx)", layout='g', name='Dispersion', scales=1)
+        analyzer.add_task("F/A*dx(u)", layout='g', name='Current', scales=1)
+        analyzer.add_task("-G/A*dx(ux)", layout='g', name='Wind', scales=1)
+        analyzer.add_task("0", layout='g', name='Hyperviscosity', scales=1)
+
+        # Add CFL condition to dynamically calculate dt
+        CFL = flow_tools.CFL(solver, initial_dt=dt, safety=0.3,
+                             max_change=1.5, min_change=0.5)
+        # The local velocity u=dx(phi)+O(eps) is equal also
+        # u=eta+O(eps), so the velocity is equal to our primary field
+        # eta (which is called 'u' here)
+        CFL.add_velocity('u', axis=0)
 
         # Main loop
         while solver.ok:
@@ -940,32 +975,17 @@ class kdvSystem():
                     warnings.warn('Local slope '+str(maxSlope)+\
                             ' exceeds max_slope threshold')
 
-                    # Truncate y to previous value of snapshot_indx
-                    y = y[:snapshot_indx,:]
-
-                    # Truncate times
-                    self.snapshot_ts = self.snapshot_ts[:snapshot_indx]
-                    self.tLen = self.snapshot_ts[-1] - self.t[0]
-                    self.t = self.t[self.t <= self.tLen]
-                    self.tNum = self.t.size
-
                     break
 
-            n = solver.iteration-1
-            if n+1 in nt_snapshots:
-                # Find index of n in nt_snapshots
-                snapshot_indx = np.nonzero(nt_snapshots ==
-                        n+1)[0].item()
-                # Change scales to 1 to save data
-                u_alias = u.copy()
-                u_alias.set_scales(1)
-                y[snapshot_indx,:] = u_alias['g']
-                for key in PDEterms:
-                    PDEterms[key][snapshot_indx,:] = \
-                            analyzer[key].data.transpose()
+            # Update dt
+            dt = CFL.compute_dt()
 
-        self.sol = y.transpose()
-        self.PDEterms = PDEterms
+        self.sol = analyzer['u'].transpose()
+        self.PDEterms = {k : analyzer[k] for k in
+                ['Change', 'Advection', 'Dispersion', 'Current', 'Wind',
+                    'Hyperviscosity']}
+        self.snapshot_ts = analyzer['t'][:,0]
+        self.tNum = self.snapshot_ts.size
 
     def get_snapshots(self):
         """Get the snapshots at times set by set_snapshot_ts.

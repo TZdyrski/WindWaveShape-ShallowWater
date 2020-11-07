@@ -552,6 +552,11 @@ def plot_shape_statistics_template(data_arrays, ax_title=None, **kwargs):
 
 def plot_shape_statistics_vs_time_template(data_arrays, **kwargs):
 
+    # Interpolate data
+    for iy in range(data_arrays.shape[0]):
+        data_arrays[iy] = data_arrays[iy].interpolate_na(
+                't*eps*sqrt(g*h)*k_E', method='spline')
+
     # Set axis labels and titles
 
     ax_xlabel = r'Time $t \epsilon \sqrt{{g h}} k_E$'
@@ -617,6 +622,11 @@ def plot_energy_template(data_arrays, **kwargs):
     ax_xlabel = r'Time $t \epsilon \sqrt{{g h}} k_E$'
 
     ax_ylabel = r'Normalized Energy $Ek/(\rho_w g h^2)$'
+
+    # Interpolate data
+    for iy in range(data_arrays.shape[0]):
+        data_arrays[iy] = data_arrays[iy].interpolate_na(
+                't*eps*sqrt(g*h)*k_E', method='spline')
 
     data_arrays_rearranged = np.empty((1,data_arrays.size),dtype=object)
 
@@ -770,6 +780,11 @@ def plot_power_spec_vs_kappa_template(data_arrays, **kwargs):
     return fig
 
 def plot_power_spec_vs_time_template(data_arrays, **kwargs):
+
+    # Interpolate data
+    for iy in range(data_arrays.shape[0]):
+        data_arrays[iy] = data_arrays[iy].interpolate_na(
+                't*eps*sqrt(g*h)*k_E', method='spline')
 
     # Set axis labels and titles
 
