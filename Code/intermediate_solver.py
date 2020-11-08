@@ -1605,7 +1605,7 @@ def main():
 #            'press_varying' : gen_press_varying,
 #            'biviscosity' : gen_biviscosity_variation,
 #            'decaying_no_nu_bi' : gen_decaying_no_nu_bi,
-            'validity_domain' : gen_validity_domain,
+#            'validity_domain' : gen_validity_domain,
             }
 
     if len(sys.argv) == 1:
