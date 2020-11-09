@@ -17,6 +17,7 @@
 \DeclareMathOperator{\Sk}{Sk}
 \DeclareMathOperator{\As}{As}
 
+\newcommand{\fourier}{\mathcal{F}}
 \newcommand{\hilbert}{\mathcal{H}}
 
 % Define \im as Roman i
@@ -49,9 +50,12 @@ deep water.
 Here, we investigate the effect of wind on wave shape in shallow water
 through a wind-induced surface pressure for different wind speeds and
 directions.
+\begin{LineLabel}{R2-5}
 A multiple-scale analysis of long waves propagating over a shallow,
 flat bottom and forced by a Jeffreys-type surface pressure produces a
-Korteweg-de Vries (KdV)-Burgers equation for the wave profile.
+(forward or backward) Korteweg-de Vries (KdV)-Burgers equation for the
+wave profile.
+\end{LineLabel}
 The evolution of a symmetric, solitary wave initial condition is
 calculated numerically.
 The resulting wave grows (decays) for onshore (offshore) wind and
@@ -110,7 +114,7 @@ introduce a wind-induced pressure term to the Boussinesq equations in
 The resulting KdV-Burgers equation governs a solitary wave's evolution,
 which we solve numerically
 \begin{LineLabel}{R2-2}
-to yield the wave energy, skewness and asymmetry
+to yield the wave's energy, skewness and asymmetry
 \end{LineLabel}
 in \cref{sec:results}.
 We calculate the wind speed, discuss the asymmetry and
@@ -162,10 +166,12 @@ forcing \citep{jeffreys1925formation},
   p(x,t) = P \pdv{\eta(x,t)}{x} \,.
   \label{eq:press_def}
 \end{equation}
-Here, $P$ is proportional to $(U-c)^2$, with $c$ the phase speed and $U$
-the wind speed (\cf{} \cref{sec:press_mag}), and $P>0$ corresponds to
-(`onshore') wind in the same direction as the wave while $P<0$ denotes
-(`offshore') wind opposite the wave.
+\begin{LineLabel}{R2-11}
+Here, $P$ is proportional to $(U-c)^2$, with $c=\sqrt{gh}$ the shallow
+water phase speed and $U$ the wind speed (\cf{} \cref{sec:press_mag}),
+\end{LineLabel}
+and $P>0$ corresponds to (`onshore') wind in the same direction as the
+wave while $P<0$ denotes (`offshore') wind opposite the wave.
 We use a Jeffreys forcing for its analytic simplicity and clear
 demonstration of wind-wave coupling.
 Jeffrey's separated sheltering mechanism is likely only relevant
@@ -232,8 +238,8 @@ Now, our non-dimensional equations take the form
 \end{alignat}
 We will drop the primes throughout the remainder of this section for readability.
 
-\subsection{Boussinesq equations, multiple-scale expansion, KdV equation,
-and initial condition}
+\subsection{\label{sec:boussinesq} Boussinesq equations, multiple-scale
+expansion, KdV equation, and initial condition}
 Here, we modify the Boussinesq equation's derivation provided by
 \citet{mei2005nonlinear} by including the surface pressure forcing in
 \cref{eq:dynamic_bc}.
@@ -325,18 +331,31 @@ Thus, converting back to $\eta_0$ gives the Korteweg-de Vries
     \pdv[3]{\eta_0}{x} = -P \frac{1}{2} \pdv[2]{\eta_0}{x} \,.
   \label{eq:kdv_burgers}
 \end{equation}
-The pressure term, $P \partial^2_x \eta_0$, acts as a positive viscosity
-for offshore, damping wind or a negative viscosity when onshore wind
-causes wave growth.
 Note that \cref{eq:kdv_burgers} has a rescaling symmetry, with $\mu_E
 \to \lambda^2 \mu_E$ equivalent to taking $(x,t_0,t_1,P) \to
 (x,t_0,t_1,P)/\lambda$.
 Therefore, we fix the length scale (equivalently, $k_E$) by choosing
 $\mu_E = 6 \epsilon$.
+\begin{LineLabel}{R2-10}
+The pressure term, $P \partial^2_x \eta_0$, acts as a positive viscosity
+for offshore, damping wind and \cref{eq:kdv_burgers} is the (forward)
+KdV-Burgers equation.
+However, for onshore wine, the viscosity is negative and causes wave
+growth, yielding the backward KdV-Burgers equation.
+The backward KdV-Burgers equation is ill-posed in the sense of Hadamard
+because the solution is highly sensitive to changes in the initial
+condition~\citep{hadamard1902problemes}.
+While there is likely to be a finite-time singularity (\ie wave
+breaking), the perturbation expansion is only valid for time intervals
+of $\order{T_0/\epsilon}$ and we will therefore ignore the ill-posed
+nature.
+\end{LineLabel}
 
+\begin{LineLabel}{R2-7}
 The solitary wave solutions of the unforced ($P=0$) KdV equation
 balance dispersion $\partial_x^3 \eta_0$ with focusing nonlinearity
 $\eta_0 \partial_x \eta_0$ and have the form~\citep[\eg][]{mei2005nonlinear}
+\end{LineLabel}
 \begin{equation}
   \eta_0 = H_0 \sech^2\pqty{\frac{x}{\Delta}}
   \qq{with}
@@ -347,45 +366,56 @@ in a co-moving frame with $H_0>0$ an order-1 parameter.
 We use \cref{eq:initial_condition} for our initial condition and choose
 $H_0 = 2$ so the initial, dimensional amplitude $a_0$ is half the wave
 height (\cf{} \cref{sec:nondim}).
+\begin{LineLabel}{R2-15}
 \begin{LineLabel}{R2-1}
-The dissipative term $P \partial_x^2 \eta_0$ in \cref{eq:kdv_burgers}
+The wind-forcing term $P \partial_x^2 \eta_0$ in \cref{eq:kdv_burgers}
 disrupts the solitary wave's balance of dispersion and nonlinearity,
-inducing shape changes and growth/decay.
+inducing growth/decay and shape changes.
+\end{LineLabel}
+Next, we will study these wind-induced shape changes.
 \end{LineLabel}
 The KdV-Burgers equation has no known, solitary wave solutions, so we
 will solve it numerically.
 
-\subsection{Numerics and shape statistics}
-To solve \cref{eq:kdv_burgers} numerically,
-we will use a spatial domain with periodic boundary conditions and $N_x
-= 1600$ points spread over a domain of length $L = 80$.
-The simulation runs from $t_1 = 0$ to $t_1 = T = 3$, inclusive, with
-$N_t = \num{60}$ points, yielding a spacing $\Delta t_1 = T/(N_t-1)
-\approx \num{0.051}$.
-\begin{LineLabel}{R2-7}
+\subsection{\label{sec:numerics} Numerics and shape statistics}
+\begin{LineLabel}{R2-8}
+To solve \cref{eq:kdv_burgers} numerically, we will use the Dedalus
+spectral solver~\citep{burns2020dedalus} which implements a generalized
+tau method with a Chebyshev basis.
+Since the onshore wind, $P>0$ case is ill-posed, we require an implicit
+solver, so time stepping is done with a 3rd-order 4-stage DIRK+ERK
+scheme.
+The spatial domain has a length of $L=80$ with periodic boundary
+conditions.
+We employ $N_c = 1600$ Chebyshev coefficients and zero-padding with a
+scaling factor of $3/2$ to prevent aliasing of nonlinear terms.
+This corresponds to $N_x = 2400$ points with an average
+spacing of $\Delta x = 0.05$ and between $\Delta x =
+\numrange{7.7e-5}{7.9e-2}$.
+The simulation runs from $t_1 = 0$ to $t_1 = T = 3$, inclusive.
+Adaptive timestepping is employed such that the CFL number is $(\Delta
+t) \max(\eta)/(\Delta x) = 1$.
+For the unforced case, this corresponds to $\Delta t \approx
+\num{7.86e-3}$ and increases to \num{8.83e-3} for $P=-0.25$ and
+decreases to \num{6.28e-3} for $P = 0.25$.
+\end{LineLabel}
 We found that linearly ramping up $P$ from $0$ at $t_1=0$ to its full
-value at $t_1 = \epsilon$, or full, dimensional time $t = 1/(\sqrt{gh}
+value at $t_1 = \epsilon$, or full, dimensional time $T_0 = 1/(\sqrt{gh}
 k_E)$ (\ie{} the time required to cross the inverse, effective
 wavenumber $1/k_E$, or `wave-crossing time') did not qualitatively
 modify the results, so we do not utilize such a ramp-up here.
-\end{LineLabel}
-
-\begin{LineLabel}{R2-8}
-We use the Dedalus spectral solver which implements a generalized tau
-method and zero-padding with a scaling factor of $3/2$ to prevent
-aliasing of nonlinear terms.
-A Chebyshev basis is chosen with, and time stepping is done with a 3rd-order
-4-stage DIRK+ERK scheme.
-The normalized root-mean-square difference between the unforced ($P=0$)
+\begin{LineLabel}{R2-6}
+The spectral solver results in high numerical accuracy, with the
+normalized root-mean-square difference between the unforced ($P=0$)
 profile $\eta$ at $t'_1=3$ and the initial condition $\eta_0$ is
 $\sqrt{\langle (\eta - \eta_0)^2 \rangle/ \langle \eta_0^2 \rangle} =
-\num{4e-15}$,
-\begin{LineLabel}{R2-6}
+\num{6e-15}$,
 and the normalized wave height change is $1-\bqty{\max(\eta)
-- \min(\eta)}/\allowbreak\bqty{\max(\eta_0) - \min(\eta_0)} = \num{-3e-15}$.
+- \min(\eta)}/\allowbreak\bqty{\max(\eta_0) - \min(\eta_0)} = \num{-8e-15}$.
 \end{LineLabel}
-We quantify the wave shape with the wave energy $E$, skewness $\Sk$ and
-asymmetry $\As$,
+
+We quantify the wave shape with the wave's energy $E$, skewness $\Sk$
+and asymmetry $\As$,
 \begin{equation}
   E \coloneqq \langle \eta^2 \rangle \,, \quad
   \Sk \coloneqq \frac{\langle \eta^3 \rangle}{\langle \eta^2
@@ -398,7 +428,11 @@ asymmetry $\As$,
   \dd{x} \,.
   \label{eq:shape_stats_def}
 \end{equation}
-Here, $\hilbert$ is the Hilbert transform.
+\begin{LineLabel}{R2-12}
+Here, $\hilbert(f)$ is the Hilbert transform of $f$, defined as the
+imaginary part of $\fourier^{-1} \pqty{ \fourier \pqty{f} 2U}$ with $U$
+the unit step function and $\fourier$ the Fourier transform.
+\end{LineLabel}
 Since these definitions depend on the domain size $L$, we normalize the
 energy $E$ and skewness $\Sk$ by their initial values.
 
@@ -543,7 +577,7 @@ wave shape statistics---energy, skewness and asymmetry---for onshore
 and offshore wind~(\cref{fig:statistics_solitary}).
 We plot all cases for initial steepness $\epsilon = 0.1$ up to slow time
 $t \epsilon \sqrt{g h} k_E = 3$, corresponding to $3/\epsilon = 30$
-wave-crossing times, $1/(\sqrt{gh} k_E)$.
+wave-crossing times, $T_0 = 1/(\sqrt{gh} k_E)$.
 The unforced case ($P=0$) displays constant shape statistics and zero
 asymmetry, as expected.
 The normalized energy $E/E_0$ shows different growth/decay rates:
@@ -551,8 +585,8 @@ the onshore wind ($P>0$) causes accelerating wave growth while the
 offshore wind ($P<0$) causes slowing wave decay
 (\cref{fig:statistics_solitary:a}).
 \begin{LineLabel}{R2-4}
-The energy of the unforced wave is virtually unchanged, decreasing by
-a factor of \num{3e-3}.
+The energy of the unforced wave is virtually unchanged, with a
+normalized energy change of $1-E/E_0 = \num{-5e-15}$.
 \end{LineLabel}
 The onshore (offshore) wind causes the wave to become more (less) skewed
 over time, with the normalized skewness nearly symmetric about unity
@@ -588,6 +622,7 @@ $\infty$ to obtain
 The left integral is the non-dimensional energy
 \cref{eq:shape_stats_def}, so re-dimensionalizing and converting back to
 the full time $t$ gives the energy growth rate $\gamma$,
+\begin{LineLabel}{R2-13}
 \begin{equation}
   \frac{\gamma}{c k_E} \coloneqq
   \frac{1}{c k_E E} \pdv{E}{t}
@@ -597,9 +632,16 @@ the full time $t$ gives the energy growth rate $\gamma$,
   \,,
   \label{eq:gamma_vs_P_solitary}
 \end{equation}
-with $c = \sqrt{gh}$ the phase speed and the angle brackets evaluated
-with the initial, solitary wave profile \cref{eq:initial_condition}.
-Alternatively, we can numerically fit the energy growth rate to
+with $c = \sqrt{gh}$ the phase speed and $\langle (\partial_x \eta)^2
+\rangle / \langle (k_E \eta)^2 \rangle = 1/5$ evaluated with the
+initial, solitary wave profile \cref{eq:initial_condition}.
+\end{LineLabel}
+\begin{LineLabel}{R2-14}
+\begin{LineLabel}{R2-9}
+Alternatively, a secondary multiple-scale approximation of the
+forward KdV-Burgers equation has been used previously to derive
+the energy growth rate for solitary waves as~\citep{zdyrski2019effects}
+\end{LineLabel}
 \begin{equation}
   E \propto \frac{1}{\pqty{1 - \gamma t}^2}
   \qq{with}
@@ -607,11 +649,11 @@ Alternatively, we can numerically fit the energy growth rate to
   \,,
   \label{eq:actual_energy}
 \end{equation}
-resulting in $b = \num{0.10048 \pm 0.00004}$.
-\Cref{eq:actual_energy} has the same functional form and similar growth
-rate $\gamma = (2/15) (P k_E/\rho_w g \epsilon) ck$ to that derived for
-solitary waves using a secondary multiple-scale approximation of the
-KdV-Burgers equation~\citep{zdyrski2019effects}.
+with $b = 2/15$.
+Numerically fitting \cref{eq:actual_energy} to our calculated energy
+instead yields $b = \num{0.10048 \pm 0.00004}$, close to the analytic
+approximation.
+\end{LineLabel}
 Note that the exponential energy growth \cref{eq:gamma_vs_P_solitary}
 correctly approximates the rational energy growth
 \cref{eq:actual_energy} for small times $\gamma t \ll 1$,
@@ -743,7 +785,7 @@ However, these were omitted for brevity.
 Prior results~\citep{zdyrski2020wind} in intermediate and deep water
 demonstrated that wind,
 \begin{LineLabel}{R2-3}
-acting though a wave-dependent surface pressure,
+acting through a wave-dependent surface pressure,
 \end{LineLabel}
 can generate shape changes that become more pronounced in
 shallow water.
@@ -761,8 +803,8 @@ pressure-induced shape change evolving under the inverse scattering
 transform.
 We also estimated the energy, skewness and
 asymmetry as functions of time and pressure magnitude.
-For onshore wind (positive $P$), wave energy and skewness increased with
-time while asymmetry decreased, while offshore wind produced the
+For onshore wind (positive $P$), wave's energy and skewness increased
+with time while asymmetry decreased, while offshore wind produced the
 opposite effects.
 Furthermore, these effects were enhanced for strong pressures, and they
 reduced to the unforced case for $P=0$.
