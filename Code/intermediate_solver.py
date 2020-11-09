@@ -876,15 +876,9 @@ class kdvSystem():
         problem.parameters['C'] = self.C
         problem.parameters['F'] = self.F
         problem.parameters['G'] = self.G
-        problem.parameters['t_r'] = self.eps
 
         # Main equation, with linear terms on the LHS and nonlinear terms on the RHS
-        # Multiply G by min(1,t/t_r) = 1*(sgn(t/t_r-1)+1)/2+t/t_r*(sgn(1-t/t_r)+1)/2
-        # = 1/2*(1+t/t_r+(t/t_r-1)*sgn(1-t/t_r))
-        # Note: there is a bug with sgn, so replace sgn(x) with abs(x)/x
-        problem.add_equation(
-                "A*dt(u) + F*dx(u) + C*dx(uxx) = G*dx(ux)*1/2*(1+t/t_r+(t/t_r-1)*abs(1-t/t_r)/(1-t/t_r)) -B*u*ux"
-                )
+        problem.add_equation("A*dt(u) + F*dx(u) + C*dx(uxx) - G*dx(ux) = -B*u*ux")
         # Auxiliary equations defining the first-order reduction
         problem.add_equation("ux - dx(u) = 0")
         problem.add_equation("uxx - dx(ux) = 0")
