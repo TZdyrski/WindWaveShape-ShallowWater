@@ -312,6 +312,12 @@ class kdvSystem():
             # constant
             self.dx = np.diff(self.x)
 
+            # Print details of domain
+            print('Number of Coefficients: '+str(self.domain.all_elements()[0].size))
+            print('Grid spacing (avg): '+str(np.mean(self.domain.all_grid_spacings()[0])))
+            print('Grid spacing (min): '+str(np.amin(self.domain.all_grid_spacings()[0])))
+            print('Grid spacing (max): '+str(np.amax(self.domain.all_grid_spacings()[0])))
+
     def set_temporal_grid(self, tLen=3, tNum='density', spectral=False,
             *args, **kwargs):
         """Set the t-coordinate grid.
