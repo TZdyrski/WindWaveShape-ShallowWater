@@ -347,8 +347,8 @@ because the solution is highly sensitive to changes in the initial
 condition~\citep{hadamard1902problemes}.
 While there is likely to be a finite-time singularity (\ie wave
 breaking), the perturbation expansion is only valid for time intervals
-of $\order{T_0/\epsilon}$ and we will therefore ignore the ill-posed
-nature.
+of $\order{T_0/\epsilon}$ and we therefore do not need to regularize the
+solution.
 \end{LineLabel}
 
 \begin{LineLabel}{R2-7}
@@ -502,6 +502,11 @@ increases the maximum wave-slope magnitude with time while the offshore
 wind (\cref{fig:snapshots_solitary:b}) decreases it, though the windward
 side of the wave becomes steeper than the leeward side for both winds
 (up to \SI{8}{\percent} steeper for the time period shown).
+\begin{LineLabel}{R2-17}
+The smooth solutions show that our solution is acceptable up to the
+current time even though it is ill-posed in the sense of Hadamard, and
+thus we are justified in neglecting a regularization scheme.
+\end{LineLabel}
 
 \begin{figure}
   \centering
