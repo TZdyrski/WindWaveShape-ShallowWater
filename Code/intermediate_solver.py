@@ -992,6 +992,7 @@ class kdvSystem():
                     'Hyperviscosity']}
         self.snapshot_ts = analyzer['t'][:,0]
         self.tNum = self.snapshot_ts.size
+        self.tLen = self.snapshot_ts[-1]
 
     def get_snapshots(self):
         """Get the snapshots at times set by set_snapshot_ts.
