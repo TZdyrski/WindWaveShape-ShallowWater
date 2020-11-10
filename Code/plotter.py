@@ -192,7 +192,7 @@ def plot_multiplot_template(data_arrays, x_coordinate, line_coord=None,
         sort_lines=True, show_legend=False, legend_title=None,
         round_legend=True, plotter=default_plotter, label_plots=True,
         subplot_adjust_params={}, label_sig_figs=3, legend_sig_figs=2,
-        trim_times=3, sharex=True, sharey='row',
+        trim_times=None, sharex=True, sharey='row',
         pi_parameters=[]):
     """
     Parameters
@@ -279,7 +279,8 @@ def plot_multiplot_template(data_arrays, x_coordinate, line_coord=None,
 
         # Trim xlim if x_coordinate == 't*eps*sqrt(g*h)*k_E' to
         # trim_times
-        if x_coordinate == 't*eps*sqrt(g*h)*k_E':
+        if x_coordinate == 't*eps*sqrt(g*h)*k_E' and \
+                trim_times is not None:
             ax[iy,ix].set_xlim(right=trim_times)
 
     if suptitle is not None:
