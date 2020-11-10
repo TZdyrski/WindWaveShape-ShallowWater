@@ -1006,8 +1006,14 @@ class kdvSystem():
         CFL.add_velocity('u', axis=0)
 
         # Main loop
+        mindt = np.inf
+        maxdt = 0
         while solver.ok:
             solver.step(dt)
+            if dt>maxdt:
+                maxdt=dt
+            if dt<mindt:
+                mindt=dt
 
             # Check if maximum slope is less than max_slope
             if max_slope != np.inf:
@@ -1033,6 +1039,8 @@ class kdvSystem():
             # Update dt
             dt = CFL.compute_dt()
 
+        print('Mindt: '+str(mindt))
+        print('Maxdt: '+str(maxdt))
         self.sol = analyzer['u'].transpose()
         self.PDEterms = {k : analyzer[k] for k in
                 ['Change', 'Advection', 'Dispersion', 'Current', 'Wind',
