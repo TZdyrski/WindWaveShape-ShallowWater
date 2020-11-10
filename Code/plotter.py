@@ -556,7 +556,7 @@ def plot_shape_statistics_vs_time_template(data_arrays, **kwargs):
     # Interpolate data
     for iy in range(data_arrays.shape[0]):
         data_arrays[iy] = data_arrays[iy].interpolate_na(
-                't*eps*sqrt(g*h)*k_E', method='spline')
+                't*eps*sqrt(g*h)*k_E', method='linear')
 
     # Set axis labels and titles
 
@@ -623,11 +623,6 @@ def plot_energy_template(data_arrays, **kwargs):
     ax_xlabel = r'Time $t \epsilon \sqrt{{g h}} k_E$'
 
     ax_ylabel = r'Normalized Energy $Ek/(\rho_w g h^2)$'
-
-    # Interpolate data
-    for iy in range(data_arrays.shape[0]):
-        data_arrays[iy] = data_arrays[iy].interpolate_na(
-                't*eps*sqrt(g*h)*k_E', method='spline')
 
     data_arrays_rearranged = np.empty((1,data_arrays.size),dtype=object)
 
@@ -2331,6 +2326,11 @@ def plot_energy(load_prefix, save_prefix, *args, **kwargs):
 
     fig = plot_energy_template(data_arrays)
 
+    # Interpolate data
+    for iy in range(data_arrays.shape[0]):
+        data_arrays[iy] = data_arrays[iy].interpolate_na(
+                't*eps*sqrt(g*h)*k_E', method='spline')
+
     # Plot best fit exponential
     ax = fig.axes[0]
     t = data_arrays[0]['t*eps*sqrt(g*h)*k_E']
@@ -2390,6 +2390,11 @@ def plot_energy_solitary(load_prefix, save_prefix, *args, **kwargs):
     data_arrays[0].attrs.pop('P', None)
 
     fig = plot_energy_template(data_arrays)
+
+    # Interpolate data
+    for iy in range(data_arrays.shape[0]):
+        data_arrays[iy] = data_arrays[iy].interpolate_na(
+                't*eps*sqrt(g*h)*k_E', method='spline')
 
     # Plot best fit exponential
     ax = fig.axes[0]
@@ -2452,6 +2457,11 @@ def plot_energy_GM(load_prefix, save_prefix, *args, **kwargs):
     data_arrays[0].attrs.pop('P', None)
 
     fig = plot_energy_template(data_arrays)
+
+    # Interpolate data
+    for iy in range(data_arrays.shape[0]):
+        data_arrays[iy] = data_arrays[iy].interpolate_na(
+                't*eps*sqrt(g*h)*k_E', method='spline')
 
     # Plot best fit exponential
     ax = fig.axes[0]
