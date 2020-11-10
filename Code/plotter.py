@@ -1635,9 +1635,12 @@ def fit_sech(profile):
             cost = np.sum(np.abs(result - model))
             return cost
 
-        result = minimize(cost, x0=(2,0),
+        max_loc = profile[{'t*eps*sqrt(g*h)*k_E':elem}].idxmax()
+        max_height = profile[{'t*eps*sqrt(g*h)*k_E':elem}].max()
+        result = minimize(cost, x0=(max_height,max_loc),
                 args=(x.values,
-                    profile[{'t*eps*sqrt(g*h)*k_E':elem}].values))
+                    profile[{'t*eps*sqrt(g*h)*k_E':elem}].values),
+                bounds=((0,None),(None,None)))
 
         H[elem] = result.x[0] # store height
         x_center[elem] = result.x[1] # store center location
