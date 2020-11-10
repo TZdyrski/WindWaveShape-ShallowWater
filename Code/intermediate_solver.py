@@ -1363,7 +1363,7 @@ def gen_snapshots(save_prefix, eps=0.1, mu=0.8, P=0.25, psiP=3/4*np.pi,
     max_height = 0.6879/eps
 
     # Maximum tLen
-    tLen = 20
+    tLen = 10
 
     for forcing_type in ['Jeffreys']:
         for wave_type in ['solitary']:

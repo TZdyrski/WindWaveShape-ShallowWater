@@ -393,16 +393,15 @@ This corresponds to $N_x = 2400$ points with an average
 spacing of $\Delta x = 0.05$ and between $\Delta x =
 \numrange{7.7e-5}{7.9e-2}$.
 \begin{LineLabel}{R2-16}
-The simulation runs from $t_1 = 0$ to $t_1 = T_b \approx \num{19.29}$,
-with $T_b$ the time at which the strongest onshore forcing $P=0.25$
-causes the wave to experience convective breaking with $H/h =
-\max{\eta}/h = 0.6879$~\citep{brun2018convective}.
+The simulation runs from $t_1 = 0$ to $t_1 = T = 10$, since the
+multiple-scale expansion of \cref{sec:boussinesq} is only accurate for
+times of order $\order{1/\epsilon}$.
 \end{LineLabel}
 Adaptive timestepping is employed such that the CFL number is $(\Delta
 t) \max(\eta)/(\Delta x) = 1$.
 For the unforced case, this corresponds to $\Delta t \approx
-\num{7.86e-3}$ and increases to \num{8.83e-3} for $P=-0.25$ and
-decreases to \num{6.28e-3} for $P = 0.25$.
+\num{7.86e-3}$ and increases to \num{1.04e-2} for $P=-0.25$ and
+decreases to \num{4.73e-4} for $P = 0.25$.
 \end{LineLabel}
 We found that linearly ramping up $P$ from $0$ at $t_1=0$ to its full
 value at $t_1 = \epsilon$, or full, dimensional time $T_0 = 1/(\sqrt{gh}
@@ -414,9 +413,9 @@ The spectral solver results in high numerical accuracy, with the
 normalized root-mean-square difference between the unforced ($P=0$)
 profile $\eta$ at $t'_1=3$ and the initial condition $\eta_0$ is
 $\sqrt{\langle (\eta - \eta_0)^2 \rangle/ \langle \eta_0^2 \rangle} =
-\num{6e-15}$,
+\num{5e-14}$,
 and the normalized wave height change is $1-\bqty{\max(\eta)
-- \min(\eta)}/\allowbreak\bqty{\max(\eta_0) - \min(\eta_0)} = \num{-8e-15}$.
+- \min(\eta)}/\allowbreak\bqty{\max(\eta_0) - \min(\eta_0)} = \num{-3e-14}$.
 \end{LineLabel}
 
 We quantify the wave shape with the wave's energy $E$, skewness $\Sk$
@@ -469,7 +468,7 @@ dimensional ones without.
     non-dimensional distance $x/h$ for $\epsilon=0.1$,
     $\mu_E = 0.6$, $\abs{P k_E/(\rho_w g \epsilon)} = 0.25$, and
     non-dimensional slow times $t'_1 = t \epsilon \sqrt{gh} k_E = 0$,
-    $9.7$ and $19$, as indicated in the legend.
+    $5$ and $10$, as indicated in the legend.
     Only a subset of the full spatial domain is shown.
     The arrows denote the wave propagation (phase speed) and wind
     direction.
@@ -496,7 +495,7 @@ The offshore wind (\cref{fig:snapshots_solitary:b}) raises the
 rear base of the wave (near $x/h = -6$) relative to its initial profile
 (purple line), but the onshore wind (\cref{fig:snapshots_solitary:a})
 depresses the rear face and forms a small depression below the still
-water level at $t\epsilon \sqrt{gh} k_E=19$ (green line).
+water level at $t\epsilon \sqrt{gh} k_E=10$ (green line).
 Finally, the onshore wind (\cref{fig:snapshots_solitary:a})
 increases the maximum wave-slope magnitude with time while the offshore
 wind (\cref{fig:snapshots_solitary:b}) decreases it, though the windward
@@ -526,7 +525,7 @@ thus we are justified in neglecting a regularization scheme.
     $\tilde{x}/h$.
     Results are shown for $\epsilon=0.1$, $\mu_E = 0.6$, $\abs{P
     k_E/(\rho_w g \epsilon)} = 0.25$, and non-dimensional slow times
-    $t'_1 = t \epsilon \sqrt{gh} k_E = 0$, $9.7$ and $19$, as indicated
+    $t'_1 = t \epsilon \sqrt{gh} k_E = 0$, $5$ and $10$, as indicated
     in the legend.
     Only a subset of the full spatial domain is shown.
     The arrows denote the direction of wave propagation (phase speed) or
@@ -565,7 +564,7 @@ $\tilde{x}>0$ one.
   \caption{
     Solitary wave shape statistics under onshore and offshore
     Jeffreys forcing versus non-dimensional slow time $t'_1 = t
-    \epsilon \sqrt{gh} k_E = \numrange{0}{19}$.
+    \epsilon \sqrt{gh} k_E = \numrange{0}{10}$.
     The
     \subref{fig:statistics_solitary:a}
     energy (normalized by the initial energy),
@@ -586,7 +585,7 @@ The effect of wind on wave shape is quantified by the time evolution of
 wave shape statistics---energy, skewness and asymmetry---for onshore
 and offshore wind~(\cref{fig:statistics_solitary}).
 We plot all cases for initial steepness $\epsilon = 0.1$ up to slow time
-$t \epsilon \sqrt{g h} k_E = 19$, corresponding to $19/\epsilon = 190$
+$t \epsilon \sqrt{g h} k_E = 10$, corresponding to $10/\epsilon = 100$
 wave-crossing times, $T_0 = 1/(\sqrt{gh} k_E)$.
 The unforced case ($P=0$) displays constant shape statistics and zero
 asymmetry, as expected.
@@ -596,7 +595,7 @@ offshore wind ($P<0$) causes slowing wave decay
 (\cref{fig:statistics_solitary:a}).
 \begin{LineLabel}{R2-4}
 The energy of the unforced wave is virtually unchanged, with a
-normalized energy change of $1-E/E_0 = \num{-5e-15}$.
+normalized energy change of $1-E/E_0 = \num{-3e-14}$.
 \end{LineLabel}
 The onshore (offshore) wind causes the wave to become more (less) skewed
 over time, with the normalized skewness nearly symmetric about unity
