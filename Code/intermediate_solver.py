@@ -873,7 +873,8 @@ class kdvSystem():
         self.sol = y.transpose()
         self.PDEterms = PDEterms
 
-    def solve_system_spectral(self, max_height=np.inf, max_slope=np.inf, *args, **kwargs):
+    def solve_system_spectral(self, max_height=np.inf, max_slope=np.inf,
+            full_comving_frame=False, *args, **kwargs):
         """Use a spectral method to solve the differential equation on a
         periodic domain. This is currently only implemented for the
         KdV-Burgers equation so we must have self.diffeq == 'KdVB'."""
@@ -1048,6 +1049,21 @@ class kdvSystem():
         self.snapshot_ts = analyzer['t'][:,0]
         self.tNum = self.snapshot_ts.size
         self.tLen = self.snapshot_ts[-1]
+
+        if full_comoving_frame:
+            # The frame for calculating PDEterms is only comoving with
+            # the initial (unforced) velocity; if full_comoving_frame,
+            # evaluate in the full, accelerating comoving frame so that
+            # 'Current' and 'Change' are evaluated correctly and
+            # 'Change' only reflects the shape change (in the full,
+            # comoving frame)
+            # Note: the terms are still plotted in the x-coordinates of
+            # the original, unforced-comoving frame, so the peak is not
+            # at x=0.
+            self.PDEterms['Change'] += self.PDEterms['Current']
+            height = np.amax(self.sol,axis=0)
+            self.PDEterms['Current'] = self.PDEterms['Current']*height[:,None]/height[0]
+            self.PDEterms['Change'] -= self.PDEterms['Current']
 
     def get_snapshots(self):
         """Get the snapshots at times set by set_snapshot_ts.
