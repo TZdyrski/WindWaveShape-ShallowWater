@@ -580,18 +580,9 @@ def time_fractions(signal):
     # Convert snapshot fractions to snapshot times
     snapshot_ts = snapshot_fracs*tLen
 
-    # Convert snapshot times to snapshot indexes
-    snapshot_indxs = np.floor(snapshot_ts*tNum/tLen).astype(int)
-
-    # Ensure that indexes do not underflow
-    ts_too_big_indxs = snapshot_indxs < 0
-    snapshot_indxs[ts_too_big_indxs] = 0
-
-    # Ensure that indexes do not overflow
-    ts_too_big_indxs = snapshot_indxs >= tNum
-    snapshot_indxs[ts_too_big_indxs] = tNum-1
-
-    signal = signal[{'t*eps*sqrt(g*h)*k_E':snapshot_indxs}]
+    # Find nearest match
+    signal = signal.sel({'t*eps*sqrt(g*h)*k_E':snapshot_ts},
+            method='nearest')
 
     return signal
 
