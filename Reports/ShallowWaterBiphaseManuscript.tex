@@ -47,9 +47,12 @@ Wave shape (\eg{} wave skewness and asymmetry) impacts sediment
 transport, remote sensing and ship safety.
 Previous work showed that wind affects wave shape in intermediate and
 deep water.
+\begin{LineLabel}{R1-5}
 Here, we investigate the effect of wind on wave shape in shallow water
 through a wind-induced surface pressure for different wind speeds and
-directions.
+directions to provide the first analytic description of wind-induced
+shape changes.
+\end{LineLabel}
 \begin{LineLabel}{R2-5}
 A multiple-scale analysis of long waves propagating over a shallow,
 flat bottom and forced by a Jeffreys-type surface pressure produces a
@@ -243,25 +246,17 @@ expansion, KdV equation, and initial condition}
 Here, we modify the Boussinesq equation's derivation provided by
 \citet{mei2005nonlinear} by including the surface pressure forcing in
 \cref{eq:dynamic_bc}.
-First we Taylor expand the velocity potential $\phi$ about the bottom,
-$z=-1$,
-\begin{equation}
-  \phi(x,y,z,t) = \sum_{n=0}^\infty (z+1)^n\phi_n(x,y,t) \,.
-\end{equation}
-Then, a standard calculation \citep[\eg][]{mei2005nonlinear} using
-Laplace's equation \cref{eq:laplace_nondim} and the bottom boundary
+\begin{LineLabel}{R1-1}
+Taylor expanding the velocity potential $\phi$ about the bottom,
+$z=-1$, and applying Laplace's
+equation \cref{eq:laplace_nondim} and the bottom boundary
 condition \cref{eq:bottom_bc_nondim} yields an expansion of $\phi$ in
-terms of $\mu_E \ll 1$,
-\begin{equation}
-  \phi = \phi_0 - \frac{1}{2}\mu_E (z+1)^2\partial^2_x\phi_0 +
-  \frac{\mu_E^2}{24}(z+1)^4\partial^4_x\phi_0 +
-  \order{\mu_E^3} \,.
-\end{equation}
-For convenience, we define $\varphi \coloneqq \phi_0$.
-Substituting this expansion into the two remaining boundary equations,
-\cref{eq:kinematic_bc_nondim,eq:dynamic_bc_nondim}, and recalling that
-they are evaluated at $z=\epsilon \eta$, we have reduced our system to
+terms of $\mu_E \ll 1$ and the velocity potential at the bottom,
+$\varphi \coloneqq \eval{\phi}_{z=-1}$.
+This $\phi$ expansion can be substituted into the two remaining boundary
+equations, \cref{eq:kinematic_bc_nondim,eq:dynamic_bc_nondim} to give
 the Boussinesq equations with a pressure forcing term,
+\end{LineLabel}
 \begin{gather}
   \partial_t \eta + \partial_x^2 \varphi + \epsilon \partial_x
     \pqty{\eta \partial_x \varphi} -\frac{1}{6}\mu_E \partial^4_x
@@ -288,18 +283,13 @@ Now, we will reduce the Boussinesq equations,
 following a similar method to \citet{mei2005nonlinear}.
 Collecting order-one terms $\order{\epsilon^0}$ from
 \cref{eq:kinematic_bc_varphi,eq:dynamic_bc_varphi} gives
-\begin{equation}
-  \pdv{\eta_0}{t_0} + \pdv[2]{\varphi_0}{x} = 0 \qq{and}
-  \eta_0 + \pdv{\varphi_0}{t_0} = 0 \,,
-\end{equation}
-yielding left- and right-moving waves.
-Restricting to right-moving waves gives
+a wave equation for $\eta_0$ and $\phi_0$.
+The right-moving solutions are
 \begin{equation}
   \varphi_0 = f_0(x-t_0,t_1) \qq{and}
   \eta_0 = f'_0(x-t_0,1) \qq{with}
   f_0' \coloneqq \eval{\pdv{f_0(\theta,t_1)}{\theta}}_{\theta = x-t_0} \,.
 \end{equation}
-
 Continuing to the next order of perturbation theory, we retain terms of
 order $\order{\epsilon}$,
 \begin{gather}
@@ -313,18 +303,9 @@ order $\order{\epsilon}$,
       - \frac{1}{2} \pqty{ \pdv{\varphi_0}{x} }^2
   \,.
 \end{gather}
-Inserting our leading order solutions for $\eta_0$ and $\varphi_0$ while
-eliminating $\eta_1$ gives
-\begin{equation}
-  \pqty{\pdv[2]{x} - \pdv[2]{t_0}} \varphi_1 = -2 \pdv{f_0'}{t_1} +
-    P\pdv{\eta_0}{t_0}{x} - 3 f_0' f_0'' - \frac{1}{3} \frac{\mu_E}{\epsilon}
-    f_0^{(4)} \,.
-\end{equation}
-The homogeneous equation is again the shallow-water wave equation for
-$\varphi_1$.
-Since the right-hand side is a resonant forcing, it must vanish.
-Thus, converting back to $\eta_0$ gives the Korteweg-de Vries
-(KdV)-Burgers equation,
+Inserting our leading order solutions for $\eta_0$ and $\varphi_0$,
+eliminating $\eta_1$, and preventing resonant forcing of $\varphi_1$
+gives the Korteweg-de Vries (KdV)-Burgers equation,
 \begin{equation}
   \pdv{\eta_0}{t_1} + \frac{3}{2}
     \eta_0 \pdv{\eta_0}{x} + \frac{1}{6} \frac{\mu_E}{\epsilon}
@@ -336,6 +317,14 @@ Note that \cref{eq:kdv_burgers} has a rescaling symmetry, with $\mu_E
 (x,t_0,t_1,P)/\lambda$.
 Therefore, we fix the length scale (equivalently, $k_E$) by choosing
 $\mu_E = 6 \epsilon$.
+\begin{LineLabel}{R1-4}
+It is interesting the note that slowly varying bottom bathymetry
+$\partial_x h = \order{\epsilon}$ can be recast into the form of
+\cref{eq:kdv_burgers} with spatially-varying
+coefficients~\citep[\eg][]{johnson1972some,ono1972wave}, though such an
+analysis is outside the scope of this study.
+\end{LineLabel}
+
 \begin{LineLabel}{R2-10}
 The pressure term, $P \partial^2_x \eta_0$, acts as a positive viscosity
 for offshore, damping wind and \cref{eq:kdv_burgers} is the (forward)
@@ -352,9 +341,10 @@ solution.
 \end{LineLabel}
 
 \begin{LineLabel}{R2-7}
-The solitary wave solutions of the unforced ($P=0$) KdV equation
-balance dispersion $\partial_x^3 \eta_0$ with focusing nonlinearity
-$\eta_0 \partial_x \eta_0$ and have the form~\citep[\eg][]{mei2005nonlinear}
+The solitary wave solutions of the unforced ($P=0$) KdV equation exist
+due to a balance of dispersion $\partial_x^3 \eta_0$ with focusing
+nonlinearity $\eta_0 \partial_x \eta_0$ and have the
+form~\citep[\eg][]{mei2005nonlinear}
 \end{LineLabel}
 \begin{equation}
   \eta_0 = H_0 \sech^2\pqty{\frac{x}{\Delta}}
@@ -488,7 +478,12 @@ the slight advancing (receding) of the crest.
 This is expected due to the dependence of (unforced) solitary waves' phase
 speed $c = H/2$ on the growing/decaying wave
 height~\cite[\eg][]{mei2005nonlinear}.
-Additionally, despite the wave starting from a symmetric, solitary-wave
+\begin{LineLabel}{R1-2}
+While the growth/decay and phase speed changes are well known results
+\citep[\eg][]{jeffreys1925formation,miles1957generation}, our new
+contribution is the wind-induced shape change.
+\end{LineLabel}
+Indeed, despite the wave starting from a symmetric, solitary-wave
 initial condition, the wind induces a horizontal asymmetry in the wave
 shape, particularly on the rear face ($x<0$) of the wave.
 The offshore wind (\cref{fig:snapshots_solitary:b}) raises the
@@ -533,7 +528,12 @@ thus we are justified in neglecting a regularization scheme.
   }\label{fig:snapshots_solitary_tail}
 \end{figure}
 
-To further examine the wind-induced wave asymmetry, we fit $\eta$ to a
+\begin{LineLabel}{R1-6}
+This is the first theory to quantify wind-induced shape changes in
+shallow water.
+To further examine this wind-induced wave asymmetry,
+\end{LineLabel}
+we fit $\eta$ to a
 reference solitary wave profile $\eta_{\text{ref}}$
 \cref{eq:initial_condition} by minimizing the $L_1$ difference, yielding
 the reference height $H_{\text{ref}}(t_1)$ and peak location
@@ -551,6 +551,11 @@ Finally, note that the onshore (offshore) wind generates a small peak
 (trough) at $\tilde{x} = 0$ and two small troughs (peaks) near
 $\tilde{x}/h = \pm 3$, with the $\tilde{x}<0$ extrema larger than the
 $\tilde{x}>0$ one.
+\begin{LineLabel}{R1-3}
+This dispersive tail is well-known in KdV-type
+systems~\citep[\eg][]{hammack1974korteweg}, and its appearance here
+helps explain the pressure-induced shape change.
+\end{LineLabel}
 
 \begin{figure}
   \centering
