@@ -318,7 +318,7 @@ class kdvSystem():
             print('Grid spacing (min): '+str(np.amin(self.domain.all_grid_spacings()[0])))
             print('Grid spacing (max): '+str(np.amax(self.domain.all_grid_spacings()[0])))
 
-    def set_temporal_grid(self, tLen=3, tNum='density', spectral=False,
+    def set_temporal_grid(self, tLen=20, tNum='density', spectral=False,
             *args, **kwargs):
         """Set the t-coordinate grid.
 
@@ -652,7 +652,7 @@ class kdvSystem():
         self.sol = sol['y']
 
 
-    def solve_system_ab3(self, max_slope=np.inf, *args, **kwargs):
+    def solve_system_ab3(self, max_height=np.inf, max_slope=np.inf, *args, **kwargs):
         """Use 3rd-order Adams-Bashforth method to solve the
         differential equation on a periodic domain. If self.diffeq ==
         'KdVB', solve the KdV-Burgers equation; if self.diffeq ==
@@ -740,10 +740,28 @@ class kdvSystem():
                     PDEterms[key][snapshot_indx,:] = \
                             terms[key].transpose()
 
+            # Check if maximum height is less than max_height
+            if max_height != np.inf:
+                maxHeight = np.max(yn)
+                if maxHeight > max_height:
+                    warnings.warn('Maximum height '+str(maxHeight)+\
+                            ' exceeds max_height threshold')
+
+                    # Truncate y to previous value of snapshot_indx
+                    y = y[:snapshot_indx,:]
+
+                    # Truncate times
+                    self.snapshot_ts = self.snapshot_ts[:snapshot_indx]
+                    self.tLen = self.snapshot_ts[-1] - self.t[0]
+                    self.t = self.t[self.t <= self.tLen]
+                    self.tNum = self.t.size
+
+                    break
+
         self.sol = y.transpose()
         self.PDEterms = PDEterms
 
-    def solve_system_rk3(self, max_slope=np.inf, *args, **kwargs):
+    def solve_system_rk3(self, max_height=np.inf, max_slope=np.inf, *args, **kwargs):
         """Use 3rd-order Runge-Kutta method to solve the
         differential equation on a periodic domain. If self.diffeq ==
         'KdVB', solve the KdV-Burgers equation; if self.diffeq ==
@@ -834,11 +852,28 @@ class kdvSystem():
                     PDEterms[key][snapshot_indx,:] = \
                             terms[key].transpose()
 
+            # Check if maximum height is less than max_height
+            if max_height != np.inf:
+                maxHeight = np.max(yn)
+                if maxHeight > max_height:
+                    warnings.warn('Maximum height '+str(maxHeight)+\
+                            ' exceeds max_height threshold')
+
+                    # Truncate y to previous value of snapshot_indx
+                    y = y[:snapshot_indx,:]
+
+                    # Truncate times
+                    self.snapshot_ts = self.snapshot_ts[:snapshot_indx]
+                    self.tLen = self.snapshot_ts[-1] - self.t[0]
+                    self.t = self.t[self.t <= self.tLen]
+                    self.tNum = self.t.size
+
+                    break
 
         self.sol = y.transpose()
         self.PDEterms = PDEterms
 
-    def solve_system_spectral(self, max_slope=np.inf, *args, **kwargs):
+    def solve_system_spectral(self, max_height=np.inf, max_slope=np.inf, *args, **kwargs):
         """Use a spectral method to solve the differential equation on a
         periodic domain. This is currently only implemented for the
         KdV-Burgers equation so we must have self.diffeq == 'KdVB'."""
@@ -980,6 +1015,18 @@ class kdvSystem():
                 if maxSlope > max_slope:
                     warnings.warn('Local slope '+str(maxSlope)+\
                             ' exceeds max_slope threshold')
+
+                    break
+
+            # Check if maximum height is less than max_height
+            if max_height != np.inf:
+                maxHeight = np.max(u['g'])
+                if maxHeight > max_height:
+                    warnings.warn('Maximum height '+str(maxHeight)+\
+                            ' exceeds max_height threshold')
+
+                    # We want to save after reaching max height
+                    solver.evaluator.evaluate_handlers([analyzer])
 
                     break
 
@@ -1304,13 +1351,19 @@ def gen_snapshots(save_prefix, eps=0.1, mu=0.8, P=0.25, psiP=3/4*np.pi,
         Default is 3e-3.
     """
 
+    # Maximum height according to Brun, Mats K., and Henrik Kalisch. Anal. Math Phys. 8.1 (2018): 57-75.
+    max_height = 0.6879/eps
+
+    # Maximum tLen
+    tLen = 20
+
     for forcing_type in ['Jeffreys']:
         for wave_type in ['solitary']:
             if forcing_type == 'GM' and wave_type == 'solitary':
                 # We don't need GM applied to solitary waves, as it
                 # doesn't make as much sense
                 continue
-            for P_val in P*np.array([-1,-0.5,0,0.5,1]):
+            for P_val in P*np.array([1,0.5,0,-0.5,-1]):
 
                 for counter, mu_val in enumerate(mu*np.array([1,7/8])):
 
@@ -1322,6 +1375,8 @@ def gen_snapshots(save_prefix, eps=0.1, mu=0.8, P=0.25, psiP=3/4*np.pi,
                             'P' : P_val,
                             'psiP' : psiP,
                             'nu_bi' : nu_bi,
+                            'max_height' : max_height,
+                            'tLen' : tLen,
                             }
 
                     # Jeffreys does not just psiP
@@ -1339,6 +1394,12 @@ def gen_snapshots(save_prefix, eps=0.1, mu=0.8, P=0.25, psiP=3/4*np.pi,
 
                     # Run model
                     data, dataClass = default_solver(**parameters)
+
+                    if dataClass.tLen < tLen and \
+                            np.max(data[:,-1]) > max_height*eps:
+                        # Stop all simulations at the same time
+                        tLen = dataClass.tLen
+                        print('Maximum height occurs at t='+str(tLen))
 
                     # Get default mu for solitary waves
                     if wave_type == 'solitary':
