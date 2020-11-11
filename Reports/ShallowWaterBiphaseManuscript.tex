@@ -409,9 +409,9 @@ modify the results, so we do not utilize such a ramp-up here.
 The spectral solver results in high numerical accuracy, with the
 normalized root-mean-square difference between the unforced ($P=0$)
 profile $\eta$ at $t'_1=10$ and the initial condition $\eta_0$ is
-\num{5e-14}, and the normalized wave height change is
+\num{2e-13}, and the normalized wave height change is
 $1-\bqty{\max(\eta) - \min(\eta)}/\allowbreak\bqty{\max(\eta_0) -
-\min(\eta_0)} = \num{-3e-14}$.
+\min(\eta_0)} = \num{-1e-13}$.
 \end{LineLabel}
 
 We quantify the wave shape with the wave's energy $E$, skewness $\Sk$
@@ -606,7 +606,7 @@ offshore wind ($P<0$) causes slowing wave decay
 (\cref{fig:statistics_solitary:a}).
 \begin{LineLabel}{R2-4}
 The energy of the unforced wave is virtually unchanged, with a
-normalized energy change of $1-E/E_0 = \num{-3e-14}$.
+normalized energy change of $1-E/E_0 = \num{-1e-13}$.
 \end{LineLabel}
 The onshore (offshore) wind causes the wave to become more (less) skewed
 over time, with the normalized skewness nearly symmetric about unity
@@ -671,7 +671,7 @@ the energy growth rate for solitary waves as~\citep{zdyrski2019effects}
 \end{equation}
 with $b = 2/15$.
 Numerically fitting \cref{eq:actual_energy} to our calculated energy
-instead yields $b = \num{0.10048 \pm 0.00004}$, close to the analytic
+instead yields $b = \num{0.10081 \pm 0.00003}$, close to the analytic
 approximation.
 \end{LineLabel}
 Note that the exponential energy growth \cref{eq:gamma_vs_P_solitary}
