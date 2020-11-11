@@ -1,0 +1,12 @@
+#!/bin/sh
+# convert_to_jpg <pdf file>
+# Creates file out.jpg
+
+convert           \
+   -verbose       \
+   -density 1200  \
+   -trim $1       \
+   -quality 100   \
+   -flatten       \
+   -sharpen 0x1.0 \
+    out.jpg
