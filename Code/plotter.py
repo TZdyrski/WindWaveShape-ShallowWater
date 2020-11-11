@@ -74,14 +74,14 @@ def property_cycle(num_lines,color_class='sequential'):
 
 def annotate_arrow(ax, windLeft=True, wave_type='solitary'):
     if wave_type == 'solitary':
-        arrowLeft = np.array([0.05,0.35])
-        arrowRight = np.array([0.25,0.35])
+        arrowLeft = np.array([0.025,0.35])
+        arrowRight = np.array([0.225,0.35])
         if windLeft:
             arrowLeft = arrowLeft + [0,0.1]
             arrowRight = arrowRight + [0,0.1]
             spacing = np.array([0,-0.225])
         else:
-            spacing = np.array([0.7,0])
+            spacing = np.array([0.75,0])
     elif wave_type == 'cnoidal':
         arrowLeft = np.array([0.025,0.35])
         arrowRight = np.array([0.225,0.35])
@@ -92,9 +92,9 @@ def annotate_arrow(ax, windLeft=True, wave_type='solitary'):
         else:
             spacing = np.array([0.75,0])
     elif wave_type == 'tail':
-        arrowLeft = np.array([0.05,0.1])
-        arrowRight = np.array([0.25,0.1])
-        spacing = np.array([0.7,0])
+        arrowLeft = np.array([0.025,0.1])
+        arrowRight = np.array([0.225,0.1])
+        spacing = np.array([0.75,0])
     else:
         raise(ValueError("'wave_type' must be either 'solitary' "+\
                 "or 'cnoidal' but "+wave_type+" was given"))
