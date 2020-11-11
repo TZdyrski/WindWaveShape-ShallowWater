@@ -2142,6 +2142,10 @@ def plot_shape_statistics_solitary_production(load_prefix, save_prefix, *args, *
     fig = plot_shape_statistics_vs_time_template(data_arrays,
             ax_title=None)
 
+    # Make right axis show t=10
+    for ax in fig.axes:
+        ax.set_xlim(right=10)
+
     texplot.savefig(fig,save_prefix+'Skew-Asymm-Production')
 
 def plot_shape_statistics_cnoidal(load_prefix, save_prefix, *args, **kwargs):
