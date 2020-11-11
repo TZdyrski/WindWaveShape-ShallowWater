@@ -334,11 +334,13 @@ analysis is outside the scope of this study.
 \end{LineLabel}
 
 \begin{LineLabel}{R2-10}
+\begin{LineLabel}{R2-19}
 For offshore wind, the pressure term $P \partial^2_x \eta_0$ acts as a
 positive viscosity causing damping and \cref{eq:kdv_burgers} is the
-(forward) KdV-Burgers equation.
+(forward) KdV-Burgers equation with $P<0$.
 However, for onshore wind, the viscosity is negative and causes wave
-growth, yielding the backward KdV-Burgers equation.
+growth, yielding the backward KdV-Burgers equation with $P>0$.
+\end{LineLabel}
 The backward KdV-Burgers equation is ill-posed in the sense of Hadamard
 because the solution is highly sensitive to changes in the initial
 condition~\citep{hadamard1902problemes}.
