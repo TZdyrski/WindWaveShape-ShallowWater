@@ -874,7 +874,7 @@ class kdvSystem():
         self.PDEterms = PDEterms
 
     def solve_system_spectral(self, max_height=np.inf, max_slope=np.inf,
-            full_comving_frame=False, *args, **kwargs):
+            full_comoving_frame=False, *args, **kwargs):
         """Use a spectral method to solve the differential equation on a
         periodic domain. This is currently only implemented for the
         KdV-Burgers equation so we must have self.diffeq == 'KdVB'."""
