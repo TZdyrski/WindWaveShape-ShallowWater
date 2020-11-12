@@ -762,24 +762,22 @@ equation \cref{eq:kdv_burgers} in the unforced solitary wave's frame
   \,.
   \label{eq:pressure_change}
 \end{align}
-The $P'\Delta t'_1$ terms generate a small peak (trough) at $x'=0$ and
-small troughs (peaks) symmetrically in front and behind the wave peak
-for onshore (offshore) wind.
+The $P'\Delta t'_1$ terms generate a small bound wave with a peak
+(trough) at $x'=0$ and troughs (peaks) symmetrically in front and behind
+the wave peak for onshore (offshore) wind.
+As time increases, the continual pressure forcing causes the bound wave
+to grow and lengthen behind the wave, as is apparent in
+\cref{fig:snapshots_solitary_tail} (\eg $\tilde{x}/h =
+\numrange{-20}{3}$ for $P'=0.25$ and $t'_1=10$).
+
 The small numerical value $\abs{P'} = 0.25 \ll 1$ used in
 \cref{sec:results} allows us to consider the wave's evolution as two
 steps with time scale separation.
-First, the pressure modifies the wave \cref{eq:pressure_change} on the
-slow time scale, and then the wave evolves a dispersive tail on a fast
-time scale according to inverse scattering transform of the unforced KdV
-equation.
-
 \begin{LineLabel}{R1-12}
-Unlike dispersive tails generated from initial conditions which fail to
-satisfy the KdV equation, our wave is continually forced by the surface
-pressure resulting in a growing, bound tail, as is apparent in
-\cref{fig:snapshots_solitary_tail} (\eg $\tilde{x}/h =
-\numrange{-20}{3}$ for $P'=0.25$ and $t'_1=10$) with the rear side
-($x<0$) of the bound wave grows/widens with time.
+First, the pressure generates a bound wave \cref{eq:pressure_change} on
+the slow time scale, and then the wave evolves a dispersive tail on the
+fast time scale according to the inverse scattering transform of the
+unforced KdV equation.
 \end{LineLabel}
 \begin{LineLabel}{R1-8}
 The dispersive tail in \cref{fig:snapshots_solitary_tail} (\eg located
@@ -788,20 +786,22 @@ ubiquitous dispersive tails in prior studies on shallow-water solitary
 waves, such as \figsname{} 8(b) and (c) of \citet{hammack1974korteweg}.
 \end{LineLabel}
 \begin{LineLabel}{R1-11}
-However, unlike previous dispersive tails decaying from the initial
-profile, our tail is continually forced and lengthened by the wind
-forcing.
+However, unlike dispersive tails generated from initial conditions which
+fail to satisfy the KdV equation, our tail is continually forced and
+lengthened by the wind forcing.
 \end{LineLabel}
-Hence, the symmetric disturbance induced by the pressure forcing
+Finally, interactions with the trailing, dispersive tail are responsible
+for lengthening the bound wave \cref{eq:pressure_change} behind, rather
+than ahead, of the solitary wave.
+Hence, the disturbance induced by the pressure forcing
 \cref{eq:pressure_change} has two effects on the wave.
-First, the wind slowly changes the height and width of the initial
-solitary wave, which is reflected in the growth (decay) and narrowing
-(widening) under onshore (offshore) winds in
+First, the wind slowly generates a bound wave which changes the height
+and width of the initial solitary wave, which is reflected in the growth
+(decay) and narrowing (widening) under onshore (offshore) winds in
 \cref{fig:snapshots_solitary}.
-Second, it quickly generates a bound wave and asymmetric, dispersive
-tail behind the wave (\cref{fig:snapshots_solitary_tail}), producing a
-greater shape change on the wave's rear face
-(\cref{fig:snapshots_solitary}).
+Second, it quickly generates an asymmetric, dispersive tail behind the
+wave (\cref{fig:snapshots_solitary_tail}), producing a greater shape
+change on the wave's rear face (\cref{fig:snapshots_solitary}).
 Finally, the different wind directions (\ie{} pressure forcing signs)
 change the sign of the bound wave and dispersive tail and, hence, the
 sign of the asymmetry in \cref{fig:statistics_solitary}.
