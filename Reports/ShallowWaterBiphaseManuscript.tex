@@ -735,17 +735,22 @@ longer to change the wave shape.
 \subsection{\label{sec:physical_reason} Physical mechanism of asymmetry
 generation}
 Our initial, symmetric solitary waves \cref{eq:initial_condition} are
-permanent-form solutions of the unforced KdV equation, so the pressure
-forcing term in the KdV-Burgers equation is responsible for the wave
-growth/decay and resultant shape changes and asymmetry, though not
-directly.
-Indeed, when the surface profile $\eta$ is symmetric, the pressure
-forcing term $P \partial_x^2 \eta$ preserves the initial symmetry.
-Instead, the pressure forcing initially causes a (symmetric) bound wave
-after a short time $\Delta t'_1 \ll 1$, which can be seen by considering
-the non-dimensional KdV-Burgers equation \cref{eq:kdv_burgers} in the
-unforced solitary wave's frame (\cref{fig:snapshots_solitary}) at the
-initial time,
+permanent-form solutions of the unforced KdV equation.
+More generally, any initial solitary wave which does not exactly solve
+the KdV equation will evolve into a solitary wave and a trailing,
+dispersive tail according to the inverse scattering
+transform~\citep[\eg][]{mei2005nonlinear}.
+In our system, the pressure continually perturbs the system away from
+the unforced KdV soliton solution which results in a trailing, bound,
+dispersive tail (\cref{fig:snapshots_solitary_tail}), which is
+responsible for the wave asymmetry.
+To see this, consider an initial, symmetric profile $\eta$.
+The resulting the pressure forcing term $P \partial_x^2 \eta$ preserves
+the initial symmetry and induces a symmetric bound wave after a short
+time $\Delta t'_1 \ll 1$.
+This can be seen by considering the non-dimensional KdV-Burgers equation
+\cref{eq:kdv_burgers} in the unforced solitary wave's frame
+(\cref{fig:snapshots_solitary}) at the initial time,
 \begin{align}
   &\eval{\pdv{\eta'_0}{t_1}}_{t'_1=0} = -P' \pdv[2]{x} \bqty{
   \sech^2\pqty{\frac{x'}{2}}}
@@ -757,25 +762,24 @@ initial time,
   \,.
   \label{eq:pressure_change}
 \end{align}
-\begin{LineLabel}{R1-12}
 The $P'\Delta t'_1$ terms generate a small peak (trough) at $x'=0$ and
 small troughs (peaks) symmetrically in front and behind the wave peak
 for onshore (offshore) wind.
-This bound wave is apparent in \cref{fig:snapshots_solitary_tail} (\eg
-$\tilde{x}/h = \numrange{-20}{3}$ for $P'=0.25$ and $t'_1=10$), and the
-rear side ($x<0$) of the bound wave grows/widens with time.
-\end{LineLabel}
 The small numerical value $\abs{P'} = 0.25 \ll 1$ used in
 \cref{sec:results} allows us to consider the wave's evolution as two
 steps with time scale separation.
 First, the pressure modifies the wave \cref{eq:pressure_change} on the
 slow time scale, and then the wave evolves on a fast time scale from
 this new profile according to unforced KdV evolution.
-This evolution is described by the inverse scattering transform, which
-shows that any localized, initial profile differing from
-\cref{eq:initial_condition} will split into discrete solitary waves and
-a bound, dispersive tail that decays behind ($x<0$) the wave
-\citep[\eg][]{mei2005nonlinear}.
+
+\begin{LineLabel}{R1-12}
+Unlike dispersive tails generated from initial condition which fail to
+satisfy the KdV equation, our wave is continually forced by the surface
+pressure resulting in a growing, bound tail, as is apparent in
+\cref{fig:snapshots_solitary_tail} (\eg $\tilde{x}/h =
+\numrange{-20}{3}$ for $P'=0.25$ and $t'_1=10$) with the rear side
+($x<0$) of the bound wave grows/widens with time.
+\end{LineLabel}
 \begin{LineLabel}{R1-8}
 The dispersive tail in \cref{fig:snapshots_solitary_tail} (\eg located
 left of $\tilde{x}/h=-20$ for $P'=0.25$ and $t'_1=10$) is analogous to the
@@ -784,8 +788,8 @@ waves, such as \figsname{} 8(b) and (c) of \citet{hammack1974korteweg}.
 \end{LineLabel}
 \begin{LineLabel}{R1-11}
 However, unlike previous dispersive tails decaying from the initial
-profile, our tail is continually amplified and lengthened by the
-continuous forcing of the wind.
+profile, our tail is continually forced and lengthened by the wind
+forcing.
 \end{LineLabel}
 Hence, the symmetric disturbance induced by the pressure forcing
 \cref{eq:pressure_change} has two effects on the wave.
