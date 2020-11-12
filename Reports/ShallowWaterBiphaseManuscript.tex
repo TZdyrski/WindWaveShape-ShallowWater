@@ -65,7 +65,7 @@ The resulting wave grows (decays) for onshore (offshore) wind and
 becomes asymmetric, with the rear face showing the largest shape
 changes.
 The wave profile's deviation from a reference solitary wave shows a
-bound, dispersive, decaying tail.
+bound wave and dispersive, decaying tail.
 The onshore wind increases the wave's energy and skewness with time
 while decreasing the wave's asymmetry, with the opposite holding for
 offshore wind.
@@ -739,9 +739,9 @@ growth/decay and resultant shape changes and asymmetry, though not
 directly.
 Indeed, when the surface profile $\eta$ is symmetric, the pressure
 forcing term $P \partial_x^2 \eta$ preserves the initial symmetry.
-Instead, the pressure forcing causes a (symmetric) bound wave after a
-short time $\Delta t'_1 \ll 1$, which can be seen by considering the
-non-dimensional KdV-Burgers equation \cref{eq:kdv_burgers} in the
+Instead, the pressure forcing initially causes a (symmetric) bound wave
+after a short time $\Delta t'_1 \ll 1$, which can be seen by considering
+the non-dimensional KdV-Burgers equation \cref{eq:kdv_burgers} in the
 unforced solitary wave's frame (\cref{fig:snapshots_solitary}) at the
 initial time,
 \begin{align}
@@ -755,11 +755,14 @@ initial time,
   \,.
   \label{eq:pressure_change}
 \end{align}
+\begin{LineLabel}{R1-12}
 The $P'\Delta t'_1$ terms generate a small peak (trough) at $x'=0$ and
 small troughs (peaks) symmetrically in front and behind the wave peak
-for onshore (offshore) wind, which are apparent near $\tilde{x}/h
-\approx \pm 3$ in \cref{fig:snapshots_solitary_tail} but less
-symmetrical since the times $t'_1 = 5$ and $10$ are not small.
+for onshore (offshore) wind.
+This bound wave is apparent in \cref{fig:snapshots_solitary_tail} (\eg
+for $\tilde{x}/h = \numrange{-20}{3}$ for $P'=0.25$ and $t'_1=10$), and
+the rear side ($x<0$) of the bound wave grows/widens with time.
+\end{LineLabel}
 The small numerical value $\abs{P'} = 0.25 \ll 1$ used in
 \cref{sec:results} allows us to consider the wave's evolution as two
 steps with time scale separation.
@@ -772,14 +775,14 @@ shows that any localized, initial profile differing from
 a bound, dispersive tail that decays behind ($x<0$) the wave
 \citep[\eg][]{mei2005nonlinear}.
 \begin{LineLabel}{R1-8}
-The bound, dispersive tail in \cref{fig:snapshots_solitary_tail} is
-analogous to the ubiquitous dispersive tails in prior studies on
-shallow-water solitary waves, such as \figsname{} 8(b) and (c) of
-\citet{hammack1974korteweg}.
+The dispersive tail in \cref{fig:snapshots_solitary_tail} (\eg located
+left of $\tilde{x}/h=-20$ for $P'=0.25$ and $t'_1=10$) is analogous to the
+ubiquitous dispersive tails in prior studies on shallow-water solitary
+waves, such as \figsname{} 8(b) and (c) of \citet{hammack1974korteweg}.
 \end{LineLabel}
 \begin{LineLabel}{R1-11}
 However, unlike previous dispersive tails decaying from the initial
-profile, our bound tail is continually amplified and lengthened by the
+profile, our tail is continually amplified and lengthened by the
 continuous forcing of the wind.
 \end{LineLabel}
 Hence, the symmetric disturbance induced by the pressure forcing
@@ -788,13 +791,13 @@ First, the wind slowly changes the height and width of the initial
 solitary wave, which is reflected in the growth (decay) and narrowing
 (widening) under onshore (offshore) winds in
 \cref{fig:snapshots_solitary}.
-Second, it quickly generates an asymmetric, bound, dispersive tail
-behind the wave (\cref{fig:snapshots_solitary_tail}), producing a
+Second, it quickly generates a bound wave and asymmetric, dispersive
+tail behind the wave (\cref{fig:snapshots_solitary_tail}), producing a
 greater shape change on the wave's rear face
 (\cref{fig:snapshots_solitary}).
 Finally, the different wind directions (\ie{} pressure forcing signs)
-change the sign of the bound, dispersive tail and, hence, the sign of
-the asymmetry in \cref{fig:statistics_solitary}.
+change the sign of the bound wave and dispersive tail and, hence, the
+sign of the asymmetry in \cref{fig:statistics_solitary}.
 
 \subsection{Comparison to intermediate and deep water}
 \Citet{zdyrski2020wind} investigated the effect of
