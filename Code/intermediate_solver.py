@@ -650,7 +650,11 @@ class kdvSystem():
             print(sol['message'])
 
         self.sol = sol['y']
-
+        # Save the contributions of the individual terms
+        self.PDEterms = eqn(self.snapshot_ts, self.sol, deriv_type='periodic_fd',
+                terms=True)[1]
+        for key in self.PDEterms:
+            self.PDEterms[key] = self.PDEterms[key].T
 
     def solve_system_ab3(self, max_height=np.inf, max_slope=np.inf, *args, **kwargs):
         """Use 3rd-order Adams-Bashforth method to solve the
