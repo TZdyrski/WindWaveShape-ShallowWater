@@ -1720,7 +1720,9 @@ def plot_pos_neg_solitary_tail(load_prefix, save_prefix, *args, **kwargs):
 
     # Zoom in on wave
     for ax in fig.axes:
-        ax.set_xlim(right=15)
+        leftLim = ax.get_xlim()[0]
+        leftLim = max(leftLim,-55)
+        ax.set_xlim(left=leftLim,right=15)
 
     texplot.savefig(fig,save_prefix+'Snapshots-Positive-Negative-Tail')
 
