@@ -778,8 +778,8 @@ def plot_power_spec_vs_kappa_template(data_arrays, **kwargs):
 def plot_power_spec_vs_time_template(data_arrays, **kwargs):
 
     # Interpolate data
-    for iy in range(data_arrays.shape[0]):
-        data_arrays[iy] = data_arrays[iy].interpolate_na(
+    for iy, ix in np.ndindex(data_arrays.shape):
+        data_arrays[iy,ix] = data_arrays[iy,ix].interpolate_na(
                 't*eps*sqrt(g*h)*k_E', method='spline')
 
     # Set axis labels and titles
@@ -2187,12 +2187,6 @@ def plot_shape_statistics_cnoidal(load_prefix, save_prefix, *args, **kwargs):
 
     fig = plot_shape_statistics_vs_time_template(data_arrays)
 
-    ax = fig.axes[0]
-    t = data_arrays[0]['t*eps*sqrt(g*h)*k_E']
-    initial_H = 2*data_arrays[0].attrs['eps']
-    energy = initial_H*np.exp(np.outer(t,P_val_list)*0.3)
-    ax.plot(t, energy, color='y', zorder=-1)
-
     texplot.savefig(fig,save_prefix+'Skew-Asymm-Cnoidal')
 
 def plot_shape_statistics_cnoidal_GM(load_prefix, save_prefix, *args, **kwargs):
@@ -2780,11 +2774,11 @@ def plot_spacetime_mesh(load_prefix, save_prefix, *args, **kwargs):
     # Using the default list of parameters, generate plots for ones with
     # slightly different parameters
     parameter_list = [
-#            {**kwargs, 'label':''},
+            {**kwargs, 'label':''},
 #            {**kwargs, 'forcing_type':'GM', 'label':'GM'},
             {**kwargs, 'wave_type':'solitary', 'label':'solitary'},
-#            {**kwargs, 'P':-kwargs.get('P',0), 'label':'neg'},
-#            {**kwargs, 'mu':round_sig_figs(7/8*kwargs.get('mu',0)), 'label':'double_mu'},
+            {**kwargs, 'P':-kwargs.get('P',0), 'label':'neg'},
+            {**kwargs, 'mu':round_sig_figs(7/8*kwargs.get('mu',0)), 'label':'double_mu'},
             ]
     for parameters in parameter_list:
 
@@ -2931,33 +2925,33 @@ def main():
             'pos_neg_solitary_tail' : plot_pos_neg_solitary_tail,
             'pos_neg_solitary_tail_thumbnail' : plot_pos_neg_solitary_tail_thumbnail,
             'pos_neg_solitary_and_sech' : plot_pos_neg_solitary_and_sech,
-#            'pos_cnoidal' : plot_pos_cnoidal,
-#            'neg_cnoidal' : plot_neg_cnoidal,
-#            'pos_neg_cnoidal' : plot_pos_neg_cnoidal,
+            'pos_cnoidal' : plot_pos_cnoidal,
+            'neg_cnoidal' : plot_neg_cnoidal,
+            'pos_neg_cnoidal' : plot_pos_neg_cnoidal,
 #            'pos_neg_cnoidal_GM' : plot_pos_neg_cnoidal_GM,
             'pos_neg_slope_solitary' : plot_pos_neg_slope_solitary,
-#            'pos_neg_slope_cnoidal' : plot_pos_neg_slope_cnoidal,
+            'pos_neg_slope_cnoidal' : plot_pos_neg_slope_cnoidal,
 #            'pos_neg_slope_cnoidal_GM' : plot_pos_neg_slope_cnoidal_GM,
             'slope_statistics_solitary' : plot_slope_statistics_solitary,
-#            'slope_statistics_cnoidal' : plot_slope_statistics_cnoidal,
+            'slope_statistics_cnoidal' : plot_slope_statistics_cnoidal,
             'shape_statistics_solitary' : plot_shape_statistics_solitary,
             'shape_statistics_solitary_production' : plot_shape_statistics_solitary_production,
-#            'shape_statistics_cnoidal' : plot_shape_statistics_cnoidal,
+            'shape_statistics_cnoidal' : plot_shape_statistics_cnoidal,
 #            'shape_statistics_cnoidal_GM' : plot_shape_statistics_cnoidal_GM,
 #            'shape_statistics_vs_depth' : plot_shape_statistics_vs_depth,
 #            'shape_statistics_vs_press_solitary' : plot_shape_statistics_vs_press_solitary,
 #            'shape_statistics_vs_press_cnoidal' : plot_shape_statistics_vs_press_cnoidal,
-#            'energy' : plot_energy,
+            'energy' : plot_energy,
             'energy_solitary' : plot_energy_solitary,
 #            'energy_GM' : plot_energy_GM,
-#            'power_spec_vs_kappa' : plot_power_spec_vs_kappa,
+            'power_spec_vs_kappa' : plot_power_spec_vs_kappa,
 #            'power_spec_vs_kappa_GM' : plot_power_spec_vs_kappa_GM,
-#            'power_spec_vs_time' : plot_power_spec_vs_time,
+            'power_spec_vs_time' : plot_power_spec_vs_time,
 #            'power_spec_vs_time_GM' : plot_power_spec_vs_time_GM,
 #            'wavenum_freq' : plot_wavenum_freq,
 #            'wavenum_freq_GM' : plot_wavenum_freq_GM,
             'xt_offset_solitary' : plot_xt_offset_solitary,
-#            'xt_offset_cnoidal' : plot_xt_offset_cnoidal,
+            'xt_offset_cnoidal' : plot_xt_offset_cnoidal,
 #            'biviscosity' : plot_biviscosity,
             'spacetime_mesh' : plot_spacetime_mesh,
 #            'decaying_no_nu_bi' : plot_decaying_no_nu_bi,
