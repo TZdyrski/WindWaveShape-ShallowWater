@@ -184,14 +184,15 @@ class kdvSystem():
         """Regularize cnoidal wavelength so we don't need an
         infinitely-long domain."""
 
-        # Cut-off WaveLength at 80
-        regularized_wave_length = min(WaveLength,80)
+        # Cut-off WaveLength at 160
+        regularized_wave_length = min(WaveLength,160)
 
         return regularized_wave_length
 
-    def set_spatial_grid(self, xLen=80, xNum=None,
+    def set_spatial_grid(self, xLen=160, xNum=None,
             xStep=None, xOffset=None, WaveType=None,
-            WaveLength=2*np.pi,NumWaves=1, spectral=False, *args,
+            WaveLength=2*np.pi,NumWaves=1, spectral=False,
+            periodic_spectral=True, *args,
             **kwargs):
         """Set the x coordinate grid.
 
@@ -199,7 +200,7 @@ class kdvSystem():
         ----------
         xLen : float or None
             Length of x domain, or maximum domain length if WaveType is
-            not None. Default is 80.
+            not None. Default is 160.
         WaveType : 'int_wave_lengths', 'cnoidal', or None
             If 'int_wave_lengths', choose domain length to fit NumWaves
             wavelengths of length WaveLength. If 'cnoidal', choose
@@ -284,6 +285,7 @@ class kdvSystem():
 
         self.spectral = False
         if spectral:
+            self.periodic_spectral = periodic_spectral
             self.spectral = True
 
             from dedalus import public as de
@@ -303,8 +305,12 @@ class kdvSystem():
             self.xNum = int(np.ceil(self.xNum/denom)*denom)
 
             # Create basis and domain
-            x_basis = de.Chebyshev('x', self.xNum, interval=endpoints,
-                    dealias=dealias_factor)
+            if self.periodic_spectral:
+                x_basis = de.Fourier('x', self.xNum, interval=endpoints,
+                        dealias=dealias_factor)
+            else:
+                x_basis = de.Chebyshev('x', self.xNum, interval=endpoints,
+                        dealias=dealias_factor)
             self.domain = de.Domain([x_basis], np.float64)
 
             self.x = self.domain.grid(0)
@@ -341,8 +347,10 @@ class kdvSystem():
 
         if tNum == 'density' and not spectral:
             self.tNum = int(self.tLen/(self.xLen/self.xNum)**4)
-        elif tNum == 'density' and spectral:
+        elif tNum == 'density' and spectral and not self.periodic_spectral:
             self.tNum = int(10*self.tLen/(self.xLen/self.xNum))
+        elif tNum == 'density' and spectral and self.periodic_spectral:
+            self.tNum = int(3/8*self.tLen/(self.xLen/self.xNum))
         else:
             self.tNum = tNum
 
@@ -903,12 +911,13 @@ class kdvSystem():
         # (A)           (-F ,G ,-C)           (u*ux)
         # (0)*d(U)/dt = (0  ,0  ,0)*d(U)/dx + (0)
         # (0)           (0  ,0  ,0)           (0)
-        # with U = (u,ux,uxx).T and (3) boundary conditions
+        # with U = (u,ux,uxx).T
+        # and initial conditions
+        # U(x,0) = (u0, d(u0)/dx, d^2(u0)/dx^2)
+        # If domain is not periodic, also impose (3) boundary conditions
         # (1,0,0)*U(xmin,t) = 0,
         # (0,1,0)*U(xmin,t) = 0,
         # (0,1,0)*U(xmax,t) = 0,
-        # and initial conditions
-        # U(x,0) = (u0, d(u0)/dx, d^2(u0)/dx^2)
 
         # Create problem
         problem = de.IVP(self.domain, variables=['u', 'ux', 'uxx'])
@@ -925,14 +934,17 @@ class kdvSystem():
 
         # Main equation, with linear terms on the LHS and nonlinear terms on the RHS
         problem.add_equation("A*dt(u) + F*dx(u) + C*dx(uxx) - G*dx(ux) = -B*u*ux")
+
         # Auxiliary equations defining the first-order reduction
         problem.add_equation("ux - dx(u) = 0")
         problem.add_equation("uxx - dx(ux) = 0")
-        # Boundary conditions (set u(xMax) = 0 since this is the
-        # upstream side)
-        problem.add_bc('right(u) = 0')
-        problem.add_bc('left(ux) = 0')
-        problem.add_bc('right(ux) = 0')
+
+        if not self.periodic_spectral:
+            # Dirichlet and Neumann boundary conditions (set u(xMax) = 0
+            # since this is the upstream side)
+            problem.add_bc('right(u) = 0')
+            problem.add_bc('left(ux) = 0')
+            problem.add_bc('right(ux) = 0')
 
         # Select timestepping method
         solver = problem.build_solver(de.timesteppers.RK443)
@@ -1003,7 +1015,12 @@ class kdvSystem():
         analyzer.add_task("0", layout='g', name='Hyperviscosity', scales=1)
 
         # Add CFL condition to dynamically calculate dt
-        CFL = flow_tools.CFL(solver, initial_dt=dt, safety=0.3,
+        if not self.periodic_spectral:
+            safety = 0.3 # Use this for RK111 or SBDF1
+        else:
+#            safety = 2.0 # Use this for SBDF2
+            safety = 8.0 # Use this for RK443
+        CFL = flow_tools.CFL(solver, initial_dt=dt, safety=safety,
                              max_change=1.5, min_change=0.5)
         # The local velocity u=dx(phi)+O(eps) is equal also
         # u=eta+O(eps), so the velocity is equal to our primary field
@@ -1406,6 +1423,16 @@ def gen_snapshots(save_prefix, eps=0.1, mu=0.8, P=0.25, psiP=3/4*np.pi,
                             'max_height' : max_height,
                             'tLen' : tLen,
                             }
+
+                    if wave_type == 'solitary':
+                        # While it is faster and more accurate to spectrally solve the
+                        # solitary wave with periodic boundary conditions compared to
+                        # Dirichlet/Neumann boundary conditions, keep the
+                        # Dirichlet/Neumann boundary conditions since they were used
+                        # in the submitted manuscript
+                        parameters['periodic_spectral'] = False
+                        # Keep xLen the same as was used in the submitted manuscript
+                        parameters['xLen'] = 80
 
                     # Jeffreys does not just psiP
                     if forcing_type == 'Jeffreys':

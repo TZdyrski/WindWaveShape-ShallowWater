@@ -586,6 +586,17 @@ def time_fractions(signal):
 
     return signal
 
+def trim_space(signal):
+    # Trim extent
+    leftLimit = -55
+    rightLimit = 55
+
+    # Trim snapshots
+    signal = signal.where(np.logical_and(signal['x/h']>leftLimit,
+        signal['x/h']<rightLimit),drop=True)
+
+    return signal
+
 def time_downsample(signal, downsample_factor=1, keep_last=True):
 
     # Down sample the time component to save space since we don't need
@@ -978,17 +989,19 @@ def process_spacetime_mesh(load_prefix, save_prefix, *args, **kwargs):
     filename_base = 'Snapshots'
 
     # Find filenames
-    old_filenames = glob.glob(load_prefix+'*'+filename_base+'*')
+    filenames = data_csv.find_filenames(load_prefix, filename_base,
+            allow_multiple_files=True)
 
-    # Rename files
-    new_filenames = [filename.\
-            replace(load_prefix, save_prefix).\
-            replace(filename_base, 'Full-'+filename_base)
-            for filename in old_filenames]
+    for filename in filenames:
+        # Extract data
+        data_array = data_csv.load_data(filename, stack_coords=True)
 
-    for old_filename,new_filename in zip(old_filenames, new_filenames):
-        # Copy files
-        shutil.copy(old_filename, new_filename)
+        # Trim space
+        data_array = trim_space(data_array)
+
+        # Save snapshots
+        data_csv.save_data(data_array, save_prefix+'Full-Snapshots',
+                **data_array.attrs, stack_coords=True)
 
 def trim_trig_verf(load_prefix, save_prefix, *args, **kwargs):
     filename_base = 'TrigVerf'
