@@ -891,11 +891,6 @@ class kdvSystem():
         periodic domain. This is currently only implemented for the
         KdV-Burgers equation so we must have self.diffeq == 'KdVB'."""
 
-        if self.diffeq != 'KdVB':
-            raise(ValueError("Spectral solver can only solve the"+\
-                    " KdV-Burgers equation (self.diffeq='KdVB'),"+\
-                    " but '"+self.diffeq+"' was passed"))
-
         from dedalus import public as de
         from dedalus.extras import flow_tools
 
@@ -933,7 +928,30 @@ class kdvSystem():
         problem.parameters['G'] = self.G
 
         # Main equation, with linear terms on the LHS and nonlinear terms on the RHS
-        problem.add_equation("A*dt(u) + F*dx(u) + C*dx(uxx) - G*dx(ux) = -B*u*ux")
+        if self.diffeq == 'KdVB':
+            problem.add_equation("A*dt(u) + F*dx(u) + C*dx(uxx) - G*dx(ux) = -B*u*ux")
+        elif self.diffeq == 'KdVNL':
+            dx = np.mean(self.dx)
+            if not np.all(np.isclose(self.dx, dx)):
+                # Rolling only makes sense if the points are equally spaced,
+                # so assume they are equally spaced
+                raise(ValueError('Can only apply KdVNL to using roll'+\
+                        ' to evenly spaced data'))
+            problem.parameters['shift'] = int(round(-self.psiP*self.WaveLength/(2*np.pi)/dx))
+
+            def roll(*args):
+                field = args[0].data
+                shift = args[1].value
+                return np.roll(field, shift=shift, axis=-1).astype('float')
+            def roll_gf(*args):
+                return de.operators.GeneralFunction(self.domain, layout='g', func=roll, args=args)
+            de.operators.parseables['roll'] = roll_gf
+
+            problem.add_equation("A*dt(u) + F*dx(u) + C*dx(uxx) = G*roll(ux,shift) -B*u*ux")
+        else:
+            raise(ValueError("Spectral solver can only solve the"+\
+                    " KdV-Burgers equation (self.diffeq='KdVB'),"+\
+                    " but '"+self.diffeq+"' was passed"))
 
         # Auxiliary equations defining the first-order reduction
         problem.add_equation("ux - dx(u) = 0")
@@ -1402,7 +1420,7 @@ def gen_snapshots(save_prefix, eps=0.1, mu=0.8, P=0.25, psiP=3/4*np.pi,
     # Maximum tLen
     tLen = 10
 
-    for forcing_type in ['Jeffreys']:
+    for forcing_type in ['Jeffreys','GM']:
         for wave_type in ['solitary','cnoidal']:
             if forcing_type == 'GM' and wave_type == 'solitary':
                 # We don't need GM applied to solitary waves, as it
