@@ -2959,7 +2959,7 @@ def main():
 #            'biviscosity' : plot_biviscosity,
             'spacetime_mesh' : plot_spacetime_mesh,
 #            'decaying_no_nu_bi' : plot_decaying_no_nu_bi,
-            'metrics' : plot_metrics,
+#            'metrics' : plot_metrics,
             'forcing_types' : plot_forcing_types,
             }
 
