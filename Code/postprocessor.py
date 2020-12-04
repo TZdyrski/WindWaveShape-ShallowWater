@@ -241,6 +241,32 @@ def temporal_fourier_transform(signal, rel_tol=1e-3):
     tLen, tNum, dt = get_var_stats(signal, var='t*eps*sqrt(g*h)*k_E',
             periodic=False)
 
+    # Check if dt is a scalar (evenly spaced) or vector unevenly spaced
+    if not np.isscalar(dt):
+        max_dt = np.amax(dt)
+        new_tNum = int(np.floor(tLen/max_dt))
+
+        t = signal['t*eps*sqrt(g*h)*k_E']
+        attrs = signal.attrs
+
+        # Resample data
+        signal_interp_func = sp.interpolate.interp1d(
+                x=t, y=signal)
+        t_interp = np.linspace(t[0],t[-1], num=new_tNum)
+        signal_interp = signal_interp_func(t_interp)
+        signal.attrs = attrs
+
+        coords = dict(signal.coords)
+        coords['t*eps*sqrt(g*h)*k_E'] = t_interp
+
+        signal = xr.DataArray(signal_interp,
+            dims=signal.dims,
+            coords=coords,
+            attrs=attrs)
+
+        dt = max_dt
+        tNum = new_tNum
+
     # Convert from matplotlib's wavenumber in cycles per t1-unit to our
     # radians per t-unit by multiplying by 2*pi radians/cycle
     omega = np.fft.fftfreq(tNum, dt)*2*np.pi
@@ -814,6 +840,10 @@ def process_depth_varying(load_prefix, save_prefix, *args, **kwargs):
     statistics_datasets = xr.concat(statistics_list,
             dim=xr.DataArray(k_Eh_val_list, name='k_E*h', dims='k_E*h'))
 
+    # Interpolate data
+    statistics_datasets = statistics_datasets.interpolate_na(
+                't*eps*sqrt(g*h)*k_E', method='spline')
+
     # Remove mu and wave_length parameter attributes
     statistics_datasets.attrs.pop('mu',None)
     statistics_datasets.attrs.pop('wave_length',None)
@@ -851,6 +881,10 @@ def process_press_varying(load_prefix, save_prefix, *args, **kwargs):
         # Combine statistics Datasets
         statistics_datasets = xr.concat(statistics_list,
                 dim=xr.DataArray(P_val_list, name='P', dims='P'))
+
+        # Interpolate data
+        statistics_datasets = statistics_datasets.interpolate_na(
+                    't*eps*sqrt(g*h)*k_E', method='spline')
 
         # Remove P parameter attribute
         statistics_datasets.attrs.pop('P',None)
@@ -1276,21 +1310,21 @@ def main():
             'trim_snapshots' : trim_snapshots,
             'move_terms' : move_terms,
             'move_metrics' : move_metrics,
-#            'trim_trig_verf' : trim_trig_verf,
-#            'trim_long_verf' : trim_long_verf,
-#            'trig_statistics' : process_trig_statistics,
-#            'long_statistics' : process_long_statistics,
+            'trim_trig_verf' : trim_trig_verf,
+            'trim_long_verf' : trim_long_verf,
+            'trig_statistics' : process_trig_statistics,
+            'long_statistics' : process_long_statistics,
             'snapshot_slopes' : process_snapshot_slopes,
             'slope_statistics' : process_slope_statistics,
             'power_spec_vs_kappa' : process_power_spec_vs_kappa,
             'power_spec_vs_time' : process_power_spec_vs_time,
-#            'wavenum_freq' : process_wavenumber_frequency,
-#            'depth_varying' : process_depth_varying,
-#            'press_varying' : process_press_varying,
+            'wavenum_freq' : process_wavenumber_frequency,
+            'depth_varying' : process_depth_varying,
+            'press_varying' : process_press_varying,
             'xt_offset' : process_xt_offset,
-#            'biviscosity' : process_biviscosity_variation,
+            'biviscosity' : process_biviscosity_variation,
             'spacetime_mesh' : process_spacetime_mesh,
-#            'decaying_no_nu_bi' : process_decaying_no_nu_bi,
+            'decaying_no_nu_bi' : process_decaying_no_nu_bi,
             'print_slope_ratios' : print_slope_ratios,
             'print_asym_variance' : print_asym_variance,
             }

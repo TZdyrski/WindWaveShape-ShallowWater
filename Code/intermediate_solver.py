@@ -896,9 +896,6 @@ class kdvSystem():
 
         # Source: https://dedalus-project.readthedocs.io/en/latest/notebooks/dedalus_tutorial_problems_solvers.html
 
-        # We don't use a hyperviscosity for spectral methods
-        self.H = 0
-
         # We need to transform the third order KdV-B equation to a
         # system of first order equations
         # A*d(u)/dt + F*ux + B*u*ux + C*uxxx = G*uxx
@@ -914,8 +911,17 @@ class kdvSystem():
         # (0,1,0)*U(xmin,t) = 0,
         # (0,1,0)*U(xmax,t) = 0,
 
+        # Biviscosity?
+        bivisc_term = not np.isclose(self.H, 0)
+
         # Create problem
-        problem = de.IVP(self.domain, variables=['u', 'ux', 'uxx'])
+        if not bivisc_term:
+            problem = de.IVP(self.domain, variables=['u', 'ux', 'uxx'])
+        else:
+            problem = de.IVP(self.domain, variables=['u', 'ux', 'uxx',
+            'uxxx'])
+            problem.parameters['H'] = self.H
+
 
         # Apply Dirichlet preconditioning
         problem.meta[:]['x']['dirichlet'] = True
@@ -929,7 +935,10 @@ class kdvSystem():
 
         # Main equation, with linear terms on the LHS and nonlinear terms on the RHS
         if self.diffeq == 'KdVB':
-            problem.add_equation("A*dt(u) + F*dx(u) + C*dx(uxx) - G*dx(ux) = -B*u*ux")
+            if not bivisc_term:
+                problem.add_equation("A*dt(u) + F*dx(u) + C*dx(uxx) - G*dx(ux) = -B*u*ux")
+            else:
+                problem.add_equation("A*dt(u) + F*dx(u) + C*dx(uxx) - G*dx(ux) + H*dx(uxxx) = -B*u*ux")
         elif self.diffeq == 'KdVNL':
             dx = np.mean(self.dx)
             if not np.all(np.isclose(self.dx, dx)):
@@ -947,7 +956,11 @@ class kdvSystem():
                 return de.operators.GeneralFunction(self.domain, layout='g', func=roll, args=args)
             de.operators.parseables['roll'] = roll_gf
 
-            problem.add_equation("A*dt(u) + F*dx(u) + C*dx(uxx) = G*roll(ux,shift) -B*u*ux")
+            if not bivisc_term:
+                problem.add_equation("A*dt(u) + F*dx(u) + C*dx(uxx) = G*roll(ux,shift) -B*u*ux")
+            else:
+                problem.add_equation("A*dt(u) + F*dx(u) + C*dx(uxx) + H*dx(uxxx) = G*roll(ux,shift) -B*u*ux")
+
         else:
             raise(ValueError("Spectral solver can only solve the"+\
                     " KdV-Burgers equation (self.diffeq='KdVB'),"+\
@@ -956,6 +969,8 @@ class kdvSystem():
         # Auxiliary equations defining the first-order reduction
         problem.add_equation("ux - dx(u) = 0")
         problem.add_equation("uxx - dx(ux) = 0")
+        if bivisc_term:
+            problem.add_equation("uxxx - dx(uxx) = 0")
 
         if not self.periodic_spectral:
             # Dirichlet and Neumann boundary conditions (set u(xMax) = 0
@@ -963,6 +978,8 @@ class kdvSystem():
             problem.add_bc('right(u) = 0')
             problem.add_bc('left(ux) = 0')
             problem.add_bc('right(ux) = 0')
+            if bivisc_term:
+                problem.add_bc('right(uxx) = 0')
 
         # Select timestepping method
         solver = problem.build_solver(de.timesteppers.RK443)
@@ -971,6 +988,8 @@ class kdvSystem():
         u = solver.state['u']
         ux = solver.state['ux']
         uxx = solver.state['uxx']
+        if bivisc_term:
+            uxxx = solver.state['uxxx']
 
         # Differentiate initial conditions and store results in
         # self.state
@@ -978,6 +997,8 @@ class kdvSystem():
 
         u.differentiate('x', out=ux)
         ux.differentiate('x', out=uxx)
+        if bivisc_term:
+            uxx.differentiate('x', out=uxxx)
 
         # Stop stopping criteria
         solver.stop_sim_time = self.tLen
@@ -1023,14 +1044,34 @@ class kdvSystem():
             solver.domain, solver.evaluator.vars, sim_dt=snapshot_dt))
         analyzer.add_task("t", layout='g', name='t', scales=1)
         analyzer.add_task("u", layout='g', name='u', scales=1)
-        analyzer.add_task(
-                "-F/A*dx(u) - C/A*dx(uxx) + G/A*dx(ux) -B/A*u*ux",
-                layout='g', name='Change', scales=1)
         analyzer.add_task("B/A*u*ux", layout='g', name='Advection', scales=1)
         analyzer.add_task("C/A*dx(uxx)", layout='g', name='Dispersion', scales=1)
         analyzer.add_task("F/A*dx(u)", layout='g', name='Current', scales=1)
-        analyzer.add_task("-G/A*dx(ux)", layout='g', name='Wind', scales=1)
-        analyzer.add_task("0", layout='g', name='Hyperviscosity', scales=1)
+        if self.diffeq == 'KdVB':
+            analyzer.add_task("-G/A*dx(ux)", layout='g', name='Wind', scales=1)
+        else:
+            analyzer.add_task("-G/A*roll(ux,shift)", layout='g', name='Wind', scales=1)
+        if bivisc_term:
+            analyzer.add_task("H/A*dx(uxxx)", layout='g', name='Hyperviscosity', scales=1)
+        else:
+            analyzer.add_task("0", layout='g', name='Hyperviscosity', scales=1)
+
+        if self.diffeq == 'KdVB' and (not bivisc_term):
+            analyzer.add_task(
+                    "-F/A*dx(u) - C/A*dx(uxx) + G/A*dx(ux) -B/A*u*ux",
+                    layout='g', name='Change', scales=1)
+        elif self.diffeq == 'KdVB' and (bivisc_term):
+            analyzer.add_task(
+                    "-F/A*dx(u) - C/A*dx(uxx) + G/A*dx(ux) - H/A*dx(uxxx) -B/A*u*ux",
+                    layout='g', name='Change', scales=1)
+        elif self.diffeq == 'KdVNL' and (not bivisc_term):
+            analyzer.add_task(
+                    "-F/A*dx(u) - C/A*dx(uxx) + G/A*roll(ux,shift) -B/A*u*ux",
+                    layout='g', name='Change', scales=1)
+        else:
+            analyzer.add_task(
+                    "-F/A*dx(u) - C/A*dx(uxx) + G/A*roll(ux,shift) - H/A*dx(uxxx) -B/A*u*ux",
+                    layout='g', name='Change', scales=1)
 
         # Add CFL condition to dynamically calculate dt
         if not self.periodic_spectral:
@@ -1390,7 +1431,7 @@ def gen_long_verf(save_prefix, mu=0.8, nu_bi=3e-3):
                     **parameters)
 
 def gen_snapshots(save_prefix, eps=0.1, mu=0.8, P=0.25, psiP=3/4*np.pi,
-        nu_bi=3e-3):
+        nu_bi=0):
     """ Generate snapshots for range of parameters. Save the results to
     the directory given by 'save_prefix'.
 
@@ -1494,7 +1535,7 @@ def gen_snapshots(save_prefix, eps=0.1, mu=0.8, P=0.25, psiP=3/4*np.pi,
                             **parameters, stack_coords=False)
 
 def gen_depth_varying(save_prefix, eps=0.1, mu=0.6, P=0.25, psiP=3/4*np.pi,
-        nu_bi=3e-3, forcing_type='Jeffreys'):
+        nu_bi=0, forcing_type='Jeffreys'):
 
     # Linearly space khs
     kh_vals = np.sqrt(mu)*np.linspace(1,np.sqrt(2),num=30)
@@ -1527,7 +1568,7 @@ def gen_depth_varying(save_prefix, eps=0.1, mu=0.6, P=0.25, psiP=3/4*np.pi,
                 **parameters, stack_coords=True)
 
 def gen_press_varying(save_prefix, eps=0.1, mu=0.8, P=0.25, psiP=3/4*np.pi,
-        nu_bi=3e-3, forcing_type='Jeffreys'):
+        nu_bi=0, forcing_type='Jeffreys'):
 
     # Linearly space Ps
     P_vals = P*np.linspace(-1,1,num=30)
@@ -1645,10 +1686,10 @@ def gen_decaying_no_nu_bi(save_prefix, eps=0.1, mu=0.8, P=0.25,
                  break
 
 def gen_validity_domain(save_prefix, eps=0.1, mu=0.8, P=0.25, psiP=3/4*np.pi,
-        nu_bi=3e-3, xStep=1e-1, tStep=1e-2, max_tLen=100,
+        nu_bi=0, xStep=1e-1, tStep=1e-2, max_tLen=100,
         max_slope=10000):
 
-    nu_bi_vals = np.array([0])
+    nu_bi_vals = np.array([nu_bi])
     xStep_vals = np.vectorize(round_sig_figs)(xStep*np.logspace(0,2,4),3)
     tNum_vals = np.ceil((max_tLen/tStep*np.logspace(-1,1,5))).astype(int)
 
@@ -1759,14 +1800,14 @@ def main():
     save_prefix = '../Data/Raw/'
 
     callable_functions = {
-#            'trig_verf' : gen_trig_verf,
-#            'long_verf' : gen_long_verf,
+            'trig_verf' : gen_trig_verf,
+            'long_verf' : gen_long_verf,
             'snapshots' : gen_snapshots,
-#            'depth_varying' : gen_depth_varying,
-#            'press_varying' : gen_press_varying,
-#            'biviscosity' : gen_biviscosity_variation,
-#            'decaying_no_nu_bi' : gen_decaying_no_nu_bi,
-#            'validity_domain' : gen_validity_domain,
+            'depth_varying' : gen_depth_varying,
+            'press_varying' : gen_press_varying,
+            'biviscosity' : gen_biviscosity_variation,
+            'decaying_no_nu_bi' : gen_decaying_no_nu_bi,
+            'validity_domain' : gen_validity_domain,
             }
 
     if len(sys.argv) == 1:

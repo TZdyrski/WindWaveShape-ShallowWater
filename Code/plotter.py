@@ -543,11 +543,15 @@ def plot_shape_statistics_template(data_arrays, ax_title=None, **kwargs):
             # Determine smallest power of 2, n, such that min_ylim >=
             # pi/2^n
             power_of_two = np.ceil(np.log(np.pi/min_ylim)/np.log(2))
-            # Denominator of pi is 2^(power_of_two)
-            pi_denom = 2**power_of_two
-            # Set y-ticks as multiples of \pi
-            pi_multiple_ticks(ax[biphase_index,ix].item(),'y',
-                    1/pi_denom,1/(2*pi_denom))
+            # Ensure that min_ylim isn't too small (as might happen, for
+            # instance, if a plot is a horizontal line so the range of
+            # ylim is basically zero)
+            if power_of_two < 10:
+                # Denominator of pi is 2^(power_of_two)
+                pi_denom = 2**power_of_two
+                # Set y-ticks as multiples of \pi
+                pi_multiple_ticks(ax[biphase_index,ix].item(),'y',
+                        1/pi_denom,1/(2*pi_denom))
 
     return fig
 
@@ -2903,18 +2907,18 @@ def main():
             }
 
     callable_functions = {
-#            'trig_verf_no_nu_bi' : plot_trig_verf_no_nu_bi,
-#            'trig_statistics_no_nu_bi' : plot_trig_statistics_no_nu_bi,
-#            'long_verf_solitary_no_nu_bi' : plot_long_verf_solitary_no_nu_bi,
-#            'long_verf_cnoidal_no_nu_bi' : plot_long_verf_cnoidal_no_nu_bi,
-#            'long_statistics_solitary_no_nu_bi' : plot_long_statistics_solitary_no_nu_bi,
-#            'long_statistics_cnoidal_no_nu_bi' : plot_long_statistics_cnoidal_no_nu_bi,
-#            'trig_verf' : plot_trig_verf,
-#            'trig_statistics' : plot_trig_statistics,
-#            'long_verf_solitary' : plot_long_verf_solitary,
-#            'long_verf_cnoidal' : plot_long_verf_cnoidal,
-#            'long_statistics_solitary' : plot_long_statistics_solitary,
-#            'long_statistics_cnoidal' : plot_long_statistics_cnoidal,
+            'trig_verf_no_nu_bi' : plot_trig_verf_no_nu_bi,
+            'trig_statistics_no_nu_bi' : plot_trig_statistics_no_nu_bi,
+            'long_verf_solitary_no_nu_bi' : plot_long_verf_solitary_no_nu_bi,
+            'long_verf_cnoidal_no_nu_bi' : plot_long_verf_cnoidal_no_nu_bi,
+            'long_statistics_solitary_no_nu_bi' : plot_long_statistics_solitary_no_nu_bi,
+            'long_statistics_cnoidal_no_nu_bi' : plot_long_statistics_cnoidal_no_nu_bi,
+            'trig_verf' : plot_trig_verf,
+            'trig_statistics' : plot_trig_statistics,
+            'long_verf_solitary' : plot_long_verf_solitary,
+            'long_verf_cnoidal' : plot_long_verf_cnoidal,
+            'long_statistics_solitary' : plot_long_statistics_solitary,
+            'long_statistics_cnoidal' : plot_long_statistics_cnoidal,
             'verf_solitary' : plot_verf_solitary,
             'pos_solitary' : plot_pos_solitary,
             'neg_solitary' : plot_neg_solitary,
@@ -2938,9 +2942,9 @@ def main():
             'shape_statistics_solitary_production' : plot_shape_statistics_solitary_production,
             'shape_statistics_cnoidal' : plot_shape_statistics_cnoidal,
             'shape_statistics_cnoidal_GM' : plot_shape_statistics_cnoidal_GM,
-#            'shape_statistics_vs_depth' : plot_shape_statistics_vs_depth,
-#            'shape_statistics_vs_press_solitary' : plot_shape_statistics_vs_press_solitary,
-#            'shape_statistics_vs_press_cnoidal' : plot_shape_statistics_vs_press_cnoidal,
+            'shape_statistics_vs_depth' : plot_shape_statistics_vs_depth,
+            'shape_statistics_vs_press_solitary' : plot_shape_statistics_vs_press_solitary,
+            'shape_statistics_vs_press_cnoidal' : plot_shape_statistics_vs_press_cnoidal,
             'energy' : plot_energy,
             'energy_solitary' : plot_energy_solitary,
             'energy_GM' : plot_energy_GM,
@@ -2948,14 +2952,14 @@ def main():
             'power_spec_vs_kappa_GM' : plot_power_spec_vs_kappa_GM,
             'power_spec_vs_time' : plot_power_spec_vs_time,
             'power_spec_vs_time_GM' : plot_power_spec_vs_time_GM,
-#            'wavenum_freq' : plot_wavenum_freq,
-#            'wavenum_freq_GM' : plot_wavenum_freq_GM,
+            'wavenum_freq' : plot_wavenum_freq,
+            'wavenum_freq_GM' : plot_wavenum_freq_GM,
             'xt_offset_solitary' : plot_xt_offset_solitary,
             'xt_offset_cnoidal' : plot_xt_offset_cnoidal,
-#            'biviscosity' : plot_biviscosity,
+            'biviscosity' : plot_biviscosity,
             'spacetime_mesh' : plot_spacetime_mesh,
-#            'decaying_no_nu_bi' : plot_decaying_no_nu_bi,
-#            'metrics' : plot_metrics,
+            'decaying_no_nu_bi' : plot_decaying_no_nu_bi,
+            'metrics' : plot_metrics,
             'forcing_types' : plot_forcing_types,
             }
 
