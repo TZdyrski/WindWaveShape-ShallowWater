@@ -965,19 +965,25 @@ class kdvSystem():
             def minOne_gf(*args):
                 return de.operators.GeneralFunction(self.domain, layout='g', func=minOne, args=args)
             de.operators.parseables['minOne'] = minOne_gf
+
+            ramp_term = "*minOne(t/t_ramp)"
         else:
             ramp = False
 
         # Main equation, with linear terms on the LHS and nonlinear terms on the RHS
+        LHS_forcing = "F*dx(u) + C*dx(uxx)"
+        RHS_forcing = "-B*u*ux"
+
+        if bivisc_term:
+            LHS_forcing += "+ H*dx(uxxx)"
+
         if self.diffeq == 'KdVB':
-            if (not bivisc_term) and (not ramp):
-                problem.add_equation("A*dt(u) + F*dx(u) + C*dx(uxx) - G*dx(ux) = -B*u*ux")
-            elif (bivisc_term) and (not ramp):
-                problem.add_equation("A*dt(u) + F*dx(u) + C*dx(uxx) - G*dx(ux) + H*dx(uxxx) = -B*u*ux")
-            elif (not bivisc_term) and (ramp):
-                problem.add_equation("A*dt(u) + F*dx(u) + C*dx(uxx) = G*dx(ux)*minOne(t/t_ramp) -B*u*ux")
+            if ramp:
+                RHS_forcing += " + G*dx(ux)"+ramp_term
+                wind_forcing = "- G*dx(ux)"+ramp_term
             else:
-                problem.add_equation("A*dt(u) + F*dx(u) + C*dx(uxx) + H*dx(uxxx) = G*dx(ux)*minOne(t/t_ramp) -B*u*ux")
+                LHS_forcing += " - G*dx(ux)"
+                wind_forcing = "- G*dx(ux)"
         elif self.diffeq == 'KdVNL':
             dx = np.mean(self.dx)
             if not np.all(np.isclose(self.dx, dx)):
@@ -995,19 +1001,20 @@ class kdvSystem():
                 return de.operators.GeneralFunction(self.domain, layout='g', func=roll, args=args)
             de.operators.parseables['roll'] = roll_gf
 
-            if (not bivisc_term) and (not ramp):
-                problem.add_equation("A*dt(u) + F*dx(u) + C*dx(uxx) = G*roll(ux,shift) -B*u*ux")
-            elif (bivisc_term) and (not ramp):
-                problem.add_equation("A*dt(u) + F*dx(u) + C*dx(uxx) + H*dx(uxxx) = G*roll(ux,shift) -B*u*ux")
-            elif (not bivisc_term) and (ramp):
-                problem.add_equation("A*dt(u) + F*dx(u) + C*dx(uxx) = G*roll(ux,shift)*minOne(t/t_ramp) -B*u*ux")
+            if ramp:
+                RHS_forcing += " + G*roll(ux,shift)"+ramp_term
+                wind_forcing = "- G*roll(ux,shift)"+ramp_term
             else:
-                problem.add_equation("A*dt(u) + F*dx(u) + C*dx(uxx) + H*dx(uxxx) = G*roll(ux,shift)*minOne(t/t_ramp) -B*u*ux")
+                RHS_forcing += " + G*roll(ux,shift)"
+                wind_forcing = "- G*roll(ux,shift)"
 
         else:
             raise(ValueError("Spectral solver can only solve the"+\
                     " KdV-Burgers equation (self.diffeq='KdVB'),"+\
                     " but '"+self.diffeq+"' was passed"))
+
+        eqn_string = LHS_forcing+" + A*dt(u)"+" = "+RHS_forcing
+        problem.add_equation(eqn_string)
 
         # Auxiliary equations defining the first-order reduction
         problem.add_equation("ux - dx(u) = 0")
@@ -1087,54 +1094,17 @@ class kdvSystem():
             solver.domain, solver.evaluator.vars, sim_dt=snapshot_dt))
         analyzer.add_task("t", layout='g', name='t', scales=1)
         analyzer.add_task("u", layout='g', name='u', scales=1)
+        analyzer.add_task(RHS_forcing+" - ("+LHS_forcing+")",
+                layout='g', name='Change', scales=1)
         analyzer.add_task("B/A*u*ux", layout='g', name='Advection', scales=1)
         analyzer.add_task("C/A*dx(uxx)", layout='g', name='Dispersion', scales=1)
         analyzer.add_task("F/A*dx(u)", layout='g', name='Current', scales=1)
-        if self.diffeq == 'KdVB' and (not ramp):
-            analyzer.add_task("-G/A*dx(ux)", layout='g', name='Wind', scales=1)
-        elif self.diffeq == 'KdVB' and (ramp):
-            analyzer.add_task("-G/A*dx(ux)*minOne(t/t_ramp)", layout='g', name='Wind', scales=1)
-        elif self.diffeq == 'KdVNL' and (not ramp):
-            analyzer.add_task("-G/A*roll(ux,shift)", layout='g', name='Wind', scales=1)
-        else:
-            analyzer.add_task("-G/A*roll(ux,shift)*minOne(t/t_ramp)", layout='g', name='Wind', scales=1)
+        analyzer.add_task(wind_forcing, layout='g', name='Wind', scales=1)
+
         if bivisc_term:
             analyzer.add_task("H/A*dx(uxxx)", layout='g', name='Hyperviscosity', scales=1)
         else:
             analyzer.add_task("0", layout='g', name='Hyperviscosity', scales=1)
-
-        if self.diffeq == 'KdVB' and (not ramp) and (not bivisc_term):
-            analyzer.add_task(
-                    "-F/A*dx(u) - C/A*dx(uxx) + G/A*dx(ux) -B/A*u*ux",
-                    layout='g', name='Change', scales=1)
-        elif self.diffeq == 'KdVB' and (not ramp) and (bivisc_term):
-            analyzer.add_task(
-                    "-F/A*dx(u) - C/A*dx(uxx) + G/A*dx(ux) - H/A*dx(uxxx) -B/A*u*ux",
-                    layout='g', name='Change', scales=1)
-        elif self.diffeq == 'KdVB' and (ramp) and (not bivisc_term):
-            analyzer.add_task(
-                    "-F/A*dx(u) - C/A*dx(uxx) + G/A*dx(ux)*minOne(t/t_ramp) -B/A*u*ux",
-                    layout='g', name='Change', scales=1)
-        elif self.diffeq == 'KdVB' and (ramp) and (bivisc_term):
-            analyzer.add_task(
-                    "-F/A*dx(u) - C/A*dx(uxx) + G/A*dx(ux)*minOne(t/t_ramp) - H/A*dx(uxxx) -B/A*u*ux",
-                    layout='g', name='Change', scales=1)
-        elif self.diffeq == 'KdVNL' and (not ramp) and (not bivisc_term):
-            analyzer.add_task(
-                    "-F/A*dx(u) - C/A*dx(uxx) + G/A*roll(ux,shift) -B/A*u*ux",
-                    layout='g', name='Change', scales=1)
-        elif self.diffeq == 'KdVNL' and (not ramp) and (bivisc_term):
-            analyzer.add_task(
-                    "-F/A*dx(u) - C/A*dx(uxx) + G/A*roll(ux,shift) - H/A*dx(uxxx) -B/A*u*ux",
-                    layout='g', name='Change', scales=1)
-        elif self.diffeq == 'KdVNL' and (ramp) and (not bivisc_term):
-            analyzer.add_task(
-                    "-F/A*dx(u) - C/A*dx(uxx) + G/A*roll(ux,shift)*minOne(t/t_ramp) -B/A*u*ux",
-                    layout='g', name='Change', scales=1)
-        else:
-            analyzer.add_task(
-                    "-F/A*dx(u) - C/A*dx(uxx) + G/A*roll(ux,shift)*minOne(t/t_ramp) - H/A*dx(uxxx) -B/A*u*ux",
-                    layout='g', name='Change', scales=1)
 
         # Add CFL condition to dynamically calculate dt
         if not self.periodic_spectral:
