@@ -17,7 +17,7 @@ class kdvSystem():
 
     def __init__(self, A=1, B=3/2, C=None, F=None, G=None, P=None,
             H=None, nu_bi=None, psiP=0, diffeq='KdVB', eps=0.1, mu=0.6,
-            Height=None, *args, **kwargs):
+            Height=None, t_ramp=0, *args, **kwargs):
         """Initialize kdvSystem class instance.
 
         Solves a KdV-Burgers equation of the form
@@ -71,6 +71,8 @@ class kdvSystem():
             Specifies for which equation we are generating the sparcity
             matrix. 'KdVB' is KdV-Burgers, while 'KdVNL' is nonlocal
             KdV. Default is'KdVB'.
+        t_ramp : float or None
+            Time for forcing G to ramp up. Default is 0.
         """
 
         ## Physical parameters
@@ -137,6 +139,11 @@ class kdvSystem():
             self.Height = Height
         else:
             self.Height = 2*np.sign(self.B*self.C)
+
+        if t_ramp is not None:
+            self.t_ramp = t_ramp
+        else:
+            self.t_ramp = 0
 
         self.m = self._calculate_m()
 
@@ -536,16 +543,22 @@ class kdvSystem():
         uxxx = derivative(u, dx=self.dx, period=self.xLen, order=3, **kwargs)
         uxxxx = derivative(u, dx=self.dx, period=self.xLen, order=4, **kwargs)
 
+        # Ramp the forcing
+        if np.isclose(self.t_ramp,0):
+            ramp = 1
+        else:
+            ramp = np.minimum(1,t/self.t_ramp)
+
         # Compute du/dt
         dudt = -u*ux*self.B/self.A -uxxx*self.C/self.A \
-                -ux*self.F/self.A + uxx*self.G/self.A \
+                -ux*self.F/self.A + uxx*self.G*ramp/self.A \
                 -uxxxx*self.H/self.A
 
         # Return the contributions of the individual terms
         if terms:
             return dudt, {'Change':dudt, 'Advection':self.B/self.A*u*ux,
                     'Dispersion':self.C/self.A*uxxx,
-                    'Current':self.F/self.A*ux, 'Wind':-self.G/self.A*uxx,
+                    'Current':self.F/self.A*ux, 'Wind':-self.G*ramp/self.A*uxx,
                     'Hyperviscosity':self.H/self.A*uxxxx}
         else:
             return dudt
@@ -560,16 +573,22 @@ class kdvSystem():
                 shift=int(round(-self.psiP*self.WaveLength/(2*np.pi)/self.dx)),
                 axis=0)
 
+        # Ramp the forcing
+        if np.isclose(self.t_ramp,0):
+            ramp = 1
+        else:
+            ramp = np.minimum(1,t/self.t_ramp)
+
         # Compute du/dt
         dudt = -u*ux*self.B/self.A -uxxx*self.C/self.A \
-                -ux*self.F/self.A + uxnl*self.G/self.A \
+                -ux*self.F/self.A + uxnl*self.G*ramp/self.A \
                 -uxxxx*self.H/self.A
 
         # Return the contributions of the individual terms
         if terms:
             return dudt, {'Change':dudt, 'Advection':self.B/self.A*u*ux,
                     'Dispersion':self.C/self.A*uxxx,
-                    'Current':self.F/self.A*ux, 'Wind':self.G/self.A*uxx,
+                    'Current':self.F/self.A*ux, 'Wind':self.G*ramp/self.A*uxx,
                     'Hyperviscosity':self.H/self.A*uxxxx}
         else:
             return dudt
@@ -933,12 +952,29 @@ class kdvSystem():
         problem.parameters['F'] = self.F
         problem.parameters['G'] = self.G
 
+        # Ramp the forcing
+        if not np.isclose(self.t_ramp, 0):
+            ramp = True
+            problem.parameters['t_ramp'] = self.t_ramp
+            def minOne(*args):
+                value = args[0].value
+                return np.minimum(1,value).astype('float')
+            def minOne_gf(*args):
+                return de.operators.GeneralFunction(self.domain, layout='g', func=minOne, args=args)
+            de.operators.parseables['minOne'] = minOne_gf
+        else:
+            ramp = False
+
         # Main equation, with linear terms on the LHS and nonlinear terms on the RHS
         if self.diffeq == 'KdVB':
-            if not bivisc_term:
+            if (not bivisc_term) and (not ramp):
                 problem.add_equation("A*dt(u) + F*dx(u) + C*dx(uxx) - G*dx(ux) = -B*u*ux")
-            else:
+            elif (bivisc_term) and (not ramp):
                 problem.add_equation("A*dt(u) + F*dx(u) + C*dx(uxx) - G*dx(ux) + H*dx(uxxx) = -B*u*ux")
+            elif (not bivisc_term) and (ramp):
+                problem.add_equation("A*dt(u) + F*dx(u) + C*dx(uxx) = G*dx(ux)*minOne(t/t_ramp) -B*u*ux")
+            else:
+                problem.add_equation("A*dt(u) + F*dx(u) + C*dx(uxx) + H*dx(uxxx) = G*dx(ux)*minOne(t/t_ramp) -B*u*ux")
         elif self.diffeq == 'KdVNL':
             dx = np.mean(self.dx)
             if not np.all(np.isclose(self.dx, dx)):
@@ -956,10 +992,14 @@ class kdvSystem():
                 return de.operators.GeneralFunction(self.domain, layout='g', func=roll, args=args)
             de.operators.parseables['roll'] = roll_gf
 
-            if not bivisc_term:
+            if (not bivisc_term) and (not ramp):
                 problem.add_equation("A*dt(u) + F*dx(u) + C*dx(uxx) = G*roll(ux,shift) -B*u*ux")
-            else:
+            elif (bivisc_term) and (not ramp):
                 problem.add_equation("A*dt(u) + F*dx(u) + C*dx(uxx) + H*dx(uxxx) = G*roll(ux,shift) -B*u*ux")
+            elif (not bivisc_term) and (ramp):
+                problem.add_equation("A*dt(u) + F*dx(u) + C*dx(uxx) = G*roll(ux,shift)*minOne(t/t_ramp) -B*u*ux")
+            else:
+                problem.add_equation("A*dt(u) + F*dx(u) + C*dx(uxx) + H*dx(uxxx) = G*roll(ux,shift)*minOne(t/t_ramp) -B*u*ux")
 
         else:
             raise(ValueError("Spectral solver can only solve the"+\
@@ -1047,30 +1087,50 @@ class kdvSystem():
         analyzer.add_task("B/A*u*ux", layout='g', name='Advection', scales=1)
         analyzer.add_task("C/A*dx(uxx)", layout='g', name='Dispersion', scales=1)
         analyzer.add_task("F/A*dx(u)", layout='g', name='Current', scales=1)
-        if self.diffeq == 'KdVB':
+        if self.diffeq == 'KdVB' and (not ramp):
             analyzer.add_task("-G/A*dx(ux)", layout='g', name='Wind', scales=1)
-        else:
+        elif self.diffeq == 'KdVB' and (ramp):
+            analyzer.add_task("-G/A*dx(ux)*minOne(t/t_ramp)", layout='g', name='Wind', scales=1)
+        elif self.diffeq == 'KdVNL' and (not ramp):
             analyzer.add_task("-G/A*roll(ux,shift)", layout='g', name='Wind', scales=1)
+        else:
+            analyzer.add_task("-G/A*roll(ux,shift)*minOne(t/t_ramp)", layout='g', name='Wind', scales=1)
         if bivisc_term:
             analyzer.add_task("H/A*dx(uxxx)", layout='g', name='Hyperviscosity', scales=1)
         else:
             analyzer.add_task("0", layout='g', name='Hyperviscosity', scales=1)
 
-        if self.diffeq == 'KdVB' and (not bivisc_term):
+        if self.diffeq == 'KdVB' and (not ramp) and (not bivisc_term):
             analyzer.add_task(
                     "-F/A*dx(u) - C/A*dx(uxx) + G/A*dx(ux) -B/A*u*ux",
                     layout='g', name='Change', scales=1)
-        elif self.diffeq == 'KdVB' and (bivisc_term):
+        elif self.diffeq == 'KdVB' and (not ramp) and (bivisc_term):
             analyzer.add_task(
                     "-F/A*dx(u) - C/A*dx(uxx) + G/A*dx(ux) - H/A*dx(uxxx) -B/A*u*ux",
                     layout='g', name='Change', scales=1)
-        elif self.diffeq == 'KdVNL' and (not bivisc_term):
+        elif self.diffeq == 'KdVB' and (ramp) and (not bivisc_term):
+            analyzer.add_task(
+                    "-F/A*dx(u) - C/A*dx(uxx) + G/A*dx(ux)*minOne(t/t_ramp) -B/A*u*ux",
+                    layout='g', name='Change', scales=1)
+        elif self.diffeq == 'KdVB' and (ramp) and (bivisc_term):
+            analyzer.add_task(
+                    "-F/A*dx(u) - C/A*dx(uxx) + G/A*dx(ux)*minOne(t/t_ramp) - H/A*dx(uxxx) -B/A*u*ux",
+                    layout='g', name='Change', scales=1)
+        elif self.diffeq == 'KdVNL' and (not ramp) and (not bivisc_term):
             analyzer.add_task(
                     "-F/A*dx(u) - C/A*dx(uxx) + G/A*roll(ux,shift) -B/A*u*ux",
                     layout='g', name='Change', scales=1)
-        else:
+        elif self.diffeq == 'KdVNL' and (not ramp) and (bivisc_term):
             analyzer.add_task(
                     "-F/A*dx(u) - C/A*dx(uxx) + G/A*roll(ux,shift) - H/A*dx(uxxx) -B/A*u*ux",
+                    layout='g', name='Change', scales=1)
+        elif self.diffeq == 'KdVNL' and (ramp) and (not bivisc_term):
+            analyzer.add_task(
+                    "-F/A*dx(u) - C/A*dx(uxx) + G/A*roll(ux,shift)*minOne(t/t_ramp) -B/A*u*ux",
+                    layout='g', name='Change', scales=1)
+        else:
+            analyzer.add_task(
+                    "-F/A*dx(u) - C/A*dx(uxx) + G/A*roll(ux,shift)*minOne(t/t_ramp) - H/A*dx(uxxx) -B/A*u*ux",
                     layout='g', name='Change', scales=1)
 
         # Add CFL condition to dynamically calculate dt
