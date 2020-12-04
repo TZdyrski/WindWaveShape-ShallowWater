@@ -320,7 +320,7 @@ def plot_multiplot_template(data_arrays, x_coordinate, line_coord=None,
     if suptitle is not None:
         default_subplot_adjust_params['top'] = 0.875
 
-    if show_legend is not None:
+    if show_legend:
         default_subplot_adjust_params['right'] = 0.825
 
     if default_subplot_adjust_params != {}:
