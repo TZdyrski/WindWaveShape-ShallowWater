@@ -910,6 +910,9 @@ class kdvSystem():
         periodic domain. This is currently only implemented for the
         KdV-Burgers equation so we must have self.diffeq == 'KdVB'."""
 
+        # Note: The Dedalus solver appears to introduce some
+        # non-determinism to the solution.
+
         from dedalus import public as de
         from dedalus.extras import flow_tools
 
