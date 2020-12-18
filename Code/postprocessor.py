@@ -31,7 +31,8 @@ def skewness(profile):
     """
 
     x = profile['x/h']
-    xLen,_,_ = get_var_stats(profile)
+    xLen,_,_ = get_var_stats(profile,
+            periodic=profile.attrs.get('periodic',True))
 
     # Cast to type double (float64) since fft (used in Hilbert for
     # asymmetry) is unable to hand long double (float128)
@@ -62,7 +63,8 @@ def asymmetry(profile, asym_half=None):
     """
 
     x = profile['x/h']
-    xLen,_,_ = get_var_stats(profile)
+    xLen,_,_ = get_var_stats(profile,
+            periodic=profile.attrs.get('periodic',True))
 
     # Create coordinate masks
     if asym_half == 'left':
@@ -112,7 +114,8 @@ def maximum(profile):
     return maximum
 
 def energy(profile):
-    xLen,_,_ = get_var_stats(profile)
+    xLen,_,_ = get_var_stats(profile,
+            periodic=profile.attrs.get('periodic',True))
 
     # Calculate energy
     # Convert from eta'^2 = eta^2/h^2 to energy density (energy per unit
@@ -138,7 +141,8 @@ def energy(profile):
     return energy
 
 def slope(profile):
-    _,_,dx = get_var_stats(profile)
+    _,_,dx = get_var_stats(profile,
+            periodic=profile.attrs.get('periodic',True))
 
     mu = profile.attrs['mu']
 
@@ -149,8 +153,12 @@ def slope(profile):
     # sqrt(mu) \partial eta'/\partial x' = \partial eta/(\partial x)
     # (Primes denote the nondim variables used throughout this solver)
     if type(dx) == float or type(dx) == int:
-        slope = derivative(profile, dx=dx,
-                deriv_type='periodic_fd')*np.sqrt(mu)
+        if profile.attrs.get('periodic',True):
+            slope = derivative(profile, dx=dx,
+                    deriv_type='periodic_fd')*np.sqrt(mu)
+        else:
+            slope = derivative(profile, dx=dx,
+                    deriv_type='gradient')*np.sqrt(mu)
     else:
         # If dx is an array, use gradient
         slope = derivative(profile, x=profile['x/h'],
@@ -164,7 +172,8 @@ def slope(profile):
 def peak_location(profile):
 
     peak_locations = find_peak_coords(profile, dim_to_search='x/h',
-            only_nonneg_coords=False, num_peaks=1, periodic=True)
+            only_nonneg_coords=False, num_peaks=1,
+            periodic=profile.attrs.get('periodic',True))
 
     return peak_locations
 
@@ -179,7 +188,8 @@ def peak_speed(profile):
     return peak_speed
 
 def spatial_fourier_transform(profile, repeat_times = 5):
-    xLen,xNum,dx = get_var_stats(profile)
+    xLen,xNum,dx = get_var_stats(profile,
+            periodic=profile.attrs.get('periodic',True))
 
     # Resample (via interpolation) to get a higher FFT resolution
     profileRepeated = np.tile(profile, (repeat_times,1))
@@ -428,7 +438,8 @@ def find_peak_coords(signal, dim_to_search='t*eps*sqrt(g*h)*k_E', num_peaks=5,
         # the left boundary, middle, and right boundary)
         domain = signal[dim_to_search].values
 
-        _,_,dvar = get_var_stats(signal, var=dim_to_search)
+        _,_,dvar = get_var_stats(signal, var=dim_to_search,
+                periodic=periodic)
 
         # We assume the domain is a half-open interval; temporarily add
         # the upper limit to simplify the calculations
