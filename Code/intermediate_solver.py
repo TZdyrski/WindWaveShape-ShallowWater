@@ -27,7 +27,6 @@ class kdvSystem():
         Here, B/A determines the nonlinearity, C/A determines the
         dispersivity, F/A corresponds to a background counter-current,
         and G/A determines the damping rate.
-        Solves the system on a periodic domain.
 
 
         If F is not provided, choose value to give default, solitonic
@@ -199,8 +198,7 @@ class kdvSystem():
     def set_spatial_grid(self, xLen=160, xNum=None,
             xStep=None, xOffset=None, WaveType=None,
             WaveLength=2*np.pi,NumWaves=1, spectral=False,
-            periodic_spectral=True, *args,
-            **kwargs):
+            periodic=True, *args, **kwargs):
         """Set the x coordinate grid.
 
         Parameters
@@ -219,6 +217,10 @@ class kdvSystem():
         xStep : float or None
             Spacing between grid points in x domain. If
             None, xNum must be specified. Default is 0.05.
+        periodic: boolean
+            If True, omit last point to enable periodic wrapping.
+            Also, use periodic derivatives and boundary conditions.
+            Default is False.
         xOffset : float, 'nice_value', or None
             Distance that origin is offset from the center of the
             domain. 'nice_value' gives a nice shift slightly to the
@@ -236,6 +238,12 @@ class kdvSystem():
         """
 
         self.NumWaves = NumWaves
+        self.periodic = periodic
+
+        if self.periodic:
+            self.deriv_type = 'periodic_fd'
+        else:
+            self.deriv_type = 'gradient'
 
         if WaveType == 'cnoidal':
             self.WaveLength = self._cnoidal_wavelength()
@@ -292,7 +300,6 @@ class kdvSystem():
 
         self.spectral = False
         if spectral:
-            self.periodic_spectral = periodic_spectral
             self.spectral = True
 
             from dedalus import public as de
@@ -312,7 +319,7 @@ class kdvSystem():
             self.xNum = int(np.ceil(self.xNum/denom)*denom)
 
             # Create basis and domain
-            if self.periodic_spectral:
+            if self.periodic:
                 x_basis = de.Fourier('x', self.xNum, interval=endpoints,
                         dealias=dealias_factor)
             else:
@@ -354,9 +361,9 @@ class kdvSystem():
 
         if tNum == 'density' and not spectral:
             self.tNum = int(self.tLen/(self.xLen/self.xNum)**4)
-        elif tNum == 'density' and spectral and not self.periodic_spectral:
+        elif tNum == 'density' and spectral and not self.periodic:
             self.tNum = int(10*self.tLen/(self.xLen/self.xNum))
-        elif tNum == 'density' and spectral and self.periodic_spectral:
+        elif tNum == 'density' and spectral and self.periodic:
             self.tNum = int(3/8*self.tLen/(self.xLen/self.xNum))
         else:
             self.tNum = tNum
@@ -563,7 +570,7 @@ class kdvSystem():
         else:
             return dudt
 
-    def _kdvnl(self, t, u, periodic_deriv=False, terms=True, *args, **kwargs):
+    def _kdvnl(self, t, u, terms=True, *args, **kwargs):
         """Differential equation for the nonlocal-KdV equation."""
 
         ux = derivative(u, dx=self.dx, period=self.xLen, order=1, **kwargs)
@@ -641,11 +648,10 @@ class kdvSystem():
 
         return jacSparcity
 
-    def solve_system_builtin(self, periodic_deriv=True, *args, **kwargs):
-        """Use builtin methods to solve the differential
-        equation on a periodic domain. If self.diffeq == 'KdVB', solve
-        the KdV-Burgers equation; if self.diffeq == 'KdVNL', solve the
-        nonlocal KdV equation."""
+    def solve_system_builtin(self, *args, **kwargs):
+        """Use builtin methods to solve the differential equation. If
+        self.diffeq == 'KdVB', solve the KdV-Burgers equation; if
+        self.diffeq == 'KdVNL', solve the nonlocal KdV equation."""
 
         if self.diffeq == 'KdVB':
             # KdV-Burgers
@@ -654,38 +660,27 @@ class kdvSystem():
             # Nonlocal KdV
             eqn = self._kdvnl
 
-        if not periodic_deriv:
-            sol = sp.integrate.solve_ivp(
-                    eqn,
-                    (0,self.tLen),
-                    self.y0,
-                    t_eval=self.snapshot_ts,
-                    method='Radau',
-                    vectorized=True,
-                    jac_sparsity=self._JacSparcity()
-                    )
-        else:
-            sol = sp.integrate.solve_ivp(
-                    lambda t,u: eqn(t,u,deriv_type='periodic_fd'),
-                    (0,self.tLen),
-                    self.y0,
-                    t_eval=self.snapshot_ts,
-                    method='RK23',
-                    )
+        sol = sp.integrate.solve_ivp(
+                lambda t,u: eqn(t,u,deriv_type=self.deriv_type),
+                (0,self.tLen),
+                self.y0,
+                t_eval=self.snapshot_ts,
+                method='RK23',
+                )
 
         if sol['status'] != 0:
             print(sol['message'])
 
         self.sol = sol['y']
         # Save the contributions of the individual terms
-        self.PDEterms = eqn(self.snapshot_ts, self.sol, deriv_type='periodic_fd',
-                terms=True)[1]
+        self.PDEterms = eqn(self.snapshot_ts, self.sol,
+                deriv_type=self.deriv_type, terms=True)[1]
         for key in self.PDEterms:
             self.PDEterms[key] = self.PDEterms[key].T
 
     def solve_system_ab3(self, max_height=np.inf, max_slope=np.inf, *args, **kwargs):
         """Use 3rd-order Adams-Bashforth method to solve the
-        differential equation on a periodic domain. If self.diffeq ==
+        differential equation. If self.diffeq ==
         'KdVB', solve the KdV-Burgers equation; if self.diffeq ==
         'KdVNL', solve the nonlocal KdV equation."""
 
@@ -707,7 +702,7 @@ class kdvSystem():
         PDEterms = {k: np.empty((nt_snapshots.size,nx),
             dtype=np.float128) for k in ['Change', 'Advection',
             'Dispersion', 'Current', 'Wind', 'Hyperviscosity']}
-        terms = rhs_eqn(0, y[0,:], deriv_type='periodic_fd',
+        terms = rhs_eqn(0, y[0,:], deriv_type=self.deriv_type,
                 terms=True)[1]
         for key in terms:
             PDEterms[key][0,:] = terms[key]
@@ -717,7 +712,7 @@ class kdvSystem():
             if n == 0:
                 # First step is an Euler step
                 RHS0, terms = rhs_eqn(n*dt, y[n,:],
-                        deriv_type='periodic_fd', terms=True)
+                        deriv_type=self.deriv_type, terms=True)
                 # Calculate next step
                 yn = yn + dt*RHS0
 
@@ -726,7 +721,7 @@ class kdvSystem():
             elif n == 1:
                 # Second step is a 2nd order Adams-Bashforth step
                 RHS0, terms = rhs_eqn(n*dt, y[n,:],
-                        deriv_type='periodic_fd', terms=True)
+                        deriv_type=self.deriv_type, terms=True)
                 # Calculate next step
                 yn = yn + dt*(3/2*RHS0 - 1/2*RHS1)
 
@@ -735,7 +730,7 @@ class kdvSystem():
             else:
                 # Later steps are all 3rd order Adams-Bashforth steps
                 RHS0, terms = rhs_eqn(n*dt, yn,
-                        deriv_type='periodic_fd', terms=True)
+                        deriv_type=self.deriv_type, terms=True)
                 # Calculate next step
                 yn = yn + dt*(23/12*RHS0 - 16/12*RHS1 + 5/12*RHS2)
 
@@ -794,7 +789,7 @@ class kdvSystem():
 
     def solve_system_rk3(self, max_height=np.inf, max_slope=np.inf, *args, **kwargs):
         """Use 3rd-order Runge-Kutta method to solve the
-        differential equation on a periodic domain. If self.diffeq ==
+        differential equation. If self.diffeq ==
         'KdVB', solve the KdV-Burgers equation; if self.diffeq ==
         'KdVNL', solve the nonlocal KdV equation."""
 
@@ -834,7 +829,7 @@ class kdvSystem():
         PDEterms = {k: np.empty((nt_snapshots.size,nx),
             dtype=np.float128) for k in ['Change', 'Advection',
             'Dispersion', 'Current', 'Wind', 'Hyperviscosity']}
-        terms = rhs_eqn(0, y[0,:], deriv_type='periodic_fd',
+        terms = rhs_eqn(0, y[0,:], deriv_type=self.deriv_type,
                 terms=True)[1]
         for key in terms:
             PDEterms[key][0,:] = terms[key]
@@ -848,7 +843,7 @@ class kdvSystem():
             for j in range(0,s):
               # Overwrite 'terms' so we only have the final version
               k[:,j], terms = rhs_eqn(tn+c[j]*dt,
-                      yn+dt*np.dot(k,a[j,:]), deriv_type='periodic_fd',
+                      yn+dt*np.dot(k,a[j,:]), deriv_type=self.deriv_type,
                       terms=True)
 
             # Calculate next step
@@ -906,9 +901,9 @@ class kdvSystem():
 
     def solve_system_spectral(self, max_height=np.inf, max_slope=np.inf,
             full_comoving_frame=False, *args, **kwargs):
-        """Use a spectral method to solve the differential equation on a
-        periodic domain. This is currently only implemented for the
-        KdV-Burgers equation so we must have self.diffeq == 'KdVB'."""
+        """Use a spectral method to solve the differential equation.
+        This is currently only implemented for the KdV-Burgers equation
+        so we must have self.diffeq == 'KdVB'."""
 
         # Note: The Dedalus solver appears to introduce some
         # non-determinism to the solution.
@@ -1022,7 +1017,7 @@ class kdvSystem():
         if bivisc_term:
             problem.add_equation("uxxx - dx(uxx) = 0")
 
-        if not self.periodic_spectral:
+        if not self.periodic:
             # Dirichlet and Neumann boundary conditions (set u(xMax) = 0
             # since this is the upstream side)
             problem.add_bc('right(u) = 0')
@@ -1107,7 +1102,7 @@ class kdvSystem():
             analyzer.add_task("0", layout='g', name='Hyperviscosity', scales=1)
 
         # Add CFL condition to dynamically calculate dt
-        if not self.periodic_spectral:
+        if not self.periodic:
             safety = 0.3 # Use this for RK111 or SBDF1
         else:
 #            safety = 2.0 # Use this for SBDF2
@@ -1410,6 +1405,7 @@ def gen_trig_verf(save_prefix, nu_bi=3e-3):
                 'eps' : 0.1,
                 'mu' : 0.1,
                 'wave_length' : wave_length,
+                'periodic' : True,
                 }
 
         for solver in ['Builtin','RK3']:
@@ -1443,6 +1439,7 @@ def gen_long_verf(save_prefix, mu=0.8, nu_bi=3e-3):
                     'P' : 0,
                     'nu_bi' : nu_bi_val,
                     'wave_type' : wave_type,
+                    'periodic' : True,
                     }
 
             # Use default mu for solitary waves
@@ -1522,7 +1519,7 @@ def gen_snapshots(save_prefix, eps=0.1, mu=0.8, P=0.25, psiP=3/4*np.pi,
                         # Dirichlet/Neumann boundary conditions, keep the
                         # Dirichlet/Neumann boundary conditions since they were used
                         # in the submitted manuscript
-                        parameters['periodic_spectral'] = False
+                        parameters['periodic'] = False
                         # Keep xLen the same as was used in the submitted manuscript
                         parameters['xLen'] = 80
 
@@ -1586,6 +1583,7 @@ def gen_depth_varying(save_prefix, eps=0.1, mu=0.6, P=0.25, psiP=3/4*np.pi,
                 'P' : P,
                 'psiP' : psiP,
                 'nu_bi' : nu_bi,
+                'periodic' : True,
                 }
 
         # Jeffreys does not just psiP
@@ -1616,6 +1614,7 @@ def gen_press_varying(save_prefix, eps=0.1, mu=0.8, P=0.25, psiP=3/4*np.pi,
                     'P' : P_val,
                     'psiP' : psiP,
                     'nu_bi' : nu_bi,
+                     'periodic' : True,
                     }
 
             # Jeffreys does not just psiP
@@ -1651,6 +1650,7 @@ def gen_biviscosity_variation(save_prefix, eps=0.1, mu=0.8, P=0, psiP=3/4*np.pi,
                'P' : P,
                'psiP' : psiP,
                'nu_bi' : nu_bi_val,
+               'periodic' : True,
                }
 
        # Jeffreys does not just psiP
@@ -1690,6 +1690,7 @@ def gen_decaying_no_nu_bi(save_prefix, eps=0.1, mu=0.8, P=0.25,
                      'P' : P_val,
                      'psiP' : psiP,
                      'nu_bi' : nu_bi,
+                    'periodic' : True,
                      }
 
              # Jeffreys does not just psiP
@@ -1762,6 +1763,7 @@ def gen_validity_domain(save_prefix, eps=0.1, mu=0.8, P=0.25, psiP=3/4*np.pi,
                                     'psiP' : psiP,
                                     'nu_bi' : nu_bi_val,
                                     'max_slope' : max_slope,
+                                    'periodic' : True,
                                     }
 
                             # Jeffreys does not just psiP
