@@ -183,8 +183,10 @@ forcing \citep{jeffreys1925formation},
   \label{eq:press_def}
 \end{equation}
 \begin{LineLabel}{R2-11}[uncolor]
-Here, $P$ is proportional to $(U-c)^2$, with $c=\sqrt{gh}$ the shallow
-water phase speed and $U$ the wind speed (\cf{} \cref{sec:press_mag}),
+\begin{LineLabel}{R4-2}
+Here, $P$ is proportional to $(U-c)^2$, with $c$ the wave's nonlinear
+phase speed and $U$ is the wind speed (\cf{} \cref{sec:press_mag}),
+\end{LineLabel}
 \end{LineLabel}
 Note that $P>0$ corresponds to (`onshore') wind in the same direction as
 the wave while $P<0$ denotes (`offshore') wind opposite the wave. We use
@@ -660,18 +662,22 @@ The left integral is the non-dimensional energy
 \cref{eq:shape_stats_def}, so re-dimensionalizing and converting back to
 the full time $t$ gives the energy growth rate $\gamma$,
 \begin{LineLabel}{R2-13}[uncolor]
+\begin{LineLabel}{R4-3}
 \begin{equation}
-  \frac{\gamma}{c k_E} \coloneqq
-  \frac{1}{c k_E E} \pdv{E}{t}
+  \frac{\gamma}{c_0 k_E} \coloneqq
+  \frac{1}{c_0 k_E E} \pdv{E}{t}
   = \frac{P k_E}{\rho_w g} \frac{\langle (\partial_x \eta)^2 \rangle}
     {\langle (k_E \eta)^2 \rangle}
   = \frac{1}{5} \frac{P k_E}{\rho_w g}
   \,,
   \label{eq:gamma_vs_P_solitary}
 \end{equation}
-with $c = \sqrt{gh}$ the phase speed and $\langle (\partial_x \eta)^2
-\rangle / \langle (k_E \eta)^2 \rangle = 1/5$ evaluated with the
-initial, solitary wave profile \cref{eq:initial_condition}.
+with $\langle (\partial_x \eta)^2 \rangle / \langle (k_E \eta)^2 \rangle
+= 1/5$ evaluated with the initial, solitary wave profile
+\cref{eq:initial_condition} and the linear, shallow-water phase speed
+$c_0 = \sqrt{gh}$ coming from the re-dimensionalization of $t' = t c_0
+k_E$.
+\end{LineLabel}
 \end{LineLabel}
 \begin{LineLabel}{R2-14}[uncolor]
 \begin{LineLabel}{R2-9}[uncolor]
@@ -679,13 +685,15 @@ Alternatively, a secondary multiple-scale approximation of the
 forward KdV-Burgers equation has been used previously to derive
 the energy growth rate for solitary waves as~\citep{zdyrski2019effects}
 \end{LineLabel}
+\begin{LineLabel}{R4-4}
 \begin{equation}
   E \propto \frac{1}{\pqty{1 - \gamma t}^2}
   \qq{with}
-  \gamma \coloneqq b \bqty{\frac{P k_E}{\rho_w g}} c k_E
+  \gamma \coloneqq b \bqty{\frac{P k_E}{\rho_w g}} c_0 k_E
   \,,
   \label{eq:actual_energy}
 \end{equation}
+\end{LineLabel}
 with analytically derived $b = 2/15$.
 Numerically fitting \cref{eq:actual_energy} to our calculated energy
 instead yields $b = \num{0.10081 \pm 0.00003}$, similar to the analytic
@@ -701,6 +709,7 @@ Next, \citeauthor{jeffreys1925formation}'s
 \citeyearpar{jeffreys1925formation} theory relates the growth rate of
 periodic waves to the wind speed $U_{\lambda/2}$,
 measured at a height equal to half the wavelength $z=\lambda/2$, as
+\begin{LineLabel}{R4-5}
 \begin{equation}
   \frac{\gamma}{c k} = S_{\lambda/2} \frac{\rho_a}{\rho_w}
     \pqty{\frac{U_{\lambda/2}}{c}-1}
@@ -709,12 +718,16 @@ measured at a height equal to half the wavelength $z=\lambda/2$, as
 \end{equation}
 with $S_{\lambda/2}$ a small, non-dimensional sheltering parameter
 potentially dependent on $\epsilon$, $\mu_E$ and $U_{\lambda/2}/c$.
-Combining this with \cref{eq:gamma_vs_P_solitary} gives
+To calculate the leading-order relation between $U_{\lambda/2}$ and $P$,
+we approximate the nonlinear phase speed $c$ with the linear phase speed
+$c_0 = \sqrt{gh}$ and combine this with \cref{eq:gamma_vs_P_solitary} to
+give
 \begin{equation}
-  U_{\lambda/2} = c \pqty{1 \pm \sqrt{\frac{1}{5} \abs{\frac{P k_E}{\rho_w g}}
+  U_{\lambda/2} = c_0 \pqty{1 \pm \sqrt{\frac{1}{5} \abs{\frac{P k_E}{\rho_w g}}
     \frac{\rho_w}{\rho_a} \frac{1}{S_{\lambda/2}}}} \,.
   \label{eq:U_vs_P}
 \end{equation}
+\end{LineLabel}
 Here, the $\pm$ corresponds to onshore ($+$) or offshore ($-$) winds.
 Note that changing the wind direction (\ie{} $\pm$ sign) while holding
 the surface pressure magnitude $\abs{Pk_E/(\rho_w g)}$ constant means
