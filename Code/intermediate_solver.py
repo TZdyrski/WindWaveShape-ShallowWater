@@ -1342,6 +1342,8 @@ def default_solver(y0_func=None, solver='Spectral', *args, **kwargs):
         kwargs['y0'] = 'kdv'
     if solver == 'Spectral':
         kwargs['spectral'] = True
+    if kwargs.get('wave_type') == 'cnoidal' and (kwargs.get('t_ramp',None) is None):
+        kwargs['t_ramp'] = 5
 
     # Create KdV-Burgers or nonlocal KdV system
     solverSystem = kdvSystem(**kwargs)
