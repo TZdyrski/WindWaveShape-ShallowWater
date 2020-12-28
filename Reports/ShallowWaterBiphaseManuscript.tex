@@ -239,6 +239,7 @@ speed $U$,
 expressed as a pressure magnitude $P \propto \rho_a (U-c)^2$,
 with $\rho_a \approx \num{1.225e-3} \rho_w$ the density of air.
 \end{LineLabel}
+\begin{LineLabel}{R4-14}
 Denoting non-dimensional variables with primes, we have
 \begin{equation}
   \begin{aligned}
@@ -247,18 +248,21 @@ Denoting non-dimensional variables with primes, we have
   \end{aligned}
   \qquad
   \begin{aligned}
-  t &= \frac{t'}{k_E\sqrt{g h}}
+  t &= \frac{t'}{k_E c_0}
     = \frac{t'}{\sqrt{\mu_E}} \sqrt{\frac{h}{g}} \,, \\
   P &= \epsilon P' \frac{\rho_w g}{k_E}
-    = \frac{\epsilon}{\sqrt{\mu_E}} P' \rho_w g h \,,
+    = \frac{\epsilon}{\sqrt{\mu_E}} P' \rho_w c_0^2 \,,
   \end{aligned}
   \qquad
   \begin{aligned}
   \eta &= a_0 \eta' = h \epsilon \eta' \,, \\
   \phi &= \phi'\frac{a_0}{k_E}\sqrt{\frac{g}{h}}
-    = \frac{\phi'\epsilon}{\sqrt{\mu_E}}\sqrt{g h^3} \,.
+    = \frac{\phi'\epsilon}{\sqrt{\mu_E}} c_0 h \,,
   \end{aligned}
+  \label{eq:nondim_expressions}
 \end{equation}
+with linear, shallow-water phase speed $c_0 = \sqrt{g h}$.
+\end{LineLabel}
 Our system's dynamics are controlled by three small, non-dimensional
 parameters: $\epsilon \coloneqq a_0/h$, $\mu_E \coloneqq (k_E h)^2$ and
 $P k_E/(\rho_w g)$.
@@ -722,7 +726,7 @@ with $\langle (\partial_x \eta)^2 \rangle / \langle (k_E \eta)^2 \rangle
 = 1/5$ evaluated with the initial, solitary wave profile
 \cref{eq:initial_condition} and the linear, shallow-water phase speed
 $c_0 = \sqrt{gh}$ coming from the re-dimensionalization of $t' = t c_0
-k_E$.
+k_E$ \cref{eq:nondim_expressions}.
 \end{LineLabel}
 \end{LineLabel}
 \begin{LineLabel}{R2-14}[uncolor]
