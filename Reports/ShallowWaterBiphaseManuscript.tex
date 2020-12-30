@@ -47,18 +47,14 @@ Wave shape (\eg{} wave skewness and asymmetry) impacts sediment
 transport, remote sensing and ship safety.
 Previous work showed that wind affects wave shape in intermediate and
 deep water.
-\begin{LineLabel}{R1-5}[uncolor]
 Here, we investigate the effect of wind on wave shape in shallow water
 through a wind-induced surface pressure for different wind speeds and
 directions to provide the first theoretical description of wind-induced
 shape changes.
-\end{LineLabel}
-\begin{LineLabel}{R2-5}[uncolor]
 A multiple-scale analysis of long waves propagating over a shallow,
 flat bottom and forced by a Jeffreys-type surface pressure yields a
 forward or backward Korteweg-de Vries (KdV)-Burgers equation for the
 wave profile, depending on the wind direction.
-\end{LineLabel}
 The evolution of a symmetric, solitary wave initial condition is
 calculated numerically.
 The resulting wave grows (decays) for onshore (offshore) wind and
@@ -79,7 +75,6 @@ evolution according to the unforced KdV equation.
 The study of wind and ocean wave interactions began with
 \citet{jeffreys1925formation} and continues to be an active field of
 research~\citep[\eg][]{janssen1991quasi,donelan2006wave,sulivan2010dynamics}.
-\begin{LineLabel}{R4-7}
 Many theoretical
 studies~\citep[\eg][]{jeffreys1925formation,miles1957generation,phillips1957generation}
 focus on calculating wind-induced growth rates and often employ
@@ -98,7 +93,6 @@ wave field using coupled air-water
 simulations~\citep[\eg][]{liu2010numerical,hao2019wind} or direct
 numerical simulations of two-fluid
 flows~\citep[\eg][]{zonta2015growth,yang2018direct}.
-\end{LineLabel}
 Wave shape influences sediment transport affecting beach
 morphodynamics~\citep[\eg][]{drake2001discrete,hoefel2003wave}, while
 wave skewness affects radar altimetry
@@ -116,13 +110,11 @@ focusing, a special class of waves known as solitary waves are formed
 and appear in environments ranging from nonlinear optical pulses
 \citep[\eg][]{kivshar1993dark} to astrophysical dusty plasmas
 \citep[\eg][]{sahu2012nonextensive}.
-\begin{LineLabel}{R4-10}
 These well-understood waves are often used to study fluid
 dynamical~\citep[\eg][]{munk1949solitary,hammack1974korteweg,miles1979korteweg,lin1998numerical}
 and
 engineering~\citep[\eg][]{monaghan1999solitary,lin2004numerical,xu2018prediction}
 contexts owing to their simplicity.
-\end{LineLabel}
 One of the simplest equations displaying solitary waves is the
 Korteweg-de Vries (KdV) equation, which incorporates dispersion and
 nonlinearity.
@@ -131,29 +123,21 @@ equation, with applications to damped internal tides
 \citep[\eg][]{sandstrom1995dissipation}, electron waves in graphene
 \citep[\eg][]{zdyrski2019effects} and viscous flow in blood vessels
 \citep[\eg][]{antar1999weakly}.
-\begin{LineLabel}{R1-13}[uncolor]
-\begin{LineLabel}{R4-6}
 While field observations~\citep[\eg][]{cavaleri1981wind} have
 investigated the wind-induced growth of shallow water waves, the
 interaction of wind and shallow water waves has not yet been formulated
 into a simple equation such as the KdV-Burgers equation.
-\end{LineLabel}
-\end{LineLabel}
 
-\begin{LineLabel}{R1-7}[uncolor]
 The influence of wind on wave shape has been previously investigated in
 intermediate and deep water~\citep{zdyrski2020wind}.
 However, the coupling between wind and wave shape has not yet been
 investigated in shallow water.
-\end{LineLabel}
 To investigate wind and surface wave interactions in shallow water over
 a flat bottom, we introduce a wind-induced pressure term to the
 Boussinesq equations in \cref{sec:derivation}.
 The resulting KdV-Burgers equation governs a solitary wave's evolution,
 which we solve numerically
-\begin{LineLabel}{R2-2}[uncolor]
 to yield the wave's energy, skewness and asymmetry
-\end{LineLabel}
 in \cref{sec:results}.
 We calculate the wind speed, discuss the asymmetry and
 compare our results to intermediate- and deep-water waves in
@@ -203,12 +187,8 @@ forcing \citep{jeffreys1925formation},
   p(x,t) = P \pdv{\eta(x,t)}{x} \,.
   \label{eq:press_def}
 \end{equation}
-\begin{LineLabel}{R2-11}[uncolor]
-\begin{LineLabel}{R4-2}
 Here, $P$ is proportional to $(U-c)^2$, with $c$ the wave's nonlinear
 phase speed and $U$ is the wind speed (\cf{} \cref{sec:press_mag}),
-\end{LineLabel}
-\end{LineLabel}
 Note that $P>0$ corresponds to (`onshore') wind in the same direction as
 the wave while $P<0$ denotes (`offshore') wind opposite the wave. We use
 a Jeffreys forcing for its analytic simplicity and clear demonstration
@@ -224,11 +204,9 @@ shift~\citep{husain2019boundary}.
 However, a fully dynamic coupling between wind and waves---necessary for
 an accurate surface pressure over a non-sinusoidal, dynamic water
 surface---is outside the scope of this paper.
-\begin{LineLabel}{R3-1}[uncolor]
 Furthermore, the applicability of Jeffreys forcing to extreme waves
 means our theory could apply to the wind forcing of rogue waves in
 shallow water~\citep{kharif2008influence}.
-\end{LineLabel}
 
 \subsection{\label{sec:nondim} Non-dimensionalization}
 We non-dimensionalize our system with the known characteristic
@@ -237,11 +215,8 @@ rapidly, expressed as an effective wavenumber $k_E \coloneqq 2 \pi/L$;
 the (initial) wave amplitude $a_0 = H_0/2$ (\ie{} half the wave height
 $H_0$); the depth $h$; the gravitational acceleration $g$; and the wind
 speed $U$,
-\begin{LineLabel}{RE-1}
 expressed as a pressure magnitude $P \propto \rho_a (U-c)^2$,
 with $\rho_a \approx \num{1.225e-3} \rho_w$ the density of air.
-\end{LineLabel}
-\begin{LineLabel}{R4-14}
 Denoting non-dimensional variables with primes, we have
 \begin{equation}
   \begin{aligned}
@@ -264,7 +239,6 @@ Denoting non-dimensional variables with primes, we have
   \label{eq:nondim_expressions}
 \end{equation}
 with linear, shallow-water phase speed $c_0 = \sqrt{g h}$.
-\end{LineLabel}
 Our system's dynamics are controlled by three small, non-dimensional
 parameters: $\epsilon \coloneqq a_0/h$, $\mu_E \coloneqq (k_E h)^2$ and
 $P k_E/(\rho_w g)$.
@@ -287,12 +261,9 @@ We will drop the primes throughout the remainder of this section for readability
 
 \subsection{\label{sec:boussinesq} Boussinesq equations, multiple-scale
 expansion, KdV equation and initial condition}
-\begin{LineLabel}{R1-1}[uncolor]
-\begin{LineLabel}{R1-9}[uncolor]
 Here, we modify the Boussinesq equation's derivation provided by
 \citet{mei2005nonlinear} or \citet{ablowitz2011nonlinear} by including
 the surface pressure forcing in \cref{eq:dynamic_bc}.
-\end{LineLabel}
 Taylor expanding the velocity potential $\phi$ about the bottom,
 $z=-1$, and applying Laplace's
 equation \cref{eq:laplace_nondim} and the bottom boundary
@@ -302,7 +273,6 @@ $\varphi \coloneqq \eval{\phi}_{z=-1}$.
 This $\phi$ expansion can be substituted into the two remaining boundary
 equations, \cref{eq:kinematic_bc_nondim,eq:dynamic_bc_nondim}, to give
 the Boussinesq equations with a pressure forcing term,
-\end{LineLabel}
 \begin{gather}
   \partial_t \eta + \partial_x^2 \varphi + \epsilon \partial_x
     \pqty{\eta \partial_x \varphi} -\frac{1}{6}\mu_E \partial^4_x
@@ -364,39 +334,29 @@ Note that \cref{eq:kdv_burgers} has a rescaling symmetry, with $\mu_E
 (x,t_0,t_1,P)/\lambda$.
 Therefore, we fix the length scale (equivalently, $k_E$) by choosing
 $\mu_E = 6 \epsilon$.
-\begin{LineLabel}{R1-4}[uncolor]
 Note that incorporating slowly-varying bottom bathymetry $\partial_x h =
 \order{\epsilon}$ can yield an equation of the form
 \cref{eq:kdv_burgers} with spatially-varying
 coefficients~\citep[\eg][]{johnson1972some,ono1972wave}, though such an
 analysis is outside the scope of this study.
-\end{LineLabel}
 
-\begin{LineLabel}{R2-10}[uncolor]
-\begin{LineLabel}{R2-19}[uncolor]
 For offshore wind, the pressure term $P \partial^2_x \eta_0$ acts as a
 positive viscosity causing damping, and \cref{eq:kdv_burgers} is the
 (forward) KdV-Burgers equation with $P<0$.
 However, for onshore wind, the viscosity is negative and causes wave
 growth, yielding the backward KdV-Burgers equation with $P>0$.
-\end{LineLabel}
 The backward KdV-Burgers equation is ill-posed in the sense of Hadamard
 because the solution is highly sensitive to changes in the initial
 condition~\citep{hadamard1902problemes}.
-\begin{LineLabel}{R2-18}[uncolor]
 While a finite-time singularity (\ie{} wave breaking) is likely, the
 multiple-scale expansion used to derive \cref{eq:kdv_burgers} is only
 valid for time intervals of order $\order{1/\epsilon}$, and we limit our
 analysis to short times removing the need to regularize the solution.
-\end{LineLabel}
-\end{LineLabel}
 
-\begin{LineLabel}{R2-7}[uncolor]
 The solitary wave solutions of the unforced ($P=0$) KdV equation exist
 due to a balance of dispersion $\partial_x^3 \eta_0$ with focusing
 nonlinearity $\eta_0 \partial_x \eta_0$ and have the
 form~\citep[\eg][]{mei2005nonlinear}
-\end{LineLabel}
 \begin{equation}
   \eta_0 = H_0 \sech^2\pqty{\frac{x}{\Delta}}
   \qq{with}
@@ -404,7 +364,6 @@ form~\citep[\eg][]{mei2005nonlinear}
   \label{eq:initial_condition}
 \end{equation}
 in a co-moving frame with $H_0>0$ an order-1 parameter.
-\begin{LineLabel}{R4-12}
 For reference, unforced solitary waves travel relative to the laboratory
 frame with non-dimensional, nonlinear phase
 speed~\citep[\eg][]{mei2005nonlinear}
@@ -412,18 +371,14 @@ speed~\citep[\eg][]{mei2005nonlinear}
   c = 1 + \epsilon \frac{H_0}{2}
   \label{eq:nonlin_phase_speed}
 \end{equation}
-\end{LineLabel}
 We use \cref{eq:initial_condition} for our initial condition and choose
 $H_0 = 2$ so the initial, dimensional amplitude $a_0$ is half the wave
 height (\cf{} \cref{sec:nondim}).
-\begin{LineLabel}{R4-8}
 Note that the unforced KdV equation also has periodic solutions
 known as cnoidal waves.
 For a fixed height, these cnoidal waves have a smaller characteristic
 wave length $1/k_E$ than solitary waves and can be studied by choosing
 larger $\mu_E > 6 \epsilon$ (\cf{} \cref{sec:comparison}).
-\end{LineLabel}
-\begin{LineLabel}{R4-11}
 However, wind-induced shape changes are more readily understood when
 considering solitary waves owing to their reduced number of free
 parameters (\ie{} $\mu_E$).
@@ -431,19 +386,13 @@ Furthermore, since solitary waves are well-understood and highly relevant to
 fluid dynamical
 systems~\citep[\eg][]{hammack1974korteweg,miles1979korteweg,lin1998numerical,monaghan1999solitary},
 we will restrict our analysis to solitary waves for brevity and clarity.
-\end{LineLabel}
-\begin{LineLabel}{R2-15}[uncolor]
-\begin{LineLabel}{R2-1}[uncolor]
 The wind-forcing term $P \partial_x^2 \eta_0$ in \cref{eq:kdv_burgers}
 disrupts the solitary wave's balance of dispersion and nonlinearity,
 inducing growth/decay and shape changes.
-\end{LineLabel}
-\end{LineLabel}
 The KdV-Burgers equation has no known, solitary wave solutions, so we
 will solve it numerically.
 
 \subsection{\label{sec:numerics} Numerics and shape statistics}
-\begin{LineLabel}{R2-8}[uncolor]
 To solve \cref{eq:kdv_burgers} numerically, we will use the Dedalus
 spectral solver~\citep{burns2020dedalus} which implements a generalized
 tau method with a Chebyshev basis.
@@ -456,11 +405,9 @@ We employ $N_c = 1600$ Chebyshev coefficients and zero-padding with a
 scaling factor of $3/2$ to prevent aliasing of nonlinear terms.
 This corresponds to $N_x = 2400$ spatial points with an average spacing
 of $\Delta x = 0.05$ and between $\Delta x = \numrange{7.7e-5}{7.9e-2}$.
-\begin{LineLabel}{R2-16}[uncolor]
 The simulation runs from $t_1 = 0$ to $t_1 = T = 10$, since the
 multiple-scale expansion of \cref{sec:boussinesq} is only accurate for
 times of order $\order{1/\epsilon}$.
-\end{LineLabel}
 Adaptive timestepping is employed such that the CFL number is $(\Delta
 t) \max(\eta_0)/(\Delta x) = 1$.
 For the unforced case, this corresponds to $\Delta t \approx
@@ -477,7 +424,6 @@ profile $\eta_0$ at $t'_1=10$ and the initial condition $\eta^{(0)}_0$
 is \num{2e-13}, and the normalized wave height change is
 $1-\bqty{\max(\eta_0) - \min(\eta_0)}/\allowbreak
 \bqty{\max(\eta^{(0)}_0) - \min(\eta^{(0)}_0)} = \num{-1e-13}$.
-\end{LineLabel}
 
 We quantify the wave shape with the wave's energy $E$, skewness $\Sk$
 and asymmetry $\As$,
@@ -493,11 +439,9 @@ and asymmetry $\As$,
   \dd{x} \,.
   \label{eq:shape_stats_def}
 \end{equation}
-\begin{LineLabel}{R2-12}[uncolor]
 Here, $\hilbert(f)$ is the Hilbert transform of $f$, defined as the
 imaginary part of $\fourier^{-1} \pqty{ \fourier \pqty{f} 2U}$ with $U$
 the unit step function and $\fourier$ the Fourier transform.
-\end{LineLabel}
 Since these definitions depend on the domain size $L$, we normalize the
 energy $E$ and skewness $\Sk$ by their initial values.
 
@@ -543,19 +487,13 @@ frame.
 The onshore wind generates wave growth, apparent at the wave
 crest (\cref{fig:snapshots_solitary:a}), whereas the offshore wind causes
 decay (\cref{fig:snapshots_solitary:b}).
-\begin{LineLabel}{R4-13}
-\begin{LineLabel}{R4-1}
 The wind also changes the phase speed, with the wave's acceleration
 (deceleration) under an onshore (offshore) wind visible by the advancing
 (receding) of the crest.
-\end{LineLabel}
 This is expected due to the (unforced) solitary wave's
 nonlinear phase speed \cref{eq:nonlin_phase_speed} dependence on the
 wave height $H$.
-\end{LineLabel}
 
-\begin{LineLabel}{R1-2}[uncolor]
-\begin{LineLabel}{R1-6}[uncolor]
 In shallow water, wave growth/decay and phase speed changes are well
 known wind effects~\citep[\eg][]{miles1957generation,cavaleri1981wind},
 but wind-induced wave shape changes~\citep{zdyrski2020wind} have not
@@ -564,8 +502,6 @@ Such changes are visible in \cref{fig:snapshots_solitary} where, despite
 the wave starting from a symmetric, solitary-wave initial condition, the
 wind induces a horizontal asymmetry in the wave shape, particularly on
 the rear face ($x<0$) of the wave.
-\end{LineLabel}
-\end{LineLabel}
 The offshore wind (\cref{fig:snapshots_solitary:b}) raises the
 rear base of the wave (near $x/h = -5$) relative to its initial profile
 (purple line), but the onshore wind (\cref{fig:snapshots_solitary:a})
@@ -577,11 +513,9 @@ increases the maximum wave-slope magnitude with time while the offshore
 wind (\cref{fig:snapshots_solitary:b}) decreases it, though the windward
 side of the wave becomes steeper than the leeward side for both winds
 (up to \SI{8}{\percent} steeper for the time period shown).
-\begin{LineLabel}{R2-17}[uncolor]
 Though the equation is ill-posed in the sense of Hadamard, the smooth
 solutions show that our solution is acceptable up to the current time
 and thus we are justified in neglecting a regularization scheme.
-\end{LineLabel}
 
 \begin{figure}
   \centering
@@ -627,12 +561,10 @@ Finally, note that the onshore (offshore) wind generates a small peak
 (trough) at $\tilde{x} = 0$ and two small troughs (peaks) near
 $\tilde{x}/h = \pm 3$, with the $\tilde{x}<0$ extrema larger than the
 $\tilde{x}>0$ one.
-\begin{LineLabel}{R1-3}[uncolor]
 This is analogous to a dispersive tail, well-known in KdV-type
 systems~\citep[\eg][]{hammack1974korteweg}, and its appearance here
 helps explain the pressure-induced shape change (\cf{}
 \cref{sec:physical_reason}).
-\end{LineLabel}
 
 \begin{figure}
   \centering
@@ -675,10 +607,8 @@ The normalized energy $E/E_0$ shows different growth/decay rates:
 the onshore wind ($P>0$) causes accelerating wave growth while the
 offshore wind ($P<0$) causes slowing wave decay
 (\cref{fig:statistics_solitary:a}).
-\begin{LineLabel}{R2-4}[uncolor]
 The energy of the unforced wave is virtually unchanged, with a
 normalized energy change of $1-E/E_0 = \num{-1e-13}$ at $t'_1 = 10$.
-\end{LineLabel}
 The onshore (offshore) wind causes the wave to become more (less) skewed
 over time, with the normalized skewness nearly symmetric about unity
 with respect to $\pm P$.
@@ -713,8 +643,6 @@ $\infty$ to obtain
 The left integral is the non-dimensional energy
 \cref{eq:shape_stats_def}, so re-dimensionalizing and converting back to
 the full time $t$ gives the energy growth rate $\gamma$,
-\begin{LineLabel}{R2-13}[uncolor]
-\begin{LineLabel}{R4-3}
 \begin{equation}
   \frac{\gamma}{c_0 k_E} \coloneqq
   \frac{1}{c_0 k_E E} \pdv{E}{t}
@@ -729,15 +657,9 @@ with $\langle (\partial_x \eta)^2 \rangle / \langle (k_E \eta)^2 \rangle
 \cref{eq:initial_condition} and the linear, shallow-water phase speed
 $c_0 = \sqrt{gh}$ coming from the re-dimensionalization of $t' = t c_0
 k_E$ \cref{eq:nondim_expressions}.
-\end{LineLabel}
-\end{LineLabel}
-\begin{LineLabel}{R2-14}[uncolor]
-\begin{LineLabel}{R2-9}[uncolor]
 Alternatively, a secondary multiple-scale approximation of the
 forward KdV-Burgers equation has been used previously to derive
 the energy growth rate for solitary waves as~\citep{zdyrski2019effects}
-\end{LineLabel}
-\begin{LineLabel}{R4-4}
 \begin{equation}
   E \propto \frac{1}{\pqty{1 - \gamma t}^2}
   \qq{with}
@@ -745,12 +667,10 @@ the energy growth rate for solitary waves as~\citep{zdyrski2019effects}
   \,,
   \label{eq:actual_energy}
 \end{equation}
-\end{LineLabel}
 with analytically derived $b = 2/15$.
 Numerically fitting \cref{eq:actual_energy} to our calculated energy
 instead yields $b = \num{0.10081 \pm 0.00003}$, similar to the analytic
 approximation.
-\end{LineLabel}
 Note that the exponential energy growth \cref{eq:gamma_vs_P_solitary}
 correctly approximates \cref{eq:actual_energy} for small times $\gamma t
 \ll 1$, and both expressions are consistent with the observed
@@ -761,7 +681,6 @@ Next, \citeauthor{jeffreys1925formation}'s
 \citeyearpar{jeffreys1925formation} theory relates the growth rate of
 periodic waves to the wind speed $U_{\lambda/2}$,
 measured at a height equal to half the wavelength $z=\lambda/2$, as
-\begin{LineLabel}{R4-5}
 \begin{equation}
   \frac{\gamma}{c k} = S_{\lambda/2} \frac{\rho_a}{\rho_w}
     \pqty{\frac{U_{\lambda/2}}{c}-1}
@@ -781,7 +700,6 @@ Combining this approximation of \cref{eq:gamma_vs_u_jeffreys} with
     \frac{\rho_w}{\rho_a} \frac{1}{S_{\lambda/2}}}} \,.
   \label{eq:U_vs_P}
 \end{equation}
-\end{LineLabel}
 Here, the $\pm$ corresponds to onshore ($+$) or offshore ($-$) winds.
 Note that changing the wind direction (\ie{} $\pm$ sign) while holding
 the surface pressure magnitude $\abs{Pk_E/(\rho_w g)}$ constant means
@@ -846,23 +764,17 @@ to grow and lengthen behind the wave, as is apparent in
 The small numerical value $\abs{P'} = 0.25 \ll 1$ used in
 \cref{sec:results} allows us to consider the wave's evolution as two
 steps with time scale separation.
-\begin{LineLabel}{R1-12}[uncolor]
 First, the pressure generates a bound wave \cref{eq:pressure_change} on
 the slow time scale, and then the wave evolves a dispersive tail on the
 fast time scale according to the inverse scattering transform of the
 unforced KdV equation.
-\end{LineLabel}
-\begin{LineLabel}{R1-8}[uncolor]
 The dispersive tail in \cref{fig:snapshots_solitary_tail} (\eg located
 left of $\tilde{x}/h=-20$ for $P'=0.25$ and $t'_1=10$) is analogous to the
 ubiquitous dispersive tails in prior studies on shallow-water solitary
 waves, such as \figsname{} 8(b) and (c) of \citet{hammack1974korteweg}.
-\end{LineLabel}
-\begin{LineLabel}{R1-11}[uncolor]
 However, unlike dispersive tails generated from initial conditions which
 fail to satisfy the KdV equation, our tail is continually forced and
 lengthened by the wind forcing.
-\end{LineLabel}
 Finally, interactions with the trailing, dispersive tail are responsible
 for lengthening the bound wave \cref{eq:pressure_change} behind, rather
 than ahead, of the solitary wave.
@@ -897,13 +809,10 @@ In addition to the Jeffreys pressure profile employed here,
 \citet{zdyrski2020wind} also utilized a generalized Miles profile,
 only applicable to periodic waves, wherein the pressure was proportional
 to $\eta$ shifted by a distance parameter $\psi_P/k$.
-\begin{LineLabel}{R4-15}
 Future investigations could couple a higher-order Zakharov
 equation~\citep[\eg][]{dommermuth1987high} to a Jeffreys-type pressure
 forcing or to an atmospheric large eddy simulation, as was done for deep
 water by \citet{hao2019wind}.
-\end{LineLabel}
-\begin{LineLabel}{R4-9}
 Though this analysis focuses on solitary waves, we also investigated the
 effect of wind on periodic waves using the cnoidal-wave KdV solutions as
 initial conditions.
@@ -913,17 +822,13 @@ increase (decrease) while the asymmetry decreases (increases) with time.
 Furthermore, results were qualitatively similar across multiple classes
 of cnoidal waves with different values of $\mu_E$, implying that these
 results apply rather generally.
-\end{LineLabel}
 
 \section{\label{sec:conclusion} Conclusion}
 Prior results~\citep{zdyrski2020wind} in intermediate and deep water
 demonstrated that wind,
-\begin{LineLabel}{R2-3}[uncolor]
 acting through a wave-dependent surface pressure,
-\end{LineLabel}
 can generate shape changes that become more pronounced in
 shallower water.
-\begin{LineLabel}{R1-10}[uncolor]
 Here, we produced a novel analysis of wind-induced wave shape changes in
 shallow water using a multiple-scale analysis to couple weak wind with
 small, shallow-water waves, \ie{} $a_0/h \sim (k_E h)^2 \sim P k/(\rho_w
@@ -931,7 +836,6 @@ g) \ll 1$.
 This analysis produced a KdV-Burgers equation governing the wave profile
 $\eta$, which we then solved numerically with a symmetric, solitary wave
 initial condition.
-\end{LineLabel}
 The deviations between the numerical results and a reference solitary
 wave had the form of a bound, dispersive tail, with differing signs for
 onshore and offshore wind.

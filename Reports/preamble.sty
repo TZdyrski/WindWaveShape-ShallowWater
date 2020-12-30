@@ -217,56 +217,56 @@
 \linenomathpatchAMS{alignat}
 \linenomathpatchAMS{flalign}
 
-% Create line number labelling command
-% Define a new environment for labeling sections of text by line numbers
-% Environment can be starred (\begin{LineLabel}*{...}) to turn off line
-% number generation and only color text (if uncolor=False); this is
-% useful for regions that don't have linenumbers (eg captions).
-% The mandatory option provides a label that can later be used for
-% referencing with the \LineRef{...} command.
-% The option command is a keyword argument 'uncolor': if [uncolor] or
-% [uncolor=True] is passed, the section will be labeled but not colored;
-% if no option (default) or [uncolor=False] is passed, the section will
-% be labeled and colored blue.
-%
-% Source: https://tex.stackexchange.com/a/444150
-\ExplSyntaxOn
-\NewDocumentEnvironment{LineLabel}{s m O{}}{%
-  \IfBooleanTF{#1}{%
-  % If starred, don't create a linelabel (useful for environments
-  % without line numbers (eg. captions)
-  }{%
-  % If not starred, create a linelabel with label <mandatory argument>-a
-    \linelabel{#2-a}%
-  }%
-  \keys_set:nn { linelabel/LineLabel }%
-  {%
-    uncolor=false, % initialize to false
-    #3%
-  }%
-  \bool_if:NTF \l_linelabel_LineLabel_uncolor_bool%
-  {%
-  }%
-  {%
-    % Color the environment blue
-    \color{blue}%
-  }%
-  \ignorespaces%
-}%
-{%
-  \ignorespacesafterend%
-  \IfBooleanTF{#1}{%
-  }{%
-  % If not starred, create a linelabel with label <mandatory argument>-b
-    \linelabel{#2-b}%
-  }%
-}%
-\keys_define:nn { linelabel/LineLabel }%
-{%
- uncolor .bool_set:N = \l_linelabel_LineLabel_uncolor_bool,%
- uncolor .default:n  = true,%
-}
-\ExplSyntaxOff
+%% Create line number labelling command
+%% Define a new environment for labeling sections of text by line numbers
+%% Environment can be starred (\begin{LineLabel}*{...}) to turn off line
+%% number generation and only color text (if uncolor=False); this is
+%% useful for regions that don't have linenumbers (eg captions).
+%% The mandatory option provides a label that can later be used for
+%% referencing with the \LineRef{...} command.
+%% The option command is a keyword argument 'uncolor': if [uncolor] or
+%% [uncolor=True] is passed, the section will be labeled but not colored;
+%% if no option (default) or [uncolor=False] is passed, the section will
+%% be labeled and colored blue.
+%%
+%% Source: https://tex.stackexchange.com/a/444150
+%\ExplSyntaxOn
+%\NewDocumentEnvironment{LineLabel}{s m O{}}{%
+%  \IfBooleanTF{#1}{%
+%  % If starred, don't create a linelabel (useful for environments
+%  % without line numbers (eg. captions)
+%  }{%
+%  % If not starred, create a linelabel with label <mandatory argument>-a
+%    \linelabel{#2-a}%
+%  }%
+%  \keys_set:nn { linelabel/LineLabel }%
+%  {%
+%    uncolor=false, % initialize to false
+%    #3%
+%  }%
+%  \bool_if:NTF \l_linelabel_LineLabel_uncolor_bool%
+%  {%
+%  }%
+%  {%
+%    % Color the environment blue
+%    \color{blue}%
+%  }%
+%  \ignorespaces%
+%}%
+%{%
+%  \ignorespacesafterend%
+%  \IfBooleanTF{#1}{%
+%  }{%
+%  % If not starred, create a linelabel with label <mandatory argument>-b
+%    \linelabel{#2-b}%
+%  }%
+%}%
+%\keys_define:nn { linelabel/LineLabel }%
+%{%
+% uncolor .bool_set:N = \l_linelabel_LineLabel_uncolor_bool,%
+% uncolor .default:n  = true,%
+%}
+%\ExplSyntaxOff
 
 %% Create line number cross-referencing command
 %\NewDocumentCommand{\LineRef}{s m}{%
