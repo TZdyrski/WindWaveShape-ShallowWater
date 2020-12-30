@@ -4,7 +4,7 @@
 
 convert           \
    -verbose       \
-   -density 1200  \
+   -density 2400  \
    -trim $1       \
    -quality 100   \
    -flatten       \
