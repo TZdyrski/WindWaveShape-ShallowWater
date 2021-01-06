@@ -15,7 +15,6 @@ import scipy.integrate
 import scipy.signal
 import numpy as np
 import scipy.special as spec
-import xrscipy.signal as dsp
 import xarray as xr
 import data_csv
 from useful_functions import round_sig_figs, derivative, get_var_stats
@@ -636,9 +635,26 @@ def trim_space(signal):
 
 def time_downsample(signal, downsample_factor=1, keep_last=True):
 
+    from scipy.signal import sosfiltfilt
+
+    def decimate_signal(signal, q, dim):
+        order = 4
+        new_f_nyq = 1.0 / q
+        f_crit_norm = np.asarray(new_f_nyq, dtype=np.float)
+        sos = scipy.signal.iirfilter(order, f_crit_norm,
+                output='sos',btype='lowpass')
+        ret = xr.apply_ufunc(sosfiltfilt, sos, signal,
+                                 input_core_dims = [[],[dim]],
+                                 output_core_dims = [[dim]])
+
+        ret = ret.isel(**{dim: slice(None, None, q)})
+        return ret
+
+    dim = 't*eps*sqrt(g*h)*k_E'
+
     # Down sample the time component to save space since we don't need
     # the higher frequencies
-    signal_downsampled = dsp.decimate(signal, downsample_factor, dim='t*eps*sqrt(g*h)*k_E')
+    signal_downsampled = decimate_signal(signal, downsample_factor, dim=dim)
 
     # Copy over attributes
     signal_downsampled.attrs = signal.attrs
