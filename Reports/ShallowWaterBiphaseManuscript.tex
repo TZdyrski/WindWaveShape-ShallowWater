@@ -362,7 +362,7 @@ form~\citep[\eg][]{mei2005nonlinear}
   \Delta = \sqrt{\frac{8}{H_0}} \,,
   \label{eq:initial_condition}
 \end{equation}
-in a co-moving frame with $H_0>0$ an order-1 parameter.
+in a co-moving frame with $H_0>0$ an order-one parameter.
 For reference, unforced solitary waves travel relative to the laboratory
 frame with non-dimensional, nonlinear phase
 speed~\citep[\eg][]{mei2005nonlinear}
@@ -396,7 +396,7 @@ To solve \cref{eq:kdv_burgers} numerically, we will use the Dedalus
 spectral solver~\citep{burns2020dedalus} which implements a generalized
 tau method with a Chebyshev basis.
 Since the onshore wind, $P>0$ case is ill posed, we require an implicit
-solver, so time stepping is done with a 3rd-order 4-stage DIRK+ERK
+solver, so time stepping is done with a third-order four-stage DIRK+ERK
 scheme.
 The spatial domain has a length of $L=80$, and we require $\eta_0 = 0$
 at $x' = -40$ and $\eta_0 = \partial_x \eta_0 = 0$ at $x' = 40$.
