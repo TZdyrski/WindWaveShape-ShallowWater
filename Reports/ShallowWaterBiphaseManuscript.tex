@@ -51,7 +51,7 @@ directions to provide the first theoretical description of wind-induced
 shape changes.
 A multiple-scale analysis of long waves propagating over a shallow,
 flat bottom and forced by a Jeffreys-type surface pressure yields a
-forward or backward Korteweg--de Vries (KdV)-Burgers equation for the
+forward or backward Korteweg--de Vries (KdV)--Burgers equation for the
 wave profile, depending on the wind direction.
 The evolution of a symmetric, solitary-wave initial condition is
 calculated numerically.
@@ -117,7 +117,7 @@ contexts owing to their simplicity.
 One of the simplest equations displaying solitary waves is the
 Korteweg--de Vries (KdV) equation, which incorporates dispersion and
 nonlinearity.
-When augmented with a dissipative term, this becomes the KdV-Burgers
+When augmented with a dissipative term, this becomes the KdV--Burgers
 equation, with applications to damped internal tides
 \citep[\eg][]{sandstrom1995dissipation}, electron waves in graphene
 \citep[\eg][]{zdyrski2019effects} and viscous flow in blood vessels
@@ -125,7 +125,7 @@ equation, with applications to damped internal tides
 While field observations~\citep[\eg][]{cavaleri1981wind} have
 investigated the wind-induced growth of shallow-water waves, the
 interaction of wind and shallow-water waves has not yet been formulated
-into a simple equation such as the KdV-Burgers equation.
+into a simple equation such as the KdV--Burgers equation.
 
 The influence of wind on wave shape has been previously investigated in
 intermediate and deep water~\citep{zdyrski2020wind}.
@@ -134,7 +134,7 @@ investigated in shallow water.
 To investigate wind and surface wave interactions in shallow water over
 a flat bottom, we introduce a wind-induced pressure term to the
 Boussinesq equations in \cref{sec:derivation}.
-The resulting KdV-Burgers equation governs a solitary wave's evolution,
+The resulting KdV--Burgers equation governs a solitary wave's evolution,
 which we solve numerically
 to yield the wave's energy, skewness and asymmetry
 in \cref{sec:results}.
@@ -142,7 +142,7 @@ We calculate the wind speed, discuss the asymmetry and
 compare our results to intermediate- and deep-water waves in
 \cref{sec:discussion}.
 
-\section{\label{sec:derivation} Derivation of the KdV-Burgers equation}
+\section{\label{sec:derivation} Derivation of the KdV--Burgers equation}
 
 \subsection{\label{sec:governing} Governing equations}
 We treat the flow as irrotational and inviscid and neglect surface
@@ -321,7 +321,7 @@ $\order{\epsilon}$,
 \end{gather}
 Inserting our leading-order solutions for $\eta_0$ and $\varphi_0$,
 eliminating $\eta_1$ and preventing resonant forcing of $\varphi_1$
-gives the KdV-Burgers equation,
+gives the KdV--Burgers equation,
 \begin{equation}
   \pdv{\eta_0}{t_1} + \frac{3}{2}
     \eta_0 \pdv{\eta_0}{x} + \frac{1}{6} \frac{\mu_E}{\epsilon}
@@ -341,10 +341,10 @@ analysis is outside the scope of this study.
 
 For offshore wind, the pressure term $P \partial^2_x \eta_0$ acts as a
 positive viscosity causing damping, and \cref{eq:kdv_burgers} is the
-(forward) KdV-Burgers equation with $P<0$.
+(forward) KdV--Burgers equation with $P<0$.
 However, for onshore wind, the viscosity is negative and causes wave
-growth, yielding the backward KdV-Burgers equation with $P>0$.
-The backward KdV-Burgers equation is ill-posed in the sense of Hadamard
+growth, yielding the backward KdV--Burgers equation with $P>0$.
+The backward KdV--Burgers equation is ill-posed in the sense of Hadamard
 because the solution is highly sensitive to changes in the initial
 condition~\citep{hadamard1902problemes}.
 While a finite-time singularity (\ie{} wave breaking) is likely, the
@@ -388,7 +388,7 @@ we will restrict our analysis to solitary waves for brevity and clarity.
 The wind-forcing term $P \partial_x^2 \eta_0$ in \cref{eq:kdv_burgers}
 disrupts the solitary wave's balance of dispersion and nonlinearity,
 inducing growth/decay and shape changes.
-The KdV-Burgers equation has no known, solitary-wave solutions, so we
+The KdV--Burgers equation has no known, solitary-wave solutions, so we
 will solve it numerically.
 
 \subsection{\label{sec:numerics} Numerics and shape statistics}
@@ -446,7 +446,7 @@ energy $E$ and skewness $\Sk$ by their initial values.
 
 \section{\label{sec:results} Results}
 We study the pressure magnitude's effect on solitary-wave evolution and
-shape by varying the KdV-Burgers equation's \cref{eq:kdv_burgers} one
+shape by varying the KdV--Burgers equation's \cref{eq:kdv_burgers} one
 free parameter, $P k_E/(\rho_w g \epsilon)$, with emphasis on the
 contrast between onshore ($P > 0$) and offshore wind ($P < 0$).
 We revert to denoting non-dimensional variables with primes and
@@ -629,7 +629,7 @@ We now relate the non-dimensional pressure magnitude $P k_E/(\rho_w g) =
 First, we need a relationship between the surface pressure and wave
 energy $E$ \cref{eq:shape_stats_def}, which we can approximate using the
 standard procedure \citep[\eg][]{mei2005nonlinear} of multiplying the
-(non-dimensional, denoted by primes) KdV-Burgers equation
+(non-dimensional, denoted by primes) KdV--Burgers equation
 \cref{eq:kdv_burgers} by $\eta'_0$ and integrating from $x'=-\infty$ to
 $\infty$ to obtain
 \begin{equation}
@@ -656,7 +656,7 @@ with $\langle (\partial_x \eta)^2 \rangle / \langle (k_E \eta)^2 \rangle
 $c_0 = \sqrt{gh}$ coming from the re-dimensionalization of $t' = t c_0
 k_E$ \cref{eq:nondim_expressions}.
 Alternatively, a secondary multiple-scale approximation of the
-forward KdV-Burgers equation has been used previously to derive
+forward KdV--Burgers equation has been used previously to derive
 the energy growth rate for solitary waves as~\citep{zdyrski2019effects}
 \begin{equation}
   E \propto \frac{1}{\pqty{1 - \gamma t}^2}
@@ -737,7 +737,7 @@ To see this, consider an initial, symmetric profile $\eta$.
 The pressure forcing term $P \partial_x^2 \eta$ preserves the initial
 symmetry and induces a symmetric bound wave after a short time $\Delta
 t'_1 \ll 1$.
-This is apparent when considering the non-dimensional KdV-Burgers
+This is apparent when considering the non-dimensional KdV--Burgers
 equation \cref{eq:kdv_burgers} in the unforced solitary wave's frame
 (\cref{fig:snapshots_solitary}) at the initial time,
 \begin{align}
@@ -831,9 +831,9 @@ Here, we produced a novel analysis of wind-induced wave shape changes in
 shallow water using a multiple-scale analysis to couple weak wind with
 small, shallow-water waves, \ie{} $a_0/h \sim (k_E h)^2 \sim P k/(\rho_w
 g) \ll 1$.
-This analysis produced a KdV-Burgers equation governing the wave profile
-$\eta$, which we then solved numerically with a symmetric, solitary-wave
-initial condition.
+This analysis produced a KdV--Burgers equation governing the wave
+profile $\eta$, which we then solved numerically with a symmetric,
+solitary-wave initial condition.
 The deviations between the numerical results and a reference solitary
 wave had the form of a bound, dispersive tail, with differing signs for
 onshore and offshore wind.
