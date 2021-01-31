@@ -307,7 +307,7 @@ The right-moving solutions are
   f_0' \coloneqq \eval{\pdv{f_0(\theta,t_1)}{\theta}}_{\theta = x-t_0} \,.
 \end{equation}
 Continuing to the next order of perturbation theory, we retain terms of
-order $\order{\epsilon}$,
+$\order{\epsilon}$,
 \begin{gather}
     \pdv{\eta_1}{t_0} + \pdv[2]{\varphi_{1}}{x} =
       -\pdv{\eta_0}{t_1} - \pdv{x} \pqty{\eta_0 \pdv{\varphi_0}{x}} +
@@ -349,7 +349,7 @@ because the solution is highly sensitive to changes in the initial
 condition~\citep{hadamard1902problemes}.
 While a finite-time singularity (\ie{} wave breaking) is likely, the
 multiple-scale expansion used to derive \cref{eq:kdv_burgers} is only
-valid for time intervals of order $\order{1/\epsilon}$, and we limit our
+valid for time intervals of $\order{1/\epsilon}$, and we limit our
 analysis to short times removing the need to regularize the solution.
 
 The solitary-wave solutions of the unforced ($P=0$) KdV equation exist
@@ -406,7 +406,7 @@ This corresponds to $N_x = 2400$ spatial points with an average spacing
 of $\Delta x = 0.05$ and between $\Delta x = \numrange{7.7e-5}{7.9e-2}$.
 The simulation runs from $t_1 = 0$ to $t_1 = T = 10$, since the
 multiple-scale expansion of \cref{sec:boussinesq} is only accurate for
-times of order $\order{1/\epsilon}$.
+times of $\order{1/\epsilon}$.
 Adaptive timestepping is employed such that the CFL number is $(\Delta
 t) \max(\eta_0)/(\Delta x) = 1$.
 For the unforced case, this corresponds to $\Delta t \approx
