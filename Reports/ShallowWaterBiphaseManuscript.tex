@@ -344,7 +344,7 @@ positive viscosity causing damping, and \cref{eq:kdv_burgers} is the
 (forward) KdV--Burgers equation with $P<0$.
 However, for onshore wind, the viscosity is negative and causes wave
 growth, yielding the backward KdV--Burgers equation with $P>0$.
-The backward KdV--Burgers equation is ill-posed in the sense of Hadamard
+The backward KdV--Burgers equation is ill posed in the sense of Hadamard
 because the solution is highly sensitive to changes in the initial
 condition~\citep{hadamard1902problemes}.
 While a finite-time singularity (\ie{} wave breaking) is likely, the
@@ -395,7 +395,7 @@ will solve it numerically.
 To solve \cref{eq:kdv_burgers} numerically, we will use the Dedalus
 spectral solver~\citep{burns2020dedalus} which implements a generalized
 tau method with a Chebyshev basis.
-Since the onshore wind, $P>0$ case is ill-posed, we require an implicit
+Since the onshore wind, $P>0$ case is ill posed, we require an implicit
 solver, so time stepping is done with a 3rd-order 4-stage DIRK+ERK
 scheme.
 The spatial domain has a length of $L=80$, and we require $\eta_0 = 0$
@@ -511,7 +511,7 @@ increases the maximum wave-slope magnitude with time while the offshore
 wind (\cref{fig:snapshots_solitary:b}) decreases it, although the
 windward side of the wave becomes steeper than the leeward side for both
 winds (up to \SI{8}{\percent} steeper for the time period shown).
-Although the equation is ill-posed in the sense of Hadamard, the smooth
+Although the equation is ill posed in the sense of Hadamard, the smooth
 solutions show that our solution is acceptable up to the current time
 and thus we are justified in neglecting a regularization scheme.
 
