@@ -426,6 +426,7 @@ $1-\bqty{\max(\eta_0) - \min(\eta_0)}/\allowbreak
 
 We quantify the wave shape with the wave's energy $E$, skewness $\Sk$
 and asymmetry $\As$,
+\begin{subequations}
 \begin{equation}
   E \coloneqq \langle \eta_0^2 \rangle \,, \quad
   \Sk \coloneqq \frac{\langle \eta_0^3 \rangle}{\langle \eta_0^2
@@ -436,8 +437,10 @@ and asymmetry $\As$,
   \,, \qq{with}
   \langle f \rangle \coloneqq \frac{1}{L} \int_{-L/2}^{L/2} f
   \dd{x} \,.
+  \tag{\theequation\textit{a--c}}
   \label{eq:shape_stats_def}
 \end{equation}
+\end{subequations}
 Here, $\hilbert(f)$ is the Hilbert transform of $f$, defined as the
 imaginary part of $\fourier^{-1} \pqty{ \fourier \pqty{f} 2U}$ with $U$
 the unit step function and $\fourier$ the Fourier transform.
