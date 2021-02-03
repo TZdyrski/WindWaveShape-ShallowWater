@@ -130,7 +130,7 @@ def label_subplots(ax, decrease_col_padding=False):
         # Convert numerical index to lower case letter (0->a, 1->b, etc)
         indx_num = np.ravel_multi_index(indx,ax.shape)
         indxToAlpha = chr(indx_num+ord('a'))
-        subplotLabel = indxToAlpha + ')'
+        subplotLabel = '(' + indxToAlpha + ')'
 
         if (not decrease_col_padding) or indx[-1] == 0:
             padding = 0.275
