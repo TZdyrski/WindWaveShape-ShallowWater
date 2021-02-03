@@ -1371,21 +1371,50 @@ FUNCTION {chop.word}
 }
 
 FUNCTION {format.lab.names}
-{ 's :=
-   s #1 "{vv~}{ll}" format.name$
-   s num.names$ duplicate$
-   #2 >
-     { pop$ " " * "et~al." emphasize * }
-     { #2 <
-         'skip$
-         { s #2 "{ff }{vv }{ll}{ jj}" format.name$ "others" =
-             { " " * "et~al." emphasize * }
-             { " \& " * s #2 "{vv~}{ll}" format.name$ * }
-           if$
-         }
-       if$
-     }
-   if$
+{'s :=
+ "" 't :=
+  #1 'nameptr :=
+  s num.names$ 'numnames :=
+  numnames 'namesleft :=
+    { namesleft #0 > }
+    { s nameptr
+      "{vv~}{ll}" format.name$
+      't :=
+      nameptr #1 >
+        {
+          nameptr #2 =
+          numnames #3 > and
+            { "others" 't :=
+              #1 'namesleft := }
+            'skip$
+          if$
+          namesleft #1 >
+            { ", " * t * }
+            {
+              s nameptr "{ll}" format.name$ duplicate$ "others" =
+                { 't := }
+                { pop$ }
+              if$
+              t "others" =
+                { " " * "et~al." emphasize * }
+                {
+                  numnames #2 >
+                    { "" * }
+                    'skip$
+                  if$
+                  " \& "
+                  * t *
+                }
+              if$
+            }
+          if$
+        }
+        't
+      if$
+      nameptr #1 + 'nameptr :=
+      namesleft #1 - 'namesleft :=
+    }
+  while$
 }
 
 FUNCTION {author.key.label}
