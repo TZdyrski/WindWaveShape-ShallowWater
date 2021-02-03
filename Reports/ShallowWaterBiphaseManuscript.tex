@@ -396,8 +396,8 @@ To solve \cref{eq:kdv_burgers} numerically, we will use the Dedalus
 spectral solver~\citep{burns2020dedalus} which implements a generalized
 tau method with a Chebyshev basis.
 Since the onshore wind, $P>0$ case is ill posed, we require an implicit
-solver, so time stepping is done with a third-order four-stage DIRK+ERK
-scheme.
+solver, so time stepping is done with coupled four-stage, third-order
+Diagonally Implicit Runge--Kutta and Explicit Runge--Kutta schemes.
 The spatial domain has a length of $L=80$, and we require $\eta_0 = 0$
 at $x' = -40$ and $\eta_0 = \partial_x \eta_0 = 0$ at $x' = 40$.
 We employ $N_c = 1600$ Chebyshev coefficients and zero padding with a
