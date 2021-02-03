@@ -69,7 +69,7 @@ evolution according to the unforced KdV equation.
 \end{abstract}
 
 \section{\label{sec:introduction} Introduction}
-
+\noindent
 The study of wind and ocean wave interactions began with
 \citet{jeffreys1925formation} and continues to be an active field of
 research~\citep[\eg][]{janssen1991quasi,donelan2006wave,sulivan2010dynamics}.
@@ -145,6 +145,7 @@ compare our results to intermediate- and deep-water waves in
 \section{\label{sec:derivation} Derivation of the KdV--Burgers equation}
 
 \subsection{\label{sec:governing} Governing equations}
+\noindent
 We treat the flow as irrotational and inviscid and neglect surface
 tension.
 Furthermore, we restrict ourselves to planar wave propagation in the
@@ -208,6 +209,7 @@ means our theory could apply to the wind forcing of rogue waves in
 shallow water~\citep{kharif2008influence}.
 
 \subsection{\label{sec:nondim} Non-dimensionalization}
+\noindent
 We non-dimensionalize our system with the known characteristic
 scales: the horizontal length scale $L$ over which $\eta$ changes
 rapidly, expressed as an effective wavenumber $k_E \coloneqq 2 \pi/L$;
@@ -260,6 +262,7 @@ We will drop the primes throughout the remainder of this section for readability
 
 \subsection{\label{sec:boussinesq} Boussinesq equations, multiple-scale
 expansion, KdV equation and initial condition}
+\noindent
 Here, we modify the Boussinesq equation's derivation provided by
 \citet{mei2005nonlinear} or \citet{ablowitz2011nonlinear} by including
 the surface pressure forcing in \cref{eq:dynamic_bc}.
@@ -392,6 +395,7 @@ The KdV--Burgers equation has no known solitary-wave solutions, so we
 will solve it numerically.
 
 \subsection{\label{sec:numerics} Numerics and shape statistics}
+\noindent
 To solve \cref{eq:kdv_burgers} numerically, we will use the Dedalus
 spectral solver~\citep{burns2020dedalus} which implements a generalized
 tau method with a Chebyshev basis.
@@ -449,6 +453,7 @@ Since these definitions depend on the domain size $L$, we normalize the
 energy $E$ and skewness $\Sk$ by their initial values.
 
 \section{\label{sec:results} Results}
+\noindent
 We study the pressure magnitude's effect on solitary-wave evolution and
 shape by varying the KdV--Burgers equation's \cref{eq:kdv_burgers} one
 free parameter, $P k_E/(\rho_w g \epsilon)$, with emphasis on the
@@ -629,6 +634,7 @@ component.
 \section{\label{sec:discussion} Discussion}
 
 \subsection{\label{sec:press_mag} Wind speed estimation}
+\noindent
 We now relate the non-dimensional pressure magnitude $P k_E/(\rho_w g) =
 \order{\epsilon}$ to the wind speed.
 First, we need a relationship between the surface pressure and wave
@@ -728,6 +734,7 @@ longer to change the wave shape.
 
 \subsection{\label{sec:physical_reason} Physical mechanism of asymmetry
 generation}
+\noindent
 Our initial, symmetric solitary waves \cref{eq:initial_condition} are
 permanent-form solutions of the unforced KdV equation.
 More generally, any initial solitary wave which does not exactly solve
@@ -795,6 +802,7 @@ change the sign of the bound wave and dispersive tail and, hence, the
 sign of the asymmetry in \cref{fig:statistics_solitary}.
 
 \subsection{\label{sec:comparison} Comparison to intermediate and deep water}
+\noindent
 \Citet{zdyrski2020wind} investigated the effect of
 wind on Stokes-like waves in intermediate to deep water.
 This study, with wind coupled to waves in shallow water, finds
@@ -827,6 +835,7 @@ of cnoidal waves with different values of $\mu_E$, implying that these
 results apply rather generally.
 
 \section{\label{sec:conclusion} Conclusion}
+\noindent
 Prior results~\citep{zdyrski2020wind} in intermediate and deep water
 demonstrated that wind,
 acting through a wave-dependent surface pressure,
@@ -858,17 +867,22 @@ Finally, the wind speeds corresponding to these pressure differences
 were calculated and found to be physically realistic.
 
 \begin{acknowledgements}
+\noindent
 \textbf{Acknowledgements.}
 We are grateful to D.G.~Grimes and M.S.~Spydell for discussions on
 this work.
 Additionally, we thank the anonymous reviewers for their suggestions and
 comments.
 
+\vspace{\baselineskip}
+\noindent
 \textbf{Funding.}
 We thank the National Science Foundation (OCE-1558695) and the Mark Walk
 Wolfinger Surfzone Processes Research Fund for their support of this
 work.
 
+\vspace{\baselineskip}
+\noindent
 \textbf{Declaration of interests.}
 The authors report no conflict of interest.
 \end{acknowledgements}
