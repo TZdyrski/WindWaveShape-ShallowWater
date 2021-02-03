@@ -155,13 +155,13 @@ Then, the incompressibility condition and standard boundary conditions
 are
 \begin{alignat}{2}
   0 &= \phi_{xx} + \phi_{zz} &&\qq{on}
-  -h < z < \eta \,, \label{eq:laplace}\\
-  0 &= \phi_{z} &&\qq{on} z=-h \,, \label{eq:bottom_bc}\\
-  \phi_{z} &= \eta_{t} + \phi_{x} \eta_{x} &&\qq{on} z = \eta \,,
+  -h < z < \eta , \label{eq:laplace}\\
+  0 &= \phi_{z} &&\qq{on} z=-h , \label{eq:bottom_bc}\\
+  \phi_{z} &= \eta_{t} + \phi_{x} \eta_{x} &&\qq{on} z = \eta ,
   \label{eq:kinematic_bc}\\
   0 &= \frac{p}{\rho_w} + g\eta + \phi_{t} +
   \frac{1}{2} \bqty{\phi_{x}^2 + \phi_{z}^2} &&\qq{on} z=
-  \eta \,. \label{eq:dynamic_bc}
+  \eta . \label{eq:dynamic_bc}
 \end{alignat}
 Here, $\eta(x,t)$ is the wave profile, $\phi(x,z,t)$ is the flow's
 velocity potential related to the velocity $\vec{u} = \grad{\phi}$,
@@ -175,7 +175,7 @@ conditions on $\vec{u}$.
 We choose a coordinate system where the average bottom horizontal
 velocity vanishes,
 \begin{equation}
-  \overline{ \pdv{\phi}{x} } = 0 \qq{on} z=-h \,,
+  \overline{ \pdv{\phi}{x} } = 0 \qq{on} z=-h ,
   \label{eq:bot_bc_horz}
 \end{equation}
 with the overline a spatial average $\overline{f} \coloneqq
@@ -183,7 +183,7 @@ with the overline a spatial average $\overline{f} \coloneqq
 Additionally, we assume the surface pressure $p(x,t)$ is a Jeffreys-type
 forcing \citep{jeffreys1925formation},
 \begin{equation}
-  p(x,t) = P \pdv{\eta(x,t)}{x} \,.
+  p(x,t) = P \pdv{\eta(x,t)}{x} .
   \label{eq:press_def}
 \end{equation}
 Here, $P$ is proportional to $(U-c)^2$, with $c$ the wave's nonlinear
@@ -219,21 +219,21 @@ with $\rho_a \approx \num{1.225e-3} \rho_w$ the density of air.
 Denoting non-dimensional variables with primes, we have
 \begin{equation}
   \begin{aligned}
-  x &= \frac{x'}{k_E} = h \frac{x'}{\sqrt{\mu_E}}\,, \\
-  z &= h z' \,,
+  x &= \frac{x'}{k_E} = h \frac{x'}{\sqrt{\mu_E}}, \\
+  z &= h z' ,
   \end{aligned}
   \qquad
   \begin{aligned}
   t &= \frac{t'}{k_E c_0}
-    = \frac{t'}{\sqrt{\mu_E}} \sqrt{\frac{h}{g}} \,, \\
+    = \frac{t'}{\sqrt{\mu_E}} \sqrt{\frac{h}{g}} , \\
   P &= \epsilon P' \frac{\rho_w g}{k_E}
-    = \frac{\epsilon}{\sqrt{\mu_E}} P' \rho_w c_0^2 \,,
+    = \frac{\epsilon}{\sqrt{\mu_E}} P' \rho_w c_0^2 ,
   \end{aligned}
   \qquad
   \begin{aligned}
-  \eta &= a_0 \eta' = h \epsilon \eta' \,, \\
+  \eta &= a_0 \eta' = h \epsilon \eta' , \\
   \phi &= \phi'\frac{a_0}{k_E}\sqrt{\frac{g}{h}}
-    = \frac{\phi'\epsilon}{\sqrt{\mu_E}} c_0 h \,,
+    = \frac{\phi'\epsilon}{\sqrt{\mu_E}} c_0 h ,
   \end{aligned}
   \label{eq:nondim_expressions}
 \end{equation}
@@ -246,14 +246,14 @@ We will later require $\order{\epsilon} = \order{\mu_E} =
 Now, our non-dimensional equations take the form
 \begin{alignat}{2}
   0 &= \mu_E \phi'_{x'x'} + \phi'_{z'z'} &&\qq{on}
-    -1 < z' < \epsilon \eta' \,, \label{eq:laplace_nondim} \\
-  0 &= \phi'_{z'} &&\qq{on} z'=-1 \,, \label{eq:bottom_bc_nondim} \\
+    -1 < z' < \epsilon \eta' , \label{eq:laplace_nondim} \\
+  0 &= \phi'_{z'} &&\qq{on} z'=-1 , \label{eq:bottom_bc_nondim} \\
   \phi'_{z'} &= \mu_E \eta'_{t'} +
-    \epsilon \mu_E \phi'_{x'} \eta'_{x'} &&\qq{on} z' = \epsilon \eta' \,,
+    \epsilon \mu_E \phi'_{x'} \eta'_{x'} &&\qq{on} z' = \epsilon \eta' ,
     \label{eq:kinematic_bc_nondim} \\
   0 &= \epsilon P' \eta'_{x'} +  \eta' + \phi'_{t'} + \frac{1}{2}
-    \pqty{\epsilon \phi_{x'}^{\prime \, 2} + \frac{\epsilon}{\mu_E}
-    \phi_{z'}^{\prime \, 2}} &&\qq{on} z'= \epsilon \eta' \,.
+    \pqty{\epsilon \phi_{x'}^{\prime .2} + \frac{\epsilon}{\mu_E}
+    \phi_{z'}^{\prime .2}} &&\qq{on} z'= \epsilon \eta' .
     \label{eq:dynamic_bc_nondim}
 \end{alignat}
 We will drop the primes throughout the remainder of this section for readability.
@@ -275,10 +275,10 @@ the Boussinesq equations with a pressure forcing term,
 \begin{gather}
   \partial_t \eta + \partial_x^2 \varphi + \epsilon \partial_x
     \pqty{\eta \partial_x \varphi} -\frac{1}{6}\mu_E \partial^4_x
-    \varphi = \order{\mu_E^2} \label{eq:kinematic_bc_varphi} \,, \\
+    \varphi = \order{\mu_E^2} \label{eq:kinematic_bc_varphi} , \\
   \partial_t \varphi + \epsilon P \partial_x \eta + \eta -
     \frac{1}{2}\mu_E \partial_t \partial_x^2 \varphi +
-    \frac{1}{2}\epsilon\pqty{\partial_x \varphi}^2 = \order{\mu_E^2} \,.
+    \frac{1}{2}\epsilon\pqty{\partial_x \varphi}^2 = \order{\mu_E^2} .
     \label{eq:dynamic_bc_varphi}
 \end{gather}
 Further, we will now assume $\order{\epsilon} = \order{\mu_E} \ll 1$.
@@ -291,7 +291,7 @@ Then, we write $\eta$ and $\varphi$ as asymptotic series of $\epsilon$,
   \eta(x,t) = \sum_{k=0}^{\infty} \epsilon^k
     \eta_{k}(x,t_0,t_1) \qq{and}
   \varphi(x,t) = \sum_{k=0}^{\infty} \epsilon^k
-    \varphi_{k}(x,t_0,t_1,) \,.
+    \varphi_{k}(x,t_0,t_1,) .
 \end{equation}
 Now, we will reduce the Boussinesq equations,
 \cref{eq:kinematic_bc_varphi,eq:dynamic_bc_varphi}, to the KdV equation
@@ -304,20 +304,20 @@ The right-moving solutions are
 \begin{equation}
   \varphi_0 = f_0(x-t_0,t_1) \qq{and}
   \eta_0 = f'_0(x-t_0,1) \qq{with}
-  f_0' \coloneqq \eval{\pdv{f_0(\theta,t_1)}{\theta}}_{\theta = x-t_0} \,.
+  f_0' \coloneqq \eval{\pdv{f_0(\theta,t_1)}{\theta}}_{\theta = x-t_0} .
 \end{equation}
 Continuing to the next order of perturbation theory, we retain terms of
 $\order{\epsilon}$,
 \begin{gather}
     \pdv{\eta_1}{t_0} + \pdv[2]{\varphi_{1}}{x} =
       -\pdv{\eta_0}{t_1} - \pdv{x} \pqty{\eta_0 \pdv{\varphi_0}{x}} +
-      \frac{1}{6} \frac{\mu_E}{\epsilon} \pdv[4]{\varphi_0}{x} \,,
+      \frac{1}{6} \frac{\mu_E}{\epsilon} \pdv[4]{\varphi_0}{x} ,
   \\
     \eta_1 + \pdv{\varphi_1}{t_0} = -P \pdv{\eta_0}{x} -\pdv{\varphi_0}{t_1}
       + \frac{1}{2} \frac{\mu_E}{\epsilon} \frac{\partial^3 \varphi_0}
         {\partial t_0 \partial^2 x}
       - \frac{1}{2} \pqty{ \pdv{\varphi_0}{x} }^2
-  \,.
+  .
 \end{gather}
 Inserting our leading-order solutions for $\eta_0$ and $\varphi_0$,
 eliminating $\eta_1$ and preventing resonant forcing of $\varphi_1$
@@ -325,7 +325,7 @@ gives the KdV--Burgers equation,
 \begin{equation}
   \pdv{\eta_0}{t_1} + \frac{3}{2}
     \eta_0 \pdv{\eta_0}{x} + \frac{1}{6} \frac{\mu_E}{\epsilon}
-    \pdv[3]{\eta_0}{x} = -P \frac{1}{2} \pdv[2]{\eta_0}{x} \,.
+    \pdv[3]{\eta_0}{x} = -P \frac{1}{2} \pdv[2]{\eta_0}{x} .
   \label{eq:kdv_burgers}
 \end{equation}
 Note that \cref{eq:kdv_burgers} has a rescaling symmetry, with $\mu_E
@@ -359,7 +359,7 @@ form~\citep[\eg][]{mei2005nonlinear}
 \begin{equation}
   \eta_0 = H_0 \sech^2\pqty{\frac{x}{\Delta}}
   \qq{with}
-  \Delta = \sqrt{\frac{8}{H_0}} \,,
+  \Delta = \sqrt{\frac{8}{H_0}} ,
   \label{eq:initial_condition}
 \end{equation}
 in a co-moving frame with $H_0>0$ an order-one parameter.
@@ -429,15 +429,15 @@ We quantify the wave shape with the wave's energy $E$, skewness $\Sk$
 and asymmetry $\As$,
 \begin{subequations}
 \begin{equation}
-  E \coloneqq \langle \eta_0^2 \rangle \,, \quad
+  E \coloneqq \langle \eta_0^2 \rangle , \quad
   \Sk \coloneqq \frac{\langle \eta_0^3 \rangle}{\langle \eta_0^2
   \rangle^{3/2}} \
   \qq{and}
   \As \coloneqq \frac{\langle \hilbert \Bqty{\eta_0^3} \rangle}{\langle
     \eta_0^2 \rangle^{3/2}}
-  \,, \qq{with}
+  , \qq{with}
   \langle f \rangle \coloneqq \frac{1}{L} \int_{-L/2}^{L/2} f
-  \dd{x} \,.
+  \dd{x} .
   \tag{\theequation\textit{a--c}}
   \label{eq:shape_stats_def}
 \end{equation}
@@ -640,7 +640,7 @@ $\infty$ to obtain
 \begin{equation}
   \pdv{t'_1} \int_{-\infty}^{\infty} {\eta'}_0^2 \dd{x'}
   = \int_{-\infty}^{\infty} P' \pqty{\pdv{\eta'_0}{x'}}^2
-  \dd{x'} \,.
+  \dd{x'} .
   \label{eq:energy_nondim}
 \end{equation}
 The left integral is the non-dimensional energy
@@ -652,7 +652,7 @@ the full time $t$ gives the energy growth rate $\gamma$,
   = \frac{P k_E}{\rho_w g} \frac{\langle (\partial_x \eta)^2 \rangle}
     {\langle (k_E \eta)^2 \rangle}
   = \frac{1}{5} \frac{P k_E}{\rho_w g}
-  \,,
+  ,
   \label{eq:gamma_vs_P_solitary}
 \end{equation}
 with $\langle (\partial_x \eta)^2 \rangle / \langle (k_E \eta)^2 \rangle
@@ -667,7 +667,7 @@ the energy growth rate for solitary waves as~\citep{zdyrski2019effects}
   E \propto \frac{1}{\pqty{1 - \gamma t}^2}
   \qq{with}
   \gamma \coloneqq b \bqty{\frac{P k_E}{\rho_w g}} c_0 k_E
-  \,,
+  ,
   \label{eq:actual_energy}
 \end{equation}
 with analytically derived $b = 2/15$.
@@ -687,7 +687,7 @@ measured at a height equal to half the wavelength $z=\lambda/2$, as
 \begin{equation}
   \frac{\gamma}{c k} = S_{\lambda/2} \frac{\rho_a}{\rho_w}
     \pqty{\frac{U_{\lambda/2}}{c}-1}
-    \abs{\frac{U_{\lambda/2}}{c}-1} \,,
+    \abs{\frac{U_{\lambda/2}}{c}-1} ,
   \label{eq:gamma_vs_u_jeffreys}
 \end{equation}
 with $S_{\lambda/2}$ a small, non-dimensional sheltering parameter
@@ -700,7 +700,7 @@ Combining this approximation of \cref{eq:gamma_vs_u_jeffreys} with
 \cref{eq:gamma_vs_P_solitary} gives
 \begin{equation}
   U_{\lambda/2} = c_0 \pqty{1 \pm \sqrt{\frac{1}{5} \abs{\frac{P k_E}{\rho_w g}}
-    \frac{\rho_w}{\rho_a} \frac{1}{S_{\lambda/2}}}} \,.
+    \frac{\rho_w}{\rho_a} \frac{1}{S_{\lambda/2}}}} .
   \label{eq:U_vs_P}
 \end{equation}
 Here, the $\pm$ corresponds to onshore ($+$) or offshore ($-$) winds.
@@ -753,7 +753,7 @@ equation \cref{eq:kdv_burgers} in the unforced solitary wave's frame
   (2-P'\Delta t'_1) \sech^2\pqty{\frac{x'}{2}}
   +
   P' \Delta t'_1 \frac{3}{2}\sech^4\pqty{\frac{x'}{2}}
-  \,.
+  .
   \label{eq:pressure_change}
 \end{align}
 The $P'\Delta t'_1$ terms generate a small bound wave with a peak
