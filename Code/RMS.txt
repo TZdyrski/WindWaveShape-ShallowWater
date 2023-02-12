@@ -1,0 +1,87 @@
+xStep = 0.3
+nu_bi=3e-3
+Normalized, RMS between end and start for unforced solitary wave:0.011150287186738776
+10s and 13s
+
+xStep = 0.2
+nu_bi=3e-3
+Normalized, RMS between end and start for unforced solitary wave:0.0051203369637751696
+40s and 15s
+
+xStep = 0.1
+nu_bi=3e-3
+Normalized, RMS between end and start for unforced solitary wave:0.002558122944776914
+11m19s and 35s
+
+xStep = 0.05
+nu_bi=3e-3
+Normalized, RMS between end and start for unforced solitary wave:0.002470266086359729
+214m55s and 1m51s
+
+
+Smaller nu_bi
+
+xStep = 0.2
+nu_bi=1e-3
+Normalized, RMS between end and start for unforced solitary wave:0.004955544156747833
+
+xStep = 0.2
+nu_bi=3e-4
+Normalized, RMS between end and start for unforced solitary wave:0.005033147079136655
+
+
+4th order derivatives
+
+xStep = 0.05
+nu_bi=3e-3
+4th order derivatives
+Normalized, RMS between end and start for unforced solitary wave:0.002519391171993772
+96m59s and 1m21s
+
+
+6th order nu_bi
+
+xStep = 0.3
+nu_bi=1e-5
+6th order nu_bi
+Normalized, RMS between end and start for unforced solitary wave:0.011529181178622146
+
+xStep = 0.2
+nu_bi=1e-5
+6th order nu_bi
+Normalized, RMS between end and start for unforced solitary wave:0.005084508475112306
+
+xStep = 0.1
+nu_bi=1e-5
+6th order nu_bi
+Normalized, RMS between end and start for unforced solitary wave:0.001261468082609145
+
+
+4th order derivatives and 6th order nu_bi
+
+xStep = 0.3
+nu_bi=1e-5
+6th order nu_bi
+4th order derivatives
+Normalized, RMS between end and start for unforced solitary wave:0.0004929720352264631
+
+xStep = 0.05
+nu_bi=1e-5
+6th order nu_bi
+4th order derivatives
+Normalized, RMS between end and start for unforced solitary wave:1.3364813021527583e-05
+94m10s and 1m30s
+
+xStep = 0.03
+nu_bi=1e-5
+6th order nu_bi
+4th order derivatives
+Normalized, RMS between end and start for unforced solitary wave:1.3409327828315578e-05
+1067m44s and 3m24s
+
+
+xStep = 0.05
+nu_bi=0 (only unforced case)
+4th order derivatives
+Normalized, RMS between end and start for unforced solitary wave:4.034348755557403e-07
+14m12s and 1s
