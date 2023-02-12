@@ -1,0 +1,125 @@
+\documentclass{jfm}
+
+% Compilation
+\usepackage{silence} % Silence latex compiler warnings
+\WarningFilter{latex}{Command \@xhline has changed} % Filter out warning
+  % caused by redefinition between jfm.cls class and array (loaded by
+  % siunitx)
+
+% Import custom style file containing common packages and options
+\setlength{\paperheight}{\pdfpageheight} % JFM class removes paperheight definition and hyperref raises a warning
+
+% Enable calculations inside tables
+\usepackage{spreadtab}
+
+% Import custom style file containing common packages and options
+\usepackage{preamble}
+
+\begin{document}
+
+The physical dimensions of the solution are determined by two constants
+(\eg $h$ and $g$) as well as $\epsilon$, $\mu$, and $P k_E/(\rho_w g)$,
+or just $\epsilon$ and $P k_E/(\rho_w g)$ for solitary waves ($\mu = 6
+\epsilon$).
+We will therefore express all of the solitary wave's characteristic
+dimension in terms of $h$, $g$, $\epsilon$, and $P k_E/(\rho_w g)$.
+
+The ``width'' of the soliton is given by $\lambda_E = 2 \pi/k_E = 2 \pi
+h /\sqrt{6 \epsilon}$.
+The initial height is given by $H_0 = 2 \epsilon h$.
+The characteristic speed is $c = \sqrt{gh}$.
+The characteristic time is given by $t_C = 1/(\sqrt{gh}k_E) =
+\sqrt{h/g}/\sqrt{6 \epsilon}$, and the ``wave-crossing time'' is $T_E =
+\lambda_E/c = 2 \pi \sqrt{h/g}/\sqrt{6 \epsilon} = 2 \pi t_C$.
+The characteristic energy growth time (\ie the time required for $E$ to
+increase by a factor of $e$) is approximately
+\begin{equation}
+  \tau = \frac{1}{\gamma} =
+  \pqty{\frac{P k_E}{\rho_w g}}^{-1} \frac{5}{c k_E}
+  = \pqty{\frac{P k_E}{\epsilon \rho_w g}}^{-1} \frac{5}{\sqrt{6
+  \epsilon^3}} \sqrt{\frac{h}{g}} \,.
+\end{equation}
+The simulation is run for a slow time period of $L_{t_1}' = 3$; this
+corresponds to a full time of $L_t' = 3/\epsilon$, or a full, dimensional
+time of
+\begin{equation}
+  L_t = \frac{3}{k_E \epsilon \sqrt{gh}}
+  = \frac{3}{\sqrt{6\epsilon^3}} \sqrt{\frac{h}{g}} \,.
+\end{equation}
+During the simulation time $L_t$, the wave travels a distance of
+approximately
+\begin{equation}
+  L_x = L_t \sqrt{gh} = \frac{3}{\sqrt{6\epsilon^3}} h \,.
+\end{equation}
+Finally, this corresponds to a wind speed of
+\begin{equation}
+  U_{\lambda/2} = U_{\pi h/\sqrt{6 \epsilon}}
+  = \sqrt{gh}\pqty{1 +
+    \sqrt{\frac{1}{5} \abs{\frac{P k_E}{\epsilon \rho_w g}}
+    \frac{\rho_w}{\rho_a} \frac{1}{4.91 \sqrt{6 \epsilon}}}} \,.
+\end{equation}
+
+\begin{table}
+\renewcommand\STprintnum[1]{\num[round-mode=figures, round-precision=2]{#1}}
+\newcommand\gVal{9.8}
+\newcommand\rhoaOnrhow{0.0011225}
+\newcommand\PVal{0.25}
+\begin{spreadtab}{{tabular}{c c | c c c c c c c c c}}
+    @ $\epsilon$ & @ $h$ [\si{\meter}]
+                 & @ $\lambda_E$ [\si{\meter}] & @ $H_0$ [\si{\meter}]
+                 & @ $c$ [\si{\meter\per\second}]
+                 & @ $T_E$ [\si{\second}] & @ $\tau$ [\si{\second}]
+                 & @ U [\si{\meter\per\second}] & @ z [\si{\meter}]
+                 & @ $L_t$ [\si{\second}]
+                 & @ $L_x$ [\si{\meter}]
+    \\
+    0.1 & 10/pi*(6*[-1,0])^(0.5)
+        & 2*pi*[-1,0]/(6*[-2,0])^(0.5) & 2*[-2,0]*[-3,0]
+        & (\gVal*[-3,0])^(0.5)
+        & 2*pi*([-4,0]/\gVal)^(0.5)/(6*[-5,0])^(0.5)
+          & 1/\PVal*5/(6*[-6,0]^3)^(0.5)*([-5,0]/\gVal)^(0.5)
+          & (\gVal*[-6,0])^(0.5)*(1+(1/5*\PVal/\rhoaOnrhow/4.91/(6*[-7,0])^(0.5))^(0.5))
+          & [-6,0]/2
+        & 3/(6*[-9,0]^3)^(0.5)*([-8,0]/\gVal)^(0.5)
+        & [-1,0]*([-9,0]*\gVal)^(0.5)
+    \\
+    0.1 & 10
+        & 2*pi*[-1,0]/(6*[-2,0])^(0.5) & 2*[-2,0]*[-3,0]
+        & (\gVal*[-3,0])^(0.5)
+        & 2*pi*([-4,0]/\gVal)^(0.5)/(6*[-5,0])^(0.5)
+          & 1/\PVal*5/(6*[-6,0]^3)^(0.5)*([-5,0]/\gVal)^(0.5)
+          & (\gVal*[-6,0])^(0.5)*(1+(1/5*\PVal/\rhoaOnrhow/4.91/(6*[-7,0])^(0.5))^(0.5))
+          & [-6,0]/2
+        & 3/(6*[-9,0]^3)^(0.5)*([-8,0]/\gVal)^(0.5)
+        & [-1,0]*([-9,0]*\gVal)^(0.5)
+    \\
+    0.01 & 2.5
+        & 2*pi*[-1,0]/(6*[-2,0])^(0.5) & 2*[-2,0]*[-3,0]
+        & (\gVal*[-3,0])^(0.5)
+        & 2*pi*([-4,0]/\gVal)^(0.5)/(6*[-5,0])^(0.5)
+          & 1/\PVal*5/(6*[-6,0]^3)^(0.5)*([-5,0]/\gVal)^(0.5)
+          & (\gVal*[-6,0])^(0.5)*(1+(1/5*\PVal/\rhoaOnrhow/4.91/(6*[-7,0])^(0.5))^(0.5))
+          & [-6,0]/2
+        & 3/(6*[-9,0]^3)^(0.5)*([-8,0]/\gVal)^(0.5)
+        & [-1,0]*([-9,0]*\gVal)^(0.5)
+    \\
+    0.1 & 0.61
+        & 2*pi*[-1,0]/(6*[-2,0])^(0.5) & 2*[-2,0]*[-3,0]
+        & (\gVal*[-3,0])^(0.5)
+        & 2*pi*([-4,0]/\gVal)^(0.5)/(6*[-5,0])^(0.5)
+          & 1/\PVal*5/(6*[-6,0]^3)^(0.5)*([-5,0]/\gVal)^(0.5)
+          & (\gVal*[-6,0])^(0.5)*(1+(1/5*\PVal/\rhoaOnrhow/4.91/(6*[-7,0])^(0.5))^(0.5))
+          & [-6,0]/2
+        & 3/(6*[-9,0]^3)^(0.5)*([-8,0]/\gVal)^(0.5)
+        & [-1,0]*([-9,0]*\gVal)^(0.5)
+\end{spreadtab}
+  \caption{Solitary wave physical parameters as functions of $\epsilon$
+    and $h$ for $P k_E/(\epsilon \rho_w g) = \PVal$, $\rho_a/\rho_w =
+    \num{\rhoaOnrhow}$, and $g = \SI{\gVal}{\meter\per\second\squared}$.
+  }
+\undef\gVal
+\undef\rhoaOnrhow
+\undef\PVal
+\end{table}
+
+\end{document}
